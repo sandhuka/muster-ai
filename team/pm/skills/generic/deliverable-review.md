@@ -24,7 +24,7 @@ Run every item against every deliverable, regardless of producing agent.
 - Performance implications called out for O(n)+ operations on user-facing paths
 
 ### UI/UX
-- Only tokens from `design-system-reference.md` (TAColor, TAFont, TASpacing, TARadius)
+- Only tokens from `design-system-reference.md` (project's design token convention — e.g., Color.primary, Font.heading, Spacing.medium)
 - Missing components filed in `ui-component-requests.md` before or alongside the handoff
 - Flows cover error, empty, and loading states — not just the happy path
 

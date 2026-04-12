@@ -14,10 +14,14 @@ When a decision is made or a plan changes:
 7. Update knowledge-base/current-sprint.md if tasks changed
 
 ## Research ↔ PM Protocol
-- Research agent owns knowledge-base/research/ — do NOT write to research files directly (except change-log.md)
-- To request research: write an entry to knowledge-base/research/change-log.md with `status: needs-research`
-- To consume research: read knowledge-base/research/product-brief.md and relevant feature files
-- When Research sets `status: researched`, read the recommendation, decide, log in decision-log.md, and move the entry to Resolved
+- Research agent owns knowledge-base/research/ — do NOT write to research files directly (except change-log.md and the Founder's Idea section of product-brief.md)
+- **To kick off discovery** (new product idea):
+  1. Seed `knowledge-base/research/product-brief.md` — fill in the **Founder's Idea** section with the founder's raw context (problem they see, who has it, proposed solution, why they think they can win, any relevant background). This preserves the full context that a one-line change-log request would lose.
+  2. Write an entry to `knowledge-base/research/change-log.md` with `status: needs-research` referencing the seeded brief: "Research and complete product-brief.md — founder's idea seeded."
+  3. Add a Research agent step to the orchestration queue.
+- **To request incremental research** (after initial discovery): write an entry to change-log.md with `status: needs-research` as before — no need to re-seed the brief.
+- To consume research: read knowledge-base/research/product-brief.md and relevant feature files. Use `product-evaluation.md` skill to produce a structured go/no-go recommendation.
+- When Research sets `status: researched`, read the recommendation, evaluate, decide, log in decision-log.md, and move the entry to Resolved
 
 ## Cross-Agent Dependencies
 - All agents depend on PM for initial product context (via agent-context files)
@@ -35,6 +39,7 @@ Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your curre
 - **brand-guidelines.md** — Brand guidelines document structure (identity, personality, messaging, visual direction, naming)
 - **roadmapping.md** — Roadmap structure from MVP through future versions, sequencing principles, milestone definitions
 - **deliverable-review.md** — Reviewing agent handoffs: universal checklist, per-agent focus areas, review depth calibration, one-pass rule
+- **product-evaluation.md** — Post-research go/no-go evaluation: founder parameter gathering, 6-dimension scoring rubric, verdict logic, evaluation output template, kill criteria
 - **sprint-retrospective.md** — Sprint retro process: failure identification, fix evaluation against context budget, trim discipline
 
 ## Reference Documents

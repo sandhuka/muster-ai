@@ -68,6 +68,8 @@ A scope change is any addition, removal, or re-scoping of a feature after the sp
 
 To request research: add an entry to `knowledge-base/research/change-log.md` with `status: needs-research`, a clear question, and which spec section is blocked.
 
+After research is delivered, use `product-evaluation.md` to evaluate findings and produce a structured go/no-go recommendation before deciding.
+
 ## Decision Autonomy Matrix
 
 Defines what the PM decides alone vs. what requires founder approval.

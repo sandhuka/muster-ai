@@ -356,14 +356,14 @@ If any check fails, fix the issue before filing the handoff. Log what the self-r
 
 ---
 
-### Discovery Phase (Research → PM)
-1. Founder brain-dumps ideas to Research agent
-2. Research conducts web research, structures findings into knowledge-base/research/
-3. Research iterates with founder until product direction is clear
-4. Research finalizes product-brief.md and relevant feature files
-5. Founder approves the brief
-6. PM reads brief + feature files → populates product-spec.md, brand-guidelines.md, etc.
-7. PM cascades context to specialist agents via agent-context files — execution begins
+### Discovery Phase (PM → Research → PM)
+1. Founder tells PM about their product idea (raw — can be as rough as "I want to build X")
+2. PM seeds `knowledge-base/research/product-brief.md` — fills in the **Founder's Idea** section with the founder's full context (problem, target user, proposed solution, why they think they can win, any background). This preserves context that would be lost in a one-line request.
+3. PM writes a change-log entry (`status: needs-research`) referencing the seeded brief, and adds a Research step to the orchestration queue
+4. Founder invokes @research. Research agent reads the seeded brief + change-log request, conducts web research, completes all sections of product-brief.md and supporting files (market-landscape.md, competitive-analysis.md, user-insights.md)
+5. Research sets change-log entry to `status: researched`
+6. Founder returns to PM. PM reads the completed brief + supporting files, evaluates using `product-evaluation.md` skill (6-dimension scoring rubric), and presents a GO / CONDITIONAL / NO-GO recommendation to the founder
+7. Founder makes the final call. If GO: PM reads brief → populates product-spec.md, brand-guidelines.md, etc. → cascades context to specialist agents via agent-context files — execution begins
 
 ### Scope Change Protocol (PM ↔ Research)
 1. Scope change arises (new feature, pivot, market shift, new tool/library)

@@ -37,9 +37,9 @@ Required label quality by screen area:
 
 ### Custom Actions for Complex Interactions
 These elements have multiple interaction targets that must be individually reachable via VoiceOver:
-- **TARoutineCard**: Card body tap (opens detail) and CTA button (starts workout) are separate targets. Verify VoiceOver does not combine them into a single element. Both must be independently focusable and tappable.
-- **TAThumbnailStrip**: The strip itself announces "N exercise thumbnails" (group label). Individual thumbnails should not each receive focus (noise reduction). If the strip becomes interactive (tap to preview), each thumbnail needs its own label.
-- **TASelectionCard**: Verify the combined label reads "[Title], [Description]" and announces "selected" or "not selected" state. Verify double-tap toggles selection and VoiceOver confirms the state change.
+- **Content cards with multiple tap targets**: Card body tap (opens detail) and CTA button (starts action) are separate targets. Verify VoiceOver does not combine them into a single element. Both must be independently focusable and tappable.
+- **Thumbnail strips/carousels**: The strip itself announces "N item thumbnails" (group label). Individual thumbnails should not each receive focus (noise reduction). If the strip becomes interactive (tap to preview), each thumbnail needs its own label.
+- **Selection cards**: Verify the combined label reads "[Title], [Description]" and announces "selected" or "not selected" state. Verify double-tap toggles selection and VoiceOver confirms the state change.
 - **Active session exercise transitions**: When the user advances to the next exercise, VoiceOver must announce the new exercise name and any changed state (rep count, timer reset). Do not rely on the user noticing a visual change — the transition must push an accessibility notification (`UIAccessibility.post(notification: .screenChanged, argument: ...)`).
 
 ### Rotor Support
@@ -76,17 +76,17 @@ To set Dynamic Type in Simulator: Settings > Accessibility > Display & Text Size
 ### Layout Validation at Large Sizes
 At AXXXLarge, verify every screen for:
 - **Clipping**: Text is not cut off or hidden behind other elements. Multi-line wrapping must work.
-- **Overlap**: Elements do not stack on top of each other. Check especially: TARoutineCard block rows (name + duration may collide), TASelectionRow (title + subtitle + radio indicator), tab bar labels.
+- **Overlap**: Elements do not stack on top of each other. Check especially: content card rows (name + duration may collide), selection rows (title + subtitle + radio indicator), tab bar labels.
 - **Scrollability**: If content overflows the screen, it must be scrollable. Screens that fit at Default size but not at AXXXLarge need a ScrollView wrapper.
-- **Minimum tap targets**: All interactive elements must be at least 44x44pt at every text size. Apple HIG minimum. Check: chip group chips (TAChipGroup min height is 44pt — verify this holds at all text sizes), selection row radio indicators, progress dots (not interactive, but if tapped, should not trigger adjacent elements), thumbnail strip items (if interactive).
-- **Button height**: TAPrimaryButton has a 52pt fixed height. At AXXXLarge, verify the button label does not clip. If the label overflows, it should either wrap to two lines or the button height should grow. Flag if it clips.
+- **Minimum tap targets**: All interactive elements must be at least 44x44pt at every text size. Apple HIG minimum. Check: chip group chips (min height 44pt — verify this holds at all text sizes), selection row radio indicators, progress dots (not interactive, but if tapped, should not trigger adjacent elements), thumbnail strip items (if interactive).
+- **Button height**: Primary buttons with fixed height — at AXXXLarge, verify the button label does not clip. If the label overflows, it should either wrap to two lines or the button height should grow. Flag if it clips.
 
-### TAFont Token Scaling
-the shared UI library uses Poppins (custom font). Custom fonts do NOT automatically support Dynamic Type unless explicitly configured with `UIFontMetrics` or SwiftUI's `.dynamicTypeSize()` / `@ScaledMetric`.
+### Font Token Scaling
+If the shared UI library uses a custom font (not system font), custom fonts do NOT automatically support Dynamic Type unless explicitly configured with `UIFontMetrics` or SwiftUI's `.dynamicTypeSize()` / `@ScaledMetric`.
 
 Verify:
-- Every `TAFont.*` token scales proportionally when the user changes text size. Set AXXXLarge and compare each token's rendered size to its base size — it should be noticeably larger.
-- If any TAFont token does NOT scale (stays at its base size regardless of Dynamic Type setting), file a `needs-update` request in `knowledge-base/ui-component-requests.md` against the typography tokens.
+- Every font token scales proportionally when the user changes text size. Set AXXXLarge and compare each token's rendered size to its base size — it should be noticeably larger.
+- If any font token does NOT scale (stays at its base size regardless of Dynamic Type setting), file a `needs-update` request in `knowledge-base/ui-component-requests.md` against the typography tokens.
 - Test in both Simulator (fast) and physical device (authoritative — Simulator can mask font rendering differences).
 
 ### Screens to Prioritize for Dynamic Type
@@ -107,25 +107,29 @@ Verify:
 | Large text (>= 18pt or >= 14pt bold) | 3:1 |
 | UI components and graphical objects | 3:1 |
 
-### TAColor Token Contrast Verification
-Test every foreground/background combination used in the app. The critical pairs from the current token set:
+### Color Token Contrast Verification
+Test every foreground/background combination used in the app. Build a table of critical pairs from the project's color token set:
+
+<!-- Project-specific: populate this table from your design-system-reference.md color tokens. -->
+<!-- Example format: -->
+<!-- | `Color.onBackground` (#hex) | `Color.background` (#hex) | ~ratio | Primary text | -->
 
 **Light Mode**
 | Foreground | Background | Expected Ratio | Notes |
 |-----------|-----------|----------------|-------|
-| `TAColor.onBackground` (#2F2520) | `TAColor.background` (#FFFFFF) | ~13.5:1 | Primary text — should pass easily |
-| `TAColor.onSurface` (#6B5D55) | `TAColor.surface` (#FDF8F7) | ~4.3:1 | Secondary text — borderline for AA normal text. Verify >= 4.5:1 |
-| `TAColor.onPrimary` (#FFFFFF) | `TAColor.primary` (#B85635) | ~3.8:1 | White on primary brown — passes for large text only. Flag if used for body text |
-| `TAColor.secondary` (#2D7D8A) | `TAColor.surface` (#FDF8F7) | Check | Smart badge teal on surface — must pass 4.5:1 for caption text |
+| `Color.onBackground` | `Color.background` | Check | Primary text — should pass easily (>= 7:1 ideal) |
+| `Color.onSurface` | `Color.surface` | Check | Secondary text — verify >= 4.5:1 for AA normal text |
+| `Color.onPrimary` | `Color.primary` | Check | Button text on primary color — verify >= 3:1 for large text, >= 4.5:1 for normal |
+| `Color.secondary` | `Color.surface` | Check | Accent on surface — must pass 4.5:1 for caption/small text |
 
 **Dark Mode**
 | Foreground | Background | Expected Ratio | Notes |
 |-----------|-----------|----------------|-------|
-| `TAColor.onBackground` (#EDE5DD) | `TAColor.background` (#1A1512) | Check | Primary text dark mode |
-| `TAColor.onSurface` (#B0A59C) | `TAColor.surface` (#262019) | Check | Secondary text dark mode — verify >= 4.5:1 |
-| `TAColor.onPrimary` (#1A1512) | `TAColor.primary` (#D4845F) | Check | Dark mode primary button text |
+| `Color.onBackground` | `Color.background` | Check | Primary text dark mode |
+| `Color.onSurface` | `Color.surface` | Check | Secondary text dark mode — verify >= 4.5:1 |
+| `Color.onPrimary` | `Color.primary` | Check | Dark mode primary button text |
 
-**Known risk**: `TAColor.onPrimary` on `TAColor.primary` in light mode (~3.8:1) fails AA for normal text. This is used for TAPrimaryButton labels (17pt SemiBold = "large text" threshold is 14pt bold, so 17pt SemiBold qualifies as large text). Verify the 3:1 large-text threshold is met. If any screen uses this combination for smaller text, file a bug.
+**Common risk**: `Color.onPrimary` on `Color.primary` often fails AA for normal text. If the primary button uses semibold text >= 14pt, it qualifies as "large text" (3:1 threshold). Verify the actual font size. If any screen uses this combination for smaller text, file a bug.
 
 ### Tools
 - **Xcode Accessibility Inspector** (Xcode > Open Developer Tool > Accessibility Inspector): Run Color Contrast audit on any view. Can inspect individual elements.
@@ -150,10 +154,10 @@ When the user enables Reduce Motion (Settings > Accessibility > Motion > Reduce 
 |-----------|----------------|----------------------|
 | Exercise loop animations | 2-5 sec looping video/WebP | Static thumbnail (first frame or designated poster frame). Must not play. |
 | Screen transitions | Spring/slide animations | Instant cut (crossfade at most, no sliding) |
-| TAPrimaryButton press | Scale 0.98 + spring | Instant state change, no scale animation |
-| TAProgressDots step change | `.easeInOut(duration: 0.2)` | Instant transition |
-| TASmartBadge appear | Fade-in `.easeIn(duration: 0.2)` | Instant appear |
-| TAChipGroup selection | `.easeInOut(duration: 0.15)` | Instant state change |
+| Primary button press | Scale + spring | Instant state change, no scale animation |
+| Progress indicator step change | Eased transition | Instant transition |
+| Badge/label appear | Fade-in | Instant appear |
+| Chip/filter selection | Eased transition | Instant state change |
 | Routine card expand/collapse | Animated height change (if applicable) | Instant resize |
 | Tab switching | Default SwiftUI transition | Crossfade only |
 
@@ -198,11 +202,11 @@ Use this per-screen checklist during system testing. Each row is a pass/fail che
 | Check | Details | Pass/Fail |
 |-------|---------|-----------|
 | VoiceOver: Welcome screen | Focus order: illustration > title > subtitle > CTA. CTA label is button title, not "Button". | |
-| VoiceOver: Selection screens (F-ONB-1 to F-ONB-5) | Each TASelectionCard/TASelectionRow announces title, description, selected state. State changes announced on toggle. | |
+| VoiceOver: Selection screens (F-ONB-1 to F-ONB-5) | Each selection card/row announces title, description, selected state. State changes announced on toggle. | |
 | VoiceOver: Progress dots | "Step N of M" announced. Individual dots not focusable. | |
 | VoiceOver: Back navigation | "Back" button has meaningful label. | |
 | Dynamic Type: Selection cards | Cards expand vertically at AXXXLarge. Title and description do not clip. | |
-| Dynamic Type: CTA button | TAPrimaryButton label does not clip at AXXXLarge. | |
+| Dynamic Type: CTA button | Primary button label does not clip at AXXXLarge. | |
 | Dynamic Type: Progress dots | Dots remain visible and correctly positioned at all sizes. | |
 | Contrast: Selection card text | Title and description meet 4.5:1 on surface background. | |
 | Contrast: Progress dots | Current/completed/future dots distinguishable at 3:1. | |
@@ -249,7 +253,7 @@ Use this per-screen checklist during system testing. Each row is a pass/fail che
 | VoiceOver: Filter/search | Filter chips announce selected state. Search field has "Search exercises" placeholder as label. | |
 | VoiceOver: Exercise detail | All sections (description, muscles targeted, animation) announced in order. | |
 | Dynamic Type: List items | Name and metadata wrap. Thumbnail size remains fixed (does not scale). | |
-| Dynamic Type: Filter chips | TAChipGroup chips remain >= 44pt height. Labels do not clip. | |
+| Dynamic Type: Filter chips | Filter chips remain >= 44pt height. Labels do not clip. | |
 | Contrast: Metadata text | Secondary metadata text meets 4.5:1. | |
 | Reduce Motion: Animation preview | Static thumbnail shown on exercise detail when Reduce Motion is on. | |
 
@@ -278,34 +282,37 @@ Use this per-screen checklist during system testing. Each row is a pass/fail che
 ## the shared UI library Component Accessibility Compliance
 
 ### Per-Component Verification
-When a new TA component is delivered or updated, verify these properties before marking the component as accessibility-compliant:
+When a new shared UI library component is delivered or updated, verify these properties before marking it as accessibility-compliant:
 
-| Component | Required Traits | Required Label | Required Hint | Required State |
-|-----------|----------------|---------------|---------------|----------------|
-| TAPrimaryButton | `.isButton` (enabled), traits removed (disabled) | Button title text | None required | Disabled state announced as "dimmed" |
-| TAProgressDots | `.updatesFrequently` | "Step N of M" | None required | Updates on step change |
-| TASelectionCard | `.isButton`, `.isSelected` | "[Title], [Description]" | "Double tap to select/deselect" | Selected/not selected announced |
-| TASelectionRow | `.isButton`, `.isSelected` | "[Title], [Subtitle]" | None required | Selected/not selected announced |
-| TAChipGroup | Each chip: `.isButton`, `.isSelected` | Chip option text | None required | Selected/not selected per chip |
-| TASmartBadge | `.isStaticText` | Badge text ("Designed for You") | None required | N/A |
-| TAStreakBadge | None (children ignored) | "N day streak" | None required | Renders nothing when 0 |
-| TAThumbnailStrip | None (children ignored) | "N exercise thumbnails" | None required | N/A |
-| TARoutineCard | Info section: `.combine` children | "routineType, duration, N exercises" | None required | CTA handled by TAPrimaryButton |
+<!-- Project-specific: populate this table with your project's shared UI library components. -->
+<!-- Example component types and their expected accessibility properties: -->
+
+| Component Type | Required Traits | Required Label | Required Hint | Required State |
+|----------------|----------------|---------------|---------------|----------------|
+| Primary Button | `.isButton` (enabled), traits removed (disabled) | Button title text | None required | Disabled state announced as "dimmed" |
+| Progress Indicator | `.updatesFrequently` | "Step N of M" | None required | Updates on step change |
+| Selection Card | `.isButton`, `.isSelected` | "[Title], [Description]" | "Double tap to select/deselect" | Selected/not selected announced |
+| Selection Row | `.isButton`, `.isSelected` | "[Title], [Subtitle]" | None required | Selected/not selected announced |
+| Chip Group | Each chip: `.isButton`, `.isSelected` | Chip option text | None required | Selected/not selected per chip |
+| Badge (static) | `.isStaticText` | Badge text | None required | N/A |
+| Streak Badge | None (children ignored) | "N day streak" | None required | Renders nothing when 0 |
+| Thumbnail Strip | None (children ignored) | "N item thumbnails" | None required | N/A |
+| Content Card | Info section: `.combine` children | "type, duration, N items" | None required | CTA handled by primary button |
 
 ### What to Flag
-If any TA component fails the checks above:
+If any shared library component fails the checks above:
 1. File a `needs-update` request in `knowledge-base/ui-component-requests.md` with the specific accessibility gap.
 2. Set priority to HIGH — accessibility is not a "nice to have."
-3. In the "What Changed" field, describe exactly what is missing (e.g., "TASelectionCard missing `.isSelected` trait — VoiceOver does not announce selection state").
+3. In the "What Changed" field, describe exactly what is missing (e.g., "SelectionCard missing `.isSelected` trait — VoiceOver does not announce selection state").
 
 ### Custom UI Bypass Detection
-During any screen review, check whether the Developer used custom implementations instead of available TA components:
-- Custom button instead of TAPrimaryButton — flag.
-- Custom card instead of TASelectionCard/TARoutineCard — flag.
-- Custom dot indicator instead of TAProgressDots — flag.
-- Hardcoded colors/fonts instead of TAColor/TAFont tokens — flag.
+During any screen review, check whether the Developer used custom implementations instead of available shared library components:
+- Custom button instead of the library's primary button — flag.
+- Custom card instead of the library's selection/content card — flag.
+- Custom indicator instead of the library's progress indicator — flag.
+- Hardcoded colors/fonts instead of design system tokens — flag.
 
-Custom UI that bypasses an available TA component is a defect. Custom UI for which no TA component exists and no `needs-component` request has been filed is a process gap — flag to PM and the UI/UX agent.
+Custom UI that bypasses an available library component is a defect. Custom UI for which no library component exists and no `needs-component` request has been filed is a process gap — flag to PM and the UI/UX agent.
 
 ---
 

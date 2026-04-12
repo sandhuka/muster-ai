@@ -41,7 +41,7 @@ When cascading product context to specialist agents, tailor what each role needs
 
 ### Marketing
 **Needs to know**: How to position and sell the product.
-- Positioning vs. competitors (from competitive-analysis.md — key differentiators, gaps Arogh fills)
+- Positioning vs. competitors (from competitive-analysis.md — key differentiators, gaps the product fills)
 - Pricing strategy and rationale (from monetization research)
 - App Store optimization insights (from app-store-intel.md — keyword opportunities, category positioning)
 - Target personas for acquisition messaging (which persona to target first, where they are)

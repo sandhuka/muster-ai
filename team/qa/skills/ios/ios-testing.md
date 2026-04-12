@@ -98,8 +98,8 @@ All interactive elements must have accessibility identifiers for UI test element
 
 ```swift
 // In production view code:
-TAPrimaryButton("Start Workout")
-    .accessibilityIdentifier("today_startWorkout")
+PrimaryButton("Start Action")
+    .accessibilityIdentifier("today_startAction")
 
 // In UI test:
 app.buttons["today_startWorkout"].tap()
