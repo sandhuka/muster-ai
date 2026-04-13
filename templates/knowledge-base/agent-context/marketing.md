@@ -14,13 +14,6 @@
 - **Success metrics**: [Marketing KPI targets — downloads, retention, conversion, rating]
 - **Premium messaging**: [What to highlight as premium benefits, what NOT to use as premium messaging — be explicit about retired messaging angles]
 
-## Cross-Agent Dependencies
-<!-- Format:
-- Depends on: [Agent] — [what for]
-- Provides to: [Agent] — [what]
-- References: [specific knowledge-base files — competitive analysis, market landscape, app store intel]
--->
-
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->

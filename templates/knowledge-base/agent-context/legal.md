@@ -15,13 +15,6 @@
 - **Jurisdiction**: [Target markets, applicable regulations — CCPA, GDPR, FTC, state laws]
 - **Team model**: [Solo founder / small team — affects employment and contractor law]
 
-## Cross-Agent Dependencies
-<!-- Format:
-- Provides to: [Agent] — [what]
-- Depends on: [Agent] — [what for]
-- References: [specific knowledge-base files — product-spec sections, brand-guidelines]
--->
-
 ## Agent-Specific Context
 <!-- Skill backlog, deferred compliance areas, pending legal questions -->
 

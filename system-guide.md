@@ -15,8 +15,7 @@ Agent brain files contain NO product-specific content. Product context is provid
 ## Agent-Context Template (`knowledge-base/agent-context/<agent>.md`)
 
 Per-project filtered context for each agent. PM-managed. Every agent-context file has these standard sections:
-- **Product Context**: Filtered product information relevant to this agent's role (varies by agent — Developer gets tech stack/architecture, Marketing gets positioning/metrics, etc.)
-- **Cross-Agent Dependencies**: What this agent provides to and depends on from other agents, with specific file references
+- **Product Context**: Filtered product information relevant to this agent's role (varies by agent — Developer gets tech stack/architecture, Marketing gets positioning/metrics, etc.). Includes key references (product-specific file pointers) as bullet points at the end.
 - **Current Tasks**: Full sprint task specs (deliverable, priority, effort, dependencies, acceptance criteria, key skills, key refs). PM updates at sprint planning and task completion. Tasks must be self-contained — an agent should be able to work from just its agent-context file.
 - **Agent-Specific Context** (optional): Agent-owned notes (e.g., Legal's skill backlog)
 

@@ -20,13 +20,6 @@
 <!-- Flag custom UI bypassing available components. Flag missing component requests. -->
 <!-- Component conformance check protocol if applicable -->
 
-## Cross-Agent Dependencies
-<!-- Format:
-- Depends on: [Agent] — [what for]
-- Provides to: [Agent] — [what]
-- References: [specific knowledge-base files]
--->
-
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->

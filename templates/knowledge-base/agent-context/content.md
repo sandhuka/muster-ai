@@ -14,13 +14,6 @@
 - **Science/domain messaging**: [How to communicate credibility without jargon — "backed by" language guidelines]
 - **Monetization copy**: [What's gated, upgrade messaging context, what NOT to say. Include example strings and anti-examples]
 
-## Cross-Agent Dependencies
-<!-- Format:
-- Provides to: [Agent] — [what]
-- Depends on: [Agent] — [what for]
-- References: [specific knowledge-base files]
--->
-
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->

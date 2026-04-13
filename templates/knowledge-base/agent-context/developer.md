@@ -22,14 +22,6 @@
 - [Legal docs for implementation inputs — specific sections relevant to dev]
 - [Design patterns file for UI patterns]
 
-## Cross-Agent Dependencies
-<!-- List what this agent provides to and depends on from other agents -->
-<!-- Format:
-- Depends on: [Agent] — [what for]
-- Provides to: [Agent] — [what]
-- References: [specific knowledge-base files]
--->
-
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->

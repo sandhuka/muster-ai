@@ -12,12 +12,6 @@
 - **Monetization**: [Revenue model, pricing]
 - **Team model**: [Solo founder / small team — affects feasibility research]
 
-## Cross-Agent Dependencies
-<!-- Format:
-- Provides to: [Agent] — [what]
-- Receives from: [Agent] — [what, via what channel]
--->
-
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->

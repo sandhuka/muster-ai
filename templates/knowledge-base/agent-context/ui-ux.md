@@ -19,14 +19,6 @@
 <!-- Library source path for token verification -->
 <!-- Component request workflow and Prompt authoring requirements -->
 
-## Cross-Agent Dependencies
-<!-- Format:
-- Provides to: [Agent] — [what]
-- Depends on: [Agent] — [what for]
-- References: [specific knowledge-base files]
-- On-demand: [design-patterns.md for cross-cutting UI patterns]
--->
-
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->
