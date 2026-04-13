@@ -215,7 +215,7 @@ Reference: `team/developer/skills/ios-app-store.md`, `knowledge-base/architectur
 
 ### Xcode StoreKit Configuration Files
 Verify the project includes a `.storekit` configuration file in the test plan for local testing without Apple sandbox:
-- Two subscription products: monthly ($7.99) and annual ($49.99)
+- Two subscription products: monthly ($[monthly_price]) and annual ($[annual_price])
 - Product identifiers match `StoreConfig` constants in production code
 - Configuration enables: renewals, expiration, grace period simulation
 

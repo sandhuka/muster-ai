@@ -14,7 +14,7 @@ Define backend/Supabase-specific testing methodology for the product. Covers Aut
 
 ### Remote (Staging Project)
 - Staging project mirrors production schema. Apply migrations with `supabase db push`.
-- Use throwaway email addresses for test accounts (e.g., `test+<uuid>@arogh.com`).
+- Use throwaway email addresses for test accounts (e.g., `test+<uuid>@[your-domain].com`).
 - Clean up test data after each run. Never test against the production project.
 
 ### Key Credentials for Testing
