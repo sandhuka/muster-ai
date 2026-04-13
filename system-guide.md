@@ -8,6 +8,7 @@ Every agent brain file in Muster follows this structure:
 - **Role**: 2-3 sentence role definition
 - **Cross-Agent Dependencies**: Generic role relationships (what this agent waits on or provides to other agents — applies to ANY project)
 - **Available Skills**: Index of skill files in `team/<agent>/skills/{generic,platform}/`
+- **Project Skills**: Note directing agents to check their agent-context file for product-specific skills
 - **Reference Documents**: Links to project-relative knowledge-base/ files the agent reads on demand
 
 Agent brain files contain NO product-specific content. Product context is provided per-project via `knowledge-base/agent-context/<agent>.md`.
@@ -16,6 +17,7 @@ Agent brain files contain NO product-specific content. Product context is provid
 
 Per-project filtered context for each agent. PM-managed. Every agent-context file has these standard sections:
 - **Product Context**: Filtered product information relevant to this agent's role (varies by agent — Developer gets tech stack/architecture, Marketing gets positioning/metrics, etc.). Includes key references (product-specific file pointers) as bullet points at the end.
+- **Project Skills**: Index of product-specific skill files in `knowledge-base/agent-skills/<agent>/` that supplement muster methodology. PM populates as product skills are created.
 - **Current Tasks**: Full sprint task specs (deliverable, priority, effort, dependencies, acceptance criteria, key skills, key refs). PM updates at sprint planning and task completion. Tasks must be self-contained — an agent should be able to work from just its agent-context file.
 - **Agent-Specific Context** (optional): Agent-owned notes (e.g., Legal's skill backlog)
 
@@ -34,12 +36,13 @@ See `templates/knowledge-base/agent-context/` for section templates per agent.
 
 | # | File | What to add |
 |---|------|-------------|
-| 1 | `muster/team/<name>/CLAUDE.md` | Agent brain file (template above) |
+| 1 | `muster/team/<name>/CLAUDE.md` | Agent brain file (template above — include Project Skills note) |
 | 2 | `muster/team/<name>/skills/` | Domain skill files organized by platform |
 | 3 | Project `.claude/agents/<name>.md` | Startup config (template below) |
 | 4 | `muster/CLAUDE.md` — Agent Roster table | New row with name, brain file path, responsibility |
 | 5 | `muster/CLAUDE.md` — Sub-Agent Access line | Add `@<name>` to the list |
-| 6 | Project `knowledge-base/agent-context/<name>.md` | Filtered product context for this role |
+| 6 | Project `knowledge-base/agent-context/<name>.md` | Filtered product context, Project Skills section, current tasks |
+| 7 | Project `knowledge-base/agent-skills/<name>/` | Create directory for product-specific skills (populate as needed) |
 
 #### Startup Config Template (`.claude/agents/<name>.md`)
 

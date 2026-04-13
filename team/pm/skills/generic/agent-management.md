@@ -48,12 +48,13 @@ When a major decision affects multiple agents:
 
 ## Adding a New Agent
 1. Create `muster/team/<name>/` directory
-2. Create `muster/team/<name>/CLAUDE.md` brain file using the standard template (see system-guide.md for template)
+2. Create `muster/team/<name>/CLAUDE.md` brain file using the standard template (see system-guide.md for template — include Project Skills note)
 3. Create `muster/team/<name>/skills/` directory with domain skill files
 4. Create `.claude/agents/<name>.md` startup config in the project repo
 5. Update `muster/CLAUDE.md` agent roster table and sub-agent access line
-6. Create `knowledge-base/agent-context/<name>.md` in the project repo and populate with PM-managed product context, cross-agent dependencies, and current tasks
-7. Add relevant cross-agent dependencies to both the new agent's and existing agents' brain files (`muster/team/<agent>/CLAUDE.md`)
+6. Create `knowledge-base/agent-context/<name>.md` in the project repo and populate with PM-managed product context, Project Skills section, and current tasks
+7. Create `knowledge-base/agent-skills/<name>/` directory for product-specific skills (populate as needed)
+8. Add relevant cross-agent dependencies to both the new agent's and existing agents' brain files (`muster/team/<agent>/CLAUDE.md`)
 
 ## Research Agent Protocol
 The Research agent has a special relationship with the PM:
