@@ -33,11 +33,10 @@ This skill defines how the PM updates agent-context files (`knowledge-base/agent
 - Tasks must be self-contained — an agent should be able to work from just its agent-context file without reading current-sprint.md
 
 ### Cross-Agent Dependencies
-**Update when:** New feature requires multi-agent collaboration, dependency status changes.
-**Format:**
-- Waiting on [agent]: [what for] — Status: pending/in-progress/done
-- Providing to [agent]: [what] — Status: pending/in-progress/done
-**Rule:** Both sides of a dependency MUST be reflected in BOTH agents' files. If Developer is waiting on UI/UX for design specs, the UI/UX file must show "Providing to Developer: design specs."
+Cross-agent dependencies are maintained in agent **brain files** (`muster/team/<agent>/CLAUDE.md`), not in agent-context files. These describe generic role relationships (e.g., "Developer depends on UI/UX for design specs") that apply to any project.
+**Update when:** A new agent is added, or the role relationships between agents change.
+**Where:** Edit the relevant brain files in the muster submodule. Both sides of a dependency MUST be reflected — if Developer depends on UI/UX, the UI/UX brain file must show "Provides to Developer."
+**Remember:** Brain file edits require a muster submodule commit (Rule 13).
 
 ## Batch Update Workflow
 When a major decision affects multiple agents:
@@ -54,7 +53,7 @@ When a major decision affects multiple agents:
 4. Create `.claude/agents/<name>.md` startup config in the project repo
 5. Update `muster/CLAUDE.md` agent roster table and sub-agent access line
 6. Create `knowledge-base/agent-context/<name>.md` in the project repo and populate with PM-managed product context, cross-agent dependencies, and current tasks
-7. Add relevant cross-agent dependencies to both the new agent and existing agents (in both brain files and agent-context files)
+7. Add relevant cross-agent dependencies to both the new agent's and existing agents' brain files (`muster/team/<agent>/CLAUDE.md`)
 
 ## Research Agent Protocol
 The Research agent has a special relationship with the PM:
@@ -124,7 +123,7 @@ The PM owns `knowledge-base/orchestration-queue.md` — the founder's "what to d
 Done section: max 5 entries. The completing agent trims, but PM catches any that slip through. PM clears Done entirely at each new sprint.
 
 ## Agent Management Principles
-- **Read before writing.** Always read the full target CLAUDE.md before making changes. Agents may have added context to non-PM-managed sections that creates dependencies you need to know about.
+- **Read before writing.** Always read the full target agent-context file before making changes. Agents may have added context to non-PM-managed sections (e.g., Agent-Specific Context) that creates dependencies you need to know about.
 - **Filter, don't dump.** The PM's job is to be a context translator, not a forwarder. If you find yourself copying entire sections from the knowledge base into an agent's file, stop — link to the source doc instead.
 - **Both sides of every dependency.** A dependency that only appears in one agent's file will cause coordination failures. Mirror every dependency on both sides, every time, without exception.
 - **Cascade in dependency order.** Update upstream agents first so their outputs are available when downstream agents start work. A Developer who starts before UI/UX has delivered design specs will guess or block.

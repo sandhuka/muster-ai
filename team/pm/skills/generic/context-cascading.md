@@ -7,43 +7,43 @@ When cascading product context to specialist agents, tailor what each role needs
 
 ### Developer
 **Needs to know**: What to build and technical constraints.
-- Tech stack and architecture constraints (Native Swift, iOS-first)
-- Algorithm requirements (rules-based scheduling, muscle pairing, recovery windows — from science-validation)
-- Content pipeline technical needs (exercise assets: static thumbnail + 2-5 sec looping animation per exercise, standard asset CDN)
-- Data model considerations (user profile, exercise library, workout history, recovery state)
-- Performance requirements (animation rendering smoothness, app launch time, offline support)
-- Device support matrix
+- Tech stack and architecture constraints (platform, language, framework, backend)
+- Core algorithm/logic requirements (key business rules, constraints — from research/validation)
+- Content/asset pipeline requirements (file types, delivery mechanism, storage)
+- Data model considerations (key entities, relationships, storage strategy)
+- Performance requirements (rendering, load time, offline behavior)
+- Device/platform support matrix
 
-**Key references**: product-spec.md, research/science-validation.md, research/product-candidates.md (feasibility section), architecture.md
+**Key references**: product-spec.md, architecture.md, relevant research files
 
 ### UI/UX Designer
 **Needs to know**: Who the users are, what they experience, and the brand's visual identity.
 - Target personas with behavioral details (from user-insights.md)
-- User journey: onboarding → daily use → progress review
+- User journey: onboarding → core experience → progress/retention loop
 - Onboarding requirements (what data to collect, how many steps)
-- Active Workout Session UX requirements (card-based exercise display with GIF-style loops, overlays, transitions, rest timers)
-- Character visual direction (Sarah, Candy, Ayan personas and their visual identities)
+- Key flow UX requirements (primary interaction patterns, content display, transitions)
+- Visual content direction (characters, imagery, animation style — from brand-guidelines)
 - Brand aesthetic direction (from brand-guidelines.md)
-- Platform conventions (iOS Human Interface Guidelines)
+- Platform conventions (platform-specific design guidelines)
 
 **Key references**: research/user-insights.md, product-brief.md, brand-guidelines.md
 
 ### Content
 **Needs to know**: Brand voice, character personalities, and what copy is needed.
 - Brand voice and personality traits (from brand-guidelines.md)
-- Character persona backstories and personalities (Sarah = strength, Candy = stretching, Ayan = yoga)
-- In-app copy needs: onboarding screens, workout session UI text, algorithm rationale strings, push notifications, error states
-- Exercise naming conventions (consistency across the library)
-- Science messaging tone (how to communicate "science-backed" without being clinical)
+- Character/persona backstories and personality traits (from brand-guidelines)
+- In-app copy surfaces: onboarding, core feature UI, system messages, notifications, error states
+- Naming conventions (consistent terminology across the product)
+- Domain messaging tone (how to communicate expertise/credibility without jargon)
 - Naming conventions for app sections and features
 
-**Key references**: brand-guidelines.md, research/user-insights.md, research/science-validation.md
+**Key references**: brand-guidelines.md, research/user-insights.md
 
 ### Marketing
 **Needs to know**: How to position and sell the product.
 - Positioning vs. competitors (from competitive-analysis.md — key differentiators, gaps the product fills)
 - Pricing strategy and rationale (from monetization research)
-- App Store optimization insights (from app-store-intel.md — keyword opportunities, category positioning)
+- App Store/marketplace optimization insights (keyword opportunities, category positioning)
 - Target personas for acquisition messaging (which persona to target first, where they are)
 - Launch strategy considerations (pre-launch, beta, public launch phases)
 - Success metrics related to acquisition (downloads, conversion targets)
@@ -52,25 +52,25 @@ When cascading product context to specialist agents, tailor what each role needs
 
 ### Legal
 **Needs to know**: Compliance and liability requirements.
-- AI-generated content IP considerations (3D animated characters — who owns the output?)
-- Fitness app liability and disclaimers (injury risk, not medical advice)
+- Content IP considerations (AI-generated or licensed content ownership)
+- Domain-specific liability and disclaimers
 - Terms of service scope (subscription billing, content licensing, user data)
-- Privacy policy needs (health-related data collection — height, weight, fitness level, workout history)
-- App Store compliance requirements (Apple's guidelines for health/fitness apps)
+- Privacy policy needs (data types collected, sensitivity classification)
+- App Store/platform compliance requirements
 - Data storage and processing practices
 
-**Key references**: product-brief.md (content approach section), product-spec.md (monetization section)
+**Key references**: product-brief.md, product-spec.md
 
 ### QA
 **Needs to know**: What to test and how to validate quality.
 - MVP feature scope for test plan creation (from product-spec.md)
-- iOS device matrix (which devices and iOS versions to test on)
-- Key user flows to test (onboarding, daily routine generation, active workout session, progress tracking)
+- Device/platform matrix (target devices and versions)
+- Key user flows to test (from product-spec feature list)
 - Acceptance criteria from product-spec.md (the definition of "done" for each feature)
-- Content quality validation needs (exercise animations reviewed for form accuracy, loop seamlessness)
-- Performance benchmarks (animation rendering, app responsiveness)
+- Content quality validation (asset rendering, accuracy, consistency)
+- Performance benchmarks (rendering, responsiveness, load times)
 
-**Key references**: product-spec.md, research/product-candidates.md (risks section)
+**Key references**: product-spec.md, test-strategy.md
 
 ## Cascading Principles
 

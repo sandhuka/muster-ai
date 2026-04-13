@@ -30,7 +30,7 @@
 ### 4. Visual Direction
 - **Color palette direction**: Primary, secondary, accent color families and the mood they convey (specific hex codes are UI/UX agent's job)
 - **Typography preferences**: Serif vs. sans-serif, weight preferences, readability priorities
-- **Character persona descriptions**: Brief personality and visual description for each character (Sarah, Candy, Ayan) — enough for the content and design teams to maintain consistency
+- **Character persona descriptions**: Brief personality and visual description for each character — enough for the content and design teams to maintain consistency
 - **Aesthetic keywords**: 3-5 words capturing the visual feel (e.g., "minimalist premium," "clean and confident," "warm but sophisticated")
 - **Photography/imagery style**: If applicable, direction for any non-character visual assets
 
