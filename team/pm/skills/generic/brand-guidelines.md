@@ -35,8 +35,8 @@
 - **Photography/imagery style**: If applicable, direction for any non-character visual assets
 
 ### 5. Naming Conventions
-- How to refer to the app's features (e.g., "routine" not "workout plan," "exercise" not "move")
-- How to refer to app sections (e.g., "Today," "Library," "Progress")
+- How to refer to the app's features (e.g., canonical term for core content items, canonical term for sessions/activities)
+- How to refer to app sections (e.g., tab names, screen names — define canonical labels)
 - Character name usage rules (when to use names vs. generic references)
 - Capitalization rules for product-specific terms
 
@@ -47,10 +47,10 @@
 
 ## Writing Principles
 - **Voice should be consistent across all surfaces**: in-app copy, App Store listing, marketing emails, push notifications, error messages. One brand, one voice.
-- **Brand personality should reflect the product philosophy**: science-backed but approachable, smart but not intimidating, personal but not intrusive.
+- **Brand personality should reflect the product philosophy**: The personality traits should feel natural for the product's domain and audience positioning.
 - **Keep visual direction high-level**: Brand guidelines set the direction; UI/UX agent details the implementation. Don't specify exact hex codes, font sizes, or pixel dimensions here.
-- **Test with edge cases**: The voice should work in celebration ("Great week!"), encouragement ("Ready to get back?"), and error states ("We couldn't load your routine"). If it doesn't work in all three, it's not the right voice.
-- **Reference research for persona alignment**: Brand voice should resonate with the primary persona (Efficient Professional). Check against `knowledge-base/research/user-insights.md`.
+- **Test with edge cases**: The voice should work in celebration ("Great week!"), encouragement ("Ready to get back?"), and error states ("We couldn't load your content"). If it doesn't work in all three, it's not the right voice.
+- **Reference research for persona alignment**: Brand voice should resonate with the primary persona from `knowledge-base/research/user-insights.md`.
 
 ## Output
 `knowledge-base/brand-guidelines.md`

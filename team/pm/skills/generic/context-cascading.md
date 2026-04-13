@@ -109,7 +109,7 @@ Run this after EVERY product decision, not just after full cascades. Cascade lag
 ### Per-Decision Quick Audit (2 minutes)
 After logging a decision in `decision-log.md`, immediately check:
 
-1. **Keyword scan (mandatory)**: Identify the key terms that changed (e.g., "video clips" became "looping animations," "iOS + Android" became "iOS-first," "breathwork" was removed). Grep the FULL repository for the OLD terms — not just agent files. Record the grep results in the decision-log entry's Touched field so there is an audit trail. If a file contains the old term but does not need updating (e.g., historical/archival), note it as "reviewed, no change needed."
+1. **Keyword scan (mandatory)**: Identify the key terms that changed (e.g., a media format was renamed, a platform scope was narrowed, a feature was descoped). Grep the FULL repository for the OLD terms — not just agent files. Record the grep results in the decision-log entry's Touched field so there is an audit trail. If a file contains the old term but does not need updating (e.g., historical/archival), note it as "reviewed, no change needed."
 2. **Agent Product Context**: For each affected agent listed in the decision's "Impact" field, re-read their Product Context section. Does it still describe the old state? Fix it.
 3. **Agent Current Tasks**: If the decision changes task scope or adds/removes tasks, update the affected agent's agent-context file (`knowledge-base/agent-context/<agent>.md`) Current Tasks and `current-sprint.md`.
 4. **Skills files**: Check PM skills files (context-cascading.md, roadmapping.md, sprint-planning.md) for references to the old state. These are easy to miss because they feel "stable."
@@ -119,8 +119,8 @@ After logging a decision in `decision-log.md`, immediately check:
 ### Common Lag Patterns to Watch For
 - Completed PM tasks still listed as pending (task list not cleaned up after finishing work)
 - Research agent Product Context not updated after product spec refinements (Research finished discovery but context was never refreshed)
-- Old media format references surviving after format decisions (e.g., "video clips," "AVFoundation," "clip stitching")
-- Removed features/disciplines still mentioned in agent context (e.g., "breathwork," "tvOS" if descoped)
+- Old media format or technology references surviving after format decisions (e.g., deprecated library names, old delivery mechanisms)
+- Removed features or modules still mentioned in agent context (features descoped from MVP, platforms dropped from support matrix)
 - Old pricing or tier assignments persisting after monetization changes
 
 ### Research File Cascade

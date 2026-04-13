@@ -1,10 +1,10 @@
 # App Store Intel Skill
 
-Mine app store data for real user feedback, download trends, and keyword opportunities in the fitness app category.
+Mine app store data for real user feedback, download trends, and keyword opportunities in your product category.
 
 ## Review Mining
 
-Search app store reviews for top competitors (Nike Training Club, FitOn, Down Dog, Freeletics, Fitbod, JEFIT, Peloton). Focus on:
+Search app store reviews for top competitors in your category. Focus on:
 
 - **1-2 star reviews**: What's broken? What makes people leave? Common complaints.
 - **4-5 star reviews**: What do people love? What keeps them paying?
@@ -16,23 +16,23 @@ Pattern-match across apps. If multiple competitors get the same complaint, that'
 
 Research what users search for on App Store / Play Store:
 
-- **High-volume terms**: "home workout", "no equipment workout", "15 minute workout", "daily routine", etc.
-- **Long-tail opportunities**: "chest and tricep workout at home", "morning stretch routine", "yoga for beginners no equipment"
+- **High-volume terms**: Core category keywords users search when looking for products like yours
+- **Long-tail opportunities**: Specific use-case queries (e.g., "[activity] for beginners", "[task] without [common requirement]")
 - **Gaps**: high search volume + low quality results = opportunity
 
 Use search trend tools, autocomplete analysis, and competitor keyword targeting.
 
 ## Download & Rating Benchmarks
 
-For top 10-15 fitness apps, gather: approximate downloads, average rating, number of ratings, last update date, monetization model. This creates a benchmark for what "good" looks like at launch and at scale.
+For top 10-15 competitors in your category, gather: approximate downloads, average rating, number of ratings, last update date, monetization model. This creates a benchmark for what "good" looks like at launch and at scale.
 
 ## Sentiment Themes
 
 Aggregate review data into themes:
 
-- Content quality (video production, instructor quality)
+- Content/experience quality
 - Personalization (or lack thereof)
-- Routine structure (too rigid, too random, no logic)
+- Structure and logic (too rigid, too random, no coherence)
 - Pricing fairness
 - Technical issues (crashes, sync problems, offline access)
 - Engagement mechanics (streaks, reminders, progress)

@@ -21,23 +21,23 @@ Use the standard request format in `knowledge-base/agent-requests.md` (see the c
 ### Common Requests by Target Agent
 
 **→ PM Agent**
-- Requirement clarification: "F-ONB-3 says 'fitness level' — what are the exact options and how do they map to algorithm input?"
-- Priority decisions: "Should the Plan tab free-tier view show a sample plan or just the upgrade banner?"
-- Scope questions: "Is in-app exercise search needed for MVP or v1.1?"
+- Requirement clarification: "F-ONB-3 says '[user attribute]' — what are the exact options and how do they map to algorithm input?"
+- Priority decisions: "Should the [secondary tab] free-tier view show a sample preview or just the upgrade banner?"
+- Scope questions: "Is in-app content search needed for MVP or v1.1?"
 
 **→ Content Agent**
 - Screen copy: "Need final onboarding copy for screens F-ONB-0 through F-ONB-6. Placeholders are in the wireframe — see [link to wireframe file]. Character limits noted per field."
-- Microcopy: "Need error messages for: network timeout, no exercises match filter, empty workout history."
+- Microcopy: "Need error messages for: network timeout, no items match filter, empty history view."
 - Tone check: "Is this rationale string too technical? 'Upper body recovery: 36h remaining' vs 'Your upper body is still recovering from yesterday.'"
 
 **→ Developer Agent**
-- Feasibility check: "Can we do a matched geometry transition from exercise card in Library to the detail view? Need to know before I spec the animation."
-- Technical constraint: "What's the maximum exercise animation file size we can load without frame drops? Affects my loading state design."
+- Feasibility check: "Can we do a matched geometry transition from content card in Library to the detail view? Need to know before I spec the animation."
+- Technical constraint: "What's the maximum media asset file size we can load without frame drops? Affects my loading state design."
 - Data availability: "Will the algorithm provide a 'confidence score' for routine recommendations? Want to show it in the rationale UI."
 
 **→ QA Agent**
 - Test guidance: "Here are the 5 states for Today screen — please include all in visual regression testing."
-- Edge case identification: "What happens if the user has 0 completed workouts but premium? Should Progress show empty state or onboarding prompt?"
+- Edge case identification: "What happens if the user has 0 completed sessions but premium? Should Progress show empty state or onboarding prompt?"
 
 ## How to Deliver Specs to Other Agents
 

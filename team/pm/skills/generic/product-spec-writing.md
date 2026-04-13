@@ -16,7 +16,7 @@ Before detailing features, define the product's core thesis in one sentence: "We
 ### 2. Target Users
 Summarized from research personas. For each persona:
 - Name and archetype
-- Demographics (age range, fitness level)
+- Demographics (age range, experience/skill level)
 - Core need (one sentence)
 - How the product serves them
 
@@ -84,7 +84,7 @@ Unknown ≠ unspecified. The spec must account for every surface the Developer a
 High-level release sequence (MVP → v1.1 → v1.2 → v2.0+). See roadmapping.md skill for detailed guidance.
 
 ## Writing Principles
-- **Be specific enough to build from.** "User profile" is not a spec. "User profile screen with fields for: goal selection (single-select from 5 options), fitness level (beginner/intermediate/advanced), height, weight, time preference (15/20/30/45/60 min)" is a spec.
+- **Be specific enough to build from.** "User profile" is not a spec. "User profile screen with fields for: goal selection (single-select from 5 options), experience level (beginner/intermediate/advanced), relevant attributes, time preference (15/20/30/45/60 min)" is a spec.
 - **Every feature has acceptance criteria.** If you can't define "done," the feature isn't ready to assign.
 - **Reference research files for context, don't duplicate findings.** Say "See competitive-analysis.md for positioning rationale" instead of copying the competitive analysis.
 - **Tables over paragraphs.** Feature lists, metrics, and comparisons are easier to scan in table format.

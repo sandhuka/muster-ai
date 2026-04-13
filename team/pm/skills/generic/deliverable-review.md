@@ -6,7 +6,7 @@ Methodology for reviewing agent handoffs filed in `knowledge-base/agent-requests
 ## Universal Review Checklist
 Run every item against every deliverable, regardless of producing agent.
 
-1. **Terminology match**: Grep the deliverable for terms that contradict `product-spec.md` and `foundational-assumptions.md`. Common drift patterns: "CDN" vs. "Supabase Storage", "video clips" vs. "looping animations", "clip stitching" vs. "asset pipeline".
+1. **Terminology match**: Grep the deliverable for terms that contradict `product-spec.md` and `foundational-assumptions.md`. Common drift patterns: old infrastructure names vs. current ones (e.g., "[old storage service]" vs. "[current storage service]"), deprecated media format names vs. current ones, removed pipeline terminology still appearing in specs.
 2. **Feature ID validation**: Every F-XXX-N referenced must exist in `product-spec.md`. A phantom ID means the agent hallucinated scope.
 3. **Acceptance criteria**: Compare against acceptance criteria in `current-sprint.md`. Every criterion must be addressed — partial coverage is a revision.
 4. **Cross-reference accuracy**: Spot-check at least 2 citations to other knowledge-base docs. Confirm the referenced section exists and says what the deliverable claims.

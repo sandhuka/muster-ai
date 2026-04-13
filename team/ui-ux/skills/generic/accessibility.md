@@ -38,12 +38,12 @@ Ensure every screen meets WCAG 2.1 AA and iOS accessibility requirements. See `t
 - [ ] Keyboard/Switch Control: All actions achievable without gestures
 - [ ] Screen reader: No "button button" or "image image" redundancy
 
-## Health/Fitness A11y Considerations
-- Workout timers must be accessible (announce time remaining via VoiceOver)
+## Domain-Specific A11y Considerations
+- Session timers must be accessible (announce time remaining via VoiceOver)
 - Progress charts need text alternatives summarizing the data
 - Haptic feedback should pair with visual + audio cues (not standalone)
-- Exercise demonstrations: provide text descriptions alongside images/animations
-- Exercise animation a11y: provide static thumbnail fallback when Reduce Motion is enabled — never force looping animation on users who've opted out
-- Rest timer VoiceOver announcements: announce time remaining at intervals (30s, 15s, 5s countdown), not continuously
-- Character persona a11y descriptions: Characters need `.accessibilityLabel()` descriptions when their images appear (e.g., "[Character] demonstrating [action]" not just "image")
-- Algorithm rationale strings: ensure rationale text on Today screen and Plan tab is readable by VoiceOver as a single coherent element, not fragmented across multiple accessibility containers
+- Media content demonstrations: provide text descriptions alongside images/animations
+- Looping or auto-playing media: provide static thumbnail fallback when Reduce Motion is enabled — never force looping animation on users who've opted out
+- Timer VoiceOver announcements: announce time remaining at intervals (30s, 15s, 5s countdown), not continuously
+- Character/mascot a11y descriptions: Brand characters need `.accessibilityLabel()` descriptions when their images appear (e.g., "[Character name] demonstrating [action]" not just "image")
+- Algorithm-generated text: ensure dynamically generated rationale or recommendation strings are readable by VoiceOver as a single coherent element, not fragmented across multiple accessibility containers

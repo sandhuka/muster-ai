@@ -12,8 +12,8 @@ The complete brand voice definition — personality, tone spectrum, do's/don'ts,
 - Short sentences (15-20 words average)
 - One idea per paragraph
 - Frontload the value — most important info first
-- **Positive framing**: Always tell the user what they *can* do, not what they can't. "You can change this in Settings" not "This can't be changed here." "Your routine uses bodyweight exercises" not "Equipment exercises aren't available." Reframe every negative into an action or a fact.
-- **Sentence case everywhere**: Buttons, headings, labels, menu items, banners — all sentence case. "See your routine" not "See Your Routine." Only exceptions: proper nouns ([Product Name]), tab names (Today, Plan, Library, Progress), and exercise names in lists/cards.
+- **Positive framing**: Always tell the user what they *can* do, not what they can't. "You can change this in Settings" not "This can't be changed here." "Your session uses [available options]" not "[Unavailable options] aren't available." Reframe every negative into an action or a fact.
+- **Sentence case everywhere**: Buttons, headings, labels, menu items, banners — all sentence case. "See your [session]" not "See Your [Session]." Only exceptions: proper nouns ([Product Name]), tab names, and content item names in lists/cards.
 
 ## Writing Conventions (Apple HIG-Aligned)
 
