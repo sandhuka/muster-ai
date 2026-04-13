@@ -33,6 +33,9 @@ Skills are in `team/ui-ux/skills/`. Read the relevant one(s) for your current ta
 - **ios-system-integration.md** — Notifications, widgets, Live Activities, Siri/Shortcuts, HealthKit, deep linking, system settings
 - **ios-copy-fitting-microstates.md** — Copy-fitting rules, microstate inventory, tone-safe placeholders, action label rules, Content agent handoff format
 
+## Project Skills
+Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.
+
 ## Reference Documents
 - Product Spec: knowledge-base/product-spec.md
 - Brand Guidelines: knowledge-base/brand-guidelines.md

@@ -28,6 +28,9 @@ Skills are in `team/content/skills/`. Read the relevant one(s) for your current 
 - **email-sequences.md** — Email copy: transactional emails, lifecycle sequences, subject line and body standards
 - **help-docs.md** — Help center content: FAQ structure, how-to articles, troubleshooting guides, support reply templates
 
+## Project Skills
+Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.
+
 ## Reference Documents
 - Product Spec: knowledge-base/product-spec.md
 - Brand Guidelines: knowledge-base/brand-guidelines.md

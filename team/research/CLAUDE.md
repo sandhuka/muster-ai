@@ -18,6 +18,9 @@ Skills are in `team/research/skills/generic/`. Read the relevant one(s) for your
 - **monetization.md** — Revenue models (freemium/subscription/hybrid), conversion benchmarks, retention/churn, paywall strategy
 - **science-validation.md** — Domain science validation, methodology research, evidence-based feature justification
 
+## Project Skills
+Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.
+
 ## Reference Documents
 - Product Brief: knowledge-base/research/product-brief.md
 - Change Log: knowledge-base/research/change-log.md

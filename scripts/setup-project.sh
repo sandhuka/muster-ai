@@ -59,6 +59,12 @@ cp muster/templates/CLAUDE.md CLAUDE.md
 echo "Copying knowledge-base templates..."
 cp -r muster/templates/knowledge-base .
 
+# Create agent-skills directories for product-specific skills
+echo "Creating agent-skills directories..."
+for agent in content developer legal marketing pm qa research ui-ux; do
+    mkdir -p "knowledge-base/agent-skills/$agent"
+done
+
 echo ""
 echo "Project '$PROJECT_NAME' created successfully."
 echo ""
@@ -68,5 +74,6 @@ echo "  2. Edit CLAUDE.md — fill in product name, description, tech stack"
 echo "  3. Edit knowledge-base/agent-context/*.md — fill in per-agent product context"
 echo "  4. Start with: @research Here's my product idea: [description]"
 echo "  5. After research, ask Root Claude to plan your first sprint"
+echo "  6. As you work, create product-specific skills in knowledge-base/agent-skills/<agent>/"
 echo ""
 echo "For more info, see muster/README.md and muster/multi-agent-system-overview.md"

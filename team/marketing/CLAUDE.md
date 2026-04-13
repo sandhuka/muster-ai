@@ -35,6 +35,9 @@ Skills are in `team/marketing/skills/generic/`. Read the relevant one(s) for you
 - **community-building.md** — Community strategy by growth stage, channel selection, ambassador program, UGC strategy, community health metrics
 - **launch-playbook.md** — Launch strategy: timeline, pre-launch, launch day, post-launch, metrics, contingency plans
 
+## Project Skills
+Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.
+
 ## Reference Documents
 - Product Spec: knowledge-base/product-spec.md
 - Brand Guidelines: knowledge-base/brand-guidelines.md

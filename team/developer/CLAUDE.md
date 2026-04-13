@@ -45,6 +45,9 @@ Skills are in `team/developer/skills/`. Skills are organized by platform subfold
 - **backend-deployment.md** — Environments, migration workflow, seed data, rollback
 - **backend-performance.md** — Query optimization, connection pooling, cold starts, caching, timeout budgets
 
+## Project Skills
+Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.
+
 ## Reference Documents
 - Product Spec: knowledge-base/product-spec.md
 - Brand Guidelines: knowledge-base/brand-guidelines.md

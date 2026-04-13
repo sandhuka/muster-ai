@@ -22,6 +22,11 @@
 - [Legal docs for implementation inputs — specific sections relevant to dev]
 - [Design patterns file for UI patterns]
 
+## Project Skills
+<!-- PM-MANAGED: Product-specific skill files that supplement muster methodology skills.
+     Agent reads these alongside the corresponding muster skill when working on a task.
+     List format: `knowledge-base/agent-skills/developer/<skill>.md` — one-line description -->
+
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->

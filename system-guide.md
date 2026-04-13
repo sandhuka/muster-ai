@@ -163,6 +163,42 @@ If the agent needs to own a directory (like Research owns `knowledge-base/resear
 2. Add an entry to the agent's brain file (`muster/team/<agent>/CLAUDE.md`) "Available Skills" section with a one-line description
 3. If the skill references other agents' skills or knowledge-base docs, verify those files exist
 
+### Product Skills (Project-Specific)
+
+Muster methodology skills (`team/<agent>/skills/`) are product-agnostic frameworks — they teach HOW to do the work. Product-specific strategies, keywords, competitor analysis, algorithm rules, and domain details live in the project repo at `knowledge-base/agent-skills/<agent>/`.
+
+#### When to Create a Product Skill
+- The content is specific to THIS product (competitor names, pricing, keyword lists, specific algorithms)
+- The corresponding muster methodology skill has placeholders that need filling for the product
+- The content changes with product strategy (not with methodology evolution)
+
+#### Product Skill vs. Agent-Context Content
+| Put in agent-skills/ | Put in agent-context/ |
+|---------------------|----------------------|
+| Filled-in growth strategy with real competitors and pricing | Product positioning summary (2-3 lines) |
+| Actual keyword clusters and SEO terms | Target user profile |
+| Product-specific test cases and algorithm rules | Tech stack overview |
+| Competitor counter-positioning playbook | Key references list |
+
+**Rule of thumb**: Agent-context = product summary (read every session, ~20 lines). Product skills = deep reference material (read on demand per task, full documents).
+
+#### Product Skill File Structure
+Product skills supplement muster methodology — they are complete standalone documents with strategic reasoning, not just extracted data points. An agent reading only the product skill should understand the strategy. An agent reading both the methodology skill and the product skill gets the full picture.
+
+```markdown
+# [Product Name] [Topic] — Product Specifics
+
+Supplements `muster/team/<agent>/skills/generic/<methodology-skill>.md` methodology.
+
+## [Sections matching the methodology skill's structure]
+[Filled-in content with strategic reasoning — not just values, but WHY these values]
+```
+
+#### Registration
+1. Create `knowledge-base/agent-skills/<agent>/<skill-name>.md`
+2. Add to the agent's agent-context file (`knowledge-base/agent-context/<agent>.md`) "Project Skills" section with a one-line description
+3. Name the product skill to match the muster skill it supplements (e.g., muster's `growth-strategy.md` → product's `growth-strategy.md`)
+
 ### Adding a New Feature/Vertical
 1. Research agent creates `knowledge-base/research/features/<feature>.md` with market context
 2. PM updates `knowledge-base/product-spec.md` with a new section for the feature
