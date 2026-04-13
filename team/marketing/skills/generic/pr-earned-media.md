@@ -7,19 +7,19 @@ Strategy for earning media coverage and building credibility. A single feature i
 
 | Tier | Outlets | Impact |
 |------|---------|--------|
-| 1 (Dream) | TechCrunch, The Verge, Wired, Fast Company | Massive downloads + permanent credibility |
-| 2 (Reachable) | 9to5Mac, MacStories, iMore, Lifehacker, Men's/Women's Health online | Moderate impact, realistic for indie app |
-| 3 (Consistent) | Fitness bloggers, wellness newsletters, indie app newsletters (Club MacStories, Dense Discovery), podcasts | Steady stream, high probability |
+| 1 (Dream) | [Top tech/general press — TechCrunch, The Verge, Wired, Fast Company] | Massive downloads + permanent credibility |
+| 2 (Reachable) | [Apple ecosystem press — 9to5Mac, MacStories, iMore] + [category-specific publications] | Moderate impact, realistic for indie app |
+| 3 (Consistent) | [Category bloggers], [niche newsletters], indie app newsletters (Club MacStories, Dense Discovery), [category podcasts] | Steady stream, high probability |
 | 4 (Local/Niche) | Local press, alumni publications, Indie Hackers, Hacker News | Niche reach, easy to get |
 
 ## Story Angles
 
-| Angle | Target Outlets | Pitch |
-|-------|---------------|-------|
-| Tech | TechCrunch, Verge, 9to5Mac | "AI fitness app uses 3D animation pipeline for infinite workout variety" |
-| Founder | Indie Hackers, Product Hunt, podcasts | "Solo founder builds AI fitness coach" |
-| Consumer | Men's Health, Lifehacker, wellness press | "This app eliminates workout decision fatigue" |
-| Apple ecosystem | 9to5Mac, MacStories, iMore | "Apple-native fitness app does what Fitness+ doesn't — personalize your daily routine" |
+| Angle | Target Outlets | Pitch Pattern |
+|-------|---------------|---------------|
+| Tech | Tech press | "[Your unique technical approach] — [why it's a genuine innovation, not a buzzword]" |
+| Founder | Indie Hackers, Product Hunt, podcasts | "Solo founder builds [one-line product description]" — the builder's journey |
+| Consumer | [Category publications], lifestyle press | "[The user pain point you eliminate]" — frame around the reader's life, not your features |
+| Apple ecosystem | 9to5Mac, MacStories, iMore | "[Apple-native app] does what [category incumbent] doesn't — [your unique capability]" |
 
 ## Press Kit
 Host at /press or Notion. Keep updated after every major release:
@@ -32,7 +32,7 @@ Host at /press or Notion. Keep updated after every major release:
 **Before pitching**: Read the writer's last 5 articles. Find the specific writer (not editor-in-chief). Find contact via Twitter bio, LinkedIn, or publication's contact page.
 
 **Structure (3 paragraphs max)**:
-- **Subject**: Specific, under 10 words. "AI fitness app assembles daily routines — no video library"
+- **Subject**: Specific, under 10 words. "[Product] [does unique thing] — [not what they'd expect]"
 - **P1 (Hook)**: Why this matters now. Tie to a trend they've covered
 - **P2 (Proof)**: Differentiators, traction, unique tech
 - **P3 (Ask)**: "Would you be interested in covering [Product Name]? Happy to provide press kit, demo, or interview"
@@ -50,10 +50,10 @@ Host at /press or Notion. Keep updated after every major release:
 | Podcast guest appearances | After launch | 1-2 hrs each (prep + recording) |
 | Conference talks | Post-10K users | Defer |
 
-Topics: algorithm design, AI in fitness, indie dev journey, data insights from user behavior.
+Topics: [your technical approach — how you built it], [your category's biggest misconception], indie dev journey, [data insights from user behavior — what surprised you].
 
 ## Media Monitoring
-- **Google Alerts**: "[Product Name]," competitor names, "AI workout app," "smart fitness app"
+- **Google Alerts**: "[Product Name]," [top 3-5 competitor names], "[your category] app," "[your differentiator] [category]"
 - **Positive coverage**: Share on all social within 24 hrs. Thank writer publicly + privately. Add "As seen in" to press kit
 - **Negative coverage**: Don't react publicly. If factually incorrect, email writer privately. If opinion, learn from it
 

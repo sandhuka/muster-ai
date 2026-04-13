@@ -14,6 +14,11 @@
 - **Success metrics**: [Marketing KPI targets — downloads, retention, conversion, rating]
 - **Premium messaging**: [What to highlight as premium benefits, what NOT to use as premium messaging — be explicit about retired messaging angles]
 
+## Project Skills
+<!-- PM-MANAGED: Product-specific skill files that supplement muster methodology skills.
+     Agent reads these alongside the corresponding muster skill when working on a task.
+     List format: `knowledge-base/agent-skills/marketing/<skill>.md` — one-line description -->
+
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->

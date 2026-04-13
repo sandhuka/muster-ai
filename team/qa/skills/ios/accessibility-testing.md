@@ -28,7 +28,7 @@ Required label quality by screen area:
 | Exercise thumbnail | "[Exercise name]" or "[Exercise name], [muscle group]" | "Image" or "thumbnail_42" |
 | Routine card CTA | "Start Workout" (the button title) | "Button" |
 | Streak badge | "5 day streak" (count + context) | "flame.fill" or "5" |
-| Smart badge | "Designed for You" | "sparkles" or "Badge" |
+| Smart badge | "[Your smart badge label]" | "sparkles" or "Badge" |
 | Selection card | "[Title], [Description], not selected" or "selected" | "Card" |
 | Chip in chip group | "[Option text], selected" or "not selected" | "Chip 1" |
 | Progress dots | "Step 3 of 6" | "dot dot dot" |
@@ -218,7 +218,7 @@ Use this per-screen checklist during system testing. Each row is a pass/fail che
 |-------|---------|-----------|
 | VoiceOver: Greeting | Greeting text and any subtitle read correctly. | |
 | VoiceOver: Streak badge | "N day streak" announced. Flame icon not separately focused. | |
-| VoiceOver: Smart badge | "Designed for You" announced. Not announced on premium tier or basic+ free sessions. | |
+| VoiceOver: Smart badge | "[Your smart badge label]" announced. Not announced on premium tier or basic+ free sessions. | |
 | VoiceOver: Routine card | Card info reads "routineType, duration, N exercises". CTA and card body are separate focus targets. | |
 | VoiceOver: Thumbnail strip | "N exercise thumbnails" group label. Individual thumbnails not separately focused (unless interactive). | |
 | VoiceOver: Tab bar | Each tab announces name + selected state. | |

@@ -15,6 +15,11 @@
 - **Jurisdiction**: [Target markets, applicable regulations — CCPA, GDPR, FTC, state laws]
 - **Team model**: [Solo founder / small team — affects employment and contractor law]
 
+## Project Skills
+<!-- PM-MANAGED: Product-specific skill files that supplement muster methodology skills.
+     Agent reads these alongside the corresponding muster skill when working on a task.
+     List format: `knowledge-base/agent-skills/legal/<skill>.md` — one-line description -->
+
 ## Agent-Specific Context
 <!-- Skill backlog, deferred compliance areas, pending legal questions -->
 

@@ -1,7 +1,7 @@
 # App Store Review Compliance
 
 ## Purpose
-Ensure the product passes Apple App Store review on first submission and maintains compliance through updates. Focused on health/fitness apps with auto-renewing subscriptions. See `team/legal/skills/compliance.md` for broader regulatory context. See `team/legal/skills/terms-privacy.md` for privacy policy and ToS requirements that Apple mandates.
+Ensure the product passes Apple App Store review on first submission and maintains compliance through updates. Focused on apps with auto-renewing subscriptions, with additional guidance for health/fitness apps. See `team/legal/skills/compliance.md` for broader regulatory context. See `team/legal/skills/terms-privacy.md` for privacy policy and ToS requirements that Apple mandates.
 
 ## Health & Fitness App Review (Guideline 5.1.3)
 
@@ -51,11 +51,11 @@ When free and premium tiers have different data practices:
 - In the App Store description, clarify which data applies to which tier
 - Common pitfall: listing only free-tier data practices and omitting cloud-sync data from premium tier
 
-### Common Data Types for Fitness Apps
+### Common Data Types
 | Data Type | Category | Typical Classification |
 |-----------|----------|----------------------|
 | Email address | Contact Info | Data Linked to You |
-| Fitness/exercise data | Health & Fitness | Data Linked to You (premium) / Data Not Collected (free, if local-only) |
+| [Domain-specific data — e.g., health/fitness, financial, educational] | [Relevant category] | Data Linked to You (cloud tier) / Data Not Collected (local-only tier) |
 | Purchase history | Purchases | Data Linked to You |
 | Product interaction | Usage Data | Data Linked to You |
 | Crash data | Diagnostics | Data Not Linked to You |

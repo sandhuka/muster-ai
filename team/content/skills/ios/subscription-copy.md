@@ -79,20 +79,20 @@ Always show both plans. Annual first (it is the better value and should be the d
 
 | Plan | Display Format | Example |
 |------|---------------|---------|
-| Annual | Price per year + price per month equivalent | "$49.99/year ($4.17/month)" |
-| Monthly | Price per month | "$7.99/month" |
+| Annual | Price per year + price per month equivalent | "$[annual_price]/year ($[monthly_equivalent]/month)" |
+| Monthly | Price per month | "$[monthly_price]/month" |
 
 ### Savings Framing
 
-- State the savings as a fact, not as urgency: "Save 48% with annual" or "$49.99/year -- that's $4.17/month"
-- Never: "Save 48% -- limited time!", "Best value!!", "Most popular"
+- State the savings as a fact, not as urgency: "Save [X]% with annual" or "$[annual_price]/year -- that's $[monthly_equivalent]/month"
+- Never: "Save [X]% -- limited time!", "Best value!!", "Most popular"
 - The annual plan can be visually highlighted (border, subtle badge) but the copy itself should be factual, not promotional
 
 ### Apple-Compliant Price Display
 
 - Always display the actual price charged by Apple (from StoreKit), never a hardcoded string. Prices vary by region and currency.
-- Show billing frequency with every price: "$7.99/month" not just "$7.99"
-- If showing a per-month equivalent for the annual plan, label it clearly: "$49.99/year ($4.17/month)" -- the parenthetical prevents confusion about what is actually charged
+- Show billing frequency with every price: "$[price]/month" not just "$[price]"
+- If showing a per-month equivalent for the annual plan, label it clearly: "$[annual_price]/year ($[monthly_equivalent]/month)" -- the parenthetical prevents confusion about what is actually charged
 
 ## Trial Language (Deferred to v1.0.1)
 
@@ -265,6 +265,6 @@ When a user's state changes, the first session after the change should surface a
 
 5. **Repetition demands rotation**: Paywall trigger 2 fires weekly. Any copy the user sees on a recurring basis needs a rotation pool (see `team/content/skills/notification-copy.md` for the variant strategy). The same message every Monday breeds annoyance, not conversion.
 
-6. **Dynamic values, never hardcoded prices**: All prices, dates, and periods come from StoreKit or the subscription state. Hardcoded "$7.99" in a string will be wrong in every non-US market and will break if pricing changes. Use placeholders that resolve at runtime.
+6. **Dynamic values, never hardcoded prices**: All prices, dates, and periods come from StoreKit or the subscription state. A hardcoded price string will be wrong in every non-US market and will break if pricing changes. Use placeholders that resolve at runtime.
 
 7. **No dark patterns**: No fake urgency ("Last chance!"), no guilt ("You'll lose everything"), no misdirection (making the dismiss button hard to find), no confirm-shaming ("No, I don't want smarter workouts"). These tactics violate brand voice, damage trust, and increasingly trigger App Store rejection.

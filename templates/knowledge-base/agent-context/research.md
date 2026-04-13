@@ -12,6 +12,11 @@
 - **Monetization**: [Revenue model, pricing]
 - **Team model**: [Solo founder / small team — affects feasibility research]
 
+## Project Skills
+<!-- PM-MANAGED: Product-specific skill files that supplement muster methodology skills.
+     Agent reads these alongside the corresponding muster skill when working on a task.
+     List format: `knowledge-base/agent-skills/research/<skill>.md` — one-line description -->
+
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->

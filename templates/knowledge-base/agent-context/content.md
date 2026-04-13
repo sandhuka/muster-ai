@@ -14,6 +14,11 @@
 - **Science/domain messaging**: [How to communicate credibility without jargon — "backed by" language guidelines]
 - **Monetization copy**: [What's gated, upgrade messaging context, what NOT to say. Include example strings and anti-examples]
 
+## Project Skills
+<!-- PM-MANAGED: Product-specific skill files that supplement muster methodology skills.
+     Agent reads these alongside the corresponding muster skill when working on a task.
+     List format: `knowledge-base/agent-skills/content/<skill>.md` — one-line description -->
+
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->

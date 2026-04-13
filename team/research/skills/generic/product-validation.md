@@ -17,8 +17,8 @@ Low confidence + high impact = do more research, don't dismiss. Document in `kno
 
 - **Technical**: Can we build it? Hardest challenges? Platform constraints? Dev complexity (S/M/L/XL)?
 - **Market**: Is the market big enough? Evidence of demand (search volume, competitor downloads, community signals)?
-- **Resource**: Minimum team to execute? Critical third-party dependencies (video hosting, CDN, exercise content)?
-- **Content**: Where do exercise videos come from? License, produce, or partner? This is the biggest cost/risk for this product.
+- **Resource**: Minimum team to execute? Critical third-party dependencies (content hosting, CDN, domain-specific assets)?
+- **Content**: Where does the core content/data come from? License, produce, or partner? Identify the biggest cost/risk driver for content-dependent products.
 
 ## MVP Scope
 
@@ -29,7 +29,7 @@ Principles: smallest version that tests core value prop. Cut features, not quali
 3. MVP = Must Have only
 4. Define success metrics for 30/60/90 days
 
-For this product, likely MVP: routine builder for 1-2 exercise types (e.g., strength + stretching), limited video library, basic weekly schedule with recovery logic. No social, no wearable integration, no AI — just smart static programming.
+Define the likely MVP scope for your product: core experience for 1-2 content categories, limited content library, basic personalization or scheduling logic. No social, no integrations, no advanced AI — just the core value proposition working reliably.
 
 ## Product Brief
 

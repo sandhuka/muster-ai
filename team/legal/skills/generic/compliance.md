@@ -7,7 +7,7 @@ Identify regulatory requirements that apply to the product and provide complianc
 
 ### GDPR (EU Users)
 - Lawful basis required for every data type (consent, legitimate interest, or contract)
-- Explicit consent required for health-adjacent data (fitness level, body metrics, workout history)
+- Explicit consent required for health-adjacent data ([your product's sensitive data types — e.g., health metrics, behavioral data, biometric data])
 - Rights: access, deletion, portability, rectification, objection — response within 30 days
 - Data Processing Agreements required with every third-party processor (backend providers, analytics, CDN)
 - Privacy by design: data minimization, purpose limitation, storage limitation
@@ -30,13 +30,14 @@ Identify regulatory requirements that apply to the product and provide complianc
 - ~75% of users opt out — design analytics to work without IDFA
 - ATT not required if all tracking is first-party and stays on-device
 
-## Fitness & Health App Regulations
+## Health & Wellness App Regulations
 
 ### FDA — General Wellness Exemption
-- Apps that promote general wellness (exercise, fitness, weight management) are **exempt** from medical device regulation
+- Apps that promote general wellness (exercise, fitness, weight management, mental health, nutrition) are **exempt** from medical device regulation
 - Exemption applies when the app: (1) makes only general wellness claims, (2) presents low risk to users, (3) does not diagnose, treat, cure, or prevent disease
-- **Triggers that void the exemption**: prescribing exercise for a medical condition, claiming to treat injury/illness, integrating clinical data (blood pressure, glucose) for treatment decisions, providing rehabilitation protocols
+- **Triggers that void the exemption**: prescribing activity for a medical condition, claiming to treat injury/illness, integrating clinical data (blood pressure, glucose) for treatment decisions, providing rehabilitation or therapeutic protocols
 - Monitor FDA digital health guidance updates annually — the boundary shifts
+- **If your app is NOT health/wellness**: skip this section. FDA general wellness exemption is only relevant to health-adjacent products
 
 ### FTC — Truthful Advertising
 - All product claims must be truthful, substantiated, and not misleading
@@ -50,11 +51,11 @@ Identify regulatory requirements that apply to the product and provide complianc
 
 ### Consumer Health Data Laws (Non-HIPAA)
 State laws increasingly regulate health-adjacent data from fitness apps even when HIPAA does not apply:
-- **Washington My Health My Data Act**: Treats workout history, body metrics, fitness goals, and exercise data as "consumer health data." Requires consent before collection, right to delete, restrictions on selling/sharing. Applies to any app with WA users — no revenue or size threshold.
+- **Washington My Health My Data Act**: Treats [health-adjacent behavioral data — e.g., workout history, body metrics, fitness goals, sleep data, nutrition logs] as "consumer health data." Requires consent before collection, right to delete, restrictions on selling/sharing. Applies to any app with WA users — no revenue or size threshold.
 - **Connecticut, Nevada, and emerging state laws**: Similar consumer health data protections expanding across states. Monitor legislative updates quarterly.
-- **FTC Health Breach Notification Rule**: Applies to non-HIPAA apps that handle health-related data. If a breach of body metrics, workout history, or fitness data occurs, the FTC requires notification to affected users, the FTC, and (if 500+ people) the media. Applies to the cloud-backed premium tier where data resides on Supabase servers.
+- **FTC Health Breach Notification Rule**: Applies to non-HIPAA apps that handle health-related data. If a breach occurs, the FTC requires notification to affected users, the FTC, and (if 500+ people) the media.
 
-**Practical impact**: The premium tier stores fitness level, body metrics, workout history, and goals on Supabase — all classified as consumer health data under these laws. Requires: (1) explicit consent at data migration (F-PRO-5), (2) a breach response plan for the Developer agent, (3) privacy policy language that meets state-specific requirements beyond CCPA.
+**Practical impact for cloud-backed tiers**: If your product stores health-adjacent data on remote servers, these laws apply. Requires: (1) explicit consent at the point data moves from local to cloud, (2) a breach response plan, (3) privacy policy language that meets state-specific requirements beyond CCPA.
 
 ## Two-Tier Architecture Compliance
 
@@ -73,11 +74,11 @@ When a product has fundamentally different data practices by tier (e.g., local-o
 ## Compliance Checklist for New Features
 
 - [ ] Does this feature collect new data types? → Update privacy policy and App Privacy labels
-- [ ] Does this feature make health/fitness claims? → Route through `fitness-claims-advertising.md` review
+- [ ] Does this feature make health/wellness claims? → Route through `fitness-claims-advertising.md` review
 - [ ] Does this feature share data with a new third party? → Execute DPA, update privacy policy
 - [ ] Does this feature target a new geography? → Check local privacy laws (GDPR, PIPEDA, LGPD, etc.)
 - [ ] Does this feature involve user-generated content? → Review content moderation and IP licensing needs
-- [ ] Does this feature integrate with health data sources (HealthKit, wearables)? → Re-assess FDA exemption and HIPAA applicability
+- [ ] Does this feature integrate with health data sources (HealthKit, wearables, EHR)? → Re-assess FDA exemption and HIPAA applicability
 - [ ] Does this feature change the free/premium data boundary? → Update two-tier privacy disclosures
 
 ## Principles

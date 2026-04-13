@@ -16,20 +16,20 @@ Use text-based flow diagrams with clear notation:
 ```
 [Screen Name]
     │
-    ├── action: "Tap Start Session"
+    ├── action: "Tap Start [Activity]"
     │   └── transition: fullScreenCover
-    │       └── [Active Session Screen]
-    │           ├── action: "Complete all exercises"
-    │           │   └── [Session Summary]
-    │           │       └── action: "Done" → dismiss → [Today Screen] (updated)
+    │       └── [Active [Activity] Screen]
+    │           ├── action: "Complete all items"
+    │           │   └── [[Activity] Summary]
+    │           │       └── action: "Done" → dismiss → [Home Screen] (updated)
     │           └── action: "Tap X / Quit"
-    │               └── confirm: "End session early?"
-    │                   ├── "End" → [Today Screen] (partial session saved)
-    │                   └── "Cancel" → [Active Session Screen]
+    │               └── confirm: "End [activity] early?"
+    │                   ├── "End" → [Home Screen] (partial progress saved)
+    │                   └── "Cancel" → [Active [Activity] Screen]
     │
-    ├── action: "Tap exercise card"
+    ├── action: "Tap content item card"
     │   └── transition: push
-    │       └── [Exercise Detail]
+    │       └── [Item Detail]
     │
     └── action: "Switch to Library tab"
         └── transition: tab switch
@@ -99,33 +99,33 @@ See `team/ui-ux/skills/ios-wireframe-methodology.md` Wireframe Completeness Chec
 For documenting a complete user journey (not just screen-to-screen flow):
 
 ```markdown
-## Journey: [Name] (e.g., "First Session Completion")
+## Journey: [Name] (e.g., "First [Core Activity] Completion")
 
 **Persona**: [Who — e.g., "Free-tier new user, first day"]
-**Entry point**: [How they arrive — e.g., "Onboarding complete, auto-transition to Today"]
-**Goal**: [What they want to achieve — e.g., "Complete their first session"]
-**Success metric**: [How we know it worked — e.g., "Session saved, summary shown"]
+**Entry point**: [How they arrive — e.g., "Onboarding complete, auto-transition to Home"]
+**Goal**: [What they want to achieve — e.g., "Complete their first [activity]"]
+**Success metric**: [How we know it worked — e.g., "[Activity] saved, summary shown"]
 
 ### Steps
-1. **Today screen** — User sees their first generated routine
+1. **Home screen** — User sees their first recommended [activity/content]
    - Emotional state: curious but uncertain
-   - Key element: prominent "Start Session" button, routine preview shows what's ahead
+   - Key element: prominent primary CTA, preview of what's ahead
    - Risk: overwhelm if too much info. Keep it simple.
 
-2. **Active session** — User performs exercises
+2. **Active [activity]** — User engages with the core experience
    - Emotional state: engaged, focused
-   - Key element: looping animation, clear rep counter, progress indicator
+   - Key element: progress indicator, clear current-step display, media/content playback
    - Risk: confusion about what to do next. Auto-advance with clear transitions.
 
-3. **Session complete** — Summary and encouragement
+3. **[Activity] complete** — Summary and encouragement
    - Emotional state: accomplished
-   - Key element: completion celebration, streak update, "what's next" preview
+   - Key element: completion celebration, streak/progress update, "what's next" preview
    - Risk: dead end. Always show what comes next.
 
 ### Edge Cases
-- User quits mid-workout → save partial session, resume option next time?
-- User's first routine has an exercise they can't do → how to skip/swap?
-- Network error during session (premium) → local fallback, sync later
+- User quits mid-[activity] → save partial progress, resume option next time?
+- User encounters a step they can't complete → how to skip/swap?
+- Network error during [activity] (premium) → local fallback, sync later
 ```
 
 ## Flow Completeness Checklist

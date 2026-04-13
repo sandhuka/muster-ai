@@ -9,7 +9,7 @@
 - [ ] Landing page with email capture ("Get early access" CTA). Target: 500-1K subscribers. Tools: Carrd ($19/yr) or Framer
 - [ ] Social accounts created and branded: Instagram, TikTok, Twitter/X. Consistent handle, app icon as profile pic, value prop in bio
 - [ ] Content seeding: 2-3 posts/week on TikTok + Instagram — "how it works" explainers, problem statement content, animation previews
-- [ ] Community seeding: engage in r/fitness, r/bodyweightfitness, r/homegym, r/flexibility, r/yoga. 100% value, zero self-promotion until launch
+- [ ] Community seeding: engage in [your category's top 3-5 subreddits/forums]. 100% value, zero self-promotion until launch
 - [ ] App Store editorial submission via App Store Connect (Apple needs 6-8 weeks lead time)
 
 ### Weeks 6-4: Momentum
@@ -19,7 +19,7 @@
 - [ ] Refine App Store listing based on beta feedback (coordinate with Content + UI/UX agents)
 
 ### Weeks 4-2: Finalize
-- [ ] App Store listing locked: screenshots, preview video, description, keywords. Legal review on any health claims
+- [ ] App Store listing locked: screenshots, preview video, description, keywords. Legal review on any [regulated domain] claims
 - [ ] Press kit hosted at /press or Notion: one-pager, hi-res screenshots, app icon, founder bio, key stats, demo video
 - [ ] Press outreach: pitch 20-30 journalists. Offer embargo to 1-2 top outlets
 - [ ] Email launch sequence drafted (Content agent): "launching [date]" → "it's live" → "how's your first week"

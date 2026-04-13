@@ -42,6 +42,9 @@ Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your curre
 - **product-evaluation.md** — Post-research go/no-go evaluation: founder parameter gathering, 6-dimension scoring rubric, verdict logic, evaluation output template, kill criteria
 - **sprint-retrospective.md** — Sprint retro process: failure identification, fix evaluation against context budget, trim discipline
 
+## Project Skills
+Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.
+
 ## Reference Documents
 - Product Spec: knowledge-base/product-spec.md
 - Brand Guidelines: knowledge-base/brand-guidelines.md

@@ -28,7 +28,7 @@ Every UI element has a character budget. Exceeding it breaks layouts, especially
 |---------|---------------|------------------------|-------|
 | Button label | 20 chars | 28 chars | Must fit one line, no wrapping |
 | Tab label | 10 chars | 14 chars | Single word preferred |
-| Badge | 18 chars | 25 chars | "Designed for You" = 16 chars |
+| Badge | 18 chars | 25 chars | e.g., "[Your smart badge]" — keep under budget |
 | Headline | 40 chars | 56 chars | One line on smallest supported device (iPhone SE) |
 | Supporting text | 80 chars | 112 chars | Max 2 lines |
 | Toast/snackbar | 60 chars | 84 chars | Must be readable in 3-second display |
@@ -70,7 +70,7 @@ Legal copy (disclaimers, subscription terms, privacy disclosures) must read in t
 - **Rewrite legal into product voice**: "[Product Name] provides fitness information for educational purposes. It is not a substitute for medical advice." reads better than "DISCLAIMER: This application is not intended to provide medical advice, diagnosis, or treatment."
 - **Same sentence structure**: Legal copy follows the same writing principles — short sentences, active voice, second person, sentence case
 - **Integrated, not appended**: Disclaimers are part of the screen design, not a block of small text bolted to the bottom
-- **Subscription terms as product information**: "Premium renews monthly at $7.99. Cancel anytime in iOS Settings." — this is helpful product copy that happens to satisfy Apple's disclosure requirement
+- **Subscription terms as product information**: "Premium renews monthly at $[price]. Cancel anytime in iOS Settings." — this is helpful product copy that happens to satisfy Apple's disclosure requirement
 - **Approval chain**: Legal agent approves the substance, Content agent approves the voice. Both must sign off before shipping.
 
 ## State-Based Copy
@@ -136,7 +136,7 @@ High-stakes actions require explicit confirmation.
 - Group labels in sentence case: Workout preferences, Account, Data, About
 
 ### Badge & Tag Copy
-- "Designed for You" — smart routine badge (free tier, first 2/week)
+- "[Your smart badge label]" — smart/personalized content badge (free tier, limited per period)
 - "Premium" — premium feature indicator
 - "Manual" — manually logged workout marker
 - Keep badges to 1-3 words — they're labels, not sentences

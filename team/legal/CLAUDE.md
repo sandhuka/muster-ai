@@ -18,6 +18,9 @@ Skills are in `team/legal/skills/generic/`. Read the relevant one(s) for your cu
 - **app-store-review.md** — Platform health/fitness app review, subscription compliance, privacy labels, account deletion, pre-submission checklist
 - **fitness-claims-advertising.md** — FTC fitness advertising rules, claim risk classification, hedging language, disclaimer placement, claim review workflow
 
+## Project Skills
+Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.
+
 ## Reference Documents
 - Product Spec: knowledge-base/product-spec.md
 - Brand Guidelines: knowledge-base/brand-guidelines.md

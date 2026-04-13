@@ -1,52 +1,54 @@
 # Science Validation Skill
 
-Validate the exercise science behind routine programming — this is the product's core credibility.
+Validate the domain science, methodology, or evidence base behind your product's core claims — this is the product's credibility foundation.
 
-## Muscle Group Pairing Logic
+## Core Methodology Validation
 
-Research and document evidence-backed workout splits for home training:
+Research and document evidence-backed approaches for your product's domain:
 
-- Push/pull/legs split adapted for bodyweight + minimal equipment
-- Upper/lower split (e.g., Mon chest+triceps, Tue back+biceps)
-- Antagonist pairing (chest/back, biceps/triceps) for efficiency
-- Which pairings are most effective for 15-30 min sessions?
+- What does the research say about the core methodology your product uses?
+- Which established frameworks, guidelines, or professional standards apply?
+- What are the accepted best practices from domain experts and professional bodies?
+- Where does your approach align with or diverge from established evidence?
 
-Source from: ACSM guidelines, NSCA position statements, peer-reviewed exercise science, certified trainer best practices.
+Source from: peer-reviewed research, professional organization guidelines, industry standards bodies, certified practitioner best practices.
 
-## Recovery Science
+## Scheduling and Sequencing Science
 
-- Minimum recovery time between muscle groups (typically 48-72 hrs)
-- Active recovery benefits (light stretching, yoga on rest days)
-- How to structure a week: which days to train, which to recover
-- Overtraining signals and how routine logic should prevent them
-- Stretching post-workout: what the evidence actually says (static vs dynamic, timing)
+If your product involves scheduling, sequencing, or pacing activities:
 
-## Exercise Programming for Short Sessions
+- What does research say about optimal frequency and spacing?
+- What are the evidence-based recovery or rest intervals?
+- How should a week/cycle be structured for best outcomes?
+- What signals indicate overuse, fatigue, or diminishing returns?
 
-- How many exercises fit in 15 min vs 30 min (accounting for transitions)?
-- Optimal set/rep or time-under-tension for 30-60 sec video segments
-- Exercise ordering within a routine (compound → isolation, large → small muscle)
-- Warm-up and cool-down minimums for injury prevention
+## Session Design Research
 
-## Cross-Discipline Integration
+If your product delivers structured sessions or experiences:
 
-Validate the science behind mixing modalities:
+- How many items/steps fit in sessions of various lengths (accounting for transitions)?
+- What is the optimal ordering of elements within a session?
+- What preparation and wind-down is needed for safety or effectiveness?
+- How does session structure vary by user skill level?
 
-- Strength + yoga: complementary or conflicting? When to schedule each?
-- Breathwork for recovery: evidence base for post-workout or rest-day breathwork
-- HIIT frequency: how many days/week before diminishing returns?
-- Stretching as standalone routine vs warm-up/cool-down component
+## Cross-Domain Integration
+
+If your product combines multiple disciplines or content types:
+
+- Are the disciplines complementary or conflicting? When should each be scheduled?
+- What is the evidence base for combining modalities?
+- How frequently should each modality appear to avoid diminishing returns?
 
 ## Content Production Research
 
-- What makes a good exercise video? (length, angle, cues, demonstrations)
-- Minimum viable video library size to support routine variety
-- Content sourcing options: produce in-house, license, partner with trainers, UGC
-- Cost benchmarks for exercise video production
+- What makes high-quality content in your domain? (format, length, presentation, cues)
+- Minimum viable content library size to support variety and engagement
+- Content sourcing options: produce in-house, license, partner with experts, user-generated
+- Cost benchmarks for content production in your category
 
 ## Output Format
 Document findings in `knowledge-base/research/science-validation.md` using the standard research doc structure:
 - **Current State**: 5-10 line summary
-- **Findings**: Exercise science evidence, programming principles, credibility sources
+- **Findings**: Domain science evidence, methodology principles, credibility sources
 - **Open Questions**: What needs further investigation
 - **History**: Dated one-liner entries for major updates

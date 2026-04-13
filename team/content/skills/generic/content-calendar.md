@@ -12,15 +12,19 @@ Define content types, publishing cadence, content pillars, and the per-piece wor
 - Help/FAQ documentation: updated with each feature change
 
 ## Content Pillars
-1. **Science-backed routines**: How the algorithm works, recovery science, progressive overload logic, periodization explained simply. Positions the product as the intelligent choice
-2. **Multi-discipline training**: Benefits of combining strength + yoga + stretching, how disciplines complement each other, cross-training for injury prevention. Differentiator messaging
-3. **Recovery & adaptability**: Why rest days matter, how the app adjusts to missed days / schedule changes / equipment changes, flexibility as a feature not a bug. Trust-building
-4. **Time-efficient fitness**: 15-30 minute routines for busy professionals, no-gym-needed workouts, fitting movement into a packed schedule. Speaks directly to the target persona
+Define 3-5 pillars that map to your product's differentiators and your audience's pain points:
+
+1. **[Core intelligence / methodology]**: How your product works under the hood, the science or logic behind decisions. Positions the product as the intelligent choice — transparency builds trust
+2. **[Primary differentiator]**: The capability that separates you from competitors. Every piece in this pillar reinforces why your approach is better
+3. **[Adaptability / flexibility]**: How the product adjusts to the user's real life — schedule changes, missed sessions, changing needs. Trust-building — shows the product is smart, not rigid
+4. **[Target persona's constraint]**: Content that speaks directly to your core user's biggest limitation (time, budget, access, knowledge). Shows you understand their life, not just their category
+
+**Pillar test**: Each pillar should (a) map to a product differentiator, (b) address a real user pain point, and (c) generate 10+ article ideas without straining.
 
 ## In-App Copy Cadence
-- **Algorithm rationale strings**: Refresh templates quarterly to avoid repetition. Maintain a pool of 8-10 variants per rationale type (see brand-voice.md for templates)
-- **Notification copy rotation**: Rotate notification messages monthly. Keep a bank of 15-20 variants per notification type (routine ready, streak reminder, weekly summary). Never repeat the same message back-to-back
-- **Seasonal copy updates**: Refresh onboarding welcome copy, Today screen greeting, and marketing copy for seasonal moments (New Year, spring, back-to-routine fall)
+- **[Product intelligence] rationale strings**: Refresh templates quarterly to avoid repetition. Maintain a pool of 8-10 variants per rationale type (see brand-voice.md for templates)
+- **Notification copy rotation**: Rotate notification messages monthly. Keep a bank of 15-20 variants per notification type ([daily content ready], streak reminder, weekly summary). Never repeat the same message back-to-back
+- **Seasonal copy updates**: Refresh onboarding welcome copy, home screen greeting, and marketing copy for your category's seasonal moments
 
 ## Planning Cadence
 - Monthly: Theme selection, topic planning, keyword research
@@ -30,14 +34,15 @@ Define content types, publishing cadence, content pillars, and the per-piece wor
 ## Workflow Per Content Piece
 1. **Brief**: Topic, target keyword, audience segment, goal (traffic/engagement/conversion), format
 2. **Draft**: Write following brand voice guidelines (`knowledge-base/brand-guidelines.md`)
-3. **Review**: Check accuracy, tone, SEO optimization, legal compliance for health claims
+3. **Review**: Check accuracy, tone, SEO optimization, legal compliance for [regulated domain] claims
 4. **Approve**: PM or founder sign-off on strategy-aligned pieces
 5. **Publish**: Schedule with metadata, alt text, structured data
 6. **Analyze**: Review performance at 7 days and 30 days, iterate
 
 ## Seasonal Calendar
-- January: New Year goals, fresh starts, "new routine" messaging
-- March-April: Spring refresh, outdoor movement integration
-- May-June: Mid-year check-in, summer consistency
-- September: Back-to-routine, fall reset, discipline variety push
-- November-December: Year review, holiday maintenance routines, gift subscriptions
+Map your category's demand cycles (see Marketing's `seasonal-cultural-marketing.md`) to content themes:
+- **[Peak month 1]**: [Category-specific New Year / resolution / fresh start angle]
+- **[Spring]**: [Refresh/reset theme relevant to your product]
+- **[Summer]**: [Consistency / portability / lighter engagement angle]
+- **[Peak month 2]**: [Back-to-routine / fall reset / recommitment angle]
+- **[Holiday season]**: Year-in-review content, gift subscriptions, prep peak-month content in advance

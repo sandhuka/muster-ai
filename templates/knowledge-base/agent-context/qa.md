@@ -20,6 +20,11 @@
 <!-- Flag custom UI bypassing available components. Flag missing component requests. -->
 <!-- Component conformance check protocol if applicable -->
 
+## Project Skills
+<!-- PM-MANAGED: Product-specific skill files that supplement muster methodology skills.
+     Agent reads these alongside the corresponding muster skill when working on a task.
+     List format: `knowledge-base/agent-skills/qa/<skill>.md` — one-line description -->
+
 ## Current Tasks
 <!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
 <!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->
