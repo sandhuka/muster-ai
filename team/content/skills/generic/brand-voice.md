@@ -61,11 +61,11 @@ All copy must follow inclusive language standards across every surface:
 | "Lame" | Remove or rephrase |
 | "Crippling" | "Significant" or "severe" |
 
-- Exception: exercise instruction copy ("Look forward", "Stand tall") uses physical language appropriately — these are literal movement cues, not metaphors
+- Exception: domain-specific instruction copy (e.g., physical movement cues, spatial directions) uses literal language appropriately — these are instructions, not metaphors
 
 ### Cultural Sensitivity
 - No idioms, slang, or culturally specific references in UI copy (they don't translate and exclude non-native speakers)
-- No food metaphors for body types or fitness levels
+- No food metaphors for body types or skill levels
 - No assumptions about family structure, living situation, or economic access in marketing copy
 
 ## Localization-Ready Writing
@@ -81,68 +81,67 @@ Even before translating, write copy that can be translated cleanly:
 
 ## Per-Surface Microcopy Guide
 
-### Exercise Naming
-- Use the exercise's common name, not anatomical terminology: "Push-Up" not "Horizontal Adduction Press"
-- Capitalize exercise names as proper nouns in lists/cards: "Warrior II", "Plank Hold"
-- In sentences, lowercase: "your routine includes a plank hold and lunges"
+### Content Item Naming
+- Use common names your users would recognize, not internal or technical terminology
+- Capitalize content item names as proper nouns in lists/cards
+- In sentences, lowercase: "your [session] includes [content items]"
+- Consistency rule: one canonical name per content item across all surfaces
 
-### Rest Timer Language
-- Countdown: just the number, large and centered. No extra words
-- Rest prompt: "Rest — [duration]" (e.g., "Rest — 30 seconds")
-- Next exercise teaser during rest: "Next: [Exercise Name]" with thumbnail
+### [Product Intelligence] Rationale Strings
+If your product explains its decisions to users, define template patterns for each rationale type:
+- **Category focus**: "Today: [category] focus — [reason]." → Explains why the app chose this category today
+- **Constraint-based**: "[Choice] today — [alternative] needs [condition]." → Explains scheduling constraints
+- **Schedule-aware**: "[Duration]-minute [category] — fits your [day] window." → Connects to user's time
+- **Adaptation**: "Adjusted: [what changed] because [reason]." → Explains reactive changes
 
-### Algorithm Rationale Strings
-Template patterns for the Today screen and Plan tab:
-- Discipline focus: "Today: [discipline] focus — [reason]." → "Today: strength focus — your flexibility sessions are on track."
-- Recovery-based: "[Muscle group] today — [recovering group] needs [time]." → "Upper body today — your legs need 48 hours."
-- Schedule-aware: "[Duration]-minute [discipline] — fits your [day] window." → "22-minute strength — fits your Tuesday window."
-- Adaptation: "Adjusted: [what changed] because [reason]." → "Adjusted: yoga instead of strength because you trained upper body yesterday."
+**Tone**: Informative, not prescriptive. The product explains its reasoning briefly and confidently — "why" before "what."
 
 ### Upgrade Prompt Patterns
 Always informative, never pushy. Lead with the specific benefit. See `team/content/skills/subscription-copy.md` for full paywall screen methodology and `team/content/skills/notification-copy.md` for recurring prompt rotation:
-- "Smart weekly planning uses your full workout history. Unlock it."
-- "Recovery tracking knows when each muscle group is ready. See yours."
-- "Your routine syncs across devices with premium."
+- "[Premium feature] uses your full [data history]. Unlock it."
+- "[Premium insight] knows when [personalized condition]. See yours."
+- "Your [content] syncs across devices with premium."
 - Never: "Upgrade now!", "Go PRO!", "Don't miss out!"
+- Every upgrade prompt must reference a specific premium feature the user just encountered or would benefit from *right now*. Generic "go premium" prompts are banned.
 
 ### Error State Patterns
 Calm, solution-oriented, brand-consistent. See `team/content/skills/ux-writing.md` for the full error state framework by error type:
-- Network: "Couldn't load your routine. Check your connection and try again."
+- Network: "Couldn't load your [content]. Check your connection and try again."
 - Generic: "Something didn't work. Tap to retry."
 - Data: "Your data wasn't saved. Try again in a moment."
 - Never: "Oops!", "Uh oh!", "Error 500", technical jargon
 
-## Character Persona Usage
-Character personas are defined in `knowledge-base/brand-guidelines.md`. Full bios, disciplines, and personality traits live there.
+## Character / Mascot Persona Usage
+If your brand uses character personas or mascots, define them in `knowledge-base/brand-guidelines.md`.
 
 ### When to use character names
-- Content detail views: "[Character]'s pick: [content variations]"
+- Content detail views where personality adds warmth
 - Category introduction during onboarding
 - Content marketing and blog posts where personality adds value
 - App Store screenshots / marketing materials
 
 ### When to use generic references
-- Algorithm rationale strings (describe the rationale, don't attribute it to a character)
+- [Product intelligence] rationale strings (describe the rationale, don't attribute it to a character)
 - Error states, system messages, settings
 - Any context where forcing a character name feels artificial
 - Notifications (keep short and direct)
 
 ## Legal Coordination
-Health claim boundaries apply to all copy surfaces:
-- Use qualified language: "may help improve", "designed to support", "science-backed"
-- Never: "will improve", "guarantees results", "scientifically proven"
-- Fitness disclaimers must appear in onboarding and settings — not hidden
+If your product operates in a regulated domain (health, finance, education, etc.), claim boundaries apply to all copy surfaces:
+- Use qualified language: "may help improve", "designed to support", "[evidence-based term]"
+- Never: "will improve", "guarantees results", "scientifically proven" (unless you have peer-reviewed evidence)
+- [Domain] disclaimers must appear in onboarding and settings — not hidden
 - When in doubt, flag copy to the Legal agent for review before shipping
 
 ## Voice Principles
 
 1. **Brand guidelines is the source of truth**: `knowledge-base/brand-guidelines.md` defines the voice. This skill file applies it to specific surfaces. If there's a conflict, the guidelines win.
 
-2. **Explain the "why"**: The product's differentiator is that it tells users why their routine looks the way it does. Every rationale string, notification, and insight should answer "why" before "what."
+2. **Explain the "why"**: If your product makes decisions for users (recommendations, scheduling, curation), every rationale string, notification, and insight should answer "why" before "what." Transparency builds trust.
 
-3. **Qualified health language always**: "May help improve", "designed to support", "science-backed" — never "will improve" or "guarantees results." Legal coordination is not optional for health-adjacent copy.
+3. **Qualified language in regulated domains**: If your product touches health, finance, education, or other regulated areas — "may help improve", "designed to support" — never "will improve" or "guarantees results." Legal coordination is not optional.
 
-4. **Concise over enthusiastic**: The Efficient Professional persona respects intelligence and hates filler. One clear sentence beats three excited ones. If it reads like a fitness influencer wrote it, rewrite it.
+4. **Concise over enthusiastic**: Respect the user's intelligence. One clear sentence beats three excited ones. If it reads like a category influencer wrote it, rewrite it.
 
 5. **Positive framing over negative**: Tell the user what they can do, what's available, what's next — not what's missing, locked, or unavailable. Negative framing creates frustration; positive framing creates momentum.
 
