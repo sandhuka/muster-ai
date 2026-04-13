@@ -63,7 +63,27 @@ cp -r muster/templates/knowledge-base .
 echo "Creating agent-skills directories..."
 for agent in content developer legal marketing pm qa research ui-ux; do
     mkdir -p "knowledge-base/agent-skills/$agent"
+    touch "knowledge-base/agent-skills/$agent/.gitkeep"
 done
+
+# Remove .DS_Store files copied from templates
+find . -name ".DS_Store" -delete 2>/dev/null || true
+
+# Create .gitignore
+cat > .gitignore << 'GITIGNORE'
+.DS_Store
+*.swp
+*.swo
+*~
+GITIGNORE
+
+# Initial commit with all scaffolded files
+echo "Creating initial commit..."
+git add -A
+git commit -m "Initial project setup with Muster AI framework
+
+Scaffolded from muster/templates/ via setup-project.sh.
+Includes agent bootloaders, knowledge-base templates, and project CLAUDE.md."
 
 echo ""
 echo "Project '$PROJECT_NAME' created successfully."
