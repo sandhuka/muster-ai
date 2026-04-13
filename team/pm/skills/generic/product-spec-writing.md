@@ -33,23 +33,23 @@ For each feature:
 | Effort estimate | S / M / L / XL |
 | Dependencies | Other features or agent outputs this requires |
 
-Group features by functional area (e.g., Onboarding, Workout Engine, Content, Progress Tracking).
+Group features by functional area (e.g., Onboarding, Core Engine, Content, Analytics/Progress).
 
 **Algorithm-driven features** (e.g., routine generation, smart scheduling) require deeper specification beyond the standard feature table. For these, also define: (1) an inputs table listing every variable, its source, and allowed values, (2) constraint rules the algorithm must enforce, with explicit fallback logic for when constraints can't be satisfied, and (3) an output specification describing what the algorithm produces. If QA cannot write a test case for every rule, the spec is not specific enough.
 
 ### 4. Content Requirements
-- Exercise library specifications (count, disciplines, difficulty levels)
-- Clip format and technical specs (resolution, duration ranges, file format)
-- Character details (personas, visual style, which discipline each covers)
+- Content library specifications (count, categories, difficulty levels)
+- Asset format and technical specs (resolution, duration ranges, file format)
+- Character/persona details (personalities, visual style, category assignments)
 - Content pipeline requirements (production rate, review process)
 
-**Content-driven products** (where content feeds an algorithm) require additional depth: (1) a metadata schema defining every field each content item must carry (discipline, difficulty, muscle groups, equipment, duration, etc.), (2) minimum coverage requirements per constraint combination the algorithm will encounter — audit the content plan against these before production begins, and (3) persona-discipline mapping validated against the algorithm to ensure no constraint combination yields an empty result set.
+**Content-driven products** (where content feeds an algorithm) require additional depth: (1) a metadata schema defining every field each content item must carry (category, difficulty, tags, attributes, duration, etc.), (2) minimum coverage requirements per constraint combination the algorithm will encounter — audit the content plan against these before production begins, and (3) persona-category mapping validated against the algorithm to ensure no constraint combination yields an empty result set.
 
 ### 5. Technical Constraints
-- Platform (iOS-first, Native Swift)
+- Platform and language (e.g., iOS-first with Native Swift, cross-platform with React Native)
 - Tech stack decisions and rationale
-- Performance requirements (app launch time, animation rendering smoothness, offline capability)
-- Device support matrix (minimum iOS version, device models)
+- Performance requirements (app launch time, rendering smoothness, offline capability)
+- Device support matrix (minimum OS version, device models)
 
 ### 6. Monetization Model
 - Tier structure (free vs. premium)
@@ -57,7 +57,7 @@ Group features by functional area (e.g., Onboarding, Workout Engine, Content, Pr
 - Paywall logic (what's free, what's gated, when the paywall appears)
 - Trial mechanics if applicable
 
-**Freemium products** require deliberate gate design, not afterthought pricing. For each feature, explicitly classify it as Always Free, Soft Gate (previewed then locked), or Hard Gate (premium only). Define paywall trigger rules specifying exactly when and where the paywall appears — tied to value milestones (e.g., after N completed routines), not arbitrary blocks. Spec upgrade moment CTAs at emotional high points (streak completions, post-workout screens) rather than frustration points. The free tier should create a retention habit before conversion pressure begins.
+**Freemium products** require deliberate gate design, not afterthought pricing. For each feature, explicitly classify it as Always Free, Soft Gate (previewed then locked), or Hard Gate (premium only). Define paywall trigger rules specifying exactly when and where the paywall appears — tied to value milestones (e.g., after N completed sessions), not arbitrary blocks. Spec upgrade moment CTAs at emotional high points (milestone completions, post-session screens) rather than frustration points. The free tier should create a retention habit before conversion pressure begins.
 
 ### 7. Success Metrics
 From the product brief, with measurement approach added:
@@ -89,7 +89,7 @@ High-level release sequence (MVP → v1.1 → v1.2 → v2.0+). See roadmapping.m
 - **Reference research files for context, don't duplicate findings.** Say "See competitive-analysis.md for positioning rationale" instead of copying the competitive analysis.
 - **Tables over paragraphs.** Feature lists, metrics, and comparisons are easier to scan in table format.
 - **Separate what from how.** Product spec defines WHAT to build. Architecture decisions (HOW) go in `knowledge-base/architecture.md` and are owned by Developer.
-- **Write through the persona lens.** Before assigning a feature its priority tier, ask: does the Efficient Professional (28–45, 15–30 min window, decision fatigue) actually need this at launch? "Nice to have for someone" is not a Must Have. Run every feature through the primary persona before locking its tier.
+- **Write through the persona lens.** Before assigning a feature its priority tier, ask: does your primary persona actually need this at launch? "Nice to have for someone" is not a Must Have. Run every feature through the primary persona before locking its tier.
 - **The spec is a living document.** When a feature changes, update `product-spec.md` first, then cascade to affected agent-context files (`knowledge-base/agent-context/<agent>.md`). Never let an agent's context be more current than the spec it references.
 
 ## Output

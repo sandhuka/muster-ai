@@ -89,7 +89,7 @@ The decision log is the PM's tool. Agents should never need to read the full dec
 Agent startup configs should NOT tell agents to read all their skills. They should read the 1-2 skill files relevant to their CURRENT task. The skill index in CLAUDE.md tells them which to pick.
 
 ### Rule 6: Framework Changes Must Update System Guide Templates
-When you change how agents structurally operate (startup patterns, CLAUDE.md structure, skill requirements), you must also update the templates in `knowledge-base/system-guide.md`. The live instances and the templates must always match. See `knowledge-base/system-guide.md` → "Framework Change Protocol" for the build checklist, then run the **System Verification Checklist** (same file, next section) to catch gaps across all 8 layers: reference integrity, skill coverage, template sync, ownership, context budget, growth caps, duplication, and failure modes.
+When you change how agents structurally operate (startup patterns, CLAUDE.md structure, skill requirements), you must also update the templates in `system-guide.md`. The live instances and the templates must always match. See `system-guide.md` → "Framework Change Protocol" for the build checklist, then run the **System Verification Checklist** (same file, next section) to catch gaps across all 8 layers: reference integrity, skill coverage, template sync, ownership, context budget, growth caps, duplication, and failure modes.
 
 ## Communication Queue Monitoring
 

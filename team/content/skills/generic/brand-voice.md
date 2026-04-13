@@ -48,7 +48,7 @@ All copy must follow inclusive language standards across every surface:
 ### Gender
 - Use "they/them" for singular references when gender is unknown
 - Avoid gendered terms: "everyone" not "guys", "team" not "manpower"
-- Character personas (Sarah, Candy, Ayan) use their established pronouns — this is the only context where gendered language is appropriate
+- Character personas use their established pronouns — this is the only context where gendered language is appropriate
 
 ### Ability
 - Avoid ableist language in UI and marketing:
@@ -113,16 +113,16 @@ Calm, solution-oriented, brand-consistent. See `team/content/skills/ux-writing.m
 - Never: "Oops!", "Uh oh!", "Error 500", technical jargon
 
 ## Character Persona Usage
-Three personas — Sarah (strength), Candy (stretching), Ayan (yoga). Full bios in `knowledge-base/brand-guidelines.md` Section 4.
+Character personas are defined in `knowledge-base/brand-guidelines.md`. Full bios, disciplines, and personality traits live there.
 
 ### When to use character names
-- Exercise detail views: "Sarah's pick: Push-up variations"
-- Discipline introduction during onboarding
+- Content detail views: "[Character]'s pick: [content variations]"
+- Category introduction during onboarding
 - Content marketing and blog posts where personality adds value
 - App Store screenshots / marketing materials
 
 ### When to use generic references
-- Algorithm rationale strings ("Upper body focus today" not "Sarah says upper body today")
+- Algorithm rationale strings (describe the rationale, don't attribute it to a character)
 - Error states, system messages, settings
 - Any context where forcing a character name feels artificial
 - Notifications (keep short and direct)

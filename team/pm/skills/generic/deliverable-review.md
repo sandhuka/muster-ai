@@ -1,7 +1,7 @@
 # Deliverable Review Skill
 
 ## Purpose
-Methodology for reviewing agent handoffs filed in `knowledge-base/agent-requests.md`. Complements `agent-management.md` (stale thresholds, revision escalation) and `decision-making.md` (accept/reject autonomy). The agent's pre-handoff self-review checklist lives in `knowledge-base/system-guide.md` — this skill is the PM's independent verification.
+Methodology for reviewing agent handoffs filed in `knowledge-base/agent-requests.md`. Complements `agent-management.md` (stale thresholds, revision escalation) and `decision-making.md` (accept/reject autonomy). The agent's pre-handoff self-review checklist lives in `system-guide.md` — this skill is the PM's independent verification.
 
 ## Universal Review Checklist
 Run every item against every deliverable, regardless of producing agent.

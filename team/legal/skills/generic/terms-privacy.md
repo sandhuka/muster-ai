@@ -53,9 +53,9 @@ Standard disclaimers required for a fitness/health-adjacent app:
 ## AI-Generated Content IP
 Considerations for apps that use AI-generated visual content:
 
-- **Ownership**: Clarify in ToS that all exercise animations, character designs, and 3D content are proprietary assets owned by the company. Users are granted a limited, non-exclusive, non-transferable license to view content within the app
-- **Character personas as brand assets**: Sarah, Candy, and Ayan character designs and names should be treated as brand assets. Consider trademark registration for character names if they become part of marketing identity
-- **User license scope**: Users may not download, screenshot for redistribution, screen-record for sharing, or create derivative works from the exercise animations. Personal use only
+- **Ownership**: Clarify in ToS that all content assets (animations, character designs, visual content) are proprietary assets owned by the company. Users are granted a limited, non-exclusive, non-transferable license to view content within the app
+- **Character personas as brand assets**: Character designs and names should be treated as brand assets. Consider trademark registration for character names if they become part of marketing identity
+- **User license scope**: Users may not download, screenshot for redistribution, screen-record for sharing, or create derivative works from the content assets. Personal use only
 - **AI generation disclosure**: No legal requirement to disclose AI generation method to end users currently, but monitor evolving regulations. Transparency is a brand value — consider voluntary disclosure if it supports brand positioning
 
 ## Apple App Store Requirements

@@ -16,7 +16,7 @@ All inter-agent communication happens through files in `knowledge-base/`:
 ## How to Request Input from Other Agents
 
 ### Request Format
-Use the standard request format in `knowledge-base/agent-requests.md` (see the comment block at the top of that file for the template). Key fields: `Type: request`, `From: UI/UX`, `To: [target agent]`, `Status: open`. See `knowledge-base/system-guide.md` → Agent Communication Protocol for the full format specification.
+Use the standard request format in `knowledge-base/agent-requests.md` (see the comment block at the top of that file for the template). Key fields: `Type: request`, `From: UI/UX`, `To: [target agent]`, `Status: open`. See `system-guide.md` → Agent Communication Protocol for the full format specification.
 
 ### Common Requests by Target Agent
 
@@ -50,7 +50,7 @@ Place completed specs in `knowledge-base/design-specs/` with naming convention:
 - `[flow-name]-user-flow.md` (e.g., `onboarding-user-flow.md`)
 
 ### Notifying Downstream Agents
-For deliverable handoffs (wireframes, specs, flows), use the handoff entry format in `knowledge-base/agent-requests.md`. See `knowledge-base/system-guide.md` → Agent Communication Protocol for the full protocol.
+For deliverable handoffs (wireframes, specs, flows), use the handoff entry format in `knowledge-base/agent-requests.md`. See `system-guide.md` → Agent Communication Protocol for the full protocol.
 
 After placing the spec file, create a handoff entry in `knowledge-base/agent-requests.md` with the deliverable path, and list all reviewers who need to consume the spec (e.g., Developer for implementation, Content for copy, QA for test cases).
 

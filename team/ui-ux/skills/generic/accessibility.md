@@ -45,5 +45,5 @@ Ensure every screen meets WCAG 2.1 AA and iOS accessibility requirements. See `t
 - Exercise demonstrations: provide text descriptions alongside images/animations
 - Exercise animation a11y: provide static thumbnail fallback when Reduce Motion is enabled — never force looping animation on users who've opted out
 - Rest timer VoiceOver announcements: announce time remaining at intervals (30s, 15s, 5s countdown), not continuously
-- Character persona a11y descriptions: Sarah, Candy, and Ayan need `.accessibilityLabel()` descriptions when their images appear ("Sarah demonstrating push-up" not just "exercise image")
+- Character persona a11y descriptions: Characters need `.accessibilityLabel()` descriptions when their images appear (e.g., "[Character] demonstrating [action]" not just "image")
 - Algorithm rationale strings: ensure rationale text on Today screen and Plan tab is readable by VoiceOver as a single coherent element, not fragmented across multiple accessibility containers
