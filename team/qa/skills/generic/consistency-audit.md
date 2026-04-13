@@ -1,7 +1,7 @@
 # Cross-File Consistency Audit
 
 ## Purpose
-Systematic cross-file validation at sprint boundaries. Catches inconsistencies between product-spec, architecture, design specs, agent CLAUDE.md files, and legal docs before they become implementation bugs.
+Systematic cross-file validation at sprint boundaries. Catches inconsistencies between product-spec, architecture, design specs, agent-context files, and legal docs before they become implementation bugs.
 
 ## When to Run
 - Before any sprint where Developer will consume knowledge-base files for new implementation
@@ -39,7 +39,7 @@ For each design spec the Developer will consume in the upcoming sprint:
 - Verify TA component references exist in `design-system-reference.md`
 
 ### 6. Consumer Agent Task Reference Accuracy
-Read the consuming agent's CLAUDE.md (usually Developer). For each current task:
+Read the consuming agent's agent-context file (`knowledge-base/agent-context/<agent>.md`), usually Developer. For each current task:
 - Verify every "Key refs" file path exists
 - Verify section numbers point to the correct content
 - Verify orchestration queue prompt matches CLAUDE.md task acceptance criteria

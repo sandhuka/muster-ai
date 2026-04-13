@@ -1,31 +1,35 @@
 # UI/UX Context — [Project Name]
-<!-- PM-MANAGED: Updated by PM when product decisions affect the UI/UX agent -->
+<!-- PM-MANAGED — Only the PM modifies this file. Agents read it at startup for filtered product context. -->
 
-## Target User
-- [Primary persona details]
+## Product Context
 
-## Content & Visual Direction
-- [Content approach: characters, imagery, animation]
-- [Art style reference → brand-guidelines section]
+**Product**: [Name] — "[Tagline]"
+[1-2 sentence product description filtered for design relevance]
 
-## Brand Tone
-- [Voice summary]
+- **Target user**: [Primary persona details — demographics, goals, pain points]
+- **Content & visual direction**: [Content approach (characters, imagery, animation), art style reference → brand-guidelines section]
+- **Brand tone**: [Voice summary]
+- **Navigation**: [App navigation model — tab count, tab names]
+- **Key flows**: [Feature IDs for major user flows to design]
+- **Monetization UX**: [What's gated, what's free, upgrade patterns, badge/label patterns for tier distinction]
+- **Platform**: [Target platform, design guidelines to follow (e.g., Apple HIG)]
 
-## Navigation
-- [App navigation model]
-
-## Key Flows
-- [Feature IDs for major user flows]
-
-## Monetization UX
-- [What's gated, what's free, upgrade patterns]
-
-## Platform
-- [Target platform, design guidelines to follow]
-
-## Shared UI Library
+### Shared UI Library
 <!-- Design workflow: design freely → check library → file requests for missing components -->
 <!-- Library source path for token verification -->
+<!-- Component request workflow and Prompt authoring requirements -->
 
-## Cross-Cutting References
-- [Design patterns file for product-specific UI patterns]
+## Cross-Agent Dependencies
+<!-- Format:
+- Provides to: [Agent] — [what]
+- Depends on: [Agent] — [what for]
+- References: [specific knowledge-base files]
+- On-demand: [design-patterns.md for cross-cutting UI patterns]
+-->
+
+## Current Tasks
+<!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
+<!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->
+<!-- Each task must be self-contained: deliverable, priority, effort, dependencies, acceptance criteria, key skills, key refs -->
+
+See `knowledge-base/current-sprint.md` for current sprint tasks.

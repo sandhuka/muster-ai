@@ -58,7 +58,7 @@ A scope change is any addition, removal, or re-scoping of a feature after the sp
 2. Apply the ICE score. If Impact < 6 or Ease < 4, defer to backlog unless strategically critical.
 3. Assess sprint impact: Does this displace a current task? Which agent is affected?
 4. Decide: Accept (this sprint), Defer (next sprint or backlog), or Reject (log rationale).
-5. If accepted: Update `product-spec.md`, update affected agents' CLAUDE.md, update `current-sprint.md`, log in `decision-log.md`.
+5. If accepted: Update `product-spec.md`, update affected agents' agent-context files, update `current-sprint.md`, log in `decision-log.md`.
 
 **When to pause and request research instead of deciding:**
 - The decision affects monetization, pricing, or conversion mechanics

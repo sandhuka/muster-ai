@@ -14,10 +14,16 @@ Agent brain files contain NO product-specific content. Product context is provid
 
 ## Agent-Context Template (`knowledge-base/agent-context/<agent>.md`)
 
-Per-project filtered context for each agent. PM-managed. Varies by role:
-- **Developer, QA** (~30-40 lines): Tech stack, architecture constraints, data model, feature mapping, testing requirements
-- **UI/UX** (~25 lines): Target user, design system, content approach, navigation, monetization UX
-- **Content, Marketing, Legal, Research** (~12-15 lines): Brand context, target user, positioning, compliance scope
+Per-project filtered context for each agent. PM-managed. Every agent-context file has these standard sections:
+- **Product Context**: Filtered product information relevant to this agent's role (varies by agent — Developer gets tech stack/architecture, Marketing gets positioning/metrics, etc.)
+- **Cross-Agent Dependencies**: What this agent provides to and depends on from other agents, with specific file references
+- **Current Tasks**: Full sprint task specs (deliverable, priority, effort, dependencies, acceptance criteria, key skills, key refs). PM updates at sprint planning and task completion. Tasks must be self-contained — an agent should be able to work from just its agent-context file.
+- **Agent-Specific Context** (optional): Agent-owned notes (e.g., Legal's skill backlog)
+
+Size varies by role:
+- **Developer, QA** (~40-80 lines + tasks): Tech stack, architecture, data model, feature mapping, testing requirements, UI library workflow
+- **UI/UX** (~30-50 lines + tasks): Target user, design system, content approach, navigation, monetization UX
+- **Content, Marketing, Legal, Research** (~15-30 lines + tasks): Brand context, target user, positioning, compliance scope
 
 See `templates/knowledge-base/agent-context/` for section templates per agent.
 
@@ -198,8 +204,9 @@ When a change affects how agents structurally operate (not product content, but 
 2. Update the **Startup Config Template** in this file if startup behavior changed
 3. Update the **Agent Brain Template** in this file if brain file structure changed
 4. Update the **Skill File Template** in this file if skill structure changed
-5. Update the **Safety Checklist** in this file if a new structural requirement was added
-6. Update `muster/team/pm/skills/generic/agent-management.md` if the PM's update protocol changed
+5. Update the **Agent-Context Templates** in `templates/knowledge-base/agent-context/` if agent-context file structure changed
+6. Update the **Safety Checklist** in this file if a new structural requirement was added
+7. Update `muster/team/pm/skills/generic/agent-management.md` if the PM's update protocol changed
 
 ### System Verification Checklist
 

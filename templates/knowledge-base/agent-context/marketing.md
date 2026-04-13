@@ -1,23 +1,29 @@
 # Marketing Context — [Project Name]
-<!-- PM-MANAGED: Updated by PM when product decisions affect the Marketing agent -->
+<!-- PM-MANAGED — Only the PM modifies this file. Agents read it at startup for filtered product context. -->
 
-## Target User
-- [Primary persona: demographics, psychographics]
+## Product Context
 
-## Positioning
-- [Key positioning statement]
+**Product**: [Name] — "[Tagline]"
+[1-2 sentence product description filtered for marketing relevance]
 
-## Brand Tone
-- [Voice summary for marketing]
+- **Target user**: [Primary persona — demographics, psychographics, where they are]
+- **Positioning**: [Key positioning statement, competitive differentiation → brand-guidelines section ref]
+- **Brand tone**: [Voice summary for marketing communications]
+- **Monetization**: [Pricing, what's gated, conversion strategy]
+- **Key differentiators**: [Top 3-5 differentiators for messaging — include notes on what is NOT a differentiator to avoid stale claims]
+- **Success metrics**: [Marketing KPI targets — downloads, retention, conversion, rating]
+- **Premium messaging**: [What to highlight as premium benefits, what NOT to use as premium messaging — be explicit about retired messaging angles]
 
-## Monetization
-- [Pricing, what's gated, conversion strategy]
+## Cross-Agent Dependencies
+<!-- Format:
+- Depends on: [Agent] — [what for]
+- Provides to: [Agent] — [what]
+- References: [specific knowledge-base files — competitive analysis, market landscape, app store intel]
+-->
 
-## Key Differentiators
-- [Top 3-5 differentiators for messaging]
+## Current Tasks
+<!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
+<!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->
+<!-- Each task must be self-contained: deliverable, priority, effort, dependencies, acceptance criteria, key skills, key refs -->
 
-## Success Metrics
-- [Marketing KPI targets]
-
-## Premium Messaging
-- [What to highlight as premium benefits, what NOT to use as premium messaging]
+See `knowledge-base/current-sprint.md` for current sprint tasks.

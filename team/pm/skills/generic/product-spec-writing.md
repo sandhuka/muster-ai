@@ -90,7 +90,7 @@ High-level release sequence (MVP → v1.1 → v1.2 → v2.0+). See roadmapping.m
 - **Tables over paragraphs.** Feature lists, metrics, and comparisons are easier to scan in table format.
 - **Separate what from how.** Product spec defines WHAT to build. Architecture decisions (HOW) go in `knowledge-base/architecture.md` and are owned by Developer.
 - **Write through the persona lens.** Before assigning a feature its priority tier, ask: does the Efficient Professional (28–45, 15–30 min window, decision fatigue) actually need this at launch? "Nice to have for someone" is not a Must Have. Run every feature through the primary persona before locking its tier.
-- **The spec is a living document.** When a feature changes, update `product-spec.md` first, then cascade to affected agents. Never let an agent's CLAUDE.md be more current than the spec it references.
+- **The spec is a living document.** When a feature changes, update `product-spec.md` first, then cascade to affected agent-context files (`knowledge-base/agent-context/<agent>.md`). Never let an agent's context be more current than the spec it references.
 
 ## Output
 `knowledge-base/product-spec.md`

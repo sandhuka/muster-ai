@@ -74,9 +74,11 @@ When cascading product context to specialist agents, tailor what each role needs
 
 ## Cascading Principles
 
+0. **All PM-managed content lives in agent-context files**: Product context, current tasks, and cross-agent dependencies are updated in `knowledge-base/agent-context/<agent>.md`, not in agent brain files (`muster/team/<agent>/CLAUDE.md`). Brain files contain role definition, skills, and reference doc lists — they are framework-level and rarely change.
+
 1. **Filter for relevance**: Developer doesn't need marketing strategy. Marketing doesn't need data model details. Each agent should receive only what's actionable for their role.
 
-2. **Include references to source docs**: Instead of copying entire sections, say "See knowledge-base/research/competitive-analysis.md for detailed competitor teardowns." This lets agents go deeper when needed without bloating their CLAUDE.md.
+2. **Include references to source docs**: Instead of copying entire sections, say "See knowledge-base/research/competitive-analysis.md for detailed competitor teardowns." This lets agents go deeper when needed without bloating their context.
 
 3. **Always update cross-agent dependencies on BOTH sides**: If Developer depends on UI/UX for design specs, update BOTH agents' Cross-Agent Dependencies sections.
 
@@ -87,16 +89,16 @@ When cascading product context to specialist agents, tailor what each role needs
 
 5. **Keep PM-MANAGED sections concise**: Use bullet points, not paragraphs. Link to docs instead of duplicating. Each agent's Product Context should be 10-20 lines max.
 
-6. **Verify completeness**: After cascading, review each agent's CLAUDE.md to confirm they have enough context to begin their assigned tasks without needing to ask clarifying questions.
+6. **Verify completeness**: After cascading, review each agent's agent-context file to confirm they have enough context to begin their assigned tasks without needing to ask clarifying questions.
 
 ## Post-Cascade Verification Checklist
-After updating all agent CLAUDE.md files, run this check before closing the cascade:
+After updating all agent-context files, run this check before closing the cascade:
 
 - [ ] Each agent's Product Context reflects the current state of `product-spec.md` — no references to deprecated features or old priorities
 - [ ] Every cross-agent dependency appears in BOTH the providing and receiving agent's file
 - [ ] No agent's file contains information that belongs exclusively to another agent's domain (e.g., Developer doesn't have marketing strategy in their context)
 - [ ] Each agent has enough context to begin their assigned tasks without needing to ask the PM a clarifying question
-- [ ] `knowledge-base/current-sprint.md` reflects the same task list as each agent's Current Tasks section
+- [ ] `knowledge-base/current-sprint.md` reflects the same task list as each agent's agent-context file (`knowledge-base/agent-context/<agent>.md`) Current Tasks section
 - [ ] `decision-log.md` has an entry for any context change driven by a product decision
 
 If any item fails: fix the gap before declaring the cascade complete.
@@ -109,7 +111,7 @@ After logging a decision in `decision-log.md`, immediately check:
 
 1. **Keyword scan (mandatory)**: Identify the key terms that changed (e.g., "video clips" became "looping animations," "iOS + Android" became "iOS-first," "breathwork" was removed). Grep the FULL repository for the OLD terms — not just agent files. Record the grep results in the decision-log entry's Touched field so there is an audit trail. If a file contains the old term but does not need updating (e.g., historical/archival), note it as "reviewed, no change needed."
 2. **Agent Product Context**: For each affected agent listed in the decision's "Impact" field, re-read their Product Context section. Does it still describe the old state? Fix it.
-3. **Agent Current Tasks**: If the decision changes task scope or adds/removes tasks, update the affected agent's Current Tasks and `current-sprint.md`.
+3. **Agent Current Tasks**: If the decision changes task scope or adds/removes tasks, update the affected agent's agent-context file (`knowledge-base/agent-context/<agent>.md`) Current Tasks and `current-sprint.md`.
 4. **Skills files**: Check PM skills files (context-cascading.md, roadmapping.md, sprint-planning.md) for references to the old state. These are easy to miss because they feel "stable."
 5. **Cross-references**: If the decision changes feature IDs, feature names, or tier assignments, grep for the old values across all agent files.
 6. **Active handoffs**: Check `knowledge-base/agent-requests.md` for active handoffs affected by this decision. If a decision changes a deliverable that is currently in-review, add a revision log note to the handoff entry so reviewers know the deliverable has changed.

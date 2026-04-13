@@ -32,7 +32,7 @@ Run every item against every deliverable, regardless of producing agent.
 - Voice and tone match `brand-guidelines.md` and character personalities
 - Copy length fits UI context (buttons, cards, notifications have tight limits)
 - No health claims that could create liability
-- **Copy change cascade**: If the Content agent changed placeholder or pre-approved copy text to different final copy (e.g., "Want another session?" became "Add another session"), grep the repo for the old text and update all references. Content copy is quoted verbatim in design specs, product spec, agent CLAUDE.md files, orchestration queue prompts, and QA acceptance criteria. A copy change that isn't cascaded causes the Developer to implement the wrong text or QA to test against stale copy
+- **Copy change cascade**: If the Content agent changed placeholder or pre-approved copy text to different final copy (e.g., "Want another session?" became "Add another session"), grep the repo for the old text and update all references. Content copy is quoted verbatim in design specs, product spec, agent-context files, orchestration queue prompts, and QA acceptance criteria. A copy change that isn't cascaded causes the Developer to implement the wrong text or QA to test against stale copy
 
 ### Legal
 - Cites specific regulations or App Store guidelines, not general caution
@@ -66,12 +66,12 @@ Run every item against every deliverable, regardless of producing agent.
 
 After accepting a handoff (status → `done` or PM reviewer checked), PM must immediately:
 
-1. **Mark the producing agent's task `[x] DONE`** in their `team/<agent>/CLAUDE.md` Current Tasks section, with date and HO reference.
+1. **Mark the producing agent's task `[x] DONE`** in their agent-context file (`knowledge-base/agent-context/<agent>.md`) Current Tasks section, with date and HO reference.
 2. **Add to `current-sprint.md` Done table** if not already there.
 
-These updates prevent agent brain files from going stale — the agent's CLAUDE.md is what it reads on next invocation, so unchecked tasks cause it to re-attempt completed work or misunderstand its current state.
+These updates prevent agent-context files from going stale — the agent-context file is what the agent reads on next invocation, so unchecked tasks cause it to re-attempt completed work or misunderstand its current state.
 
-3. **Sprint/wave close-out sweep**: When closing multiple handoffs or completing a wave/sprint, grep all `team/*/CLAUDE.md` files for `- [ ]` and cross-check each against `current-sprint.md` Done table. Every task in Done must be `[x]` in the agent's CLAUDE.md. This catches the batch-update gap where individual post-accept updates are skipped during rapid multi-handoff processing.
+3. **Sprint/wave close-out sweep**: When closing multiple handoffs or completing a wave/sprint, grep all `knowledge-base/agent-context/*.md` files for `- [ ]` and cross-check each against `current-sprint.md` Done table. Every task in Done must be `[x]` in the agent's agent-context file. This catches the batch-update gap where individual post-accept updates are skipped during rapid multi-handoff processing.
 
 ## One-Pass Rule
 

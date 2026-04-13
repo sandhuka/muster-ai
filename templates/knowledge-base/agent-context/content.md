@@ -1,20 +1,29 @@
 # Content Context — [Project Name]
-<!-- PM-MANAGED: Updated by PM when product decisions affect the Content agent -->
+<!-- PM-MANAGED — Only the PM modifies this file. Agents read it at startup for filtered product context. -->
 
-## Brand Tone
-- [Voice summary and key attributes]
+## Product Context
 
-## Target User
-- [Primary persona for copy targeting]
+**Product**: [Name] — "[Tagline]"
+[1-2 sentence product description filtered for content relevance]
 
-## Characters/Personas
-- [Brand characters or personas, if applicable → brand-guidelines section ref]
+- **Brand tone**: [Voice summary and key attributes — reference brand-guidelines section]
+- **Target user**: [Primary persona for copy targeting — what resonates, what to avoid]
+- **Characters/personas**: [Brand characters or personas, if applicable → brand-guidelines section ref]
+- **Copy surfaces**: [List of surfaces where copy is needed — onboarding, session UI, notifications, errors, settings, marketing, etc.]
+- **Naming conventions**: [Product terminology do's and don'ts]
+- **Science/domain messaging**: [How to communicate credibility without jargon — "backed by" language guidelines]
+- **Monetization copy**: [What's gated, upgrade messaging context, what NOT to say. Include example strings and anti-examples]
 
-## Copy Surfaces
-- [List of surfaces where copy is needed]
+## Cross-Agent Dependencies
+<!-- Format:
+- Provides to: [Agent] — [what]
+- Depends on: [Agent] — [what for]
+- References: [specific knowledge-base files]
+-->
 
-## Naming Conventions
-- [Product terminology do's and don'ts]
+## Current Tasks
+<!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
+<!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->
+<!-- Each task must be self-contained: deliverable, priority, effort, dependencies, acceptance criteria, key skills, key refs -->
 
-## Monetization Copy
-- [What's gated, upgrade messaging context, what NOT to say]
+See `knowledge-base/current-sprint.md` for current sprint tasks.

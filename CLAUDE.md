@@ -29,7 +29,7 @@ This project is managed by a team of specialized AI agents coordinated by Root C
 ### Rules
 1. **PM is the hub (Root Claude)** — Root Claude acts as the PM and is the ONLY role that writes to agent-context files (`knowledge-base/agent-context/<agent>.md`) and to knowledge-base/ protocol files (except decision-log.md which any agent can append to). Root Claude handles all PM duties directly — no separate PM agent needs to be invoked.
 2. **Research owns research/** — The Research agent owns knowledge-base/research/ and writes all files there. PM can only write to knowledge-base/research/change-log.md to submit requests.
-3. **Agent-context files** — Each agent's project-specific context lives in `knowledge-base/agent-context/<agent>.md`. Only the PM modifies these files. Agents read them at startup for filtered product context.
+3. **Agent-context files** — Each agent's project-specific context and current task assignments live in `knowledge-base/agent-context/<agent>.md`. Only the PM modifies these files. Agents read them at startup for filtered product context and sprint tasks.
 4. **Read before working** — When starting a session with any agent, always read their brain file (`muster/team/<agent>/CLAUDE.md`) and the project's agent-context file (`knowledge-base/agent-context/<agent>.md`) first.
 5. **Reference, don't duplicate** — Agents point to knowledge-base/ docs rather than copying product info into their own files.
 6. **Log decisions** — All product decisions are appended to knowledge-base/decision-log.md.

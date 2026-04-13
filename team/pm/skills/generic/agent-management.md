@@ -1,10 +1,10 @@
 # Agent Management Skill
 
 ## Purpose
-This skill defines how the PM agent updates other agents' CLAUDE.md files. Follow this protocol every time a decision is made or a plan changes.
+This skill defines how the PM updates agent-context files (`knowledge-base/agent-context/<agent>.md`). These files hold each agent's filtered product context, current task assignments, and cross-agent dependencies. Follow this protocol every time a decision is made or a plan changes.
 
 ## Update Protocol
-1. Read the target agent's current CLAUDE.md in full before making changes
+1. Read the target agent's current agent-context file in full before making changes
 2. Only modify sections marked `<!-- PM-MANAGED -->`
 3. NEVER overwrite the "Agent-Specific Context" section — that belongs to the agent
 4. After updating, add an entry to knowledge-base/decision-log.md
@@ -17,14 +17,20 @@ This skill defines how the PM agent updates other agents' CLAUDE.md files. Follo
 **Rule:** Filter for relevance — don't dump everything. Ask: "What does this specific agent need to know to do their job?"
 
 ### Current Tasks
+**Location:** Agent-context file (`knowledge-base/agent-context/<agent>.md`), NOT the agent brain file (`muster/team/<agent>/CLAUDE.md`).
 **Update when:** New sprint, task assignment, priority changes, task completion.
 **Format:**
 - [ ] Task description — Priority: HIGH/MED/LOW — Effort: S/M/L/XL — Due: date
-- [ ] Dependency: [agent-name] must complete [thing] first
+  - Deliverable: [specific output]
+  - Dependencies: [agent-name] must complete [thing] first
+  - Acceptance criteria: [2-3 bullets]
+  - Key skills: [muster/team/<agent>/skills/ paths]
+  - Key refs: [knowledge-base/ paths]
 **Rules:**
 - Keep to 3-5 active tasks max per agent
 - Move completed tasks to a "Recently Completed" subsection (keep last 5)
 - Archive older completed tasks to decision-log.md
+- Tasks must be self-contained — an agent should be able to work from just its agent-context file without reading current-sprint.md
 
 ### Cross-Agent Dependencies
 **Update when:** New feature requires multi-agent collaboration, dependency status changes.
@@ -37,18 +43,18 @@ This skill defines how the PM agent updates other agents' CLAUDE.md files. Follo
 When a major decision affects multiple agents:
 1. Update knowledge-base/ first (product-spec.md, decision-log.md, etc.)
 2. List which agents need updates and what each needs to know
-3. Update each agent's CLAUDE.md in dependency order (upstream agents first)
+3. Update each agent's agent-context file in dependency order (upstream agents first)
 4. Verify cross-agent dependencies are mirrored correctly on both sides
 5. Update knowledge-base/current-sprint.md if tasks changed
 
 ## Adding a New Agent
-1. Create team/<name>/ directory
-2. Create CLAUDE.md using the standard template (see root CLAUDE.md for template)
-3. Create skills/ directory with relevant methodology files
-4. Create .claude/agents/<name>.md with startup file list
-5. Update root CLAUDE.md agent roster table and sub-agent access table
-6. Populate the new agent's PM-MANAGED sections with current product context
-7. Add relevant cross-agent dependencies to both the new agent and existing agents
+1. Create `muster/team/<name>/` directory
+2. Create `muster/team/<name>/CLAUDE.md` brain file using the standard template (see system-guide.md for template)
+3. Create `muster/team/<name>/skills/` directory with domain skill files
+4. Create `.claude/agents/<name>.md` startup config in the project repo
+5. Update `muster/CLAUDE.md` agent roster table and sub-agent access line
+6. Create `knowledge-base/agent-context/<name>.md` in the project repo and populate with PM-managed product context, cross-agent dependencies, and current tasks
+7. Add relevant cross-agent dependencies to both the new agent and existing agents (in both brain files and agent-context files)
 
 ## Research Agent Protocol
 The Research agent has a special relationship with the PM:
@@ -62,7 +68,7 @@ The Research agent has a special relationship with the PM:
 Agent CLAUDE.md files and startup configs tell agents to read large files (product spec ~800 lines, decision log growing, brand guidelines, design system reference). This creates context window pressure -- agents burn tokens on reading before they start working. Mitigate with these rules:
 
 ### Rule 1: Agent CLAUDE.md = Summarized Context, Not a Pointer to Read Everything
-Each agent's Product Context section should contain a **self-sufficient summary** of what that agent needs. The agent should be able to start working after reading ONLY their CLAUDE.md and the relevant skill file. Full knowledge-base docs are reference material for edge cases, not required reading.
+Each agent's Product Context section should contain a **self-sufficient summary** of what that agent needs. The agent should be able to start working after reading ONLY their agent-context file and the relevant skill file. Full knowledge-base docs are reference material for edge cases, not required reading.
 
 **Current approach (good)**: Agent Product Context sections are 15-25 lines of filtered, role-specific context with links to full docs.
 **Anti-pattern to avoid**: "Read knowledge-base/product-spec.md for all details" as the primary context delivery mechanism.
@@ -110,7 +116,7 @@ The PM owns `knowledge-base/orchestration-queue.md` — the founder's "what to d
 
 ### Lifecycle
 1. **Sprint planning**: Populate the queue with the full agent invocation sequence (see `sprint-planning.md` step 8). Clear the Done section from the previous sprint.
-2. **Before each step goes live**: Verify the Next Step agent's CLAUDE.md Current Tasks has real tasks inlined — not a pointer to current-sprint.md.
+2. **Before each step goes live**: Verify the Next Step agent's agent-context file (`knowledge-base/agent-context/<agent>.md`) Current Tasks has real tasks inlined — not a pointer to current-sprint.md.
 3. **After reviewing agent output**: If accepted, confirm the completing agent promoted the next step. If the agent didn't update the queue (e.g., session was killed early), do it yourself. If rejected, add revision notes to agent-requests.md and keep the same agent as Next Step.
 4. **Founder decisions**: When a decision requires founder input (per Decision Autonomy Matrix in `decision-making.md`), write it to the Founder Decisions section with context, your recommendation, and what's blocked.
 

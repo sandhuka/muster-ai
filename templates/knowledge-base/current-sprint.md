@@ -1,7 +1,7 @@
 # Current Sprint
 <!-- Full task board. PM populates at sprint planning. -->
-<!-- This is the single source of truth for per-agent tasks. -->
-<!-- Orchestration queue tells agents WHICH task to do now; this file has the full details. -->
+<!-- This is the sprint summary board. Detailed task briefs live in each agent's context file (`knowledge-base/agent-context/<agent>.md`). -->
+<!-- Orchestration queue tells agents WHICH task to do now; agent-context files have the full task specs. -->
 
 ## Sprint [N]: [Name]
 **Goal**: [One sentence]

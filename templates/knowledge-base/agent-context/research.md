@@ -1,17 +1,26 @@
 # Research Context — [Project Name]
-<!-- PM-MANAGED: Updated by PM when product decisions affect the Research agent -->
+<!-- PM-MANAGED — Only the PM modifies this file. Agents read it at startup for filtered product context. -->
 
-## MVP Scope
-- [Platform, features, content approach]
+## Product Context
 
-## Architecture
-- [Storage/backend approach (affects market positioning research)]
+**Product**: [Name] — "[Tagline]"
+[1-2 sentence product description filtered for research relevance]
 
-## Target User
-- [Primary persona summary]
+- **MVP scope**: [Platform, features, content approach]
+- **Architecture**: [Storage/backend approach — affects market positioning research]
+- **Target user**: [Primary persona summary]
+- **Monetization**: [Revenue model, pricing]
+- **Team model**: [Solo founder / small team — affects feasibility research]
 
-## Monetization
-- [Revenue model, pricing]
+## Cross-Agent Dependencies
+<!-- Format:
+- Provides to: [Agent] — [what]
+- Receives from: [Agent] — [what, via what channel]
+-->
 
-## Team Model
-- [Solo founder / small team — affects feasibility research]
+## Current Tasks
+<!-- PM-MANAGED: PM updates at sprint planning, task completion, priority changes -->
+<!-- Keep 3-5 active tasks max. Move completed to Recently Completed (keep last 5). -->
+<!-- Each task must be self-contained: deliverable, priority, effort, dependencies, acceptance criteria, key skills, key refs -->
+
+See `knowledge-base/current-sprint.md` for current sprint tasks.
