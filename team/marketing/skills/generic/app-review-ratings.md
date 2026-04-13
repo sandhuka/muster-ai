@@ -7,7 +7,7 @@ Systematic strategy for generating, managing, and leveraging App Store reviews. 
 
 | Metric | Target | Context |
 |--------|--------|---------|
-| Average rating | 4.7+ | Down Dog: 4.9, Fitbod: 4.7, FitOn: 4.8 |
+| Average rating | 4.7+ | Benchmark against your top 3 competitors' ratings |
 | Minimum viable | 4.5 | Below this, conversion drops significantly |
 | Month 1 | 50+ reviews | Social proof threshold |
 | Quarter 1 | 500+ reviews | Signals traction to Apple editorial |
@@ -20,9 +20,9 @@ Apple allows max 3 prompts per 365 days per device. Space strategically:
 
 | Prompt | Trigger | Why |
 |--------|---------|-----|
-| 1 | After 3rd completed routine | User has experienced value. Likely positive |
-| 2 | After 15th routine (~2 weeks regular use) | Regular user. High satisfaction |
-| 3 | After 50th routine (~2 months) | Power user. Likely to write detailed review |
+| 1 | After [3rd core action — enough to experience value] | User has experienced value. Likely positive |
+| 2 | After [~2 weeks of regular use — e.g., 10-15 core actions] | Regular user. High satisfaction |
+| 3 | After [~2 months of use — e.g., 40-50 core actions] | Power user. Likely to write detailed review |
 
 ### Pre-Prompt Satisfaction Check
 Never send users to App Store review without checking sentiment first:
@@ -33,7 +33,7 @@ Never send users to App Store review without checking sentiment first:
 This protects rating while collecting all feedback.
 
 ### Never Prompt After
-Crash, error, failed purchase, skipped workout, immediately after upgrade prompt, within 24 hrs of a push notification.
+Crash, error, failed purchase, [skipped/abandoned session], immediately after upgrade prompt, within 24 hrs of a push notification.
 
 ## Review Response Strategy
 Content agent owns response copy and templates — see `team/content/skills/app-store-listing.md`. Marketing owns the operational framework:

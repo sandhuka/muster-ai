@@ -17,22 +17,22 @@ Strategy for building a community that drives retention, UGC, and word-of-mouth.
 | Channel | When | Use For |
 |---------|------|---------|
 | Instagram comments/DMs | Day 1 | Lowest overhead, 1-on-1 conversations |
-| Discord | 1K+ active users | Persistent group space, channels, roles. Structure: #general, #routines, #feature-requests, #introductions |
-| Reddit (r/[ProductName]) | 5K+ users | Don't create earlier — dead subreddits hurt. Until then, engage in fitness subs (see `social-media-strategy.md`) |
+| Discord | 1K+ active users | Persistent group space, channels, roles. Structure: #general, #[core-activity], #feature-requests, #introductions |
+| Reddit (r/[ProductName]) | 5K+ users | Don't create earlier — dead subreddits hurt. Until then, engage in [category subs] (see `social-media-strategy.md`) |
 | In-app | Product roadmap | Ultimate destination. Defer until PMF proven. MVP: Challenge tab for seasonal events |
 
 ## Community Content
 
 | Type | Cadence | Format |
 |------|---------|--------|
-| User spotlight | Weekly | Feature one member's routine/consistency story (with consent). Post on Instagram + Discord |
-| Challenges | Monthly | Themed: "21-Day January Kickstart," "Flexibility February." Opt-in, daily check-ins, completion cards |
-| Q&A / education | Weekly | "Ask the Algorithm" — explain how routine assembly works. Repurpose as social content |
+| User spotlight | Weekly | Feature one member's [consistency/achievement] story (with consent). Post on Instagram + Discord |
+| Challenges | Monthly | Themed: "[N]-Day [Seasonal Theme]," "[Focus Area] [Month]." Opt-in, daily check-ins, completion cards |
+| Q&A / education | Weekly | "[Feature-specific Q&A]" — explain how [core product intelligence] works. Repurpose as social content |
 | Behind-the-scenes | Ongoing | Dev decisions, feature previews, metrics (selectively). Makes users feel like insiders |
 
 ## Ambassador Program (Post-10K Users)
 
-**Selection**: 30+ routines completed, 30+ days active, positive community engagement, genuine enthusiasm. Prefer content creators but not required. iOS user.
+**Selection**: [N+ core actions] completed, 30+ days active, positive community engagement, genuine enthusiasm. Prefer content creators but not required. [Your platform] user.
 
 | Benefit | Expectation |
 |---------|------------|
@@ -63,4 +63,4 @@ Strategy for building a community that drives retention, UGC, and word-of-mouth.
 1. **Give before you ask** — community serves users first. Marketing benefits are the byproduct
 2. **Small and engaged > large and dead** — 200 active members beats 5,000 silent ones
 3. **Protect culture** — enforce guidelines consistently. Remove bad actors quickly
-4. **Match brand tone** — supportive, knowledgeable, no-BS. No gym-bro culture
+4. **Match brand tone** — supportive, knowledgeable, no-BS. Actively exclude culture that contradicts your brand values

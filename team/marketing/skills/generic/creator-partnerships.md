@@ -1,7 +1,7 @@
 # Creator & Influencer Partnerships
 
 ## Purpose
-Strategy for identifying, partnering with, and measuring fitness creators. Micro-influencers in fitness deliver 3-5x ROAS — one well-matched creator can drive 500-2K installs per post. See `team/marketing/skills/paid-acquisition.md` for repurposing creator content as Spark/Partnership Ads. Coordinate with Legal agent for FTC compliance and Content agent (`team/content/skills/brand-voice.md`) for brand consistency.
+Strategy for identifying, partnering with, and measuring creators in your category. Micro-influencers deliver 3-5x ROAS — one well-matched creator can drive 500-2K installs per post. See `team/marketing/skills/paid-acquisition.md` for repurposing creator content as Spark/Partnership Ads. Coordinate with Legal agent for FTC compliance and Content agent (`team/content/skills/brand-voice.md`) for brand consistency.
 
 ## Creator Tiers
 
@@ -16,13 +16,13 @@ Strategy for identifying, partnering with, and measuring fitness creators. Micro
 
 ## Ideal Creator Profile
 
-**Good fit**: Home workout, yoga/flexibility, busy professional fitness, parent fitness, wellness/educational tone, iOS users, engaged comments (real conversations).
+**Good fit signals**: Creates content in your product's niche, educational/authentic tone, iOS users (if iOS-first), engaged comments (real conversations not just emoji), audience demographics match your target user.
 
-**Bad fit**: Gym-bro/hardcore bodybuilding, before/after body transformation focus, supplement-heavy, "grind culture," fake engagement (<1% rate), Android users.
+**Bad fit signals**: Audience doesn't overlap with your target user, tone contradicts your brand voice (e.g., aggressive when you're calm), relies on claims you can't make (health, financial, etc.), fake engagement (<1% rate), wrong platform (Android if you're iOS-only).
 
 ## Discovery & Outreach
 
-**Finding creators**: Instagram hashtag search (#homeworkout, #yogaathome), TikTok Creator Marketplace, competitors' tagged posts (who promotes Down Dog/Fitbod?), your own engaged followers.
+**Finding creators**: Instagram hashtag search ([your category's top 3-4 hashtags]), TikTok Creator Marketplace, competitors' tagged posts (who promotes your top 3 competitors?), your own engaged followers.
 
 **Outreach** (10-15 messages/week during recruitment):
 - Cold email (micro+): Reference specific content, explain the product in one sentence, offer free premium to try, no pressure
@@ -35,7 +35,7 @@ Strategy for identifying, partnering with, and measuring fitness creators. Micro
 
 | Format | Conversion | Best For |
 |--------|-----------|---------|
-| Integration video | Highest | Creator shows daily routine using the product |
+| Integration video | Highest | Creator shows [core experience] using the product |
 | Honest review | High | Give full access, ask for genuine review |
 | "Day in my life" | High | App appears naturally in routine |
 | 7-day challenge | Very high (sustained) | Daily content over a week |
@@ -54,8 +54,8 @@ Track via unique referral code per creator. Attribute for 30 days after last cli
 ## Creator Brief (Send After Agreement)
 Keep light — don't over-prescribe:
 - About the product: one paragraph (key value proposition and differentiators)
-- Key messages (pick 1-2): "Builds your routine fresh every day," "Strength, yoga, stretching in one app," "Gets smarter the more you use it"
-- What NOT to say: no health/weight claims, no "disciplines are premium" (all free), no "unlock equipment" (all free)
+- Key messages (pick 1-2): [Your top 2-3 differentiators phrased as user benefits, not features]
+- What NOT to say: no [regulated claims in your domain], no [statements that misrepresent your free tier], no [common misconceptions about your product]
 - Requirements: #ad or #sponsored disclosure, App Store link, unique referral code
 - Creative freedom: "This is YOUR content for YOUR audience"
 

@@ -18,16 +18,16 @@ Tactical playbook for paid user acquisition: Apple Search Ads, Meta, TikTok Ads,
 
 | Campaign | Keywords | Match Type | CPA Target | Budget Share |
 |----------|----------|-----------|-----------|-------------|
-| Brand | "arogh," "arogh app" | Exact | $0.50-1.00 | 5-10% |
-| Category | "daily workout," "personalized fitness," "workout planner" | Exact + Broad | $1.50-3.00 | 40-50% |
-| Competitor | "down dog," "fitbod," "fiton," "freeletics" | Exact | $2.00-4.00 | 20-30% |
-| Discovery | None (Search Match auto) | Auto | $2.00-3.50 | 10-15% |
+| Brand | "[your brand name]," "[brand] app" | Exact | $[low — brand terms are cheapest] | 5-10% |
+| Category | [3-5 terms that describe your core action in user language] | Exact + Broad | $[mid — your category's competitive range] | 40-50% |
+| Competitor | [Top 3-5 direct competitors by brand name] | Exact | $[higher — competitor terms cost more] | 20-30% |
+| Discovery | None (Search Match auto) | Auto | $[mid-high — auto-match is less precise] | 10-15% |
 
-- **Starting bids**: $1.50-2.50/tap. Adjust +/-15% weekly based on CPA
+- **Starting bids**: Research your category's average CPA on AppTweak/Sensor Tower and bid 80-100% of that. Adjust +/-15% weekly based on CPA
 - **Daily budget**: $20-50/day total. Scale winners 15-20%/week
-- **Negative keywords**: "gym membership," "personal trainer near me," "android workout," "workout clothes"
-- **Creative Sets**: 3-5 Custom Product Pages targeting different keyword intents (personalization, yoga, home workout, weekly planner)
-- **Seasonal**: January +50%, September +30%, summer -20%
+- **Negative keywords**: [Terms that attract wrong-fit users — in-person services, wrong platform, tangential products, physical goods in your category]
+- **Creative Sets**: 3-5 Custom Product Pages targeting different keyword intents — each should match the search query's mental model (someone searching for [feature A] should land on a page highlighting [feature A])
+- **Seasonal**: Identify your category's 2-3 peak periods and adjust bids +30-50%. Reduce during known low-intent periods
 
 ### Scaling / Kill Rules
 - Scale: increase 15-20% weekly on ad groups with CPA <target for 5+ days
@@ -37,8 +37,8 @@ Tactical playbook for paid user acquisition: Apple Search Ads, Meta, TikTok Ads,
 ## Meta/Instagram Ads
 
 ### Audience Progression
-1. **Interest targeting** (0-100 conversions): fitness, yoga, home workout, wellness. Age 25-45, US only
-2. **Lookalike** (100+ conversions): source = users who completed first routine. Start 1%, test to 3%
+1. **Interest targeting** (0-100 conversions): [3-5 interest categories relevant to your product]. [Age range of your core demographic], [primary market] only
+2. **Lookalike** (100+ conversions): source = users who completed [your activation event]. Start 1%, test to 3%
 3. **Broad** (500+ conversions): remove targeting, let Meta's ML optimize on conversion data
 
 ### Creative Strategy
@@ -46,12 +46,12 @@ Video-first. 15 seconds beats 30 seconds. Sound-off design (captions required).
 
 | Format | Description |
 |--------|-------------|
-| App walkthrough (15 sec) | Screen recording: open → routine → start exercise |
+| App walkthrough (15 sec) | Screen recording: [open → core screen → primary action] |
 | UGC testimonial | Creator talking to camera about the app |
-| Problem → solution | "Tired of deciding what workout to do?" → app demo |
-| Before/after routine | "My morning before [Product Name] vs. after" |
+| Problem → solution | "[State the user's pain point as a question]" → app demo showing the solution |
+| Before/after | "[Life before your app] vs. [life after]" — show the transformation your product creates |
 
-- Lead with pain point, not feature. "Tired of deciding?" not "AI-powered algorithm"
+- Lead with pain point, not feature. "[User's frustration]?" not "[Technical capability]"
 - Refresh creatives every 2-3 weeks (fatigue degrades performance 20-30%)
 - **ATT impact**: expect 35-45% opt-in. Platform over-reports by 20-40%. Triangulate with App Store Connect organic lift (see `analytics.md`)
 
@@ -65,15 +65,15 @@ Video-first. 15 seconds beats 30 seconds. Sound-off design (captions required).
 
 - Post organically → wait 24-48 hrs → boost winners as Spark Ads
 - In-Feed Ads (secondary): UGC-style, first 2 seconds = hook, <30 seconds, vertical
-- Audience: 25-45, fitness interest, iOS only, US
+- Audience: [age range], [category interest], iOS only, [primary market]
 - Budget: $50/day minimum per ad group (TikTok's learning phase needs volume)
 
 ## Google App Campaigns
 
 Fully automated. Provide diverse assets (5 headlines, 5 descriptions, 3-5 images, 2-3 videos); Google's ML optimizes placement.
 
-- Optimize for "first routine completed" (not just install) for higher-quality users
-- Starting CPA target: $3-4. Budget: $30-50/day. 2-week learning period — don't change targets during this
+- Optimize for [your activation event] (not just install) for higher-quality users
+- Starting CPA target: set at 1.2-1.5x your Apple Search Ads CPA. Budget: $30-50/day. 2-week learning period — don't change targets during this
 - Minimal manual control. Start only after 5K+ installs provide conversion data
 
 ## Budget by Growth Stage

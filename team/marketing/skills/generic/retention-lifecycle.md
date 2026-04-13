@@ -6,22 +6,22 @@ Post-install retention strategy: trigger architecture for push/email/in-app mess
 ## The Habit Loop
 The product's retention depends on building a daily habit:
 1. **Cue**: Push notification or time-of-day habit
-2. **Routine**: Open app → see today's routine → complete session
-3. **Reward**: Completion feeling, streak progress, algorithm improving
-4. **Investment**: Each routine makes the algorithm smarter → higher switching cost
+2. **Routine**: Open app → see [today's content] → complete [core action]
+3. **Reward**: Completion feeling, streak progress, [product getting smarter/better]
+4. **Investment**: Each [core action] increases personalization → higher switching cost
 
-**Time-to-value target**: 70%+ of users who start onboarding should complete their first routine in the same session (<10 min total).
+**Time-to-value target**: 70%+ of users who start onboarding should complete their first [core action] in the same session (<10 min total).
 
 ## Push Notification Strategy
 Marketing owns strategy. Content agent owns copy. Developer implements.
 
-**Permission timing**: Request AFTER first completed routine (60%+ grant rate vs. 30-40% during onboarding).
+**Permission timing**: Request AFTER first completed [core action] (60%+ grant rate vs. 30-40% during onboarding).
 
 ### Notification Types
 
 | Type | Trigger | Frequency |
 |------|---------|-----------|
-| Routine ready | Daily, at user's typical workout time | 1x/day max |
+| [Daily content ready] | Daily, at user's typical [session time] | 1x/day max |
 | Streak at risk | No activity by usual time | Triggered |
 | Streak milestone | 7, 14, 30, 60, 100 days | Triggered |
 | Weekly summary | End of week | 1x/week |
@@ -31,7 +31,7 @@ Marketing owns strategy. Content agent owns copy. Developer implements.
 - Hard cap: 1 push/day, 5/week
 - Quiet hours: no notifications before 7 AM or after 10 PM local time
 - Back-off: if user dismisses 3 in a row without opening, reduce to every other day for 2 weeks
-- Personalize send time based on user's typical workout time (cold start default: 7:30 AM)
+- Personalize send time based on user's typical [session time] (cold start default: 7:30 AM)
 - Never use push to promote premium. Never guilt-trip. If user disables notifications, respect it completely
 
 ## Email Lifecycle Strategy
@@ -63,10 +63,10 @@ Surface premium value at natural moments. Never interrupt the core experience.
 
 | Trigger | Timing |
 |---------|--------|
-| After completing routine | After 3rd+ routine: preview weekly plan |
-| Viewing Plan tab (free) | Sample plan with upgrade overlay |
-| After 1 week of use | "Your history unlocks smarter planning" |
-| Hitting free intelligence limit | After 2nd weekly smart routine |
+| After completing [core action] | After 3rd+ session: preview [premium feature they'd naturally want next] |
+| Viewing [premium-gated surface] | Sample content with upgrade overlay |
+| After 1 week of use | "[Your accumulated data] unlocks [premium insight]" |
+| Hitting [free usage limit] | At the natural ceiling of your free tier |
 
 For upgrade prompt copy, see Content agent's `team/content/skills/subscription-copy.md`. Feature discovery should be progressive — introduce premium features gradually at moments where the user would benefit.
 
@@ -76,7 +76,7 @@ For upgrade prompt copy, see Content agent's `team/content/skills/subscription-c
 **Celebrate consistency. Never punish breaks.** The algorithm adjusts when life happens — streaks should too.
 
 ### Rules
-- Streak day = 1+ completed routines. Grace period: 1 rest day/week without breaking streak
+- Streak day = 1+ completed [core actions]. Grace period: 1 rest day/week without breaking streak
 - If streak breaks: "Start a new streak" (positive), never "You lost your streak" (loss aversion)
 - No visible countdown timers. No competitive streaks between users
 
@@ -97,22 +97,22 @@ See `team/marketing/skills/referral-virality.md` for how milestones integrate wi
 
 | Signal | Intervention |
 |--------|-------------|
-| Session frequency drops 50%+ week-over-week | In-app: surface shorter routine options |
+| Session frequency drops 50%+ week-over-week | In-app: surface [lower-friction version of core action] |
 | Notification opt-out | Email re-engagement sequence |
-| No sessions for 3 days | Push: "Your routine is ready when you are" |
+| No sessions for 3 days | Push: "[Your content] is ready when you are" |
 | Cancellation initiated | Pre-cancellation survey (below) |
 
 ### Pre-Cancellation Flow
 1. Survey: "What's not working?" (too expensive / not using enough / features missing / switching / other)
-2. Response by answer: "Too expensive" → show annual savings (reframing, not discounting). "Not using enough" → offer shorter routines. "Features missing" → feedback form
+2. Response by answer: "Too expensive" → show annual savings (reframing, not discounting). "Not using enough" → offer [lower-friction version of core experience]. "Features missing" → feedback form
 3. Always allow easy cancellation. Never a dark pattern. Never offer a discount (devalues product)
 
 ## Win-Back Strategy
 
 | Segment | Channel | Message Direction |
 |---------|---------|-------------------|
-| Cooling (7-13 days) | Push (if opted in) | "Your routine is ready" — not "We miss you" |
-| Lapsed (14-29 days) | Email | "Your algorithm trained on X sessions. It's ready to get smarter" |
+| Cooling (7-13 days) | Push (if opted in) | "[Your content] is ready" — not "We miss you" |
+| Lapsed (14-29 days) | Email | "[Your product] learned from X sessions. It's ready to [deliver more value]" |
 | Churned (30+ days) | Email (low frequency) | "Here's what's new since you left" |
 | Seasonal | All channels | January + September win-back campaigns. See `seasonal-cultural-marketing.md` |
 
@@ -126,6 +126,6 @@ Never guilt. Lead with value. For cancelled subscribers: max 3 win-back emails o
 | D7 retention | 18%+ | 22%+ |
 | D30 retention | 10%+ | 14%+ |
 | WAU/MAU | 25%+ | 30%+ |
-| Routines/user/week | 2.5+ | 3.0+ |
+| [Core actions]/user/week | [habit target]+ | [mature target]+ |
 | Push opt-in | 55%+ | 60%+ |
 | Email open rate | 25%+ | 30%+ |

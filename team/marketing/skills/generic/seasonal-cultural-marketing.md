@@ -1,21 +1,32 @@
 # Seasonal & Cultural Marketing
 
 ## Purpose
-Calendar-driven campaigns aligned with natural fitness demand cycles. Fitness app downloads spike 50-80% in January and 30-40% in September — aligning campaigns with these surges 3-5x the impact of the same spend. See `team/marketing/skills/campaign-playbook.md` for campaign templates, `team/marketing/skills/paid-acquisition.md` for seasonal bid adjustments.
+Calendar-driven campaigns aligned with natural demand cycles in your category. Every app category has seasonal patterns — aligning campaigns with demand surges 3-5x the impact of the same spend off-peak. See `team/marketing/skills/campaign-playbook.md` for campaign templates, `team/marketing/skills/paid-acquisition.md` for seasonal bid adjustments.
 
-## Annual Calendar
+## Identifying Your Category's Demand Cycle
 
-| Month | Demand | Strategy | Messaging Direction | Budget |
-|-------|--------|----------|-------------------|--------|
-| January | Highest (+50-80%) | All channels max. Biggest push of the year | "Start your best fitness year — with a plan that adapts." No "new year new you" cliche | 20-25% annual |
-| February | Drops 30-40% | Retention focus for Jan cohort, not acquisition | Celebrate consistency. Self-care angle if natural | 5% |
-| March-April | Moderate uptick | +20% paid. Spring reset theme | "Spring reset — your routine, refreshed" | 8-10% |
-| May | Stable | Lean into yoga/stretching (Mental Health Month) | "Movement for your mind" | 5% |
-| Jun-Aug | Lowest | Reduce spend 20-30%. Retention focus. Batch fall content | "Quick routines that travel with you" | 10-12% (3 months) |
-| September | 2nd highest (+30-40%) | 2nd biggest push. Full campaign | "Back to your routine — smarter than ever" | 12-15% |
-| October | Moderate | Maintain Sep momentum. Prep Black Friday creative | "Stay consistent through the holidays" | 5% |
-| November | Moderate (deal-seekers) | Black Friday/Cyber Monday — annual sub only | See Black Friday section below | 8-10% |
-| December | Low | Year-in-review content. Prep January campaign | Personalized year-in-review cards (shareable) | 5% |
+Before building your calendar, map your category's seasonal pattern:
+1. **Google Trends**: Search your top 5 keywords and look at 2-3 years of data for recurring peaks/valleys
+2. **App Store Connect**: Review impression and download trends by month from your first year
+3. **Competitor activity**: When do competitors increase ad spend, push promotions, or launch features?
+4. **Cultural calendar**: What annual events, holidays, or awareness months naturally connect to your product?
+
+Categorize each month as: Peak (+30%+ above baseline), Moderate (+10-30%), Stable, or Low (-10%+ below baseline).
+
+## Annual Calendar Template
+
+| Month | Demand Level | Strategy | Budget % |
+|-------|-------------|----------|----------|
+| [Peak month 1 — your category's biggest spike] | Highest | All channels max. Biggest push of the year | 20-25% annual |
+| [Month after peak 1] | Drops | Retention focus for peak cohort, not acquisition | 5% |
+| [Secondary uptick months] | Moderate | +20% paid. Seasonal reset theme | 8-10% |
+| [Stable months] | Stable | Lean into [secondary product angle that connects to an awareness month/cultural moment] | 5% |
+| [Low months — 2-3 month stretch] | Lowest | Reduce spend 20-30%. Retention focus. Batch content for next peak | 10-12% (combined) |
+| [Peak month 2 — your category's second spike] | 2nd highest | 2nd biggest push. Full campaign | 12-15% |
+| [November] | Moderate (deal-seekers) | Black Friday/Cyber Monday — annual sub only | 8-10% |
+| [December] | Low | Year-in-review content. Prep January/peak campaign | 5% |
+
+**Key insight**: Most founders spread budget evenly across the year. Don't. Concentrate 35-40% of annual spend in your top 2 peak months. Let low months be low.
 
 ## Seasonal Campaign Execution
 
@@ -36,20 +47,20 @@ The ONE planned promotion per year. More frequent discounting trains users to wa
 - **Email sequence**: Tease (5 days before) → Launch (Friday AM) → Reminder (Saturday) → Last chance (Monday AM)
 - **Paid**: +20% budget during sale. Sale-specific creatives
 - **In-app**: Banner for free users. One-tap subscribe
-- **Messaging**: "Your best price of the year — save 40% on annual." Clear and direct. The Intelligent Coach doesn't yell
+- **Messaging**: "Your best price of the year — save [X]% on annual." Clear and direct. Your brand voice holds — no ALL CAPS desperation
 
 ## Cultural Moment Playbook
 
-**Decision filter** (all must be yes): (1) Connects to your product's domain naturally? (2) Matches Intelligent Coach tone? (3) Can create in <2 hours? (4) Target user (28-45) would engage?
+**Decision filter** (all must be yes): (1) Connects to your product's domain naturally? (2) Matches your brand voice? (3) Can create in <2 hours? (4) Target user would engage?
 
 React within 24-48 hours. Trends decay fast.
 
-**Good moments**: Apple announces new HealthKit features, "cozy cardio" trend, National Yoga Day (June 21), competitor makes unpopular change.
+**Good moments**: [Platform announces features in your category], [organic trends aligned with your product's philosophy], [category awareness days/months], competitor makes unpopular change.
 
-**Never engage**: Body-shaming, fad diets, extreme challenges, politically divisive topics, tragedies.
+**Never engage**: Anything that could shame your users, fad movements in your category, extreme challenges, politically divisive topics, tragedies.
 
 ## Principles
-1. **Lead with value, not urgency** — "Start your best fitness year," not "LAST CHANCE SALE ENDS TONIGHT"
-2. **Respect the calendar** — June is quiet. Let it be quiet. Save budget for January
+1. **Lead with value, not urgency** — "[Your value statement]," not "LAST CHANCE SALE ENDS TONIGHT"
+2. **Respect the calendar** — low months are low. Let them be. Save budget for peaks
 3. **One promotion per year** — Black Friday annual discount only. No other sales
-4. **Brand voice holds** — even in hype moments (January, Black Friday), the brand stays calm, confident, credible
+4. **Brand voice holds** — even in hype moments (peak season, Black Friday), your brand stays consistent

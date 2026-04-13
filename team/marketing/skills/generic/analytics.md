@@ -5,7 +5,7 @@ Core KPIs, cohort analysis, attribution, funnel diagnostics, and testing standar
 
 ## Core KPIs
 
-**North Star**: Weekly Active Routines Completed (target: 2.5+/user/week). Combines activation, engagement, and satisfaction in one metric.
+**North Star**: Weekly [Core Action Completions] (target: [habit threshold]+/user/week). Combines activation, engagement, and satisfaction in one metric. Pick the single action that best predicts long-term retention.
 
 | Category | Metric | 90-Day Target | Year 1 Target |
 |----------|--------|--------------|--------------|
@@ -31,12 +31,12 @@ Core KPIs, cohort analysis, attribution, funnel diagnostics, and testing standar
 ## Cohort Analysis
 Segment users into cohorts to answer "are we getting better over time?"
 
-**Primary cohorts**: Install week (compare D7/D30 across weeks), acquisition channel (compare retention and LTV), onboarding completion (complete vs. incomplete), first-session behavior (completed routine vs. didn't — 2-3x retention difference).
+**Primary cohorts**: Install week (compare D7/D30 across weeks), acquisition channel (compare retention and LTV), onboarding completion (complete vs. incomplete), first-session behavior (completed [core action] vs. didn't — 2-3x retention difference).
 
 **What to look for**: Improving retention curves across weekly cohorts. Channel quality divergence (if Meta users retain 50% less than Apple Search Ads, adjust targeting). Onboarding completion <60% = fix onboarding before scaling acquisition.
 
 ## iOS Attribution in the ATT Era
-Expect 30-40% ATT opt-in for a fitness app.
+Expect 30-40% ATT opt-in for a typical consumer app (varies by category).
 
 | Method | Accuracy | Use For |
 |--------|----------|---------|
@@ -48,7 +48,7 @@ Expect 30-40% ATT opt-in for a fitness app.
 
 **Triangulation**: Platform-reported installs over-report by 20-40%. Compare to App Store Connect totals. Organic lift above baseline ≈ paid campaign impact. Add "How did you hear about us?" to post-onboarding for qualitative channel mix.
 
-**SKAN setup**: Map conversion values — fine values 0-63 encode install → onboarding → first routine → subscription. Configure all 3 postback windows (0-2, 3-7, 8-35 days).
+**SKAN setup**: Map conversion values — fine values 0-63 encode install → onboarding → [first core action] → subscription. Configure all 3 postback windows (0-2, 3-7, 8-35 days).
 
 ## Tool Recommendations
 
@@ -77,7 +77,7 @@ Don't buy: enterprise attribution suites (Appsflyer, Adjust) — overkill pre-10
 | Cause | Diagnostic | Fix |
 |-------|-----------|-----|
 | Onboarding incomplete | Onboarding completion rate | Simplify flow, reduce steps |
-| First routine not completed | First-routine completion rate | Investigate length, difficulty, quality |
+| First [core action] not completed | First-[core action] completion rate | Investigate length, difficulty, quality |
 | No return trigger | D2-D6 session frequency | Push timing, email day-3 nudge |
 
 ### Conversion Below 3%
@@ -92,7 +92,7 @@ Don't buy: enterprise attribution suites (Appsflyer, Adjust) — overkill pre-10
 
 | Cause | Diagnostic | Fix |
 |-------|-----------|-----|
-| Routine quality | Routines/user/week trend | Algorithm improvement |
+| [Core experience] quality | [Core actions]/user/week trend | Product improvement |
 | Billing issues | Involuntary churn rate | Grace period, retry logic |
 | Competitor launch | Category trends | Counter-positioning |
 
@@ -114,4 +114,4 @@ At <1K users: supplement with user interviews (5-10), session recordings, suppor
 - Document all results in `knowledge-base/decision-log.md` regardless of outcome
 
 ## Privacy-First Analytics
-Collect: anonymous events (screen views, taps, routine completions), device metadata (iOS version, model, locale), aggregated usage patterns. Never collect: location data, HealthKit data beyond routine assembly, browsing outside the app. Declare accurately in App Store privacy nutrition labels — review with Legal agent before submission.
+Collect: anonymous events (screen views, taps, [core action] completions), device metadata (iOS version, model, locale), aggregated usage patterns. Never collect: location data, [sensitive framework data] beyond what's needed for core functionality, browsing outside the app. Declare accurately in App Store privacy nutrition labels — review with Legal agent before submission.
