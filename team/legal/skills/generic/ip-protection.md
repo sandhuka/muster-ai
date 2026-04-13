@@ -7,7 +7,7 @@ Guide intellectual property strategy — trademarks, copyrights, AI-generated co
 
 ### Registration Strategy
 - Search USPTO TESS database before finalizing any brand name, tagline, or character name
-- Relevant international classes for fitness software: Class 9 (software), Class 41 (fitness/education services), Class 42 (SaaS)
+- Relevant international classes: Class 9 (software), Class 41 ([education/entertainment/fitness] services), Class 42 (SaaS) — select classes based on your product's domain
 - File trademark application in primary markets before public launch or marketing spend
 - Use ™ before registration, ® after
 
@@ -19,7 +19,7 @@ Guide intellectual property strategy — trademarks, copyrights, AI-generated co
 ## Copyright
 
 ### Original Content
-- All original content (app copy, marketing, documentation, exercise metadata) is automatically copyrighted upon creation
+- All original content (app copy, marketing, documentation, [content metadata]) is automatically copyrighted upon creation
 - Register copyright for high-value creative works only if enforcement is anticipated (optional but strengthens claims)
 
 ### Third-Party Content
@@ -41,7 +41,7 @@ Guide intellectual property strategy — trademarks, copyrights, AI-generated co
 - **Disclosure**: No legal requirement to disclose AI generation method to end users currently. Monitor evolving regulations (EU AI Act, state-level transparency laws). Consider voluntary disclosure if it supports brand positioning.
 
 ### Clone Defense
-- Document unique combinations (character designs + exercise metadata + progression chains + algorithm logic) as a defensible moat
+- Document unique combinations ([content library design] + [content metadata] + [progression/curation logic] + [algorithm logic]) as a defensible moat
 - File DMCA takedowns for direct asset theft (screenshots, ripped animations)
 - App Store: report clone apps through Apple's IP infringement process
 
@@ -65,7 +65,7 @@ Guide intellectual property strategy — trademarks, copyrights, AI-generated co
 
 ### What Qualifies
 - Proprietary algorithm logic (constraint rules, weighting, recovery calculations)
-- Exercise library curation methodology and metadata schema
+- Content library curation methodology and metadata schema
 - AI content generation pipeline (prompts, tools, workflows, refinement process)
 - Business processes and agent coordination systems
 

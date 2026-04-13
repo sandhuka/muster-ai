@@ -36,19 +36,28 @@ Define the required sections and content for Terms of Service and Privacy Policy
 ## Two-Tier Architecture Privacy Pattern
 When an app has fundamentally different data practices for free vs. premium users, the privacy policy must clearly disclose both tiers:
 
-- **Free tier (local-only)**: Clearly state that no account is required, no data leaves the device, and all user data (preferences, workout history, profile) is stored locally using on-device storage. Explain what happens if the user deletes the app (all data is lost)
-- **Premium tier (cloud-backed)**: Disclose that subscribing creates a Supabase-hosted account, what data is synced to the server (profile, workout history, preferences), where servers are located, encryption in transit and at rest, and what third-party processors are involved (Supabase, Apple for payments)
+- **Free tier (local-only)**: Clearly state that no account is required, no data leaves the device, and all user data is stored locally using on-device storage. Explain what happens if the user deletes the app (all data is lost)
+- **Premium tier (cloud-backed)**: Disclose that subscribing creates an account, what data is synced to the server, where servers are located, encryption in transit and at rest, and what third-party processors are involved ([your backend provider], Apple for payments)
 - **Migration disclosure**: Explain the one-time data migration from local to cloud when a user subscribes — what is migrated, that it's a copy (local data remains), and that the user can request deletion of cloud data at any time
 - **Presentation**: Use a clear two-column or tabbed format in the privacy policy so users can quickly see which practices apply to their tier. Don't bury the distinction in dense paragraphs
 
-## Fitness App Disclaimer Template
-Standard disclaimers required for a fitness/health-adjacent app:
+## Domain-Specific Disclaimer Template
+Standard disclaimers for apps in regulated domains. Adapt to your specific domain:
 
-- **Not medical advice**: "[Product Name] provides fitness information for educational and motivational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment."
-- **Consult physician**: "Consult your physician or qualified healthcare provider before starting any new exercise program, especially if you have pre-existing health conditions, injuries, or are pregnant."
-- **Injury risk**: "Exercise carries inherent risks. You are responsible for exercising within your own limits. Stop any exercise that causes pain or discomfort and seek medical attention if needed."
-- **No guarantees**: "Results vary based on individual factors including genetics, consistency, nutrition, and overall health. [Product Name] does not guarantee specific fitness outcomes."
-- **Placement**: These disclaimers must appear during onboarding (before the user starts exercising), in the app settings, and in the Terms of Service. They must not be hidden behind multiple taps or presented in fine print
+### Health/Fitness Apps
+- **Not medical advice**: "[Product Name] provides [fitness/wellness] information for educational and motivational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment."
+- **Consult physician**: "Consult your physician or qualified healthcare provider before starting any new [exercise/wellness] program, especially if you have pre-existing health conditions, injuries, or are pregnant."
+- **Risk acknowledgment**: "[Activity] carries inherent risks. You are responsible for [participating] within your own limits. Stop any [activity] that causes pain or discomfort and seek medical attention if needed."
+- **No guarantees**: "Results vary based on individual factors. [Product Name] does not guarantee specific [fitness/health] outcomes."
+
+### Financial Apps
+- **Not financial advice**: "[Product Name] provides financial information for educational purposes only. It is not a substitute for professional financial advice."
+- **Risk disclosure**: "Investing involves risk, including potential loss of principal."
+
+### Educational Apps
+- **Supplemental tool**: "[Product Name] is designed to supplement, not replace, formal [education/instruction]."
+
+**Placement (all domains)**: Disclaimers must appear during onboarding (before the user starts the core activity), in the app settings, and in the Terms of Service. They must not be hidden behind multiple taps or presented in fine print.
 
 ## AI-Generated Content IP
 Considerations for apps that use AI-generated visual content:
@@ -62,14 +71,14 @@ Considerations for apps that use AI-generated visual content:
 - Privacy policy URL: required, must be publicly accessible (no login)
 - App Privacy "nutrition labels": must accurately reflect all data practices
 - Clearly categorize: data linked to identity, data not linked, data used for tracking
-- Platform-specific data (e.g., HealthKit): must not be used for advertising, sold to data brokers, or shared without explicit consent
+- Platform-specific data (e.g., HealthKit, SensorKit): must not be used for advertising, sold to data brokers, or shared without explicit consent
 
 ## Privacy & Terms Principles
 
 1. **Two-tier transparency**: If the product's free tier is local-only and premium is cloud-backed — the privacy policy must make this distinction impossible to miss. Users should know exactly what changes when they subscribe.
 
-2. **Specificity over boilerplate**: Generic legal language erodes trust. Name the data types, name the processors (Supabase, Apple), and give specific retention periods — not "as long as necessary."
+2. **Specificity over boilerplate**: Generic legal language erodes trust. Name the data types, name the processors ([your backend provider], Apple), and give specific retention periods — not "as long as necessary."
 
 3. **Placement matters**: Disclaimers hidden behind 3 taps don't count. Health disclaimers appear during onboarding, in settings, and in the ToS — prominently, not in fine print.
 
-4. **Apple compliance is a hard gate**: F-PRO-3 (subscription management) and F-PRO-4 (data deletion) are App Store requirements, not nice-to-haves. See `knowledge-base/product-spec.md` Section 10.
+4. **Apple compliance is a hard gate**: Subscription management and account/data deletion are App Store requirements, not nice-to-haves. See `knowledge-base/product-spec.md` for your product's specific compliance features.
