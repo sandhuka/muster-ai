@@ -17,20 +17,22 @@ Grep all `F-[A-Z]+-[0-9]+` across `knowledge-base/` and `team/`. Cross-reference
 - IDs used in one file but a different ID for the same feature in another (collision)
 
 ### 2. Terminology Drift
-Grep for known drift terms. Current watchlist:
-- `CDN` — should be "Supabase Storage" except when qualified as "built-in CDN" or "Supabase Storage CDN"
-- `video clip`, `clip stitching` — should be "looping animation" or "animated WebP loop"
-- `fully local` without qualifier — should specify "user data fully local" (exercise assets load remotely)
+Grep for known drift terms. Maintain a product-specific watchlist of terms that have been renamed or clarified. Common drift patterns:
+- Infrastructure terms that changed (e.g., old service name vs. current service name)
+- Content format terms that evolved (e.g., old format name vs. current format name)
+- Architecture qualifiers that need precision (e.g., "fully local" may need scoping to "user data fully local" if some assets load remotely)
 - `FOUNDER INPUT NEEDED` — check if any reference decisions already made (grep decision-log.md for the topic)
 
+Check your product skill file for the specific watchlist.
+
 ### 3. Data Model Field Alignment
-Compare Exercise metadata schema (product-spec.md Section 5C) vs architecture.md Section 5 (SwiftData models + enums). Verify:
+Compare the canonical data model in product-spec vs the implementation schema in architecture.md. Verify:
 - All product-spec enum values exist in architecture enum definitions
 - Field names match (or have documented mapping)
-- Nullable/required matches between local SwiftData models and Supabase PostgreSQL schema
+- Nullable/required matches between local models and [backend] schema
 
 ### 4. Foundational Assumption Touchpoint Verification
-Read `foundational-assumptions.md`. For each active assumption, spot-check the 2 most critical touchpoint files listed. Verify the file actually reflects the assumption's statement. Priority: A-001 (free tier), A-002 (Supabase Storage), A-003 (iOS version).
+Read `foundational-assumptions.md`. For each active assumption, spot-check the 2 most critical touchpoint files listed. Verify the file actually reflects the assumption's statement. Prioritize assumptions that affect the free/premium boundary, infrastructure dependencies, and platform version targets.
 
 ### 5. Design Spec ↔ Product Spec Alignment
 For each design spec the Developer will consume in the upcoming sprint:
