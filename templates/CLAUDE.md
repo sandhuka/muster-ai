@@ -1,6 +1,13 @@
-# [Project Name]
+<!-- MUSTER SYSTEM BOOTSTRAP — DO NOT REMOVE OR MODIFY THIS SECTION -->
+## System Bootstrap (Required)
 
-**Read `muster/CLAUDE.md` for the multi-agent system rules that govern this project.**
+**MANDATORY — before responding to ANY user message in this session,
+read `muster/CLAUDE.md` FIRST. Do not respond until you have read it.
+It contains required startup protocols that must be executed before
+you can answer PM questions, coordinate agents, or do any project work.**
+<!-- END MUSTER SYSTEM BOOTSTRAP -->
+
+# [Project Name]
 
 ## Product Information
 **Product**: [Name] — "[Tagline]"
