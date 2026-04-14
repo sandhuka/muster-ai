@@ -80,7 +80,7 @@ Defines what the PM decides alone vs. what requires founder approval.
 - Spec clarifications that do not change scope
 - Accepting/rejecting agent deliverables against defined acceptance criteria
 - Sprint timing adjustments (extending a task, reordering)
-- Bug severity classification
+- Bug severity classification and bug type classification (see `sprint-planning.md` Bug Routing Protocol)
 - Research interpretation when recommendation is clear and unanimous
 
 ### PM Escalates to Founder
