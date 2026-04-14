@@ -45,14 +45,13 @@ Muster AI is a framework that turns Claude Code into a team of specialized AI ag
 
 ### Setup Steps
 
-**Step 1 — Clone Muster and scaffold your project**
+**Step 1 — Scaffold your project**
 ```bash
 cd ~/Desktop
-git clone https://github.com/sandhuka/muster-ai.git
-muster-ai/scripts/setup-project.sh your-app-name https://github.com/sandhuka/muster-ai.git
+curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s your-app-name
 ```
 
-This creates `~/Desktop/your-app-name/` (a sibling of `muster-ai/`, not inside it) with everything scaffolded — knowledge-base templates, agent configs, project CLAUDE.md, and an initial git commit.
+This creates `~/Desktop/your-app-name/` with everything scaffolded — knowledge-base templates, agent configs, project CLAUDE.md, and an initial git commit. No need to clone muster-ai first — the script adds it as a git submodule automatically.
 
 **Step 2 — Verify the setup**
 

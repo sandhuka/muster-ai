@@ -36,9 +36,7 @@ You (Founder) ←→ Root Claude (PM)
 ### Option 1: Setup Script
 
 ```bash
-git clone https://github.com/sandhuka/muster-ai.git
-cd muster-ai
-./scripts/setup-project.sh my-project
+curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s my-project
 ```
 
 ### Option 2: Manual Setup
