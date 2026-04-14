@@ -2,7 +2,6 @@
 set -euo pipefail
 
 # Muster — New Project Setup Script
-# Usage: ./scripts/setup-project.sh <project-name> [muster-repo-url]
 #
 # Creates a new project directory with:
 # - Git repo initialized
@@ -10,25 +9,28 @@ set -euo pipefail
 # - Agent bootloaders copied from templates
 # - Knowledge-base templates copied with protocol headers
 # - Project CLAUDE.md template with placeholders
+#
+# Usage:
+#   curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s <project-name>
+#   ./setup-project.sh <project-name> [muster-repo-url]
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MUSTER_ROOT="$(dirname "$SCRIPT_DIR")"
+DEFAULT_MUSTER_URL="https://github.com/sandhuka/muster-ai.git"
 
 if [ $# -lt 1 ]; then
-    echo "Usage: $0 <project-name> [muster-repo-url]"
+    echo "Usage: ${BASH_SOURCE[0]:-setup-project.sh} <project-name> [muster-repo-url]"
     echo ""
-    echo "  project-name    Name of the new project directory"
-    echo "  muster-repo-url Optional: URL of the Muster repo (default: uses local path)"
+    echo "  project-name    Name of the new project directory (created in current directory)"
+    echo "  muster-repo-url Optional: URL of the Muster repo (default: $DEFAULT_MUSTER_URL)"
     echo ""
-    echo "Example:"
-    echo "  $0 my-app https://github.com/myorg/muster-ai.git"
+    echo "Examples:"
+    echo "  curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s my-app"
+    echo "  ./setup-project.sh my-app https://github.com/myorg/muster-ai.git"
     exit 1
 fi
 
 PROJECT_NAME="$1"
-MUSTER_URL="${2:-$MUSTER_ROOT}"
-
-PROJECT_DIR="$(dirname "$MUSTER_ROOT")/$PROJECT_NAME"
+MUSTER_URL="${2:-$DEFAULT_MUSTER_URL}"
+PROJECT_DIR="$(pwd)/$PROJECT_NAME"
 
 if [ -d "$PROJECT_DIR" ]; then
     echo "Error: Directory '$PROJECT_DIR' already exists."
@@ -40,7 +42,7 @@ echo "Location: $PROJECT_DIR"
 echo "Muster source: $MUSTER_URL"
 echo ""
 
-# Create project directory alongside Muster (not inside it)
+# Create project directory in the current working directory
 mkdir -p "$PROJECT_DIR"
 cd "$PROJECT_DIR"
 git init
@@ -92,7 +94,7 @@ echo ""
 echo "Project '$PROJECT_NAME' created successfully."
 echo ""
 echo "Next steps:"
-echo "  1. cd $PROJECT_NAME"
+echo "  1. cd $PROJECT_DIR"
 echo "  2. Edit CLAUDE.md — fill in product name, description, tech stack"
 echo "  3. Edit knowledge-base/agent-context/*.md — fill in per-agent product context"
 echo "  4. Start with: @research Here's my product idea: [description]"
