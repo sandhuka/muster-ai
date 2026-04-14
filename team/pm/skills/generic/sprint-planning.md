@@ -66,6 +66,37 @@ A blocker is any condition that prevents an agent from completing their assigned
 
 Update `current-sprint.md` with blocker status any time a task transitions to blocked. Don't let blockers sit unlogged — they compound.
 
+## Bug Routing Protocol
+
+Bugs found during a sprint (by QA, founder, or any agent) are triaged by PM and routed based on bug type. Not all bugs go straight to Developer — visual, layout, and copy bugs require upstream agent input before a Developer fix.
+
+### Bug Type Classification
+
+| Bug Type | Description | Route |
+|----------|-------------|-------|
+| **Visual/Layout** | Spacing, positioning, sizing, color, visual hierarchy, animation timing | UI/UX → PM review → Developer → QA |
+| **Copy/Voice** | Wrong text, tone mismatch, missing copy, placeholder text in production | Content → PM review → Developer → QA |
+| **Visual + Copy** | Layout issue that also involves copy changes (e.g., text too long causing layout break) | UI/UX → Content → PM review → Developer → QA |
+| **Logic/Code** | Wrong behavior, incorrect calculations, missing state handling, data bugs | Developer → QA |
+| **Integration** | API contract mismatch, data flow between layers, sync issues | Developer → QA |
+
+### Routing Rules
+
+1. **PM classifies bug type during triage** — severity (HIGH/MED/LOW/INFO) and bug type determine the route. PM decides both alone (per Decision Autonomy Matrix).
+2. **Upstream agents update specs first** — UI/UX updates the design spec with corrected layout/spacing/tokens. Content updates copy in the design spec. The updated spec IS the fix instruction for Developer.
+3. **PM reviews upstream handoffs before Developer starts** — PM checks the spec update for correctness, token validity, and cross-file consistency (using deliverable-review skill). If Content is also involved, Content reviews the UI/UX handoff for copy implications before PM finalizes.
+4. **Reviewer set per handoff**: UI/UX handoffs are reviewed by PM + Content (if copy-adjacent) + Developer (feasibility). Content handoffs are reviewed by PM + Developer. Developer handoffs are reviewed by PM + QA.
+5. **Logic/Code bugs skip upstream agents** — they go directly to Developer, same as the standard bug-fix wave pattern.
+6. **Mixed-type bug batches**: When a wave contains multiple bug types, group by route. UI/UX handles all visual bugs in one session, Content handles all copy bugs in one session, then Developer implements all fixes in one session. This preserves the solo-founder sequential model.
+
+### Wave Structure for Bug Fix Waves
+
+When adding a bug-fix wave to a sprint, structure it based on which bug types are present:
+
+- **Logic-only bugs**: Single wave — Developer fix + QA verify (Wave 3→4 precedent)
+- **Visual/Copy bugs present**: Multi-step wave — UI/UX and/or Content first → PM review gate → Developer fix → QA verify
+- **Mixed types**: Combine into one wave with ordered steps — upstream agents first (UI/UX, Content), then Developer handles all fix types in one session, then QA verifies everything
+
 ## Sprint Planning Principles
 - **Sequence before assigning.** Never assign tasks without first mapping dependencies. An agent with three tasks that all depend on another agent's unfinished work has zero effective tasks.
 - **The solo founder constraint is a hard constraint, not a preference.** Plan as if parallelism is impossible, because it is. Sequential batching by domain area reduces context-switching cost for the founder.
