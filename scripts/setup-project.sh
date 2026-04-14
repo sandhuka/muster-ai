@@ -28,18 +28,21 @@ fi
 PROJECT_NAME="$1"
 MUSTER_URL="${2:-$MUSTER_ROOT}"
 
-if [ -d "$PROJECT_NAME" ]; then
-    echo "Error: Directory '$PROJECT_NAME' already exists."
+PROJECT_DIR="$(dirname "$MUSTER_ROOT")/$PROJECT_NAME"
+
+if [ -d "$PROJECT_DIR" ]; then
+    echo "Error: Directory '$PROJECT_DIR' already exists."
     exit 1
 fi
 
 echo "Creating project: $PROJECT_NAME"
+echo "Location: $PROJECT_DIR"
 echo "Muster source: $MUSTER_URL"
 echo ""
 
-# Create project directory and initialize git
-mkdir -p "$PROJECT_NAME"
-cd "$PROJECT_NAME"
+# Create project directory alongside Muster (not inside it)
+mkdir -p "$PROJECT_DIR"
+cd "$PROJECT_DIR"
 git init
 
 # Add Muster as submodule
