@@ -21,6 +21,7 @@ Muster solves this with three mechanisms:
 - **Three-Tier Reading Model** — Agents read ~80 lines at startup (their role + filtered context + current task). Full docs are on-demand only. Irrelevant files are never loaded.
 - **PM-as-Context-Translator** — When a decision is made, the PM doesn't tell every agent "go read the decision log." The PM updates each agent's context file with only what *that agent* needs.
 - **Files as Persistent Memory** — Agent brains, orchestration queues, handoff logs, and decision records persist as markdown files. No session starts from zero.
+- **Self-Improving Skills** — During sprint planning, the PM scans for methodology gaps. When a new skill is created, it's classified as generic or product-specific. Generic skills are contributed back to the framework — so every project makes Muster smarter for the next one.
 
 ## Quick Start
 
@@ -65,6 +66,7 @@ See [getting-started.md](getting-started.md) for the full step-by-step walkthrou
 | **Requires** | Code to define agents | No code — file-based configuration |
 | **Built from** | Framework design theory | Real product development (an iOS app) |
 | **Includes** | Agent orchestration primitives | Full operational patterns — growth caps, cascade lag prevention, decision autonomy, pre-handoff self-review |
+| **Improves** | Manual updates by maintainers | Self-improving — projects discover skill gaps, contribute generic skills back to the framework |
 
 ## Architecture
 

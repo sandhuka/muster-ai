@@ -33,10 +33,11 @@ Sometimes a product skill reveals a generic pattern:
 
 This runs during the dedicated "PM: Create missing skills" orchestration queue step — not during sprint planning. Sprint planning only flags gaps; this skill handles the actual creation and classification.
 
-1. Read the proposed skill content
-2. Run it against ALL 5 generic criteria. If any fails, classify as product-specific. No exceptions.
+1. **Draft generic first.** Write the skill using platform-neutral language with no project-specific references. The PM will be steeped in project context — resist that pull. If the methodology can be expressed generically, it should be, even if the immediate need came from a specific project. Only add project-specific content if the methodology itself is inherently domain-specific.
+2. Run the generic draft against ALL 5 generic criteria. If any fails, classify as product-specific. No exceptions.
 3. If all 5 pass, classify as generic and follow the Skill Contribution Protocol in `system-guide.md`
-4. If hybrid, create both versions
+4. If hybrid, create the generic version first, then a product skill that references it
+5. **Follow existing skill protocols.** Use the skill file template, quality checklist, and registration steps from `system-guide.md` → "Adding a New Skill." For platform-specific skills, use the established prefix convention (`ios-`, `backend-`, `web-`) and place in the matching subdirectory (`skills/ios/`, `skills/backend/`, `skills/web/`). If the target platform subdirectory doesn't exist, create it before writing the skill file.
 
 ## Anti-Patterns (Do NOT add to Muster)
 
