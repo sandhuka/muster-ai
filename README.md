@@ -1,131 +1,98 @@
 # Muster
 
-**Assemble your AI team.**
+**A multi-agent product team that runs inside Claude Code.**
 
-Muster is a multi-agent product management framework for [Claude Code](https://claude.ai/claude-code). It gives you a coordinated team of 8 AI agents — PM, Developer, UI/UX Designer, Content Writer, Marketing Strategist, Legal Advisor, QA Engineer, and Market Researcher — that share context, communicate through files, and build your product together.
-
-## Why Muster?
-
-Claude Code agents forget everything between sessions. If you're building a product that needs design, development, legal review, marketing, and QA, you need a way to:
-
-- **Preserve context** — so agents pick up where they left off
-- **Coordinate work** — so the developer knows what the designer decided
-- **Manage the context window** — so agents don't waste tokens reading irrelevant files
-- **Scale** — so adding a new agent or product doesn't break the system
-
-Muster solves all four using files as persistent memory, with a PM agent (Root Claude) that reads everything and gives each specialist only what they need.
-
-## How It Works
+Muster coordinates specialized AI agents — PM, Developer, UI/UX, Content, Marketing, Research, Legal, QA, and growing — through persistent markdown files. No external frameworks, no API dependencies. Just Claude Code and the filesystem.
 
 ```
-You (Founder) ←→ Root Claude (PM)
-                      |
-        Cascades filtered context to:
-                      |
-    Dev · UI/UX · Content · Marketing · Legal · QA · Research
+You (Founder) --> Root Claude (PM) --> Dev | UI/UX | Content | Marketing | Legal | QA | Research
 ```
 
-- **Root Claude IS the PM** — plans sprints, makes decisions, cascades context, reviews deliverables
-- **Each agent** has a role definition, platform-specific skills, and filtered product context
-- **Orchestration queue** tells you which agent to invoke next
-- **Agent requests** file handles all inter-agent communication (handoffs, reviews, questions)
-- **Skills library** — 80+ methodology files across generic, iOS, and backend platforms
+The PM reads everything. Each specialist reads only what's relevant to their current task. That's the core idea.
+
+![Muster sprint status — PM coordinating multiple agents across a real iOS project](assets/sprint-status.png)
+
+## The Problem
+
+Most multi-agent frameworks optimize for agent **communication** — how agents pass messages to each other. But the real bottleneck is **context**. Claude Code agents forget everything between sessions. If you're building a product with design, dev, legal, marketing, and QA, you need persistent memory and a way to keep each agent focused on what matters.
+
+Muster solves this with three mechanisms:
+
+- **Three-Tier Reading Model** — Agents read ~80 lines at startup (their role + filtered context + current task). Full docs are on-demand only. Irrelevant files are never loaded.
+- **PM-as-Context-Translator** — When a decision is made, the PM doesn't tell every agent "go read the decision log." The PM updates each agent's context file with only what *that agent* needs.
+- **Files as Persistent Memory** — Agent brains, orchestration queues, handoff logs, and decision records persist as markdown files. No session starts from zero.
 
 ## Quick Start
 
-### Option 1: Setup Script
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s my-project
+cd ~/Desktop/my-project
+claude
 ```
 
-### Option 2: Manual Setup
+Then tell Root Claude your product idea. It acts as your PM — plans sprints, coordinates agents, and tells you who to invoke next.
 
-```bash
-# Create your project repo
-mkdir my-project && cd my-project && git init
+See [getting-started.md](getting-started.md) for the full step-by-step walkthrough.
 
-# Add Muster as submodule
-git submodule add https://github.com/sandhuka/muster-ai.git muster
+## How It Works
 
-# Copy templates
-mkdir -p .claude/agents
-cp muster/templates/.claude/agents/*.md .claude/agents/
-cp muster/templates/CLAUDE.md CLAUDE.md
-cp -r muster/templates/knowledge-base .
-```
-
-### After Setup
-
-1. Edit `CLAUDE.md` — fill in your product name, description, tech stack, target user
-2. Edit `knowledge-base/agent-context/*.md` — fill in per-agent product context
-3. Start discovery: `@research Here's my product idea: [description]`
-4. After research completes, ask Root Claude to plan your first sprint
-5. Follow the orchestration queue — invoke agents one by one
-
-## Architecture
-
-Muster uses a **two-repo model**:
-
-| Repo | Contents | Sharing |
-|------|----------|---------|
-| **Muster** (this repo) | Agent roles, skills, protocols, templates | Public, shared via git submodule |
-| **Your Project** | Product context, knowledge base, source code | Private, one per product |
-
-```
-my-project/
-├── .claude/agents/          # Agent startup configs (copied from templates)
-├── CLAUDE.md                # Your product info + overrides
-├── muster/                  # ← Git submodule (this repo)
-├── knowledge-base/
-│   ├── agent-context/       # Per-agent filtered product context
-│   ├── product-spec.md      # Your product specification
-│   ├── orchestration-queue.md # What to do next
-│   ├── agent-requests.md    # Inter-agent communication
-│   └── ...
-└── src/                     # Your code
-```
+1. You describe your idea to Root Claude (the PM)
+2. PM sends Research to investigate the market
+3. If viable, PM writes the product spec, plans a sprint, and queues up agent tasks
+4. You invoke agents following the PM's sequence — one at a time or in parallel across separate terminals when tasks are independent
+5. Each agent reads its filtered context, does the work, files a handoff, and promotes the next step
+6. Repeat until shipped
 
 ## Agent Roster
 
-| Agent | What They Do |
-|-------|-------------|
+| Agent | Role |
+|-------|------|
 | **PM (Root Claude)** | Plans sprints, cascades context, reviews deliverables, makes decisions |
 | **Research** | Market analysis, competitive teardowns, user insights, product validation |
 | **Developer** | Production code, architecture, testing — iOS, backend, and generic skills |
 | **UI/UX** | Wireframes, user flows, component specs, design tokens |
 | **Content** | In-app copy, blog, email, store listings, help docs |
 | **Marketing** | Growth strategy, campaigns, user acquisition, analytics |
-| **Legal** | Compliance, privacy, terms of service, IP protection |
+| **Legal** | Compliance, privacy, terms of service, IP protection (guidance, not legal advice) |
 | **QA** | Test strategy, bug tracking, release validation |
 
-## Skills Library
+## How Is This Different?
 
-Each agent has methodology files organized by platform:
+| | CrewAI / AutoGen / LangGraph | Muster |
+|---|---|---|
+| **Solves** | Agent communication | Agent memory and context efficiency |
+| **Built on** | Python libraries, API layers | Markdown files and Claude Code |
+| **Requires** | Code to define agents | No code — file-based configuration |
+| **Built from** | Framework design theory | Real product development (an iOS app) |
+| **Includes** | Agent orchestration primitives | Full operational patterns — growth caps, cascade lag prevention, decision autonomy, pre-handoff self-review |
+
+## Architecture
+
+Muster uses a two-repo model:
 
 ```
-team/<agent>/skills/
-├── generic/     # Cross-platform methodology
-├── ios/         # iOS/Swift-specific skills
-├── backend/     # Backend/Supabase-specific skills
-├── android/     # (future)
-└── web/         # (future)
+my-project/
+├── .claude/agents/        # Agent startup configs (invoke with @developer, @research, etc.)
+├── CLAUDE.md              # Your product info + overrides
+├── muster/                # <-- Git submodule (this repo)
+├── knowledge-base/
+│   ├── agent-context/     # Per-agent filtered product context (PM writes, agents read)
+│   ├── product-spec.md    # Product specification
+│   ├── orchestration-queue.md  # Who to invoke next
+│   ├── agent-requests.md  # Inter-agent communication (handoffs, reviews)
+│   └── ...
+└── src/                   # Your code
 ```
 
-Currently ships with **80+ skill files** covering iOS (SwiftUI, MVVM, testing, accessibility, App Store), backend (Supabase, TypeScript, API design, security), and generic methodology (sprint planning, decision-making, brand guidelines, growth strategy, compliance).
-
-## Key Concepts
-
-- **Context budget** — Agents read ~80-120 lines at startup (brain + context + queue). Full knowledge-base docs are read on demand only when needed.
-- **PM as context translator** — PM reads everything, then updates each agent's context file with only what they need. Agents never read the full decision log or other agents' files.
-- **Orchestration queue** — PM populates at sprint planning. Each agent reads their step, does the work, marks done, promotes the next step.
-- **Growth caps** — Every file has a size cap to prevent context window bloat (Done: max 5, Resolved: max 10, Decision log: archive at 50).
+**Muster** (this repo) contains agent roles, skills, and protocols — shared across all projects via git submodule. **Your project** contains product context, knowledge base, and source code — one per product.
 
 ## Documentation
 
-- `CLAUDE.md` — Framework rules, protocols, agent roster, PM mode
-- `system-guide.md` — Templates, extensibility docs, verification checklist
-- `multi-agent-system-overview.md` — Complete architecture guide with diagrams
+| Doc | What It Covers | Read When |
+|-----|---------------|-----------|
+| [getting-started.md](getting-started.md) | Step-by-step setup and first sprint | Setting up a new project |
+| [architecture-and-design.md](architecture-and-design.md) | Architecture deep dive — data flow, context management, how agents communicate | Evaluating whether to adopt Muster |
+| [system-guide.md](system-guide.md) | Templates, extensibility, verification checklist | Adding agents, skills, or modifying the framework |
 
 ## License
 
