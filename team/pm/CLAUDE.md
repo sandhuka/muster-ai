@@ -40,6 +40,7 @@ Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your curre
 - **roadmapping.md** — Roadmap structure from MVP through future versions, sequencing principles, milestone definitions
 - **deliverable-review.md** — Reviewing agent handoffs: universal checklist, per-agent focus areas, review depth calibration, one-pass rule
 - **product-evaluation.md** — Post-research go/no-go evaluation: founder parameter gathering, 6-dimension scoring rubric, verdict logic, evaluation output template, kill criteria
+- **skill-gap-classification.md** — Classifying new skills as generic (Muster framework) or product-specific (project directory), strict 5-criteria test, contribution trigger
 - **sprint-retrospective.md** — Sprint retro process: failure identification, fix evaluation against context budget, trim discipline
 
 ## Project Skills
