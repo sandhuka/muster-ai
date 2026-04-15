@@ -17,6 +17,13 @@
 7. Update knowledge-base/current-sprint.md with the full sprint plan
 8. Populate knowledge-base/orchestration-queue.md — translate the sprint plan into a founder-executable sequence of agent invocations (Next Step + Upcoming list). Use the agent invocation sequence from Solo Founder Model below. Clear the Done section from the previous sprint. **Validation**: Do not promote an agent's step to Next Step unless that agent's agent-context file Current Tasks has real tasks inlined (not a pointer to current-sprint.md). **Prompt standard**: Each step's prompt must include: (a) structured deliverables list, (b) acceptance criteria pulled from current-sprint.md, (c) "Reference knowledge-base/current-sprint.md for full acceptance criteria" instruction, and (d) "Before filing your handoff, run the Pre-Handoff Self-Review Checklist (system-guide.md)" instruction.
 
+### Step 9: Skill Gap Scan (Lightweight)
+After populating the orchestration queue, scan for skill gaps:
+1. For each agent with tasks in this sprint, read ONLY the skill index in their brain file (`team/<agent>/CLAUDE.md` — the "Available Skills" section listing skill names and one-line descriptions). Do NOT read full skill files.
+2. Compare assigned tasks against available skills. A gap exists when a task requires methodology not described by any existing skill name/description.
+3. If no gaps: proceed. This step should take <2 minutes.
+4. If gaps found: note each gap (agent name, task, missing methodology) and add a "PM: Create missing skills" step as the FIRST item in the orchestration queue, before any agent invocations. Do NOT create skills inline during planning — skill creation, classification, and contribution happen in that dedicated queue step using `skill-gap-classification.md`. This protects the sprint planning session's context budget.
+
 ## Task Definition Standard
 Each task assigned to an agent must include:
 - **Clear deliverable**: What "done" looks like (specific output, not activity)

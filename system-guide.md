@@ -210,6 +210,27 @@ Supplements `muster/team/<agent>/skills/generic/<methodology-skill>.md` methodol
 
 ---
 
+## Skill Contribution Protocol
+
+When PM classifies a new skill as generic (per `skill-gap-classification.md`), this protocol handles contributing it back to the Muster framework so all projects benefit.
+
+### How It Works
+
+1. PM writes the skill to `muster/team/<agent>/skills/generic/` and updates the agent's brain file skill index
+2. PM presents a summary to the user:
+   - Skill name and which agent it's for
+   - One-line description of what it does
+   - Why it's generic (which product types benefit)
+   - "This skill has been added to your project and your agents will use it this sprint. It's also generic enough to benefit the Muster framework — contributing it means your future projects (and other Muster users) get it out of the box. Say no if you'd rather keep it private to this project."
+3. **Default is contribution** — if the user confirms or says nothing, proceed. If the user says no, move the skill to `knowledge-base/agent-skills/<agent>/` instead
+4. On contribution, commit using the standard Muster submodule commit flow (Rule 13 in CLAUDE.md)
+
+### Existing Skill Fixes
+
+When a project discovers an issue with an existing generic skill (e.g., platform-specific assumptions in a generic skill), the same flow applies — fix locally in the submodule, commit via Rule 13.
+
+---
+
 ## System Extensibility
 
 ### Adding a New Feature/Vertical

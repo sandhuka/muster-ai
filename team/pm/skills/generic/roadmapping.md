@@ -7,7 +7,7 @@ Structure the product roadmap from MVP through future versions. The product brie
 
 ### MVP (v1.0)
 - Must Have features ONLY. No exceptions.
-- Single milestone: "Launch on App Store"
+- Single milestone: "Launch on target platform"
 - Ship when ALL acceptance criteria for all Must Have features are met
 - Timeline target from brief: 4-6 months
 - The goal is to prove the core value proposition works and users trust it
@@ -43,7 +43,7 @@ Structure the product roadmap from MVP through future versions. The product brie
 Must Have features pass ALL three tests:
 1. **Core loop test**: Without this, the product's core value proposition cannot be demonstrated. If a user can experience the product's differentiator without it, it's not Must Have.
 2. **Retention test**: Without this, a user who completes their first session has no reason to return tomorrow. If it doesn't drive Day 2 retention, it's probably a Should Have.
-3. **Launchability test**: Without this, the app cannot be submitted to the App Store or would fail review. Legal compliance, basic onboarding, and payment flow pass this test. Extra disciplines do not.
+3. **Launchability test**: Without this, the product cannot meet its target platform's distribution or deployment requirements. Legal compliance, basic onboarding, and payment flow pass this test. Extra disciplines do not.
 
 When in doubt, defer. A Should Have shipped in v1.1 after you've validated the core loop is better than a delayed MVP stuffed with features that dilute the core experience.
 
@@ -56,7 +56,7 @@ Each release milestone should have:
 | Feature list | Specific features included, referencing product-spec |
 | Success criteria | Quantitative targets that determine if this release achieved its goal |
 | Estimated timeline | Duration from start or calendar target |
-| Go/no-go gate | Checklist that must be satisfied before release: (1) All Must Have acceptance criteria met and verified by QA, (2) Legal review complete and sign-off documented, (3) App Store assets complete (screenshots, description, keywords), (4) Founder approval after reviewing QA sign-off, (5) Crash-free rate ≥ 99% on primary device matrix |
+| Go/no-go gate | Checklist that must be satisfied before release: (1) All Must Have acceptance criteria met and verified by QA, (2) Legal review complete and sign-off documented, (3) Platform distribution assets complete — app store: screenshots, description, keywords, review compliance; web: domain, hosting, SSL, onboarding flow, payment processing; backend/API: infrastructure provisioned, monitoring, documentation, (4) Founder approval after reviewing QA sign-off, (5) Stability target met — mobile: crash-free rate ≥ 99% on primary device matrix; web: ≥ 99.9% uptime and Core Web Vitals passing; backend/API: error rate ≤ 1% and latency within SLA |
 | Key risks | Top 2-3 risks specific to this release |
 
 ## Roadmap Maintenance

@@ -67,16 +67,7 @@ Root Claude acts as the PM directly — there is no separate PM sub-agent.
 
 **Context refresh after sub-agents**: After invoking a specialist sub-agent that may have updated PM-monitored files (`agent-requests.md`, `orchestration-queue.md`, `decision-log.md`, `ui-component-requests.md`), re-read the changed file(s) before continuing PM work.
 
-**PM skills**: Located in `muster/team/pm/skills/generic/`. Read only the skill file(s) relevant to the current task:
-- `agent-management.md` — Updating agents' context files, dependency mirroring
-- `context-cascading.md` — What each agent needs to know, cascading principles
-- `decision-making.md` — Decision categorization, autonomy matrix, ICE prioritization
-- `sprint-planning.md` — Sprint cycle, agent sequencing, task definition
-- `product-spec-writing.md` — Product spec structure and standards
-- `brand-guidelines.md` — Brand guidelines structure
-- `roadmapping.md` — Roadmap and milestone definitions
-- `deliverable-review.md` — Review protocol for agent deliverables
-- `sprint-retrospective.md` — Sprint retrospective process
+**PM skills**: See `muster/team/pm/CLAUDE.md` → "Available Skills" for the full index. Read only the skill file(s) relevant to the current task.
 
 **PM monitoring duties** (performed when PM files are loaded):
 - If `agent-requests.md` has any `Status: done` entries still in Active Requests or Active Handoffs → move them to Resolved immediately, before any other PM work
