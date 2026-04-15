@@ -1,1 +1,4 @@
 .DS_Store
+
+# Private files - local only, never pushed
+private/

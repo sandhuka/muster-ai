@@ -12,6 +12,6 @@
 ## Upcoming
 <!-- Ordered sequence of remaining steps for this sprint. -->
 
-## Done (Last 5)
-<!-- Completed steps. PM clears at each new sprint. Keep max 5 entries. -->
+## Done (Last 10)
+<!-- Completed steps. PM clears at each new sprint. Keep max 10 entries. -->
 <!-- Format: - [DATE] [Agent]: [One-line summary] -->

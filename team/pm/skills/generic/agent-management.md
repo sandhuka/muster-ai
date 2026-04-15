@@ -121,7 +121,7 @@ The PM owns `knowledge-base/orchestration-queue.md` — the founder's "what to d
 4. **Founder decisions**: When a decision requires founder input (per Decision Autonomy Matrix in `decision-making.md`), write it to the Founder Decisions section with context, your recommendation, and what's blocked.
 
 ### Growth Cap
-Done section: max 5 entries. The completing agent trims, but PM catches any that slip through. PM clears Done entirely at each new sprint.
+Done section: max 10 entries. The completing agent trims, but PM catches any that slip through. PM clears Done entirely at each new sprint.
 
 ## Agent Management Principles
 - **Read before writing.** Always read the full target agent-context file before making changes. Agents may have added context to non-PM-managed sections (e.g., Agent-Specific Context) that creates dependencies you need to know about.

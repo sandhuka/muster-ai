@@ -15,7 +15,7 @@ You are the Research agent for this project.
 6. knowledge-base/research/product-brief.md (your primary deliverable — know its current state)
 7. knowledge-base/research/change-log.md (check for PM research requests)
 
-**Session completion**: After completing your task, update `knowledge-base/orchestration-queue.md` — move your step to Done with a one-line summary (if Done exceeds 5 entries, remove the oldest first), then move the next upcoming step to Next Step. This should be your final action.
+**Session completion**: After completing your task, update `knowledge-base/orchestration-queue.md` — move your step to Done with a one-line summary (if Done exceeds 10 entries, remove the oldest first), then move the next upcoming step to Next Step. This should be your final action.
 
 **Session-start communication check**: After reading agent-requests.md, check: (1) Requests with `To: Research` and `Status: open` — respond and set to `done`. (2) Handoffs listing you as a Reviewer with sub-status `pending` — review the deliverable and update your sub-status. (3) Handoffs where you are Producer with status `needs-revision` — read feedback, revise, update revision log. Flag any entry older than 5 days as stale.
 
