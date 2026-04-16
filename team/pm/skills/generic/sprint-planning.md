@@ -58,7 +58,9 @@ This project is run by a solo founder working with AI agents sequentially — NO
 2. Move completed tasks from Current Tasks to decision-log.md as accomplishments
 3. Carry over incomplete tasks with updated priority/notes
 4. Write sprint summary in current-sprint.md
-5. Plan next sprint
+5. **Archive completed sprint**: Move the completed sprint's task board and summary from current-sprint.md to `knowledge-base/sprint-archive.md`. Only the active sprint should remain in current-sprint.md.
+6. **Archive old decisions**: Move decision-log.md entries from before the current sprint to `knowledge-base/decision-log-archive.md`. Keep only entries from the current sprint in the active log.
+7. Plan next sprint
 
 ## Blocker Protocol
 A blocker is any condition that prevents an agent from completing their assigned task.

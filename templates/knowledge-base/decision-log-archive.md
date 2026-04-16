@@ -1,3 +1,3 @@
 # Decision Log Archive
-<!-- Decisions moved here when the active log exceeds 50 entries. -->
+<!-- Decisions from before the current sprint are moved here at sprint closeout. -->
 <!-- These are historical reference — not actively monitored. -->
