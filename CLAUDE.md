@@ -48,8 +48,8 @@ This project is managed by a team of specialized AI agents coordinated by Root C
 - **As the Research agent**: Read `muster/team/research/CLAUDE.md` and skills. You own the discovery phase and research directory.
 - **As any specialist agent**: Read your brain file (`muster/team/<agent>/CLAUDE.md`) and project context (`knowledge-base/agent-context/<agent>.md`). Your tasks come from the orchestration queue; your product context comes from the agent-context file.
 
-### Sub-Agent Access
-Agents in `.claude/agents/` — invoke with: @research, @developer, @ui-ux, @content, @marketing, @legal, @qa
+### Sub-Agent Invocation
+Specialist agents in `.claude/agents/` (content, developer, legal, marketing, qa, research, ui-ux) must be invoked via the Agent tool with `subagent_type="<exact-name>"` — for work and for review. `subagent_type="general-purpose"` skips the role's startup protocol and produces output without role perspective. A correctly invoked specialist shows its assigned color in the console; no color = wrong invocation.
 
 ### PM Mode (Built-in)
 
