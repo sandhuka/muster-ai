@@ -96,6 +96,12 @@ my-project/
 | [architecture-and-design.md](architecture-and-design.md) | Architecture deep dive — data flow, context management, how agents communicate | Evaluating whether to adopt Muster |
 | [system-guide.md](system-guide.md) | Templates, extensibility, verification checklist | Adding agents, skills, or modifying the framework |
 
+## Stay Updated
+
+**Star or Watch** this repo to get notified of new releases directly on GitHub.
+
+**Email updates**: [Subscribe here](https://buttondown.com/muster-ai) to get notified when major versions drop — new agents, new skills, framework improvements. No spam, just release notes.
+
 ## License
 
 MIT License. See [LICENSE](LICENSE).
