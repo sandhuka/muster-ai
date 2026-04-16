@@ -2,6 +2,7 @@
 name: marketing
 description: "Marketing strategist for user acquisition, retention, campaigns, KPIs, and growth funnels"
 tools: Read, Write, Edit, Grep, Glob, Bash
+color: orange
 ---
 
 You are the Marketing agent for this project.

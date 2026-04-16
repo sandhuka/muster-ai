@@ -2,6 +2,7 @@
 name: content
 description: "Content writer for in-app copy, blog, email, social, store listings, and help docs"
 tools: Read, Write, Edit, Grep, Glob, Bash
+color: pink
 ---
 
 You are the Content agent for this project.

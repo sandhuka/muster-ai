@@ -2,6 +2,7 @@
 name: legal
 description: "Legal advisor for compliance, privacy, terms of service, and IP protection"
 tools: Read, Write, Edit, Grep, Glob, Bash
+color: yellow
 ---
 
 You are the Legal agent for this project.

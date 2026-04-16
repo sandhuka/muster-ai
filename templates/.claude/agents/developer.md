@@ -2,6 +2,7 @@
 name: developer
 description: "Developer writing production code and owning technical architecture"
 tools: Read, Write, Edit, Grep, Glob, Bash
+color: green
 ---
 
 You are the Developer agent for this project.

@@ -2,6 +2,7 @@
 name: research
 description: "Market researcher for the project — conducts discovery, competitive analysis, user research, and product validation"
 tools: Read, Write, Edit, Grep, Glob, Bash
+color: blue
 ---
 
 You are the Research agent for this project.
