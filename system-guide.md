@@ -11,6 +11,7 @@ For setup, see [getting-started.md](getting-started.md). For architecture and de
 Every agent brain file follows this structure:
 - **Role**: 2-3 sentence role definition
 - **Cross-Agent Dependencies**: Generic role relationships (applies to ANY project)
+- **Pre-Handoff Self-Review**: One-line pointer to the checklist in `muster/system-guide.md`, making self-review non-optional before any handoff
 - **Available Skills**: Index of skill files in `team/<agent>/skills/{generic,platform}/`
 - **Project Skills**: Note directing agents to check their agent-context file for product-specific skills
 - **Reference Documents**: Links to project-relative knowledge-base/ files the agent reads on demand
@@ -101,7 +102,7 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 
 ### Safety Checklist
 
-- [ ] Brain file has Role, Cross-Agent Dependencies, Available Skills, Reference Documents sections
+- [ ] Brain file has Role, Cross-Agent Dependencies, Pre-Handoff Self-Review, Available Skills, Reference Documents sections
 - [ ] No product-specific content in the Muster brain file
 - [ ] Agent-context file exists in the project with PM-managed product context
 - [ ] Dependencies mirrored in counterpart agents' brain files
@@ -303,6 +304,17 @@ Run **once after completing a batch of related framework changes** — not after
 
 ## Workflow Protocols
 
+### Invocation Patterns
+
+Muster supports two specialist invocation patterns. Use the right one for the moment.
+
+- **Option A (PM-mediated)** — Founder asks Root Claude a PM-type question; PM bootstraps the 7 monitoring files (~600 lines), crafts a tailored prompt for the specialist, and reviews the handoff on return. Use for: sprint planning, scope changes, handoff review, cross-agent coordination, decisions requiring product judgment.
+- **Option B (direct)** — Founder reads the next step in `orchestration-queue.md` and invokes the listed specialist with the queue's prompt verbatim. No PM bootstrap. Use for: routine execution within a planned sprint. This is the hot loop — the queue file is literally designed around it.
+
+**Default:** Option B for routine execution between handoff-review moments; Option A at planning and review boundaries.
+
+**Closeout guarantee (both patterns):** specialists run the Pre-Handoff Self-Review Checklist before filing any handoff. Item 9 enforces queue + decision-log update, so Option B stays safe without PM reconciling state after every step. Brain files reference this checklist to make it non-optional regardless of whether the invoking prompt mentions it.
+
 ### Agent Communication Protocol
 
 Agents communicate via `knowledge-base/agent-requests.md` using two entry types. Format templates also live as HTML comments in the file itself.
@@ -361,6 +373,7 @@ Before filing a handoff, the producing agent MUST run this self-review:
 6. **Open questions**: List unresolved questions explicitly in the revision log.
 7. **Missing assets**: List assets the agent cannot produce (logos, illustrations) as founder dependencies.
 8. **Durability discipline** (Rule 15): Strip bug IDs, handoff IDs, session-date stamps, sprint / wave references, "previously / now" framings, and specific-agent mentions from durable artifacts (source code, product spec, design specs, brand docs, architecture, test strategy, foundational assumptions, agent-skills). That history belongs in `agent-requests.md`, `orchestration-queue.md`, `current-sprint.md`, `decision-log.md`, and git commits.
+9. **Session closeout**: Update `orchestration-queue.md` — mark your step Done (one-line summary; trim oldest if Done exceeds 10) and promote the next Upcoming step to Next Step. Append any resolved decisions to `decision-log.md`. If your handoff needs review before the next step proceeds, add an "Awaiting review" note to the Done entry.
 
 If any check fails, fix before filing. Log what self-review caught in the revision log.
 
