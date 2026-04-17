@@ -29,6 +29,9 @@ When a decision is made or a plan changes:
 - PM provides to Research: change requests via knowledge-base/research/change-log.md
 - PM monitors: `knowledge-base/ui-component-requests.md` — surfaces pending component requests to founder
 
+## Pre-Handoff Self-Review
+Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 9: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
+
 ## Available Skills
 Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your current task:
 - **agent-management.md** — Protocol for updating agents' context files, dependency mirroring, batch updates
