@@ -360,6 +360,7 @@ Before filing a handoff, the producing agent MUST run this self-review:
 5. **Foundational assumptions**: Read `foundational-assumptions.md`. Verify consistency with active assumptions. Use EXACT terminology — flag any new terms not in assumptions or product spec.
 6. **Open questions**: List unresolved questions explicitly in the revision log.
 7. **Missing assets**: List assets the agent cannot produce (logos, illustrations) as founder dependencies.
+8. **Durability discipline** (Rule 15): Strip bug IDs, handoff IDs, session-date stamps, sprint / wave references, "previously / now" framings, and specific-agent mentions from durable artifacts (source code, product spec, design specs, brand docs, architecture, test strategy, foundational assumptions, agent-skills). That history belongs in `agent-requests.md`, `orchestration-queue.md`, `current-sprint.md`, `decision-log.md`, and git commits.
 
 If any check fails, fix before filing. Log what self-review caught in the revision log.
 
