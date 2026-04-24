@@ -88,6 +88,104 @@ prompt_input() {
     printf "%s" "$answer"
 }
 
+# Interactive single-select menu. Reads arrow keys from /dev/tty so it
+# works under `curl | bash`. Falls back to a numbered prompt when stdout
+# is not a TTY or /dev/tty is unreadable.
+# Usage:  select_one "Header text:" "Option 1" "Option 2" ...
+# Sets:   SELECTED_INDEX (0-based)
+SELECTED_INDEX=0
+select_one() {
+    local header="$1"; shift
+    local -a options=("$@")
+    local n=${#options[@]}
+    local selected=0
+
+    # Fallback: no tty (piped or redirected) → numbered prompt
+    if [ ! -r /dev/tty ] || [ ! -t 1 ]; then
+        printf "%s\n" "$header"
+        local i
+        for (( i=0; i<n; i++ )); do
+            printf "  (%d) %s\n" $((i+1)) "${options[$i]}"
+        done
+        local raw
+        while :; do
+            printf "> "
+            IFS= read -r raw || { SELECTED_INDEX=-1; return 1; }
+            case "$raw" in
+                ''|*[!0-9]*) continue ;;
+            esac
+            if [ "$raw" -ge 1 ] && [ "$raw" -le "$n" ]; then
+                SELECTED_INDEX=$((raw-1))
+                return 0
+            fi
+        done
+    fi
+
+    local saved_stty
+    saved_stty="$(stty -g < /dev/tty)"
+    trap "stty '$saved_stty' < /dev/tty; printf '\033[?25h' > /dev/tty" EXIT
+    trap "stty '$saved_stty' < /dev/tty; printf '\033[?25h' > /dev/tty; exit 130" INT
+
+    stty -icanon -echo min 1 time 0 < /dev/tty
+    printf '\033[?25l' > /dev/tty
+
+    printf "%s\n\n" "$header" > /dev/tty
+
+    local redraw_lines=$((n + 2))  # n options + blank + footer
+    local first=1 i key rest
+
+    while :; do
+        if [ $first -eq 0 ]; then
+            printf '\033[%dA\033[J' "$redraw_lines" > /dev/tty
+        fi
+        first=0
+        for (( i=0; i<n; i++ )); do
+            if [ $i -eq $selected ]; then
+                printf "  %s❯ %s%s\n" "$CYAN$BOLD" "${options[$i]}" "$RESET" > /dev/tty
+            else
+                printf "    %s\n" "${options[$i]}" > /dev/tty
+            fi
+        done
+        printf "\n  %s↑/↓ to move, Enter to select, 1-9 to pick directly%s\n" "$DIM" "$RESET" > /dev/tty
+
+        IFS= read -rsn1 key < /dev/tty
+        case "$key" in
+            $'\033')
+                IFS= read -rsn2 -t 1 rest < /dev/tty || true
+                case "$rest" in
+                    '[A') [ $selected -gt 0 ] && selected=$((selected-1)) ;;
+                    '[B') [ $selected -lt $((n-1)) ] && selected=$((selected+1)) ;;
+                esac
+                ;;
+            '')
+                break
+                ;;
+            k|K) [ $selected -gt 0 ] && selected=$((selected-1)) ;;
+            j|J) [ $selected -lt $((n-1)) ] && selected=$((selected+1)) ;;
+            [1-9])
+                local num=$((key - 1))
+                if [ $num -ge 0 ] && [ $num -lt $n ]; then
+                    selected=$num
+                    break
+                fi
+                ;;
+        esac
+    done
+
+    stty "$saved_stty" < /dev/tty
+    printf '\033[?25h' > /dev/tty
+    trap - EXIT INT
+
+    # Clear the entire menu (header + blank + options + blank + footer)
+    # and replace it with a single confirmation line.
+    printf '\033[%dA\033[J' "$((redraw_lines + 2))" > /dev/tty
+    printf "%s\n" "$header" > /dev/tty
+    printf "  %s✓%s %s\n\n" "$GREEN$BOLD" "$RESET" "${options[$selected]}" > /dev/tty
+
+    SELECTED_INDEX=$selected
+    return 0
+}
+
 iso_now() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
 
 state_has_step() {
@@ -168,20 +266,25 @@ What this will NOT do:
   - Overwrite docs without a diff + your approval
   - Cascade any context to agents until you've approved the source documents
 
-Your repo shape (git organization):
-  (1) Single git repo — any surfaces and tiers inside (monorepo,
-      frontend+backend colocated, single-surface product; all the same)
-  (2) Multi-repo parent — multiple git repos sitting inside a parent folder
-  (3) Cancel — I want to read the guide first
+About the repo-shape options:
+  • Single git repo     — one repo for the whole project. Covers monorepos,
+                          frontend+backend colocated, and single-surface
+                          products (iOS app, web app, CLI, etc.)
+  • Multi-repo parent   — separate repos for different platforms/surfaces
+                          sitting inside a parent folder
 
 PROMPT
 
-    CHOICE="$(prompt_input "> ")"
-    case "$CHOICE" in
-        1) REPO_SHAPE="single" ;;
-        2) REPO_SHAPE="multi-repo-parent" ;;
-        3) say "Cancelled. See muster/adopting-existing-project.md for the guide."; exit 0 ;;
-        *) err "Invalid choice. Re-run and pick 1, 2, or 3."; exit 1 ;;
+    select_one "Your repo shape (git organization):" \
+        "Single git repo" \
+        "Multi-repo parent" \
+        "Cancel — read the guide first"
+
+    case "$SELECTED_INDEX" in
+        0) REPO_SHAPE="single" ;;
+        1) REPO_SHAPE="multi-repo-parent" ;;
+        2) say "Cancelled. See muster/adopting-existing-project.md for the guide."; exit 0 ;;
+        *) err "Invalid selection."; exit 1 ;;
     esac
 fi
 
