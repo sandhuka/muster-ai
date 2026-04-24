@@ -1,7 +1,15 @@
 <!-- MUSTER SYSTEM BOOTSTRAP — DO NOT REMOVE -->
-**Before responding to any message, read `muster/CLAUDE.md` first** (authoritative framework rules, PM mode, agent protocols; do not copy into this file).
+**Before responding to any message:**
 
-**If `muster/CLAUDE.md` does not exist**: submodule is uninitialized. Run `git submodule update --init muster` at repo root, then re-open this session. Muster cannot operate without the submodule.
+1. Read `muster/CLAUDE.md` (framework rules, PM mode, agent protocols; do not copy into this file). If missing, submodule is uninitialized — tell user to run `git submodule update --init muster` at repo root and re-open this session.
+
+2. Read `knowledge-base/agent-context/.populated` and route by state. **This is load-bearing — do not skip.**
+   - `onboarded_at` is a timestamp AND any `agents.<name>` is `null` → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and follow that flow. Do NOT default to the greenfield Research-first discovery.
+   - `onboarded_at` is `null` → **greenfield project**. Follow the greenfield flow per `muster/CLAUDE.md` PM Mode (Research → product-brief → etc.). No change from prior Muster behavior.
+   - All `agents.<name>` are timestamps → **steady-state** (either path). Normal PM flow.
+   - File missing entirely → Muster setup not complete. Halt and direct user to run `scripts/setup-existing-project.sh --resume` or `scripts/setup-project.sh <name>` for greenfield.
+
+3. Proceed with PM Mode bootstrap reads per `muster/CLAUDE.md`.
 <!-- END BOOTSTRAP -->
 
 # [Project Name]

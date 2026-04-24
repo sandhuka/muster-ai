@@ -56,9 +56,15 @@ Specialist agents in `.claude/agents/` (content, developer, legal, marketing, qa
 
 Root Claude acts as the PM directly — there is no separate PM sub-agent.
 
-**First PM question in a session**: When the user asks a PM-type question (project status, sprint planning, agent coordination, cascading, decision-making) and you have not yet read the PM monitoring files this session, read these files first (paths are relative to the project root, not the Muster repo):
+**Priority-zero routing check** (runs before any other bootstrap reads). Read `knowledge-base/agent-context/.populated` and route:
+- `onboarded_at` is a timestamp AND any `agents.<name>` is `null` → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run its flow (Phase 1 orientation first). Do NOT continue to the First PM question bootstrap below — that path is for greenfield / steady-state. If `reverse-discovery.md` is missing, halt: `"Onboarding skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-existing-project.sh'."`
+- `onboarded_at` is `null` → **greenfield project**. Continue to First PM question bootstrap below. Follow greenfield flow per `getting-started.md` / Discovery Phase in `system-guide.md`. No change from prior Muster behavior.
+- All `agents.<name>` are timestamps → **steady-state** (either path). Continue to First PM question bootstrap below.
+- File missing entirely → halt: `"Muster setup incomplete. Run 'scripts/setup-existing-project.sh --resume' or 'scripts/setup-project.sh <name>' for greenfield."`
+
+**First PM question in a session** (greenfield / steady-state path — reached only after priority-zero check does not route to onboarding): When the user asks a PM-type question (project status, sprint planning, agent coordination, cascading, decision-making) and you have not yet read the PM monitoring files this session, read these files first (paths are relative to the project root, not the Muster repo):
 - `muster/team/pm/CLAUDE.md` (PM brain — role, tasks, context, skill index)
-- `knowledge-base/agent-context/.populated` (specialist populate state; triggers onboarding skill-load or JIT populate — see below)
+- `knowledge-base/agent-context/.populated` (specialist populate state; already read during priority-zero — re-use)
 - `knowledge-base/decision-log.md` (decision history)
 - `knowledge-base/current-sprint.md` (active sprint)
 - `knowledge-base/ui-component-requests.md` (check for pending component requests — surface to founder)
@@ -66,10 +72,7 @@ Root Claude acts as the PM directly — there is no separate PM sub-agent.
 - `knowledge-base/agent-requests.md` (communication queue — requests, handoffs, reviews)
 - `knowledge-base/orchestration-queue.md` (execution sequence — what the founder should do next)
 
-**`.populated` triggers**:
-- Null specialist entry + onboarding question → read `muster/team/pm/skills/generic/reverse-discovery.md` before responding. If missing, halt: `"Onboarding skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-existing-project.sh'."`
-- Null specialist entry + task for that specialist → auto-handle JIT populate per PM brain file's `JIT Populate` section. User-transparent.
-- `.populated` missing entirely → halt: `"Muster setup incomplete. Run 'scripts/setup-existing-project.sh --resume'."`
+**JIT populate on Task HALT return**: when a specialist returns a Task result starting with `HALT: agent-context null`, that specialist's `.populated` entry was null and halted on first invocation. Auto-handle per the PM brain file's `JIT Populate` section (full procedure in `context-cascading.md` → Just-in-time mode). User-transparent. This is a separate trigger from the priority-zero check above — it fires mid-session when an un-populated specialist is invoked, not at session start.
 
 **Subsequent PM questions**: Do not re-read these files. Use the context already in the conversation.
 

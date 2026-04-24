@@ -30,9 +30,55 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-# ---------- helpers ----------
+# ---------- color helpers ----------
+# Enable ANSI colors only when stdout is a TTY and NO_COLOR is not set.
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+    BOLD=$'\033[1m'
+    DIM=$'\033[2m'
+    GREEN=$'\033[32m'
+    CYAN=$'\033[36m'
+    YELLOW=$'\033[33m'
+    RED=$'\033[31m'
+    RESET=$'\033[0m'
+else
+    BOLD=''; DIM=''; GREEN=''; CYAN=''; YELLOW=''; RED=''; RESET=''
+fi
+
+# ---------- output helpers ----------
 say() { printf "%s\n" "$*"; }
-err() { printf "Error: %s\n" "$*" >&2; }
+err() { printf "%sError:%s %s\n" "$RED$BOLD" "$RESET" "$*" >&2; }
+
+section_header() {
+    # Usage: section_header "Step 1: Set up Muster"
+    local title="$1"
+    printf "\n%s━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%s\n" "$CYAN$BOLD" "$RESET"
+    printf "%s  %s%s\n" "$CYAN$BOLD" "$title" "$RESET"
+    printf "%s━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%s\n\n" "$CYAN$BOLD" "$RESET"
+}
+
+substep_start() {
+    # Usage: substep_start "1.1" "Description"
+    printf "  %s→%s %s%s%s %s\n" "$DIM" "$RESET" "$BOLD" "$1" "$RESET" "$2"
+}
+
+substep_done() {
+    # Usage: substep_done "1.1" "Description"
+    printf "  %s✓%s %s%s%s %s\n" "$GREEN$BOLD" "$RESET" "$BOLD" "$1" "$RESET" "$2"
+}
+
+substep_skip() {
+    # Usage: substep_skip "1.1" "Description" "(nothing to do)"
+    printf "  %s·%s %s%s%s %s %s(%s)%s\n" "$DIM" "$RESET" "$BOLD" "$1" "$RESET" "$2" "$DIM" "$3" "$RESET"
+}
+
+completion_banner() {
+    printf "\n"
+    printf "%s╔════════════════════════════════════════════════════════════╗%s\n" "$GREEN$BOLD" "$RESET"
+    printf "%s║                                                            ║%s\n" "$GREEN$BOLD" "$RESET"
+    printf "%s║              MUSTER SETUP COMPLETE                         ║%s\n" "$GREEN$BOLD" "$RESET"
+    printf "%s║                                                            ║%s\n" "$GREEN$BOLD" "$RESET"
+    printf "%s╚════════════════════════════════════════════════════════════╝%s\n\n" "$GREEN$BOLD" "$RESET"
+}
 
 prompt_input() {
     # Read one line of input from /dev/tty so that `curl | bash` still works.
@@ -188,12 +234,12 @@ if [ -d "knowledge-base" ] && [ "$RESUME" -eq 0 ]; then
     fi
 fi
 
-# ---------- step: archive_existing ----------
-if ! state_has_step "archive_existing"; then
-    say ""
-    say "Step: archive existing CLAUDE.md / .claude/agents (if any)"
+section_header "Step 1: Set up Muster"
 
+# ---------- step 1.1: archive_existing ----------
+if ! state_has_step "archive_existing"; then
     mkdir -p "$ARCHIVE_DIR"
+    archived_anything=0
 
     if [ -f "CLAUDE.md" ]; then
         if [ -f "$ARCHIVE_DIR/CLAUDE.md.pre-muster" ]; then
@@ -201,7 +247,7 @@ if ! state_has_step "archive_existing"; then
             exit 1
         fi
         mv CLAUDE.md "$ARCHIVE_DIR/CLAUDE.md.pre-muster"
-        say "  Archived CLAUDE.md -> $ARCHIVE_DIR/CLAUDE.md.pre-muster"
+        archived_anything=1
     fi
 
     if [ -d ".claude/agents" ]; then
@@ -210,31 +256,37 @@ if ! state_has_step "archive_existing"; then
             exit 1
         fi
         mv .claude/agents "$ARCHIVE_DIR/claude-agents.pre-muster"
-        say "  Archived .claude/agents/ -> $ARCHIVE_DIR/claude-agents.pre-muster/"
+        archived_anything=1
+    fi
+
+    if [ "$archived_anything" -eq 1 ]; then
+        substep_done "1.1" "Archive existing CLAUDE.md / .claude/agents  →  $ARCHIVE_DIR/"
+    else
+        substep_skip "1.1" "Archive existing CLAUDE.md / .claude/agents" "nothing to archive"
     fi
 
     write_state "$REPO_SHAPE" archive_existing
+else
+    substep_done "1.1" "Archive existing CLAUDE.md / .claude/agents"
 fi
 
-# ---------- step: submodule_add ----------
+# ---------- step 1.2: submodule_add ----------
 if ! state_has_step "submodule_add"; then
-    say ""
-    say "Step: add Muster as git submodule"
-
     if [ -d "muster" ]; then
         err "muster/ already exists. Resolve manually (git submodule deinit / rm -rf) before resuming."
         exit 1
     fi
 
-    git submodule add "$MUSTER_URL" muster
+    substep_start "1.2" "Add Muster as git submodule (cloning — this takes a few seconds)"
+    git submodule add --quiet "$MUSTER_URL" muster
+    substep_done "1.2" "Add Muster as git submodule"
     write_state "$REPO_SHAPE" archive_existing submodule_add
+else
+    substep_done "1.2" "Add Muster as git submodule"
 fi
 
-# ---------- step: scaffold_templates ----------
+# ---------- step 1.3: scaffold_templates ----------
 if ! state_has_step "scaffold_templates"; then
-    say ""
-    say "Step: scaffold knowledge-base + agent bootloaders"
-
     mkdir -p .claude/agents
     cp muster/templates/.claude/agents/*.md .claude/agents/
 
@@ -247,14 +299,14 @@ if ! state_has_step "scaffold_templates"; then
     # Remove template .DS_Store files if any
     find . -name ".DS_Store" -delete 2>/dev/null || true
 
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders"
     write_state "$REPO_SHAPE" archive_existing submodule_add scaffold_templates
+else
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders"
 fi
 
-# ---------- step: initialize_populated_file ----------
+# ---------- step 1.4: initialize_populated_file ----------
 if ! state_has_step "initialize_populated_file"; then
-    say ""
-    say "Step: initialize agent-context/.populated with onboarded_at"
-
     ONBOARDED_AT="$(iso_now)"
     # PM (Root Claude) is always "populated" — it's the populator, not a populate target.
     # All specialists start null; PM writes their entries during reverse discovery.
@@ -275,26 +327,26 @@ if ! state_has_step "initialize_populated_file"; then
   "lock": null
 }
 EOF
-
+    substep_done "1.4" "Initialize .populated state file (with onboarded_at)"
     write_state "$REPO_SHAPE" archive_existing submodule_add scaffold_templates initialize_populated_file
+else
+    substep_done "1.4" "Initialize .populated state file"
 fi
 
-# ---------- step: agent_skills_created ----------
+# ---------- step 1.5: agent_skills_created ----------
 if ! state_has_step "agent_skills_created"; then
-    say ""
-    say "Step: create agent-skills directories"
     for agent in content developer legal marketing pm qa research ui-ux; do
         mkdir -p "knowledge-base/agent-skills/$agent"
         touch "knowledge-base/agent-skills/$agent/.gitkeep"
     done
+    substep_done "1.5" "Create agent-skills/ directories (8 agents)"
     write_state "$REPO_SHAPE" archive_existing submodule_add scaffold_templates initialize_populated_file agent_skills_created
+else
+    substep_done "1.5" "Create agent-skills/ directories"
 fi
 
-# ---------- step: gitignore_updated ----------
+# ---------- step 1.6: gitignore_updated ----------
 if ! state_has_step "gitignore_updated"; then
-    say ""
-    say "Step: update .gitignore"
-
     # Append only missing entries. Do not touch existing entries.
     GITIGNORE_ENTRIES=(
         ".DS_Store"
@@ -307,46 +359,48 @@ if ! state_has_step "gitignore_updated"; then
     )
 
     touch .gitignore
+    added_any=0
     for entry in "${GITIGNORE_ENTRIES[@]}"; do
         if ! grep -qxF "$entry" .gitignore 2>/dev/null; then
             printf "%s\n" "$entry" >> .gitignore
+            added_any=1
         fi
     done
-
+    if [ "$added_any" -eq 1 ]; then
+        substep_done "1.6" "Update .gitignore (added missing Muster entries)"
+    else
+        substep_skip "1.6" "Update .gitignore" "already up to date"
+    fi
     write_state "$REPO_SHAPE" archive_existing submodule_add scaffold_templates initialize_populated_file agent_skills_created gitignore_updated
+else
+    substep_done "1.6" "Update .gitignore"
 fi
 
 # ---------- cleanup: remove state file on success ----------
 rm -f "$STATE_FILE"
 
-# ---------- final summary ----------
-cat <<'DONE'
+# ---------- completion banner + Step 2 ----------
+completion_banner
 
-================================================================
-  Muster setup complete.
-================================================================
+section_header "Step 2: Open Claude Code and kick off onboarding"
 
-Next step:
+printf "  Run:\n"
+printf "    %s%s%s\n\n" "$BOLD$CYAN" "claude" "$RESET"
+printf "  Then send Claude this first message:\n"
+printf "    %s%s%s\n\n" "$BOLD$GREEN" "Let's start the existing-project onboarding." "$RESET"
+printf "  %sAny first message works%s — PM reads the .populated state file on\n" "$DIM" "$RESET"
+printf "  %sthe first message it processes, detects existing-project state, and%s\n" "$DIM" "$RESET"
+printf "  %sroutes to the guided 11-phase onboarding flow.%s\n\n" "$DIM" "$RESET"
 
-  claude
+printf "  %sWhat happens next (at a glance):%s\n" "$BOLD" "$RESET"
+printf "    1. 90-second Muster orientation\n"
+printf "    2. CLAUDE.md merge (if you had one)\n"
+printf "    3. Free-form brain-dump about your product  %s←  highest-leverage step%s\n" "$YELLOW" "$RESET"
+printf "    4. Shallow code audit (read-only)\n"
+printf "    5. Per-item review of the audit              %s←  second highest-leverage step%s\n" "$YELLOW" "$RESET"
+printf "    6. Adaptive questionnaire\n"
+printf "    7. Review of populated knowledge-base files\n"
+printf "    8. Sprint 1 planning\n\n"
 
-When the session opens, Root Claude (PM) will detect existing-project
-mid-onboarding, read the reverse-discovery skill, and guide you through:
-
-  1. A short Muster orientation (~90 seconds)
-  2. CLAUDE.md merge (if you had one)
-  3. A free-form brain-dump about your product
-  4. A shallow code audit (read-only)
-  5. Per-item review of the audit
-  6. An adaptive questionnaire
-  7. Review of the populated knowledge-base files
-  8. Sprint 1 planning
-
-Total founder time: about 2 hours for a typical project.
-
-If setup was interrupted mid-run, re-run with --resume to continue:
-
-  ./setup-existing-project.sh --resume
-
-For the full guide, see: muster/adopting-existing-project.md
-DONE
+printf "  Total founder time: about %s2 hours%s for a typical project.\n\n" "$BOLD" "$RESET"
+printf "  Full guide: %smuster/adopting-existing-project.md%s\n\n" "$CYAN" "$RESET"

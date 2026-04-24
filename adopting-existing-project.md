@@ -59,13 +59,17 @@ Your project folder is inside another git repo (e.g., a tracked `~/Documents/` p
 
 Reads `.muster-setup-state.json` and picks up where it stopped.
 
-## Step 2 — Open Claude Code
+## Step 2 — Open Claude Code and Kick Off
 
 ```bash
 claude
 ```
 
-Root Claude detects existing-project onboarding (from the `.populated` state file) and starts the guided flow. No special command needed.
+Then send your first message to Claude. A clean starter:
+
+> Let's start the existing-project onboarding.
+
+**Any first message works** — PM reads `.populated` on the first message it processes, detects the existing-project state, and routes to the guided flow. What matters is that you send *something*. Claude Code sessions wait for user input before reading project files — they don't auto-start.
 
 ## What to Expect
 
