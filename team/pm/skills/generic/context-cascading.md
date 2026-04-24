@@ -128,3 +128,26 @@ Research files (`knowledge-base/research/*.md`) are owned by the Research agent 
 
 ### Enforcement
 The "Touched" field in each decision log entry forces enumeration of every file modified. If an agent file should have been touched but is missing from the list, the update was likely missed. Review the "Touched" list against the "Impact" list -- every impacted agent should have a corresponding file touch.
+
+## Just-in-time mode
+
+Activated when a specialist returns `HALT: agent-context null (first invocation)` from a Task invocation. Goal: populate the agent's agent-context file from the current knowledge base, apply any decisions accrued since onboarding, then re-invoke the agent with the original task in the same turn. User-transparent — surface only a brief "populating <agent> context (~30s, one-time)…" note; do not treat as an error.
+
+### Procedure
+
+1. **Acquire the lock**. Read `knowledge-base/agent-context/.populated`. If `lock` is not `null` and `lock.since` is within 15 minutes, another populate is in progress — wait and retry when it clears. If `lock.since` is older than 15 minutes, treat as stale and overwrite. Otherwise set `lock` to `{"agent": "<name>", "since": "<now-iso8601>"}`.
+
+2. **Read sources and filter**. Read the knowledge-base files this agent's role needs (per the per-agent guide above — each role has different key references). Also read `current-sprint.md` for this agent's tasks and `knowledge-base/agent-skills/<agent>/` if any product-specific skills exist.
+
+3. **Write the agent-context file**. Populate `knowledge-base/agent-context/<agent>.md` using the per-agent filter at the top of this skill. Keep Product Context to 10-20 lines. Reference docs, don't duplicate.
+
+4. **Apply stub-accrued decisions** (Rule 11). Read `decision-log.md` (and `decision-log-archive.md` if it exists) for entries dated at or after `.populated.onboarded_at`. Filter entries whose Impact field names this agent. Apply each applicable decision's effects as part of the populate. This closes out the "stub accrues; applied at first populate" guarantee.
+
+5. **Release the lock and timestamp**. Set `.populated.agents.<name>` to current ISO-8601 timestamp; set `.populated.lock` to `null`.
+
+6. **Re-invoke**. Immediately re-invoke the agent via Task tool with the ORIGINAL task prompt (not the halt message). Agent now finds a timestamp, runs standard startup, executes the task.
+
+### When NOT to JIT-populate
+- `.populated` missing entirely → halt with: "Muster setup incomplete — `.populated` state file missing. Re-run `scripts/setup-existing-project.sh --resume`."
+- Agent-context file already has content but `.populated` says `null` → set the `.populated` timestamp to match the file's git mtime (or current time if untracked), re-invoke. Do not overwrite existing content.
+- Required source docs (`product-spec.md`, `architecture.md`) empty or placeholder → halt with: "Knowledge base not populated — complete reverse-discovery first (`reverse-discovery.md`)." Indicates onboarding didn't finish.

@@ -377,6 +377,10 @@ Before filing a handoff, the producing agent MUST run this self-review:
 
 If any check fails, fix before filing. Log what self-review caught in the revision log.
 
+**Exemption — first post-onboarding sprint (existing-project adoption only)**: if `.populated.onboarded_at` is less than one completed sprint old, items 4 (feature IDs) and 5 (foundational assumptions) flag mismatches in the revision log but do NOT block filing. `product-spec.md` and `foundational-assumptions.md` are still settling from reverse discovery; forcing revisions during Sprint 1 produces churn without value. After one full sprint has closed, items 4 and 5 become hard-fails as usual.
+
+Confidence tagging (`[verified]`/`[inferred]`) is NOT part of this checklist — it is onboarding-only and lives in `team/developer/skills/generic/codebase-audit.md` + `team/pm/skills/generic/deliverable-review.md` → Confidence tagging for extracted claims.
+
 ---
 
 ### Discovery Phase (PM -> Research -> PM)
@@ -387,6 +391,41 @@ If any check fails, fix before filing. Log what self-review caught in the revisi
 5. Research sets change-log entry to `status: researched`
 6. Founder returns to PM. PM evaluates using the product-evaluation skill (6-dimension scoring) and presents GO / CONDITIONAL / NO-GO
 7. If GO: PM populates product-spec, brand-guidelines, cascades context to agents — execution begins
+
+### Existing-Project Onboarding Protocol
+
+For adopting Muster into projects with pre-existing code (not greenfield). Full 11-phase procedure lives in `team/pm/skills/generic/reverse-discovery.md` (~2 hours founder time). This section covers the high-level flow, the `.populated` state file, and the `.muster-onboarding/` transient-file protocol.
+
+#### Entry point
+Founder runs `scripts/setup-existing-project.sh`. Script: three-case git detection (no-git offers `git init`; repo root proceeds; inside-larger-repo aborts), archives existing `CLAUDE.md` + `.claude/agents/`, scaffolds templates, initializes `.populated` with `onboarded_at`, gitignores `.muster-onboarding/`. Has `--resume` for interrupted runs.
+
+#### 11 phases (PM via reverse-discovery.md)
+1. Orientation (90s, non-skippable). 2. CLAUDE.md content-triage + merge. 3. `.claude/agents/` merge. 4. Brain-dump + doc ingest. 5. Audit brief + Developer bootstrap. 6. Audit review + architecture finalize. 7. Adaptive questionnaire. 8. Product synthesis. 9. Agent-context cascade (Sprint 1 agents only; others lazy). 10. Sprint 1 plan + Sprint 2 backlog. 11. Cleanup (atomic `mv` of `.muster-onboarding/` to `.muster-archive/`).
+
+#### `.populated` state file
+Location: `knowledge-base/agent-context/.populated`. Tracks specialist populate state + `onboarded_at` anchor.
+- Schema: `{ version, onboarded_at, agents: {<name>: null | <ts>, ...}, lock }`
+- `onboarded_at`: set by setup script at init, never modified. Anchor for Rule 11 stub-accrued scan.
+- `agents.<name>`: null until first populate. PM sets during Sprint 1 cascade (Phase 9) or JIT populate.
+- `lock`: held during in-flight populate; 15-min stale threshold.
+- Tracked in git (not gitignored — teammates pulling the repo need the state).
+- PM reads at bootstrap — see CLAUDE.md PM Mode `.populated` triggers.
+
+#### `.muster-onboarding/` transient-file protocol
+Location: `knowledge-base/.muster-onboarding/`. Gitignored by default (brain-dump may contain sensitive content).
+- Contents: `founder-brain-dump.md` (PM), `audit-brief.md` (PM), `architecture-audit-notes.md` (Developer in bootstrap mode).
+- Writers authorized: PM and bootstrap-mode Developer only (Rule 2 carve-out).
+- Retired at T+140: atomic `mv` to `.muster-archive/onboarding-<date>/`. Never present in steady-state.
+
+#### CLAUDE.md merge — two-tier decision flow
+1. **Content triage first**: route brand/tone/visual/testing/architecture/assumptions content to appropriate knowledge-base files (batch-by-destination approval).
+2. **Rule classification + two-tier approval**:
+   - Orthogonal (style, formatting): **batch-approved**
+   - Adds (net-new behavior): **batch-approved** unless founder reviews
+   - Replaces / Conflicts: **per-rule decision** (keep-user / keep-muster / merge-both / edit)
+3. Result lives in project CLAUDE.md's `## Project-Specific Rules` as current truth ("Rule 9 (this project): ..."). No "overridden by" archaeology.
+
+Full rationale: `reverse-discovery.md` → Phase 2.
 
 ### Scope Change Protocol (PM <-> Research)
 1. Scope change arises (new feature, pivot, market shift, new tool)

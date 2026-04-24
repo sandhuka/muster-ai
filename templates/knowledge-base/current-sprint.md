@@ -9,7 +9,7 @@
 
 ### [Agent Name]
 <!-- Format per task:
-- [ ] **[Task name]** — Priority: [HIGH/MED/LOW], Effort: [S/M/L/XL]
+- [ ] **[Task name]** — Priority: [HIGH/MED/LOW], Effort: [S/M/L/XL], Platform: [ios/android/web/backend/desktop/cli/cross-platform/n-a]
   - **Deliverable**: [File path or description]
   - **Dependencies**: [What must be done first]
   - **Acceptance criteria**:
@@ -17,6 +17,11 @@
     - [Criterion 2]
   - **Key skills**: [Relevant skill files]
   - **Key refs**: [Knowledge-base files to read]
+
+Platform field guidance:
+- Use a specific value (ios, android, web, backend, desktop, cli) when the task touches that surface only
+- Use `cross-platform` when the task intentionally spans surfaces (e.g., shared design tokens, cross-platform feature spec)
+- Use `n-a` for tasks without a platform axis (e.g., most Legal, Marketing, Research tasks)
 -->
 
 ### Developer

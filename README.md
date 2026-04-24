@@ -35,6 +35,17 @@ Then tell Root Claude your product idea. It acts as your PM — plans sprints, c
 
 See [getting-started.md](getting-started.md) for the full step-by-step walkthrough.
 
+## Existing project?
+
+If you already have code — a mobile app you've been building for months, a web app with real users, a backend service, a CLI tool — Muster has a dedicated adoption path that reverse-discovers your product into a populated knowledge base and plans Sprint 1. Takes about 2 hours of focused time.
+
+```bash
+cd ~/path/to/your-existing-project
+curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-existing-project.sh | bash
+```
+
+See [adopting-existing-project.md](adopting-existing-project.md) for the full walkthrough.
+
 ## How It Works
 
 1. You describe your idea to Root Claude (the PM)
@@ -92,7 +103,8 @@ my-project/
 
 | Doc | What It Covers | Read When |
 |-----|---------------|-----------|
-| [getting-started.md](getting-started.md) | Step-by-step setup and first sprint | Setting up a new project |
+| [getting-started.md](getting-started.md) | Step-by-step setup and first sprint | Setting up a new (greenfield) project |
+| [adopting-existing-project.md](adopting-existing-project.md) | Reverse-discovery onboarding for projects with existing code | Adopting Muster into an existing codebase |
 | [architecture-and-design.md](architecture-and-design.md) | Architecture deep dive — data flow, context management, how agents communicate | Evaluating whether to adopt Muster |
 | [system-guide.md](system-guide.md) | Templates, extensibility, verification checklist | Adding agents, skills, or modifying the framework |
 

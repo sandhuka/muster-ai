@@ -1,0 +1,134 @@
+# Adopting Muster for an Existing Project
+
+This guide is for adding Muster to a project you've already been working on — an iOS app with 8 months of history, a web app with real users, a backend service, a CLI tool, a desktop app. If you're starting from scratch, use [getting-started.md](getting-started.md) instead.
+
+---
+
+## What's Different From Greenfield
+
+Greenfield starts with Research validating your idea and PM writing specs from zero. That doesn't work when you already have code and tribal knowledge — the product already exists.
+
+The existing-project path does **reverse discovery**: it reads what you know plus what's in the code, cross-checks the two, fills gaps with a short questionnaire, and drafts a complete knowledge base. You review, PM plans Sprint 1, done.
+
+Total: about 2 hours of your time. **One-time cost** — future Muster updates pull in via `git submodule update` without repeating onboarding.
+
+## Prerequisites
+
+- [Claude Code](https://claude.ai/claude-code) installed and running
+- Git installed
+- Your project is a git repo (or you're willing to run `git init`)
+- At least some product context you can describe out loud
+- About 2 hours of focused time (up to 2.5 hours for large codebases)
+
+## Step 1 — Run the Setup Script
+
+From inside your project directory:
+
+```bash
+cd ~/path/to/your-existing-project
+curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-existing-project.sh | bash
+```
+
+The script asks one question: **what's your repo shape?**
+
+- **Option 1 — Single git repo**: one repo for your project (monorepo with ios/web/backend subfolders; a web app with frontend + backend colocated; a single-surface product — all counted here).
+- **Option 2 — Multi-repo parent**: separate repos for different platforms sitting inside a parent folder.
+
+### What the script does
+- Detects your git state (no-git / repo root / inside-larger-repo-abort)
+- Offers to `git init` if the directory isn't a git repo
+- Archives any existing `CLAUDE.md` and `.claude/agents/` to `.muster-archive/`
+- Adds Muster as a git submodule, scaffolds templates
+- Initializes `.populated` state file with `onboarded_at` timestamp
+- Adds `.muster-archive/`, `.muster-setup-state.json`, `knowledge-base/.muster-onboarding/` to `.gitignore`
+
+### What the script will NOT do
+- Touch your source code
+- Overwrite docs without showing you a diff first
+- Cascade any context to agents until you've approved the source documents
+
+### If the script aborts with "inside a larger git repo"
+
+Your project folder is inside another git repo (e.g., a tracked `~/Documents/` parent, a dotfiles repo, an Obsidian vault). Muster won't install into the wrong repo — that would embed it as a submodule of a shared parent and expose your project under that parent's tracking. Move your project folder outside the parent first, then re-run. If the parent IS actually your project root, run setup from the parent instead.
+
+### If the script was interrupted mid-run
+
+```bash
+./muster/scripts/setup-existing-project.sh --resume
+```
+
+Reads `.muster-setup-state.json` and picks up where it stopped.
+
+## Step 2 — Open Claude Code
+
+```bash
+claude
+```
+
+Root Claude detects existing-project onboarding (from the `.populated` state file) and starts the guided flow. No special command needed.
+
+## What to Expect
+
+PM runs an 11-phase flow. You'll be asked for input at several points.
+
+| Time | Phase | Your role |
+|------|-------|-----------|
+| T+4 | Orientation | Read the 90-second pitch on why review gates matter |
+| T+6 | CLAUDE.md merge (if you had one) | Approve content routing + per-rule decisions |
+| T+24 | `.claude/agents/` merge (if any) | Approve per-agent merges |
+| T+30 | **Brain-dump** | Tell Claude everything about your product (highest-leverage step) |
+| T+55 | Code audit | Wait while Developer audits your code (~10-25 min) |
+| T+75 | Audit review | Confirm "whole surface area" + resolve every `[inferred]` claim |
+| T+97 | Questionnaire | Answer questions the brain-dump didn't cover |
+| T+115 | Draft review | Read the drafted product-spec, brand-guidelines, foundational-assumptions |
+| T+133 | Context cascade | Wait while PM populates agent contexts for Sprint 1 |
+| T+138 | Sprint 1 plan | Name your first feature/task |
+| T+140 | Cleanup | Done; start Sprint 1 |
+
+## Tips for the High-Leverage Steps
+
+### The brain-dump (Phase 4)
+
+This is where most of your leverage comes from. PM will ask you to share everything you know about the product — what it does, who it's for, what you've tried and discarded, what you hate about competitors, what "done" looks like, what Claude should NOT assume. No structure needed. Paste URLs, drop docs, ramble.
+
+Take 20-30 minutes if you can. Skip only if you have nothing beyond what the questionnaire will ask.
+
+**Sensitive content**: before pasting, scan your text for API keys, credentials, customer data, internal identifiers. The brain-dump file is gitignored by default, but once pasted the content enters your Claude session context. Redact first.
+
+### The audit review (Phase 6)
+
+Developer tags every claim as `[verified]` (observed directly in code) or `[inferred]` (guessed from patterns — file names, directory structure, imports). **Every `[inferred]` row requires your explicit action**: `verified`, `wrong: <correction>`, or `don't-know`. There's no "approve all" shortcut for these. This is the forcing function that keeps bad assumptions out of your knowledge base.
+
+A fatigued founder who types `verified` on every row without reading gets wrong context cascaded downstream — typically surfacing days later as QA writing tests against the wrong auth scheme, Developer building against the wrong database, or UI/UX specifying components for the wrong state-management library. Slow down on these rows.
+
+Also review the **Skipped** section carefully — it lists what the audit didn't read (vendored dependencies, build artifacts, DSL folders). You must confirm "that's the whole surface area" before PM writes `architecture.md`. If the audit missed a subsystem (a background worker, an offline sync layer, a custom IPC), flag it now.
+
+## After Onboarding
+
+At T+140, PM has written:
+- A populated `knowledge-base/` — product-spec, architecture, brand-guidelines, foundational-assumptions, agent-context files for Sprint 1 agents
+- `knowledge-base/current-sprint.md` with Sprint 1 tasks
+- `knowledge-base/orchestration-queue.md` with the first 3-5 steps and copy-paste prompts
+- Sprint 2 backlog seeded with UI/UX curation tasks for brand-guidelines and design-system-reference (if a design system was detected)
+
+From here, you follow the orchestration queue — same loop as the greenfield path post-Sprint-1. Open `orchestration-queue.md`, copy the next prompt, invoke the listed agent.
+
+## Things to Know
+
+**First invocation of a non-Sprint-1 agent**: when you later invoke an agent that wasn't populated during onboarding (e.g., `@marketing` a few sprints in), it returns control to PM briefly (~30 seconds) while PM populates that agent's context file. You'll see a short "populating marketing context…" message, then the normal agent output. User-transparent.
+
+**Muster framework updates**: pull updates via `git submodule update --remote muster`. Major framework additions (new rules, new agents) may prompt small updates to your project `CLAUDE.md`, but onboarding does not repeat.
+
+**A teammate pulls the repo**: they do NOT re-run the setup script. The `.populated` state file tells Claude that setup has already been run. They just `cd` into the repo and open Claude.
+
+**`.muster-archive/`**: contains your pre-Muster `CLAUDE.md`, archived `.claude/agents/`, and the full onboarding trail (brain-dump, audit brief, audit notes). Gitignored by default. Useful for reference; not read by Claude in steady state.
+
+**The first Sprint 1 handoff**: expect revisions. Sprint 1 is where reverse-discovered context meets real work — if PM misread something during audit review or the questionnaire missed a detail, it surfaces here. Items 4 and 5 of the pre-handoff self-review (feature IDs, foundational assumptions) are flagged but don't block during the first post-onboarding sprint for exactly this reason. Revisions during Sprint 1 are healthy, not a sign of failure.
+
+---
+
+## What's Next
+
+- [getting-started.md](getting-started.md) — The greenfield flow; useful for understanding Muster's steady-state operation after onboarding completes
+- [architecture-and-design.md](architecture-and-design.md) — How agents, context, and skills work together
+- [system-guide.md](system-guide.md) — Framework templates and extensibility (read when modifying the framework, not during onboarding)

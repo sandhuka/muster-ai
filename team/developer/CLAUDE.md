@@ -19,6 +19,7 @@ Skills are in `team/developer/skills/`. Skills are organized by platform subfold
 
 ### Generic
 - **code-standards.md** — Git workflow, PR standards, commit conventions, code review checklist
+- **codebase-audit.md** — Bootstrap-mode shallow code audit for existing-project onboarding (Read/Grep/Glob only, verify-or-correct framing, `[verified]`/`[inferred]` tags, skipped-list disclosure). PM-invoked via Task tool, not a standard task.
 
 ### iOS (`ios/`)
 - **ios-best-practices.md** — Architecture (MVVM, SwiftUI-first, feature modules), hybrid local/cloud patterns, asset loading, Apple HIG

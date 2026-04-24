@@ -84,3 +84,29 @@ These updates prevent agent-context files from going stale — the agent-context
 - **One revision with all issues beats three with one each.** Every revision cycle costs a full agent session. Batch ruthlessly.
 - **Accept-with-notes is underused; revision is overused.** If the issue won't cause downstream agents to produce wrong output, it's a note, not a revision.
 - **Review for correctness, not style.** Reformatting agent output to match preferences is PM scope creep.
+
+## Confidence tagging for extracted claims (onboarding-only)
+
+Applies only during existing-project onboarding audits. Standard handoffs do NOT use this scheme — regular deliverables use the Universal Review Checklist above.
+
+### Scheme (binary)
+- `[verified]` — observed in a manifest, config, import, or concrete code location. Evidence cites a file path.
+- `[inferred]` — derived from patterns (file names, directory structure, naming conventions) without reading implementation. Evidence cites the pattern.
+
+Three-level schemes (high/medium/low) were rejected — they drift at boundaries. Binary is enough to focus attention.
+
+### Where tags live
+Tags live only in the **transient** `knowledge-base/.muster-onboarding/architecture-audit-notes.md`. They do NOT appear in `architecture.md` or any other durable artifact — Rule 15 requires durable files to describe current truth only, and confidence tags are archaeology by definition.
+
+### Per-item forcing function
+During founder review of audit-notes, every `[inferred]` row requires an explicit action in the Founder-action column:
+- `verified` — claim is correct; stays in `architecture.md`
+- `wrong: <correction>` — claim is wrong; `architecture.md` gets the correction
+- `don't-know` — founder can't resolve; claim is dropped from `architecture.md` and appended to `pre-launch-checklist.md` as "Verify [X] before launch"
+
+"Approve all" is NOT offered for `[inferred]` rows. `[verified]` rows don't require action (founder may still override).
+
+### Where the mechanics live
+- Audit procedure + tag assignment: `team/developer/skills/generic/codebase-audit.md`
+- Review flow in onboarding context + architecture finalize: `team/pm/skills/generic/reverse-discovery.md` → Phase 6
+- Rule 15 discipline on destinations: `reverse-discovery.md` → Phases 2.1 (triage), 6.3 (architecture), 8.3 (foundational-assumptions)

@@ -2,6 +2,8 @@
 
 This guide walks you through setup to your first sprint. If you haven't read the [README](README.md) yet, start there for a quick overview of what Muster is and how it works.
 
+**Already have a project with existing code?** This guide is for greenfield starts (new products from zero). For adopting Muster into an existing codebase, use [adopting-existing-project.md](adopting-existing-project.md) instead — it handles reverse discovery, archives your existing `CLAUDE.md` if any, and works against your current code.
+
 ---
 
 ## Prerequisites

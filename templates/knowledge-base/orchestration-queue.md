@@ -5,11 +5,17 @@
 ## Prompt Standard
 <!-- Every Next Step / Upcoming entry uses this shape so copy-paste invocations are uniform. -->
 <!--
-### [DATE] [Agent]: [Step title]
+### [DATE] [Agent (platform)]: [Step title]
 **Task:** [1-line description]
 **Inputs:** [files / deliverables to read]
 **Deliverable:** [path or handoff ID]
 **On completion:** file handoff in agent-requests.md, then run Pre-Handoff Self-Review Checklist (muster/system-guide.md) — item 9 enforces queue + decision-log update.
+
+Platform tag in the heading: use the task's platform when it's single-surface
+(e.g., "Developer (ios): ...", "Developer (web): ..."), `cross-platform`
+when the task spans surfaces, or omit the parenthetical for platform-agnostic
+tasks (e.g., "Legal: ...", "Marketing: ..."). Keeps the queue scannable for
+multi-surface projects.
 -->
 
 ## Founder Decisions
