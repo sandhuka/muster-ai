@@ -267,16 +267,21 @@ What this will NOT do:
   - Cascade any context to agents until you've approved the source documents
 
 About the repo-shape options:
-  • Single git repo     — one repo for the whole project. Covers monorepos,
-                          frontend+backend colocated, and single-surface
-                          products (iOS app, web app, CLI, etc.)
-  • Multi-repo parent   — separate repos for different platforms/surfaces
-                          sitting inside a parent folder
+  • Single git repo (most common)  — one repo for the whole project. Covers
+                                     monorepos, frontend+backend colocated,
+                                     and single-surface products (iOS app,
+                                     web app, CLI, etc.)
+  • Multi-repo parent              — separate repos for different platforms
+                                     or surfaces sitting inside a parent
+                                     folder
+
+If you're not sure, pick "Single git repo" — it's the right answer
+for most projects.
 
 PROMPT
 
     select_one "Your repo shape (git organization):" \
-        "Single git repo" \
+        "Single git repo  (most common — pick this if unsure)" \
         "Multi-repo parent" \
         "Cancel — read the guide first"
 
