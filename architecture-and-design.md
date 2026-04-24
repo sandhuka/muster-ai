@@ -127,6 +127,9 @@ Layer 5: src/                          ACTUAL CODE          "The thing being bui
          +------+------+------+----+------+------+
                           |
                Each agent reads on startup:
+               0. agent-context/.populated (halt check — if agent's
+                  entry is null, halt to PM for one-time populate;
+                  user-transparent. See Context Window Management.)
                1. muster/CLAUDE.md (system rules)
                2. muster/team/<name>/CLAUDE.md (role)
                3. agent-context/<name>.md (product context)
@@ -184,6 +187,10 @@ The biggest lesson learned: **agents waste most of their context window reading 
 
 ```
 TIER 1: ALWAYS READ (every startup)          ~80-120 lines
+  - knowledge-base/agent-context/.populated (halt check — runs before
+    any other read. If the agent's entry is null, the agent halts and
+    returns control to PM for a one-time populate. PM re-invokes with
+    the original task once populate completes. User-transparent.)
   - muster/CLAUDE.md (system rules)
   - muster/team/<agent>/CLAUDE.md (role)
   - knowledge-base/agent-context/<agent>.md (product context)
@@ -307,8 +314,9 @@ Root Claude IS the PM. No separate PM agent.
 | File | Purpose | Who Writes |
 |------|---------|------------|
 | `.claude/agents/<name>.md` | Startup config — what to read when invoked | Copied from templates |
-| `CLAUDE.md` | Product info, tech stack, overrides | Founder + PM |
+| `CLAUDE.md` | Three-section project file: Muster Framework pointer (read-only), Product Information, Project-Specific Rules | Founder + PM |
 | `knowledge-base/agent-context/<name>.md` | Filtered product context per agent | PM |
+| `knowledge-base/agent-context/.populated` | Per-agent populate state + `onboarded_at` anchor. Routes greenfield vs existing-project at bootstrap. | Script (init); PM (updates) |
 | `knowledge-base/product-spec.md` | Full product specification | PM |
 | `knowledge-base/architecture.md` | Technical architecture | Developer produces, PM reviews |
 | `knowledge-base/current-sprint.md` | Task board — assignments and status | PM |
