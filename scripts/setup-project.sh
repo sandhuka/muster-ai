@@ -120,6 +120,8 @@ write_state() {
 {
   "version": "1",
   "project_name": "$PROJECT_NAME",
+  "muster_url": "$MUSTER_URL",
+  "muster_branch": "$MUSTER_BRANCH",
   "started_at": "$STARTED_AT",
   "last_step_at": "$(iso_now)",
   "steps_completed": [$steps_json]
@@ -135,6 +137,14 @@ read_started_at() {
     sed -n 's/.*"started_at": *"\([^"]*\)".*/\1/p' "$STATE_FILE" | head -n1
 }
 
+read_muster_url() {
+    sed -n 's/.*"muster_url": *"\([^"]*\)".*/\1/p' "$STATE_FILE" | head -n1
+}
+
+read_muster_branch() {
+    sed -n 's/.*"muster_branch": *"\([^"]*\)".*/\1/p' "$STATE_FILE" | head -n1
+}
+
 # ---------- resume validation ----------
 if [ "$RESUME" -eq 1 ]; then
     if [ ! -f "$STATE_FILE" ]; then
@@ -144,6 +154,14 @@ if [ "$RESUME" -eq 1 ]; then
     fi
     PROJECT_NAME="$(read_project_name)"
     STARTED_AT="$(read_started_at)"
+    # Restore url/branch from state file unless explicitly overridden via flag
+    if [ "$MUSTER_URL" = "$DEFAULT_MUSTER_URL" ]; then
+        SAVED_URL="$(read_muster_url)"
+        [ -n "$SAVED_URL" ] && MUSTER_URL="$SAVED_URL"
+    fi
+    if [ -z "$MUSTER_BRANCH" ]; then
+        MUSTER_BRANCH="$(read_muster_branch)"
+    fi
     say "Resuming setup for project '$PROJECT_NAME' (started $STARTED_AT)."
 elif [ -z "$PROJECT_NAME" ]; then
     err "Usage: setup-project.sh <project-name> [--muster-url <url>]"
