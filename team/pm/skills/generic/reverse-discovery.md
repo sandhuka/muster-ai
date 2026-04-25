@@ -166,7 +166,7 @@ Executes only if `.muster-archive/claude-agents.pre-muster/` exists.
 
 ### 4.1 Prompt (verbatim, one prompt — wait for response)
 
-> Before I start looking at your code, tell me what I should know about this product. **Highest-leverage step of the onboarding** — every minute here produces a sharper knowledge base.
+> Before I look at your code, tell me what I should know about this product. Every minute here produces a sharper knowledge base.
 >
 > **What helps:** what it does, who it's for, what you've built, what you've tried and discarded, what you hate about competitors, what "done" looks like, what you don't want me to assume. No structure needed — talk, paste, drop docs.
 >
