@@ -394,14 +394,20 @@ Confidence tagging (`[verified]`/`[inferred]`) is NOT part of this checklist —
 
 ---
 
-### Discovery Phase (PM -> Research -> PM)
-1. Founder tells PM about their product idea
-2. PM seeds `knowledge-base/research/product-brief.md` — fills in the Founder's Idea section with full context
-3. PM writes a change-log entry (`status: needs-research`) and adds a Research step to the orchestration queue
-4. Founder invokes @research. Research reads the seeded brief, conducts web research, completes all research files
-5. Research sets change-log entry to `status: researched`
-6. Founder returns to PM. PM evaluates using the product-evaluation skill (6-dimension scoring) and presents GO / CONDITIONAL / NO-GO
-7. If GO: PM populates product-spec, brand-guidelines, cascades context to agents — execution begins
+### Discovery Phase (greenfield: PM -> Research -> PM, multi-session)
+
+Full procedure lives in `team/pm/skills/generic/greenfield-discovery.md` (5 user-facing stages spread across ~3 sessions, ~1-2 hours founder-attended time).
+
+**User-facing nomenclature**: Stage 1: Idea share, Stage 2: Market research, Stage 3: Go/no-go decision, Stage 4: Draft review, Stage 5: Sprint 1 plan.
+
+**Entry detection**: PM reads `.populated` at bootstrap. If `onboarded_at` is null AND `agents.pm` is null → first greenfield session, fire welcome via `greenfield-discovery.md`. After Stage 1.3 (idea captured), PM sets `agents.pm` timestamp; subsequent sessions skip the welcome and proceed with normal PM Mode bootstrap.
+
+**High-level flow**:
+1. Stage 1: Founder shares idea → PM seeds `knowledge-base/research/product-brief.md` Founder's Idea section, writes change-log entry (`status: needs-research`), queues Research step. Sets `agents.pm` timestamp.
+2. Stage 2: Founder invokes @research separately. Research reads the seeded brief, conducts investigation per `team/research/skills/generic/product-validation.md`, completes research files, sets change-log entry to `status: researched`.
+3. Stage 3: Founder returns to PM, asks for evaluation. PM scores via `product-evaluation.md` (6 dimensions), presents GO / CONDITIONAL / NO-GO.
+4. Stage 4 (if GO): PM writes product-spec, brand-guidelines, foundational-assumptions; founder reviews. PM populates project root `CLAUDE.md` placeholders.
+5. Stage 5: PM cascades context to Sprint 1 agents, asks founder for first feature, plans Sprint 1.
 
 ### Existing-Project Onboarding Protocol
 
@@ -420,7 +426,8 @@ Location: `knowledge-base/agent-context/.populated`. Tracks specialist populate 
 - Schema: `{ version, onboarded_at, onboarding_complete_at, agents: {<name>: null | <ts>, ...}, lock }`
 - `onboarded_at`: set by setup script at init, never modified. Anchor for Rule 11 stub-accrued scan.
 - `onboarding_complete_at`: null during onboarding; set by PM at Phase 11.4 (after archive succeeds). **Routing signal** — when set, bootstrap takes steady-state path (no `reverse-discovery.md` read) regardless of individual agent state.
-- `agents.<name>`: null until first populate. PM sets during Sprint 1 cascade (Phase 9) or JIT populate. Null entries in steady-state trigger JIT populate at first invocation, NOT re-onboarding.
+- `agents.<name>`: null until first populate. PM sets during Sprint 1 cascade or JIT populate. Null entries in steady-state trigger JIT populate at first invocation, NOT re-onboarding.
+- `agents.pm` (greenfield-only signal): null at script init for greenfield. PM sets its own timestamp at Stage 1.3 of greenfield-discovery (after capturing the founder's idea). The transition `null → timestamp` flips routing from "greenfield first session, fire welcome" to "greenfield ongoing, skip welcome". For existing-project, the setup script sets `agents.pm` at init (PM is auto-engaged when adopting an existing codebase).
 - `lock`: held during in-flight populate; 15-min stale threshold.
 - Tracked in git (not gitignored — teammates pulling the repo need the state).
 - PM reads at bootstrap — see CLAUDE.md PM Mode `.populated` triggers.
