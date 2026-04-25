@@ -23,7 +23,7 @@ Muster solves this with three mechanisms:
 - **Files as Persistent Memory** — Agent brains, orchestration queues, handoff logs, and decision records persist as markdown files. No session starts from zero.
 - **Self-Improving Skills** — During sprint planning, the PM scans for methodology gaps. When a new skill is created, it's classified as generic or product-specific. Generic skills are contributed back to the framework — so every project makes Muster smarter for the next one.
 
-## Quick Start
+## Quick Start (new project)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s my-project
@@ -31,7 +31,7 @@ cd ~/Desktop/my-project
 claude
 ```
 
-Then tell Root Claude your product idea. It acts as your PM — plans sprints, coordinates agents, and tells you who to invoke next.
+Then tell Root Claude your product idea. Claude opens with a brief welcome and walks you through 5 Discovery stages — idea share, market research, go/no-go decision, draft review, Sprint 1 plan. Total founder time: **~1-2 hours across ~3 sessions** over a day or two.
 
 See [getting-started.md](getting-started.md) for the full step-by-step walkthrough.
 
