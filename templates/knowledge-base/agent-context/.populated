@@ -1,6 +1,7 @@
 {
   "version": "1",
   "onboarded_at": null,
+  "onboarding_complete_at": null,
   "agents": {
     "developer": null,
     "ui-ux": null,

@@ -1,10 +1,10 @@
 <!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->
 **First tool call this session: Read `knowledge-base/agent-context/.populated`.** Do not LS/Grep/Glob first — the file is the routing signal.
 
-Route on `.populated` (JSON: `onboarded_at` timestamp-or-null, `agents.<name>` timestamp-or-null):
-- `onboarded_at` is a timestamp AND any `agents.*` is null → **existing-project onboarding**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run it (Phase 1 first). Do NOT run PM bootstrap reads (no decision-log, current-sprint, orchestration-queue, agent-requests) — those are for greenfield/steady-state.
+Route on `.populated` (JSON: `onboarded_at`, `onboarding_complete_at`, `agents.<name>` — each timestamp-or-null):
+- `onboarded_at` is a timestamp AND `onboarding_complete_at` is null → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run it (Phase 1 first). Do NOT run PM bootstrap reads (no decision-log, current-sprint, orchestration-queue, agent-requests) — those are for greenfield/steady-state.
 - `onboarded_at` is null → **greenfield**. Read `muster/CLAUDE.md` and follow PM Mode.
-- All `agents.*` are timestamps → **steady-state**. Read `muster/CLAUDE.md` and follow PM Mode.
+- `onboarded_at` AND `onboarding_complete_at` both timestamps → **steady-state** (regardless of individual `agents.*` state — null entries trigger JIT populate on first invocation, NOT re-onboarding). Read `muster/CLAUDE.md` and follow PM Mode. Do NOT read `reverse-discovery.md`.
 - File missing/invalid → halt: *"Muster setup incomplete. Run `scripts/setup-existing-project.sh --resume` or `scripts/setup-project.sh <name>` at repo root."*
 <!-- END BOOTSTRAP -->
 

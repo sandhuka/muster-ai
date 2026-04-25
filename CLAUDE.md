@@ -56,10 +56,10 @@ Specialist agents in `.claude/agents/` (content, developer, legal, marketing, qa
 
 Root Claude acts as the PM directly — there is no separate PM sub-agent.
 
-**Priority-zero routing check** (runs before any other bootstrap reads). Read `knowledge-base/agent-context/.populated` and route:
-- `onboarded_at` is a timestamp AND any `agents.<name>` is `null` → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run its flow (Phase 1 orientation first). Do NOT continue to the First PM question bootstrap below — that path is for greenfield / steady-state. If `reverse-discovery.md` is missing, halt: `"Onboarding skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-existing-project.sh'."`
+**Priority-zero routing check** (runs before any other bootstrap reads). Read `knowledge-base/agent-context/.populated` and route on `onboarded_at` + `onboarding_complete_at`:
+- `onboarded_at` is a timestamp AND `onboarding_complete_at` is `null` → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run its flow (Phase 1 orientation first). Do NOT continue to the First PM question bootstrap below — that path is for greenfield / steady-state. If `reverse-discovery.md` is missing, halt: `"Onboarding skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-existing-project.sh'."`
 - `onboarded_at` is `null` → **greenfield project**. Continue to First PM question bootstrap below. Follow greenfield flow per `getting-started.md` / Discovery Phase in `system-guide.md`. No change from prior Muster behavior.
-- All `agents.<name>` are timestamps → **steady-state** (either path). Continue to First PM question bootstrap below.
+- `onboarded_at` AND `onboarding_complete_at` both timestamps → **steady-state** (regardless of individual `agents.<name>` state — null entries trigger JIT populate on first invocation, not re-onboarding). Continue to First PM question bootstrap below. Do NOT re-read `reverse-discovery.md`.
 - File missing entirely → halt: `"Muster setup incomplete. Run 'scripts/setup-existing-project.sh --resume' or 'scripts/setup-project.sh <name>' for greenfield."`
 
 **First PM question in a session** (greenfield / steady-state path — reached only after priority-zero check does not route to onboarding): When the user asks a PM-type question (project status, sprint planning, agent coordination, cascading, decision-making) and you have not yet read the PM monitoring files this session, read these files first (paths are relative to the project root, not the Muster repo):

@@ -403,10 +403,11 @@ Founder runs `scripts/setup-existing-project.sh`. Script: three-case git detecti
 1. Orientation (90s, non-skippable). 2. CLAUDE.md content-triage + merge. 3. `.claude/agents/` merge. 4. Brain-dump + doc ingest. 5. Audit brief + Developer bootstrap. 6. Audit review + architecture finalize. 7. Adaptive questionnaire. 8. Product synthesis. 9. Agent-context cascade (Sprint 1 agents only; others lazy). 10. Sprint 1 plan + Sprint 2 backlog. 11. Cleanup (atomic `mv` of `.muster-onboarding/` to `.muster-archive/`).
 
 #### `.populated` state file
-Location: `knowledge-base/agent-context/.populated`. Tracks specialist populate state + `onboarded_at` anchor.
-- Schema: `{ version, onboarded_at, agents: {<name>: null | <ts>, ...}, lock }`
+Location: `knowledge-base/agent-context/.populated`. Tracks specialist populate state + onboarding lifecycle anchors.
+- Schema: `{ version, onboarded_at, onboarding_complete_at, agents: {<name>: null | <ts>, ...}, lock }`
 - `onboarded_at`: set by setup script at init, never modified. Anchor for Rule 11 stub-accrued scan.
-- `agents.<name>`: null until first populate. PM sets during Sprint 1 cascade (Phase 9) or JIT populate.
+- `onboarding_complete_at`: null during onboarding; set by PM at Phase 11.4 (after archive succeeds). **Routing signal** — when set, bootstrap takes steady-state path (no `reverse-discovery.md` read) regardless of individual agent state.
+- `agents.<name>`: null until first populate. PM sets during Sprint 1 cascade (Phase 9) or JIT populate. Null entries in steady-state trigger JIT populate at first invocation, NOT re-onboarding.
 - `lock`: held during in-flight populate; 15-min stale threshold.
 - Tracked in git (not gitignored — teammates pulling the repo need the state).
 - PM reads at bootstrap — see CLAUDE.md PM Mode `.populated` triggers.

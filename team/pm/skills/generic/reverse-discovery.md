@@ -18,16 +18,16 @@ Do not silently skip, do not improvise.
 
 The 11 phases below are **internal**. They include housekeeping (CLAUDE.md merge, `.claude/agents/` merge, cleanup) that the founder doesn't track as work. **Never announce "Phase N" to the founder** — it produces jarring jumps (e.g., "Phase 1 → Phase 4" looks like 2 and 3 were skipped). Use **Stage 1-6** instead, matching the agenda the founder saw in the Phase 1 orientation message.
 
-| Internal phase(s) | User-facing label |
+| Internal phase | User-facing label |
 |---|---|
-| Phase 4 | **Stage 1: Brain-dump** |
-| Phase 5 + Phase 6 | **Stage 2: Code audit** |
-| Phase 7 | **Stage 3: Audit review** |
-| Phase 8 | **Stage 4: Questionnaire** |
-| Phase 9 | **Stage 5: Draft review** |
-| Phase 10 | **Stage 6: Sprint 1 plan** |
+| Phase 4 — Brain-Dump | **Stage 1: Brain-dump** |
+| Phase 5 — Audit Brief + Developer Invocation | **Stage 2: Code audit** |
+| Phase 6 — Audit Review + Architecture Finalize | **Stage 3: Audit review** |
+| Phase 7 — Adaptive Questionnaire | **Stage 4: Questionnaire** |
+| Phase 8 — Product Synthesis (esp. §8.5 founder draft review) | **Stage 5: Draft review** |
+| Phase 10 — Sprint 1 Planning | **Stage 6: Sprint 1 plan** |
 
-Phases 2, 3, and 11 are **housekeeping** — announce as plain prose with no Stage label (e.g., *"Just checking for a pre-Muster CLAUDE.md to merge — none found, moving on."*).
+Phases 2, 3, 9, and 11 are **housekeeping** — announce as plain prose with no Stage label (e.g., *"Just checking for a pre-Muster CLAUDE.md to merge — none found, moving on."* or *"Cascading Sprint 1 context to your specialist agents…"*).
 
 ### Stage-transition format (verbatim structure)
 
@@ -344,6 +344,27 @@ Present `product-spec.md`, `brand-guidelines.md`, `foundational-assumptions.md` 
 
 **agent-context files are not separately reviewed** — they are derived from these source docs in Phase 9 and are cheap to fix later if errors surface during Sprint 1.
 
+### 8.6 Populate project root `CLAUDE.md` placeholders
+
+After founder approves the source docs in §8.5, fill in the placeholders in the project root `CLAUDE.md`. The setup script copied `templates/CLAUDE.md` to `<project-root>/CLAUDE.md`, but the `## Product Information` section still has `[Project Name]`, `[Tagline]`, etc. Future sessions auto-load this file — leaving placeholders means every session reads incomplete product context.
+
+Edit only the section between the `## Product Information` heading and the `<!-- Add shared UI library...` comment. Do NOT touch the bootstrap block at the top (between `<!-- MUSTER BOOTSTRAP -->` and `<!-- END BOOTSTRAP -->`) or the framework pointer section.
+
+Source mapping for each placeholder:
+
+| Placeholder | Source |
+|---|---|
+| `# [Project Name]` (the H1) | Project name from `product-spec.md` |
+| `**Product**: [Name] — "[Tagline]"` | Product name + tagline from `product-spec.md` |
+| `[2-3 sentence product description]` | Overview from `product-spec.md` |
+| `**Platforms / surfaces**` | From `product-spec.md` or `architecture.md` |
+| `**Tech stack**` | From `architecture.md` (audit output) |
+| `**Target user**` | From `product-spec.md` |
+| `**Monetization**` | From `product-spec.md` (questionnaire item 6) |
+| `**Team model**` | From questionnaire item 10; default "Solo founder + AI agents" |
+
+After populating, present a one-line confirmation to the founder: *"Updated your project root CLAUDE.md with the product info we just synthesized. Next: I'll cascade context to your Sprint 1 agents."*
+
 ## Phase 9: Agent-Context Cascade (T+133)
 
 Use `team/pm/skills/generic/context-cascading.md` methodology. Populate agent-context files **only for the agents needed for Sprint 1** — do not populate agents whose work isn't part of the first sprint; those stay `null` and populate lazily at first invocation (per `context-cascading.md` → `## Just-in-time mode` subsection).
@@ -405,7 +426,13 @@ If condition 1 fails (source still exists — interrupted before mv completed): 
 If condition 1 passes but condition 2 fails (source gone, target incomplete — possible when `.muster-archive/` is on a different filesystem and `mv` fell back to copy+delete which was interrupted): flag:
 > "Onboarding cleanup completed but archive is incomplete. Source directory was removed but target `.muster-archive/onboarding-<date>/` is missing expected files. Restore from source if possible, or resolve manually."
 
-If both pass: also delete `.muster-setup-state.json` (script-generated, not in `.muster-onboarding/`). Onboarding is complete.
+If both pass: also delete `.muster-setup-state.json` (script-generated, not in `.muster-onboarding/`).
+
+### 11.4 Mark onboarding complete in `.populated`
+
+After 11.2 + 11.3 succeed, set `onboarding_complete_at` in `knowledge-base/agent-context/.populated` to the current ISO-8601 timestamp. This is the **load-bearing routing signal**: future sessions read `.populated` at bootstrap and route to steady-state (PATH C) instead of re-reading `reverse-discovery.md`. Without this field set, every steady-state session wastes ~370 lines / ~3000 tokens re-loading the onboarding skill that has already run.
+
+Update the file in place — preserve all other fields (`version`, `onboarded_at`, `agents`, `lock`). Verify the JSON is valid before finalizing. After this write, onboarding is complete.
 
 ## Principles
 
@@ -433,7 +460,7 @@ Onboarding produces this final state in the project:
 - `knowledge-base/current-sprint.md` — Sprint 1 populated
 - `knowledge-base/orchestration-queue.md` — 3-5 step queue + Sprint 2 backlog with curation tasks
 - `knowledge-base/agent-context/<agent>.md` — populated for Sprint 1 agents; generic templates for others
-- `knowledge-base/agent-context/.populated` — `onboarded_at` set; Sprint 1 agent timestamps set; others `null`
+- `knowledge-base/agent-context/.populated` — `onboarded_at` set; `onboarding_complete_at` set (Phase 11.4); Sprint 1 agent timestamps set; others `null` (JIT-populate on first invocation)
 - `CLAUDE.md` (project root) — three-section merged file with Muster Framework pointer block
 
 ### Archived (not in steady-state workspace)

@@ -432,6 +432,7 @@ if ! state_has_step "initialize_populated_file"; then
 {
   "version": "1",
   "onboarded_at": "$ONBOARDED_AT",
+  "onboarding_complete_at": null,
   "agents": {
     "developer": null,
     "ui-ux": null,
