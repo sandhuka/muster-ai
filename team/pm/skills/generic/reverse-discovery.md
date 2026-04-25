@@ -42,15 +42,28 @@ When transitioning between user-visible stages, use this exact markdown structur
 
 ---
 
-## Stage N: [Name] (~[time] · [your role])
+## Stage N: [Name] (~[time] · [annotation])
 
 [Stage intro / instruction]
 ```
 
-`[your role]` is one of: *focus*, *mostly waiting*, *quick check*. Examples:
+**Critical: the `[annotation]` MUST be the same tag used in the orientation agenda** (so the founder reads "Stage 1 · *Highest leverage*" in the welcome and sees the same label when the stage starts). The fixed mapping:
+
+| Stage | Annotation (use verbatim) |
+|---|---|
+| Stage 1 — Brain-dump | *highest leverage* |
+| Stage 2 — Code audit | *mostly waiting* |
+| Stage 3 — Audit review | *your focus* |
+| Stage 4 — Questionnaire | *quick Q&A* |
+| Stage 5 — Draft review | *read & confirm* |
+| Stage 6 — Sprint 1 plan | *quick decision* |
+
+Example correct headers:
+- `## Stage 1: Brain-dump (~25 min · highest leverage)`
 - `## Stage 2: Code audit (~15 min · mostly waiting)`
 - `## Stage 3: Audit review (~20 min · your focus)`
-- `## Stage 6: Sprint 1 plan (~5 min · quick check)`
+
+Do not substitute synonyms ("your focus" ≠ "highest leverage" ≠ "active"). The founder pattern-matches on the exact annotation across orientation and transition.
 
 The `---` divider before AND after the completion line creates the same visual break the script's `━━━` dividers do for Step 1 / Step 2. The `✓` glyph mirrors the script's green checkmarks.
 
@@ -73,9 +86,9 @@ Deliver this verbatim (substitute the product name if the founder has already id
 > - **Stage 1 — Brain-dump** (~25 min) · *Highest leverage* — Tell me everything you know about the product. Paste docs, ramble, drop links.
 > - **Stage 2 — Code audit** (~15 min) · *Mostly waiting* — I read through your codebase.
 > - **Stage 3 — Audit review** (~20 min) · *Your focus* — We walk through what I found together.
-> - **Stage 4 — Questionnaire** (~15 min) — I ask about anything the brain-dump didn't cover.
-> - **Stage 5 — Draft review** (~15 min) — You read the product spec / brand guidelines / assumptions I've drafted.
-> - **Stage 6 — Sprint 1 plan** (~5 min) — You name the first feature; we start working.
+> - **Stage 4 — Questionnaire** (~15 min) · *Quick Q&A* — I ask about anything the brain-dump didn't cover.
+> - **Stage 5 — Draft review** (~15 min) · *Read & confirm* — You read the product spec / brand guidelines / assumptions I've drafted.
+> - **Stage 6 — Sprint 1 plan** (~5 min) · *Quick decision* — You name the first feature; we start working.
 >
 > ## One thing before we begin
 >
@@ -153,13 +166,17 @@ Executes only if `.muster-archive/claude-agents.pre-muster/` exists.
 
 ### 4.1 Prompt (verbatim, one prompt — wait for response)
 
-> "Before I start looking at your code, tell me what I should know about this product. This is the highest-leverage step of the whole onboarding — every minute you spend here produces a sharper knowledge base. Talk, write, paste, drop files — no structure needed. Useful input: what it does, who it's for, what you've built, what you've tried and discarded, what you hate about competitors, what 'done' looks like, what you don't want me to assume. Take as long as you want — the more you share, the better everything downstream works. Type `done` when finished, or `skip` to move on (skip is fully supported; some founders have captured everything already, for everyone else the dump is where the time pays off)."
+> Before I start looking at your code, tell me what I should know about this product. **Highest-leverage step of the onboarding** — every minute here produces a sharper knowledge base.
+>
+> **What helps:** what it does, who it's for, what you've built, what you've tried and discarded, what you hate about competitors, what "done" looks like, what you don't want me to assume. No structure needed — talk, paste, drop docs.
+>
+> **One quick check before you share:** I'll save your input to `knowledge-base/.muster-onboarding/founder-brain-dump.md`. That path is **gitignored by default** — never commits to your repo, stays local to this machine. Before pasting, scan for anything sensitive — API keys, customer data, internal identifiers. Easier to scrub now than after the content cascades into multiple agent context files downstream.
+>
+> **When you're ready:** start typing or pasting. Type `done` when finished. Or type `skip` if your existing docs already cover everything — that jumps straight to the questionnaire.
 
 ### 4.2 Capture
 
-PM writes raw founder input verbatim to `knowledge-base/.muster-onboarding/founder-brain-dump.md`. This file is **transient** and **gitignored by default** (see §9.1 of the existing-project design — sensitive content may appear in dumps).
-
-Before writing the first line, PM surfaces: "I'm about to save what you paste to a file. Take a second to check for anything sensitive (keys, secrets, internal IDs) before you share." Shifts the redaction burden to the founder at the right moment.
+PM writes raw founder input verbatim to `knowledge-base/.muster-onboarding/founder-brain-dump.md`. This file is **transient** and **gitignored by default** (see §9.1 of the existing-project design — sensitive content may appear in dumps). The privacy check is now baked into the §4.1 prompt above — do not fire a separate "I'm about to save…" message before saving the first line; that produced a confusing duplicate warning during dog-food testing.
 
 ### 4.3 Doc ingest (interleaved, synthesize mode)
 

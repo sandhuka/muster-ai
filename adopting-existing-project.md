@@ -73,25 +73,23 @@ Then send your first message to Claude. A clean starter:
 
 ## What to Expect
 
-PM runs an 11-phase flow. You'll be asked for input at several points.
+The Claude session runs as **6 user-visible stages**, with brief housekeeping at the start and end. Total founder-attended time: ~2 hours.
 
-| Time | Phase | Your role |
-|------|-------|-----------|
-| T+4 | Orientation | Read the 90-second pitch on why review gates matter |
-| T+6 | CLAUDE.md merge (if you had one) | Approve content routing + per-rule decisions |
-| T+24 | `.claude/agents/` merge (if any) | Approve per-agent merges |
-| T+30 | **Brain-dump** | Tell Claude everything about your product (highest-leverage step) |
-| T+55 | Code audit | Wait while Developer audits your code (~10-25 min) |
-| T+75 | Audit review | Confirm "whole surface area" + resolve every `[inferred]` claim |
-| T+97 | Questionnaire | Answer questions the brain-dump didn't cover |
-| T+115 | Draft review | Read the drafted product-spec, brand-guidelines, foundational-assumptions |
-| T+133 | Context cascade | Wait while PM populates agent contexts for Sprint 1 |
-| T+138 | Sprint 1 plan | Name your first feature/task |
-| T+140 | Cleanup | Done; start Sprint 1 |
+| Stage | Time | Your role |
+|-------|------|-----------|
+| Welcome | ~2 min | Read the agenda; type "go" to begin |
+| _Housekeeping (skipped if not needed)_ | ~5–25 min | Approve CLAUDE.md and `.claude/agents/` merges if you had any pre-Muster |
+| **Stage 1 — Brain-dump** · *Highest leverage* | ~25 min | Tell Claude everything you know about the product |
+| Stage 2 — Code audit · *Mostly waiting* | ~15 min | Audit runs; you can step away |
+| **Stage 3 — Audit review** · *Your focus* | ~20 min | Resolve every `[inferred]` claim — confirm or correct |
+| Stage 4 — Questionnaire | ~15 min | Answer what the brain-dump didn't cover |
+| Stage 5 — Draft review | ~15 min | Read the spec / brand / assumptions Claude has drafted |
+| Stage 6 — Sprint 1 plan | ~5 min | Name your first feature; we start working |
+| _Cleanup (silent)_ | ~2 min | Claude archives onboarding scratch and populates Sprint 1 context |
 
 ## Tips for the High-Leverage Steps
 
-### The brain-dump (Phase 4)
+### The brain-dump (Stage 1)
 
 This is where most of your leverage comes from. PM will ask you to share everything you know about the product — what it does, who it's for, what you've tried and discarded, what you hate about competitors, what "done" looks like, what Claude should NOT assume. No structure needed. Paste URLs, drop docs, ramble.
 
@@ -99,7 +97,7 @@ Take 20-30 minutes if you can. Skip only if you have nothing beyond what the que
 
 **Sensitive content**: before pasting, scan your text for API keys, credentials, customer data, internal identifiers. The brain-dump file is gitignored by default, but once pasted the content enters your Claude session context. Redact first.
 
-### The audit review (Phase 6)
+### The audit review (Stage 3)
 
 Developer tags every claim as `[verified]` (observed directly in code) or `[inferred]` (guessed from patterns — file names, directory structure, imports). **Every `[inferred]` row requires your explicit action**: `verified`, `wrong: <correction>`, or `don't-know`. There's no "approve all" shortcut for these. This is the forcing function that keeps bad assumptions out of your knowledge base.
 
@@ -109,7 +107,7 @@ Also review the **Skipped** section carefully — it lists what the audit didn't
 
 ## After Onboarding
 
-At T+140, PM has written:
+After Stage 6 (and silent cleanup), PM has written:
 - A populated `knowledge-base/` — product-spec, architecture, brand-guidelines, foundational-assumptions, agent-context files for Sprint 1 agents
 - `knowledge-base/current-sprint.md` with Sprint 1 tasks
 - `knowledge-base/orchestration-queue.md` with the first 3-5 steps and copy-paste prompts
