@@ -396,9 +396,15 @@ Append two tasks to the Sprint 2 backlog (mechanical, not founder-dependent):
 
 This prevents starter scaffolds from rotting in place.
 
-## Phase 11: End-of-Onboarding Cleanup (T+140, mandatory)
+### 10.3 Chain into Phase 11 (do not pause)
 
-Three steps in order:
+Immediately proceed to Phase 11. **Do NOT pause for founder input or end the session here.** Surface a brief one-liner so the founder knows there's a 10-second beat before they start working — e.g., *"One last thing — wrapping up onboarding (10 seconds)…"* — then run Phase 11 silently. Onboarding is not complete until Phase 11.4 sets `onboarding_complete_at`. Skipping this chain leaves `.populated.onboarding_complete_at` null, which forces every subsequent session to re-read this skill (~3000 tokens wasted) until cleanup eventually runs.
+
+## Phase 11: End-of-Onboarding Cleanup (T+140, mandatory — runs in same session as Phase 10)
+
+This phase runs in the SAME session as Phases 1-10, immediately after Phase 10.3 chains in. Do not defer to a future session. If you defer, the next session will re-read this entire skill file (~3000 tokens) just to reach Phase 11 and run cleanup — pure waste. Phase 11 is silent housekeeping (no founder interaction beyond the brief one-liner from Phase 10.3); it should feel like a 10-second tail on the conversation, not a separate event.
+
+Four steps in order:
 
 ### 11.1 Rationale distillation
 
