@@ -336,7 +336,7 @@ printf "  Run:\n"
 printf "    %scd %s%s\n" "$BOLD$CYAN" "$PROJECT_NAME" "$RESET"
 printf "    %s%s%s\n\n" "$BOLD$CYAN" "claude" "$RESET"
 printf "  Then send Claude this first message:\n"
-printf "    %s%s%s\n\n" "$BOLD$CYAN" "Here's my product idea: [describe it]. Kick off Discovery." "$RESET"
+printf "    %s%s%s\n\n" "$BOLD$CYAN" "Let's start Discovery." "$RESET"
 printf "  %sAny first message works%s — Claude detects greenfield state on the\n" "$DIM" "$RESET"
 printf "  %sfirst message and routes to the guided Discovery flow.%s\n\n" "$DIM" "$RESET"
 

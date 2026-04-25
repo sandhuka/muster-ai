@@ -49,9 +49,9 @@ claude
 
 Then send Claude this first message:
 
-> Here's my product idea: [describe it]. Kick off Discovery.
+> Let's start Discovery.
 
-**Any first message works** — PM reads `.populated` on the first message it processes, detects greenfield first-session state, and fires the Discovery welcome. What matters is that you send *something*. Claude Code sessions wait for user input before reading project files.
+**Any first message works** — PM reads `.populated` on the first message it processes, detects greenfield first-session state, and fires the Discovery welcome. The welcome message will ask for your product idea — describe it then, not before. (If you do include the idea in your first message, PM will still capture it correctly, but you'll see the welcome prompt for it first.)
 
 ## What to Expect
 
