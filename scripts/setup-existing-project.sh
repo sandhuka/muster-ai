@@ -29,7 +29,23 @@ while [ $# -gt 0 ]; do
         --muster-url)       MUSTER_URL="$2"; shift 2 ;;
         --muster-branch)    MUSTER_BRANCH="$2"; shift 2 ;;
         -h|--help)
-            sed -n '3,10p' "${BASH_SOURCE[0]:-$0}" | sed 's/^# \{0,1\}//'
+            cat <<'HELP_EOF'
+Muster — Existing Project Setup Script
+
+Adopts Muster into an existing codebase. Operates in the current directory.
+
+Usage:
+  curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-existing-project.sh | bash
+  ./setup-existing-project.sh
+  ./setup-existing-project.sh --resume               Continue an interrupted run
+  ./setup-existing-project.sh --muster-url <url>     Override the Muster repo URL
+
+Flags:
+  --resume          Continue from .muster-setup-state.json
+  --muster-url      Override the Muster repo URL
+  --muster-branch   Pin the Muster submodule to a specific branch (default: main)
+  -h, --help        Show this help and exit
+HELP_EOF
             exit 0 ;;
         *)                  echo "Unknown arg: $1"; exit 1 ;;
     esac

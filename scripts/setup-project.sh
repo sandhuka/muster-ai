@@ -27,7 +27,25 @@ while [ $# -gt 0 ]; do
         --muster-url)       MUSTER_URL="$2"; shift 2 ;;
         --muster-branch)    MUSTER_BRANCH="$2"; shift 2 ;;
         -h|--help)
-            sed -n '3,12p' "${BASH_SOURCE[0]:-$0}" | sed 's/^# \{0,1\}//'
+            cat <<'HELP_EOF'
+Muster — New Project Setup Script
+
+Creates a new project with Muster scaffolded — git repo, submodule,
+agent bootloaders, knowledge-base templates, and project CLAUDE.md.
+
+Usage:
+  curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s <project-name>
+  ./setup-project.sh <project-name>
+  ./setup-project.sh --resume                       Continue an interrupted run
+                                                    (run from inside the partial project dir)
+  ./setup-project.sh <project-name> --muster-url <url>
+
+Flags:
+  --resume          Continue from .muster-setup-state.json
+  --muster-url      Override the Muster repo URL
+  --muster-branch   Pin the Muster submodule to a specific branch (default: main)
+  -h, --help        Show this help and exit
+HELP_EOF
             exit 0 ;;
         -*)                 echo "Unknown arg: $1"; exit 1 ;;
         *)
