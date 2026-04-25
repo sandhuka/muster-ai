@@ -14,13 +14,80 @@ PM reads this skill when:
 
 Do not silently skip, do not improvise.
 
-## Phase 1: Pre-Merge Orientation (T+4, 90 seconds, non-skippable)
+## User-Facing Stage Numbering (READ BEFORE ANNOUNCING ANYTHING)
 
-Deliver this worked example verbatim (adjust only the example product if the founder has already identified their domain):
+The 11 phases below are **internal**. They include housekeeping (CLAUDE.md merge, `.claude/agents/` merge, cleanup) that the founder doesn't track as work. **Never announce "Phase N" to the founder** — it produces jarring jumps (e.g., "Phase 1 → Phase 4" looks like 2 and 3 were skipped). Use **Stage 1-6** instead, matching the agenda the founder saw in the Phase 1 orientation message.
 
-> "Here's what matters about the next 2 hours. In the review steps, you'll see claims tagged `[inferred]` — things Claude guessed from code structure rather than verified. If you approve one without reading (e.g., `[inferred] Auth: JWT` when you actually use OAuth device flow), here's what happens: three sessions from now QA writes JWT-auth tests, Developer builds against the wrong assumption, and you spend two rounds of revision undoing it. Same pattern applies to anything Claude inferred — database choice, state management, test framework, UI library, whatever's specific to your code. The `[inferred]` tag is your one signal to slow down; the specifics are whatever your audit turns up. That's the whole pitch. The rest of onboarding is: tell me about your product, I audit your code, you spot-check what I inferred. Let's go."
+| Internal phase(s) | User-facing label |
+|---|---|
+| Phase 4 | **Stage 1: Brain-dump** |
+| Phase 5 + Phase 6 | **Stage 2: Code audit** |
+| Phase 7 | **Stage 3: Audit review** |
+| Phase 8 | **Stage 4: Questionnaire** |
+| Phase 9 | **Stage 5: Draft review** |
+| Phase 10 | **Stage 6: Sprint 1 plan** |
 
-**Rationale**: specific causality sticks; abstract "why review gates matter" does not. 90 seconds, mandatory, no skippable framing. Experienced founders read it in 30 seconds and proceed; new founders absorb one concrete failure mode they can pattern-match at review time.
+Phases 2, 3, and 11 are **housekeeping** — announce as plain prose with no Stage label (e.g., *"Just checking for a pre-Muster CLAUDE.md to merge — none found, moving on."*).
+
+### Stage-transition format (verbatim structure)
+
+When transitioning between user-visible stages, use this exact markdown structure. It mirrors the setup-script's terminal aesthetic (cyan-bold section headers, green-bold ✓ on completion) via Claude Code's markdown rendering:
+
+```
+---
+
+## ✓ Stage [N-1]: [Name] complete
+
+[1-line summary of what got captured / saved / decided]
+
+---
+
+## Stage N: [Name] (~[time] · [your role])
+
+[Stage intro / instruction]
+```
+
+`[your role]` is one of: *focus*, *mostly waiting*, *quick check*. Examples:
+- `## Stage 2: Code audit (~15 min · mostly waiting)`
+- `## Stage 3: Audit review (~20 min · your focus)`
+- `## Stage 6: Sprint 1 plan (~5 min · quick check)`
+
+The `---` divider before AND after the completion line creates the same visual break the script's `━━━` dividers do for Step 1 / Step 2. The `✓` glyph mirrors the script's green checkmarks.
+
+## Phase 1: Pre-Merge Orientation (T+4, ~90 seconds, non-skippable)
+
+Deliver this verbatim (substitute the product name if the founder has already identified their domain). Markdown formatting is intentional — Claude Code renders it for visual hierarchy.
+
+> # ✨ Welcome — let's set up your AI team
+>
+> Over the next ~2 hours, we're going to turn your project into a place where **a coordinated team of specialist AI agents** can actually work together — knowing your product, your code, and your decisions, sprint after sprint.
+>
+> ## What you're getting
+>
+> Seven specialists — **Developer, UI/UX, QA, Content, Marketing, Legal, Research** — coordinated by me as your product manager. Every decision logged. Every sprint planned. No re-explaining your product to a fresh AI chat ever again.
+>
+> **Why it's worth the next 2 hours:** every sprint after this one is fast. The agents already know your product. You spend your time shipping, not re-onboarding.
+>
+> ## How today works (6 stages)
+>
+> - **Stage 1 — Brain-dump** (~25 min) · *Highest leverage* — Tell me everything you know about the product. Paste docs, ramble, drop links.
+> - **Stage 2 — Code audit** (~15 min) · *Mostly waiting* — I read through your codebase.
+> - **Stage 3 — Audit review** (~20 min) · *Your focus* — We walk through what I found together.
+> - **Stage 4 — Questionnaire** (~15 min) — I ask about anything the brain-dump didn't cover.
+> - **Stage 5 — Draft review** (~15 min) — You read the product spec / brand guidelines / assumptions I've drafted.
+> - **Stage 6 — Sprint 1 plan** (~5 min) — You name the first feature; we start working.
+>
+> ## One thing before we begin
+>
+> In **Stage 3**, every claim I make about your code will be tagged `[verified]` (I saw it directly) or `[inferred]` (I guessed from patterns — file names, imports, directory structure). I'll ask you to confirm or correct each `[inferred]` row.
+>
+> **Why slow down here:** approve a wrong guess and your team builds on a bad assumption — rework surfaces days later. The tag is your one signal to pause. Everything else moves fast.
+>
+> ---
+>
+> **Ready?** Say *"go"* — or jump straight in with your first thoughts about the product. The more you share, the less the team has to guess.
+
+**Rationale**: lead with value framing ("let's set up your AI team", future-state benefit) before agenda; agenda before technical concept; technical concept anchored by single concrete consequence, not front-loaded as anxiety. Markdown rendering creates visual rhythm in the terminal — section headers, agenda list with inline middle-dot annotations, divider before kickoff. Human-psychology levers: ownership ("your AI team"), reciprocity (PM does the heavy lifting, founder reviews), specificity (clear timeboxes), loss reframe (the time is deposited toward future speed, not spent), social proof avoided (would feel hollow). Total ~210 words; experienced founders scan in 30 seconds and proceed. Honesty preserved: no overclaiming, single concrete failure mode for `[inferred]` discipline, gentle close.
 
 ## Phase 2: CLAUDE.md Content-Triage + Merge (T+6)
 
