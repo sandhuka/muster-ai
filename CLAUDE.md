@@ -1,5 +1,24 @@
 # Muster — Multi-Agent Product System
 
+## Session-Start Protocol (read this before anything else in this file)
+
+If you are reading this file because the project `CLAUDE.md` bootstrap
+told you to, the routing has already been determined. Re-check: have you
+already Read `knowledge-base/agent-context/.populated`? If not, stop and
+read it now — it is the authoritative routing signal.
+
+Routing summary (full table in the project `CLAUDE.md` bootstrap):
+- `.populated.onboarded_at` is a timestamp AND any `agents.*` is null →
+  **PATH A: existing-project onboarding.** Next read:
+  `muster/team/pm/skills/generic/reverse-discovery.md`. Then run Phase 1.
+  Do NOT run the PM bootstrap reads below — those are for
+  greenfield/steady-state. Do NOT read `getting-started.md` or
+  `adopting-existing-project.md`.
+- `.populated.onboarded_at` is null → **PATH B: greenfield.** Use the PM
+  Mode "First PM question" bootstrap below.
+- All `agents.*` are timestamps → **PATH C: steady-state.** Use the PM
+  Mode "First PM question" bootstrap below.
+
 ## System Architecture
 
 ### How This System Works
