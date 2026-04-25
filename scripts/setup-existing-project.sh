@@ -18,11 +18,16 @@ ARCHIVE_DIR=".muster-archive"
 # ---------- argument parsing ----------
 RESUME=0
 MUSTER_URL="$DEFAULT_MUSTER_URL"
+# MUSTER_BRANCH: which branch to pin the muster submodule to.
+# - empty (default) → use the remote's default branch (main)
+# - set via --muster-branch <name> or MUSTER_BRANCH=<name> env var
+MUSTER_BRANCH="${MUSTER_BRANCH:-}"
 
 while [ $# -gt 0 ]; do
     case "$1" in
         --resume)           RESUME=1; shift ;;
         --muster-url)       MUSTER_URL="$2"; shift 2 ;;
+        --muster-branch)    MUSTER_BRANCH="$2"; shift 2 ;;
         -h|--help)
             sed -n '3,10p' "${BASH_SOURCE[0]:-$0}" | sed 's/^# \{0,1\}//'
             exit 0 ;;
@@ -385,8 +390,13 @@ if ! state_has_step "submodule_add"; then
         exit 1
     fi
 
-    substep_start "1.2" "Add Muster as git submodule (cloning — this takes a few seconds)"
-    git submodule add --quiet "$MUSTER_URL" muster
+    if [ -n "$MUSTER_BRANCH" ]; then
+        substep_start "1.2" "Add Muster as git submodule on branch '$MUSTER_BRANCH' (cloning — this takes a few seconds)"
+        git submodule add --quiet -b "$MUSTER_BRANCH" "$MUSTER_URL" muster
+    else
+        substep_start "1.2" "Add Muster as git submodule (cloning — this takes a few seconds)"
+        git submodule add --quiet "$MUSTER_URL" muster
+    fi
     substep_done "1.2" "Add Muster as git submodule"
     write_state "$REPO_SHAPE" archive_existing submodule_add
 else
