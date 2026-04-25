@@ -42,7 +42,8 @@ muster-ai/
 │   └── knowledge-base/               # Pre-structured KB templates
 │
 └── scripts/
-    └── setup-project.sh               # Scaffolds a new project repo
+    ├── setup-project.sh               # Scaffolds a new (greenfield) project repo
+    └── setup-existing-project.sh      # Adopts Muster into an existing codebase
 ```
 
 ### Project Repo (Your Product)
@@ -53,7 +54,7 @@ my-project/
 │   ├── ui-ux.md                       # What Claude reads when you say @ui-ux
 │   └── ...                            # Each file: ~30 lines of boot instructions
 │
-├── CLAUDE.md                          # PROJECT BRAIN — product info, overrides
+├── CLAUDE.md                          # PROJECT BRAIN — bootstrap routing + product info + project-specific rules
 │
 ├── muster/                            # <-- Git submodule --> muster-ai repo
 │
@@ -316,7 +317,7 @@ Root Claude IS the PM. No separate PM agent.
 | `.claude/agents/<name>.md` | Startup config — what to read when invoked | Copied from templates |
 | `CLAUDE.md` | Three-section project file: Muster Framework pointer (read-only), Product Information, Project-Specific Rules | Founder + PM |
 | `knowledge-base/agent-context/<name>.md` | Filtered product context per agent | PM |
-| `knowledge-base/agent-context/.populated` | Per-agent populate state + `onboarded_at` anchor. Routes greenfield vs existing-project at bootstrap. | Script (init); PM (updates) |
+| `knowledge-base/agent-context/.populated` | Per-agent populate state + `onboarded_at` and `onboarding_complete_at` anchors. Routes bootstrap into one of three paths: greenfield (`onboarded_at` null), onboarding-active (`onboarded_at` set + `onboarding_complete_at` null), or steady-state (both set). | Script (init); PM (updates: agent timestamps during cascade + JIT; `onboarding_complete_at` at Phase 11.4) |
 | `knowledge-base/product-spec.md` | Full product specification | PM |
 | `knowledge-base/architecture.md` | Technical architecture | Developer produces, PM reviews |
 | `knowledge-base/current-sprint.md` | Task board — assignments and status | PM |

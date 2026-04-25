@@ -86,7 +86,7 @@ Muster uses a two-repo model:
 ```
 my-project/
 ├── .claude/agents/        # Agent startup configs (invoke with @developer, @research, etc.)
-├── CLAUDE.md              # Your product info + overrides
+├── CLAUDE.md              # Your product info + project-specific rules
 ├── muster/                # <-- Git submodule (this repo)
 ├── knowledge-base/
 │   ├── agent-context/     # Per-agent filtered product context (PM writes, agents read)

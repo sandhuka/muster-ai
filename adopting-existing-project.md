@@ -109,9 +109,11 @@ Also review the **Skipped** section carefully — it lists what the audit didn't
 
 After Stage 6 (and silent cleanup), PM has written:
 - A populated `knowledge-base/` — product-spec, architecture, brand-guidelines, foundational-assumptions, agent-context files for Sprint 1 agents
+- Your project root `CLAUDE.md` populated with real product info (Project Name, Tagline, Tech stack, Target user, Monetization, Team model) — placeholders pulled from the synthesized product-spec, brand-guidelines, and architecture docs
 - `knowledge-base/current-sprint.md` with Sprint 1 tasks
 - `knowledge-base/orchestration-queue.md` with the first 3-5 steps and copy-paste prompts
 - Sprint 2 backlog seeded with UI/UX curation tasks for brand-guidelines and design-system-reference (if a design system was detected)
+- `knowledge-base/agent-context/.populated` with `onboarding_complete_at` timestamped — every future session takes the steady-state path (no re-reading the onboarding skill)
 
 From here, you follow the orchestration queue — same loop as the greenfield path post-Sprint-1. Open `orchestration-queue.md`, copy the next prompt, invoke the listed agent.
 

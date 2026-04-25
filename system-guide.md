@@ -43,11 +43,13 @@ See `templates/knowledge-base/agent-context/` for section templates per agent.
 |---|------|-------------|
 | 1 | `muster/team/<name>/CLAUDE.md` | Agent brain file |
 | 2 | `muster/team/<name>/skills/` | Domain skill files organized by platform |
-| 3 | Project `.claude/agents/<name>.md` | Startup config (template below) |
+| 3 | Project `.claude/agents/<name>.md` | Startup config (template below — must include `.populated` halt check) |
 | 4 | `muster/CLAUDE.md` — Agent Roster table | New row |
 | 5 | `muster/CLAUDE.md` — Sub-Agent Access line | Add `@<name>` |
 | 6 | Project `knowledge-base/agent-context/<name>.md` | Filtered product context + tasks |
 | 7 | Project `knowledge-base/agent-skills/<name>/` | Create directory for product-specific skills |
+| 8 | Project `knowledge-base/agent-context/.populated` | Add `<name>: null` entry under the `agents` block (PM populates the timestamp at first cascade or JIT populate) |
+| 9 | `templates/knowledge-base/agent-context/.populated` | Add `<name>: null` to the framework template so future projects scaffold with the new agent |
 
 ### Startup Config Template (`.claude/agents/<name>.md`)
 
@@ -60,7 +62,13 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 
 You are the <Name> agent for this project.
 
-**Always read on startup** (lightweight, essential):
+**Startup halt check (first action — before any other read):**
+Read `knowledge-base/agent-context/.populated`. If `agents.<name>` is `null`, halt and return:
+> *"HALT: agent-context null (first invocation). PM: run JIT populate (context-cascading.md → Just-in-time mode), then re-invoke. User-transparent — no prompt needed."*
+
+PM auto-handles this by reading the JIT Populate procedure, populating the agent's context file, setting the timestamp in `.populated`, and re-invoking with the original task. Do not proceed with any other reads or work until your `.populated` entry is a timestamp.
+
+**Always read on startup** (after halt check passes — lightweight, essential):
 1. muster/CLAUDE.md (system rules, protocols, communication standards)
 2. muster/team/<name>/CLAUDE.md (your role definition + skill index)
 3. knowledge-base/agent-context/<name>.md (filtered product context for your role)
@@ -93,12 +101,13 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 1. Create `muster/team/<name>/` directory
 2. Create `muster/team/<name>/CLAUDE.md` from brain template
 3. Create `muster/team/<name>/skills/` with domain skill files (organized by platform)
-4. Create `.claude/agents/<name>.md` in the project repo from startup config template
+4. Create `.claude/agents/<name>.md` in the project repo from startup config template (include the `.populated` halt check)
 5. Add row to `muster/CLAUDE.md` Agent Roster table
 6. Add `@<name>` to `muster/CLAUDE.md` Sub-Agent Access line
 7. Create `knowledge-base/agent-context/<name>.md` from template in the project repo
-8. Root Claude (as PM) populates the agent-context file with project-specific content
-9. Root Claude mirrors cross-agent dependencies in the Muster brain file (generic relationships only)
+8. Add `<name>: null` to `knowledge-base/agent-context/.populated` (project-level) AND to `templates/knowledge-base/agent-context/.populated` (framework-level so future projects scaffold with the new agent)
+9. Root Claude (as PM) populates the agent-context file with project-specific content and sets the agent's timestamp in `.populated`
+10. Root Claude mirrors cross-agent dependencies in the Muster brain file (generic relationships only)
 
 ### Safety Checklist
 
@@ -109,9 +118,11 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 - [ ] Agent appears in `muster/CLAUDE.md` roster table
 - [ ] `@<name>` appears in `muster/CLAUDE.md` Sub-Agent Access line
 - [ ] Startup config reads muster/CLAUDE.md, brain file, and agent-context file
+- [ ] Startup config includes the `.populated` halt check as its first action (before any other read)
 - [ ] Startup config uses two-tier reading model (always-read vs on-demand)
 - [ ] Session-start rule for agent-requests.md present in startup config
 - [ ] Orchestration queue integration present (startup read + session completion protocol)
+- [ ] Agent has `<name>: null` entry in BOTH the project-level `.populated` AND the framework template `templates/knowledge-base/agent-context/.populated`
 
 ### Special Ownership Boundary (rare)
 
@@ -396,11 +407,13 @@ Confidence tagging (`[verified]`/`[inferred]`) is NOT part of this checklist —
 
 For adopting Muster into projects with pre-existing code (not greenfield). Full 11-phase procedure lives in `team/pm/skills/generic/reverse-discovery.md` (~2 hours founder time). This section covers the high-level flow, the `.populated` state file, and the `.muster-onboarding/` transient-file protocol.
 
+**User-facing nomenclature**: founder-visible announcements use **Stage 1-6** (Brain-dump, Code audit, Audit review, Questionnaire, Draft review, Sprint 1 plan); internal Phases 4-10 map to Stages 1-6 respectively, while Phases 2/3/9/11 are housekeeping with no Stage label. PM never announces "Phase N" to the founder. Mapping table lives in `reverse-discovery.md` → User-Facing Stage Numbering.
+
 #### Entry point
-Founder runs `scripts/setup-existing-project.sh`. Script: three-case git detection (no-git offers `git init`; repo root proceeds; inside-larger-repo aborts), archives existing `CLAUDE.md` + `.claude/agents/`, scaffolds templates, initializes `.populated` with `onboarded_at`, gitignores `.muster-onboarding/`. Has `--resume` for interrupted runs.
+Founder runs `scripts/setup-existing-project.sh`. Script: three-case git detection (no-git offers `git init`; repo root proceeds; inside-larger-repo aborts), archives existing `CLAUDE.md` + `.claude/agents/`, scaffolds templates, initializes `.populated` with `onboarded_at` (and `onboarding_complete_at: null`), gitignores `.muster-onboarding/`. Has `--resume` for interrupted runs and `--muster-branch` to pin the muster submodule to a specific branch (default: remote default branch).
 
 #### 11 phases (PM via reverse-discovery.md)
-1. Orientation (90s, non-skippable). 2. CLAUDE.md content-triage + merge. 3. `.claude/agents/` merge. 4. Brain-dump + doc ingest. 5. Audit brief + Developer bootstrap. 6. Audit review + architecture finalize. 7. Adaptive questionnaire. 8. Product synthesis. 9. Agent-context cascade (Sprint 1 agents only; others lazy). 10. Sprint 1 plan + Sprint 2 backlog. 11. Cleanup (atomic `mv` of `.muster-onboarding/` to `.muster-archive/`).
+1. Orientation (~90s, non-skippable). 2. CLAUDE.md content-triage + merge. 3. `.claude/agents/` merge. 4. Brain-dump + doc ingest. 5. Audit brief + Developer bootstrap. 6. Audit review + architecture finalize. 7. Adaptive questionnaire. 8. Product synthesis (incl. 8.6 — populate project root `CLAUDE.md` placeholders from synthesized source docs). 9. Agent-context cascade (Sprint 1 agents only; others lazy). 10. Sprint 1 plan + Sprint 2 backlog (incl. 10.3 — chain into Phase 11 in same session, no pause). 11. Cleanup (11.1 rationale distillation, 11.2 atomic `mv` of `.muster-onboarding/` to `.muster-archive/`, 11.3 verification, 11.4 set `onboarding_complete_at` — load-bearing routing signal that flips bootstrap to steady-state).
 
 #### `.populated` state file
 Location: `knowledge-base/agent-context/.populated`. Tracks specialist populate state + onboarding lifecycle anchors.
