@@ -149,5 +149,5 @@ Activated when a specialist returns `HALT: agent-context null (first invocation)
 
 ### When NOT to JIT-populate
 - `.populated` missing entirely → halt with: "Muster setup incomplete — `.populated` state file missing. Re-run `scripts/setup-existing-project.sh --resume`."
-- Agent-context file already has content but `.populated` says `null` → set the `.populated` timestamp to match the file's git mtime (or current time if untracked), re-invoke. Do not overwrite existing content.
+- Agent-context file has **real product context** (filled-in role summary, current tasks, project specifics — not just the unfilled template scaffolding with placeholder text like `[Project Name]` or empty section headers) but `.populated` says `null` → set the `.populated` timestamp to match the file's git mtime (or current time if untracked), re-invoke. Do not overwrite. If the file is just the unfilled template, treat it as empty and do a full populate (Procedure above).
 - Required source docs (`product-spec.md`, `architecture.md`) empty or placeholder → halt with: "Knowledge base not populated — complete reverse-discovery first (`reverse-discovery.md`)." Indicates onboarding didn't finish.
