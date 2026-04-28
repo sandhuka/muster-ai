@@ -41,8 +41,12 @@ muster-ai/
 │   ├── CLAUDE.md                      # Project CLAUDE.md with placeholders
 │   └── knowledge-base/               # Pre-structured KB templates
 │
-└── scripts/
-    └── setup-project.sh               # Scaffolds a new project repo
+├── scripts/
+│   ├── setup-project.sh               # Scaffolds a new (greenfield) project repo
+│   ├── setup-existing-project.sh      # Adopts Muster into an existing codebase
+│   └── migrate-v1-to-v2.sh            # Upgrades a pre-v2 project to v2 (creates .populated, injects HALT check, patches CLAUDE.md)
+│
+└── MIGRATING-V1-TO-V2.md              # User-facing migration guide for the above script
 ```
 
 ### Project Repo (Your Product)
@@ -53,7 +57,7 @@ my-project/
 │   ├── ui-ux.md                       # What Claude reads when you say @ui-ux
 │   └── ...                            # Each file: ~30 lines of boot instructions
 │
-├── CLAUDE.md                          # PROJECT BRAIN — product info, overrides
+├── CLAUDE.md                          # PROJECT BRAIN — bootstrap routing + product info + project-specific rules
 │
 ├── muster/                            # <-- Git submodule --> muster-ai repo
 │
@@ -127,6 +131,9 @@ Layer 5: src/                          ACTUAL CODE          "The thing being bui
          +------+------+------+----+------+------+
                           |
                Each agent reads on startup:
+               0. agent-context/.populated (halt check — if agent's
+                  entry is null, halt to PM for one-time populate;
+                  user-transparent. See Context Window Management.)
                1. muster/CLAUDE.md (system rules)
                2. muster/team/<name>/CLAUDE.md (role)
                3. agent-context/<name>.md (product context)
@@ -184,6 +191,10 @@ The biggest lesson learned: **agents waste most of their context window reading 
 
 ```
 TIER 1: ALWAYS READ (every startup)          ~80-120 lines
+  - knowledge-base/agent-context/.populated (halt check — runs before
+    any other read. If the agent's entry is null, the agent halts and
+    returns control to PM for a one-time populate. PM re-invokes with
+    the original task once populate completes. User-transparent.)
   - muster/CLAUDE.md (system rules)
   - muster/team/<agent>/CLAUDE.md (role)
   - knowledge-base/agent-context/<agent>.md (product context)
@@ -307,8 +318,9 @@ Root Claude IS the PM. No separate PM agent.
 | File | Purpose | Who Writes |
 |------|---------|------------|
 | `.claude/agents/<name>.md` | Startup config — what to read when invoked | Copied from templates |
-| `CLAUDE.md` | Product info, tech stack, overrides | Founder + PM |
+| `CLAUDE.md` | Three-section project file: Muster Framework pointer (read-only), Product Information, Project-Specific Rules | Founder + PM |
 | `knowledge-base/agent-context/<name>.md` | Filtered product context per agent | PM |
+| `knowledge-base/agent-context/.populated` | Per-agent populate state + `version`, `onboarded_at`, `onboarding_complete_at`, and `agents.pm` routing anchors. `version: "2"` is the schema version (bump when the schema breaks; v1→v2 migration handled by `scripts/migrate-v1-to-v2.sh`). Bootstrap routes into one of four paths: (A) existing-project onboarding (`onboarded_at` set + `onboarding_complete_at` null) → load `reverse-discovery.md`; (B-fresh) greenfield first session (`onboarded_at` null + `agents.pm` null) → load `greenfield-discovery.md`, fire welcome; (B-ongoing) greenfield ongoing (`onboarded_at` null + `agents.pm` set) → normal PM Mode bootstrap; (C) existing-project steady-state (both `onboarded_at` and `onboarding_complete_at` set) → normal PM Mode bootstrap. | Script (init); PM (updates: `agents.pm` at greenfield Stage 1.3 OR existing-project init; agent timestamps during cascade + JIT; `onboarding_complete_at` at Phase 11.4) |
 | `knowledge-base/product-spec.md` | Full product specification | PM |
 | `knowledge-base/architecture.md` | Technical architecture | Developer produces, PM reviews |
 | `knowledge-base/current-sprint.md` | Task board — assignments and status | PM |

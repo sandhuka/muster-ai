@@ -1,29 +1,41 @@
-<!-- MUSTER SYSTEM BOOTSTRAP — DO NOT REMOVE OR MODIFY THIS SECTION -->
-## System Bootstrap (Required)
+<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->
+**First tool call this session: Read `knowledge-base/agent-context/.populated`.** Do not LS/Grep/Glob first — the file is the routing signal.
 
-**MANDATORY — before responding to ANY user message in this session,
-read `muster/CLAUDE.md` FIRST. Do not respond until you have read it.
-It contains required startup protocols that must be executed before
-you can answer PM questions, coordinate agents, or do any project work.**
-<!-- END MUSTER SYSTEM BOOTSTRAP -->
+Route on `.populated` (JSON: `onboarded_at`, `onboarding_complete_at`, `agents.<name>` — each timestamp-or-null):
+- `onboarded_at` is a timestamp AND `onboarding_complete_at` is null → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run it (Phase 1 first). Do NOT run PM bootstrap reads (no decision-log, current-sprint, orchestration-queue, agent-requests) — those are for greenfield/steady-state.
+- `onboarded_at` is null AND `agents.pm` is null → **greenfield first session**. Read `muster/team/pm/skills/generic/greenfield-discovery.md` and fire Stage 1 welcome. Do NOT skip the welcome — first impression matters.
+- `onboarded_at` is null AND `agents.pm` is a timestamp → **greenfield ongoing** (Discovery in progress or post-Sprint-1 work). Read `muster/CLAUDE.md` and follow PM Mode. Do NOT read `greenfield-discovery.md` again — welcome already shown.
+- `onboarded_at` AND `onboarding_complete_at` both timestamps → **steady-state** (existing-project, post-onboarding; regardless of individual `agents.*` state — null entries trigger JIT populate, NOT re-onboarding). Read `muster/CLAUDE.md` and follow PM Mode. Do NOT read `reverse-discovery.md`.
+- File missing/invalid → halt: *"Muster setup incomplete. Run `scripts/setup-existing-project.sh --resume` or `scripts/setup-project.sh <name>` at repo root."*
+<!-- END BOOTSTRAP -->
 
 # [Project Name]
 
+## Muster Framework
+
+Multi-agent framework coordinated by Root Claude (acting as PM). Specialist agents — Developer, UI/UX, QA, Content, Marketing, Legal, Research — invoked via Task tool with `subagent_type="<agent>"`.
+
+Authoritative rules, PM mode, agent protocols: `muster/CLAUDE.md`. System guide, agent roster, skill index: `muster/system-guide.md`. This file holds only project-specific content (sections below).
+
 ## Product Information
+
 **Product**: [Name] — "[Tagline]"
 [2-3 sentence product description]
 
-- **Platforms**: [iOS / Android / Web / Backend]
-- **Tech stack**: [Swift, React, Node.js, etc.]
+- **Platforms / surfaces**: [iOS / Android / Web / Backend / Desktop / CLI / library / etc.]
+- **Tech stack**: [Languages, frameworks, key dependencies]
 - **Target user**: [Brief persona description]
-- **Monetization**: [Model]
+- **Monetization**: [Model — free / freemium / subscription / paid / other / not yet]
 - **Team model**: [Solo founder + AI agents / Small team + AI agents]
 
-See `knowledge-base/product-spec.md` for full spec. See `knowledge-base/brand-guidelines.md` for brand identity. See `knowledge-base/current-sprint.md` for current sprint status.
+See `knowledge-base/product-spec.md` for full spec, `knowledge-base/brand-guidelines.md` for brand, `knowledge-base/current-sprint.md` for sprint status.
 
-<!-- Add shared UI library, design system, or other cross-cutting technical details below -->
+<!-- Add shared UI library, design system, or other cross-cutting technical details below if they affect multiple agents. -->
 
-## Project-Specific Overrides
-<!-- Optional: override any Muster defaults (communication style, agent behavior, design system workflow, etc.) -->
-<!-- Example: if your project uses a shared UI component library, you can add a detailed Rule 9 override here
-     with the full component request/review/fulfillment workflow specific to your library's tooling -->
+## Project-Specific Rules
+
+<!-- Rules that replace, add to, or are orthogonal to Muster framework rules.
+     Do NOT copy framework rules here — they live in muster/CLAUDE.md. Empty section = default behavior.
+     Format each as current-truth ("Rule X (this project): ..." / "[Preference]: ..."). No archaeology.
+     Examples: "Rule 9 (this project): shared UI components go through design-system review";
+     "Package manager: pnpm"; "Testing: new endpoints require integration + unit tests". -->

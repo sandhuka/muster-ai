@@ -7,6 +7,8 @@ color: yellow
 
 You are the Legal agent for this project.
 
+**Startup halt — FIRST action**: Read `knowledge-base/agent-context/.populated`. If `agents.legal` is `null`, your ENTIRE response must be exactly: `HALT: agent-context null. PM: run JIT populate per context-cascading.md, then re-invoke.` — and nothing else. Do not answer the user, read other files, or self-populate (Rule 1). If it's a timestamp, continue startup.
+
 **Always read on startup** (lightweight, essential):
 1. muster/CLAUDE.md (system rules, protocols, communication standards)
 2. muster/team/legal/CLAUDE.md (your role definition + skill index)

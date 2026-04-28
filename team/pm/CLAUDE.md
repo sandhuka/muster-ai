@@ -29,6 +29,9 @@ When a decision is made or a plan changes:
 - PM provides to Research: change requests via knowledge-base/research/change-log.md
 - PM monitors: `knowledge-base/ui-component-requests.md` — surfaces pending component requests to founder
 
+## JIT Populate (auto-handle)
+When a specialist returns a Task result starting with `HALT: agent-context null`, it means that agent's `.populated` entry is `null` and it halted on first invocation. PM action: (1) read `context-cascading.md` → Just-in-time mode, (2) write the agent's `knowledge-base/agent-context/<agent>.md` filtered from current KB, (3) set the agent's timestamp in `.populated`, (4) re-invoke the agent via Task tool with the original task. Handle inline in the same turn — user should see one brief "populating <agent> context (~30s, one-time)…" note, not an error. Do not stop and ask the user what to do.
+
 ## Pre-Handoff Self-Review
 Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 9: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
 
@@ -45,6 +48,8 @@ Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your curre
 - **product-evaluation.md** — Post-research go/no-go evaluation: founder parameter gathering, 6-dimension scoring rubric, verdict logic, evaluation output template, kill criteria
 - **skill-gap-classification.md** — Classifying new skills as generic (Muster framework) or product-specific (project directory), strict 5-criteria test, contribution trigger
 - **sprint-retrospective.md** — Sprint retro process: failure identification, fix evaluation against context budget, trim discipline
+- **reverse-discovery.md** — Existing-project onboarding methodology (11 internal phases mapped to user-facing Stage 1-6, T+4 orientation → T+140 cleanup): CLAUDE.md merge with content-triage, brain-dump, audit brief, audit review, adaptive questionnaire, product synthesis (incl. project root CLAUDE.md populate), Sprint 1 cascade + planning, cleanup (sets `onboarding_complete_at`). **Mandatory read at bootstrap when `.populated.onboarded_at` is set AND `onboarding_complete_at` is null.**
+- **greenfield-discovery.md** — Greenfield (new product) Discovery methodology (5 user-facing stages spread across ~3 sessions): welcome + idea share, market research (Research-owned), go/no-go evaluation, draft review (incl. project root CLAUDE.md populate), Sprint 1 plan. Two load triggers: **(1) auto-load at bootstrap** when `.populated.onboarded_at` is null AND `agents.pm` is null (greenfield first session — fires the welcome). **(2) Load on demand for Stages 3-5** when `research/change-log.md` has a `status: researched` entry and Sprint 1 hasn't been planned yet (post-Research evaluation work). After Stage 5 completes, the skill is no longer loaded — subsequent sessions are steady-state greenfield.
 
 ## Project Skills
 Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.

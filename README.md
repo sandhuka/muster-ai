@@ -23,7 +23,7 @@ Muster solves this with three mechanisms:
 - **Files as Persistent Memory** — Agent brains, orchestration queues, handoff logs, and decision records persist as markdown files. No session starts from zero.
 - **Self-Improving Skills** — During sprint planning, the PM scans for methodology gaps. When a new skill is created, it's classified as generic or product-specific. Generic skills are contributed back to the framework — so every project makes Muster smarter for the next one.
 
-## Quick Start
+## Quick Start (new project)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s my-project
@@ -31,9 +31,20 @@ cd ~/Desktop/my-project
 claude
 ```
 
-Then tell Root Claude your product idea. It acts as your PM — plans sprints, coordinates agents, and tells you who to invoke next.
+Then tell Root Claude your product idea. Claude opens with a brief welcome and walks you through 5 Discovery stages — idea share, market research, go/no-go decision, draft review, Sprint 1 plan. Total founder time: **~1-2 hours across ~3 sessions** over a day or two.
 
 See [getting-started.md](getting-started.md) for the full step-by-step walkthrough.
+
+## Existing project?
+
+If you already have code — a mobile app you've been building for months, a web app with real users, a backend service, a CLI tool — Muster has a dedicated adoption path that reverse-discovers your product into a populated knowledge base and plans Sprint 1. Takes about 2 hours of focused time.
+
+```bash
+cd ~/path/to/your-existing-project
+curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-existing-project.sh | bash
+```
+
+See [adopting-existing-project.md](adopting-existing-project.md) for the full walkthrough.
 
 ## How It Works
 
@@ -75,7 +86,7 @@ Muster uses a two-repo model:
 ```
 my-project/
 ├── .claude/agents/        # Agent startup configs (invoke with @developer, @research, etc.)
-├── CLAUDE.md              # Your product info + overrides
+├── CLAUDE.md              # Your product info + project-specific rules
 ├── muster/                # <-- Git submodule (this repo)
 ├── knowledge-base/
 │   ├── agent-context/     # Per-agent filtered product context (PM writes, agents read)
@@ -92,9 +103,11 @@ my-project/
 
 | Doc | What It Covers | Read When |
 |-----|---------------|-----------|
-| [getting-started.md](getting-started.md) | Step-by-step setup and first sprint | Setting up a new project |
+| [getting-started.md](getting-started.md) | Step-by-step setup and first sprint | Setting up a new (greenfield) project |
+| [adopting-existing-project.md](adopting-existing-project.md) | Reverse-discovery onboarding for projects with existing code | Adopting Muster into an existing codebase |
 | [architecture-and-design.md](architecture-and-design.md) | Architecture deep dive — data flow, context management, how agents communicate | Evaluating whether to adopt Muster |
 | [system-guide.md](system-guide.md) | Templates, extensibility, verification checklist | Adding agents, skills, or modifying the framework |
+| [MIGRATING-V1-TO-V2.md](MIGRATING-V1-TO-V2.md) | One-shot migration guide for projects set up before v2 (`.populated` routing signal, hardened HALT check, slim `CLAUDE.md` bootstrap) | Pulled an updated `muster/` and got a "Pre-v2 Muster setup detected" halt |
 
 ## Stay Updated
 

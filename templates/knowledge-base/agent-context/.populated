@@ -1,0 +1,16 @@
+{
+  "version": "2",
+  "onboarded_at": null,
+  "onboarding_complete_at": null,
+  "agents": {
+    "developer": null,
+    "ui-ux": null,
+    "content": null,
+    "qa": null,
+    "research": null,
+    "marketing": null,
+    "legal": null,
+    "pm": null
+  },
+  "lock": null
+}

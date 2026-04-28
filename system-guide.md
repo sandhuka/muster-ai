@@ -43,11 +43,13 @@ See `templates/knowledge-base/agent-context/` for section templates per agent.
 |---|------|-------------|
 | 1 | `muster/team/<name>/CLAUDE.md` | Agent brain file |
 | 2 | `muster/team/<name>/skills/` | Domain skill files organized by platform |
-| 3 | Project `.claude/agents/<name>.md` | Startup config (template below) |
+| 3 | Project `.claude/agents/<name>.md` | Startup config (template below — must include `.populated` halt check) |
 | 4 | `muster/CLAUDE.md` — Agent Roster table | New row |
 | 5 | `muster/CLAUDE.md` — Sub-Agent Access line | Add `@<name>` |
 | 6 | Project `knowledge-base/agent-context/<name>.md` | Filtered product context + tasks |
 | 7 | Project `knowledge-base/agent-skills/<name>/` | Create directory for product-specific skills |
+| 8 | Project `knowledge-base/agent-context/.populated` | Add `<name>: null` entry under the `agents` block (PM populates the timestamp at first cascade or JIT populate) |
+| 9 | `templates/knowledge-base/agent-context/.populated` | Add `<name>: null` to the framework template so future projects scaffold with the new agent |
 
 ### Startup Config Template (`.claude/agents/<name>.md`)
 
@@ -60,7 +62,11 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 
 You are the <Name> agent for this project.
 
-**Always read on startup** (lightweight, essential):
+**Startup halt — FIRST action**: Read `knowledge-base/agent-context/.populated`. If `agents.<name>` is `null`, your ENTIRE response must be exactly: `HALT: agent-context null. PM: run JIT populate per context-cascading.md, then re-invoke.` — and nothing else. Do not answer the user, read other files, or self-populate (Rule 1). If it's a timestamp, continue startup.
+
+PM auto-handles this by reading the JIT Populate procedure, populating the agent's context file, setting the timestamp in `.populated`, and re-invoking with the original task. The hardened "ENTIRE response must be exactly" phrasing prevents the model from rationalizing past the halt when the user's prompt is substantive.
+
+**Always read on startup** (after halt check passes — lightweight, essential):
 1. muster/CLAUDE.md (system rules, protocols, communication standards)
 2. muster/team/<name>/CLAUDE.md (your role definition + skill index)
 3. knowledge-base/agent-context/<name>.md (filtered product context for your role)
@@ -93,12 +99,13 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 1. Create `muster/team/<name>/` directory
 2. Create `muster/team/<name>/CLAUDE.md` from brain template
 3. Create `muster/team/<name>/skills/` with domain skill files (organized by platform)
-4. Create `.claude/agents/<name>.md` in the project repo from startup config template
+4. Create `.claude/agents/<name>.md` in the project repo from startup config template (include the `.populated` halt check)
 5. Add row to `muster/CLAUDE.md` Agent Roster table
 6. Add `@<name>` to `muster/CLAUDE.md` Sub-Agent Access line
 7. Create `knowledge-base/agent-context/<name>.md` from template in the project repo
-8. Root Claude (as PM) populates the agent-context file with project-specific content
-9. Root Claude mirrors cross-agent dependencies in the Muster brain file (generic relationships only)
+8. Add `<name>: null` to `knowledge-base/agent-context/.populated` (project-level) AND to `templates/knowledge-base/agent-context/.populated` (framework-level so future projects scaffold with the new agent)
+9. Root Claude (as PM) populates the agent-context file with project-specific content and sets the agent's timestamp in `.populated`
+10. Root Claude mirrors cross-agent dependencies in the Muster brain file (generic relationships only)
 
 ### Safety Checklist
 
@@ -109,9 +116,11 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 - [ ] Agent appears in `muster/CLAUDE.md` roster table
 - [ ] `@<name>` appears in `muster/CLAUDE.md` Sub-Agent Access line
 - [ ] Startup config reads muster/CLAUDE.md, brain file, and agent-context file
+- [ ] Startup config includes the `.populated` halt check as its first action (before any other read)
 - [ ] Startup config uses two-tier reading model (always-read vs on-demand)
 - [ ] Session-start rule for agent-requests.md present in startup config
 - [ ] Orchestration queue integration present (startup read + session completion protocol)
+- [ ] Agent has `<name>: null` entry in BOTH the project-level `.populated` AND the framework template `templates/knowledge-base/agent-context/.populated`
 
 ### Special Ownership Boundary (rare)
 
@@ -377,16 +386,65 @@ Before filing a handoff, the producing agent MUST run this self-review:
 
 If any check fails, fix before filing. Log what self-review caught in the revision log.
 
+**Exemption — first post-onboarding sprint (existing-project adoption only)**: if `.populated.onboarded_at` is less than one completed sprint old, items 4 (feature IDs) and 5 (foundational assumptions) flag mismatches in the revision log but do NOT block filing. `product-spec.md` and `foundational-assumptions.md` are still settling from reverse discovery; forcing revisions during Sprint 1 produces churn without value. After one full sprint has closed, items 4 and 5 become hard-fails as usual.
+
+Confidence tagging (`[verified]`/`[inferred]`) is NOT part of this checklist — it is onboarding-only and lives in `team/developer/skills/generic/codebase-audit.md` + `team/pm/skills/generic/deliverable-review.md` → Confidence tagging for extracted claims.
+
 ---
 
-### Discovery Phase (PM -> Research -> PM)
-1. Founder tells PM about their product idea
-2. PM seeds `knowledge-base/research/product-brief.md` — fills in the Founder's Idea section with full context
-3. PM writes a change-log entry (`status: needs-research`) and adds a Research step to the orchestration queue
-4. Founder invokes @research. Research reads the seeded brief, conducts web research, completes all research files
-5. Research sets change-log entry to `status: researched`
-6. Founder returns to PM. PM evaluates using the product-evaluation skill (6-dimension scoring) and presents GO / CONDITIONAL / NO-GO
-7. If GO: PM populates product-spec, brand-guidelines, cascades context to agents — execution begins
+### Discovery Phase (greenfield: PM -> Research -> PM, multi-session)
+
+Full procedure lives in `team/pm/skills/generic/greenfield-discovery.md` (5 user-facing stages spread across ~3 sessions, ~1-2 hours founder-attended time).
+
+**User-facing nomenclature**: Stage 1: Idea share, Stage 2: Market research, Stage 3: Go/no-go decision, Stage 4: Draft review, Stage 5: Sprint 1 plan.
+
+**Entry detection**: PM reads `.populated` at bootstrap. If `onboarded_at` is null AND `agents.pm` is null → first greenfield session, fire welcome via `greenfield-discovery.md`. After Stage 1.3 (idea captured), PM sets `agents.pm` timestamp; subsequent sessions skip the welcome and proceed with normal PM Mode bootstrap.
+
+**High-level flow**:
+1. Stage 1: Founder shares idea → PM seeds `knowledge-base/research/product-brief.md` Founder's Idea section, writes change-log entry (`status: needs-research`), queues Research step. Sets `agents.pm` timestamp.
+2. Stage 2: Founder invokes @research separately. Research reads the seeded brief, conducts investigation per `team/research/skills/generic/product-validation.md`, completes research files, sets change-log entry to `status: researched`.
+3. Stage 3: Founder returns to PM, asks for evaluation. PM scores via `product-evaluation.md` (6 dimensions), presents GO / CONDITIONAL / NO-GO.
+4. Stage 4 (if GO): PM writes product-spec, brand-guidelines, foundational-assumptions; founder reviews. PM populates project root `CLAUDE.md` placeholders.
+5. Stage 5: PM cascades context to Sprint 1 agents, asks founder for first feature, plans Sprint 1.
+
+### Existing-Project Onboarding Protocol
+
+For adopting Muster into projects with pre-existing code (not greenfield). Full 11-phase procedure lives in `team/pm/skills/generic/reverse-discovery.md` (~2 hours founder time). This section covers the high-level flow, the `.populated` state file, and the `.muster-onboarding/` transient-file protocol.
+
+**User-facing nomenclature**: founder-visible announcements use **Stage 1-6** (Brain-dump, Code audit, Audit review, Questionnaire, Draft review, Sprint 1 plan); internal Phases 4-10 map to Stages 1-6 respectively, while Phases 2/3/9/11 are housekeeping with no Stage label. PM never announces "Phase N" to the founder. Mapping table lives in `reverse-discovery.md` → User-Facing Stage Numbering.
+
+#### Entry point
+Founder runs `scripts/setup-existing-project.sh`. Script: three-case git detection (no-git offers `git init`; repo root proceeds; inside-larger-repo aborts), archives existing `CLAUDE.md` + `.claude/agents/`, scaffolds templates, initializes `.populated` with `onboarded_at` (and `onboarding_complete_at: null`), gitignores `.muster-onboarding/`. Has `--resume` for interrupted runs.
+
+#### 11 phases (PM via reverse-discovery.md)
+1. Orientation (~90s, non-skippable). 2. CLAUDE.md content-triage + merge. 3. `.claude/agents/` merge. 4. Brain-dump + doc ingest. 5. Audit brief + Developer bootstrap. 6. Audit review + architecture finalize. 7. Adaptive questionnaire. 8. Product synthesis (incl. 8.6 — populate project root `CLAUDE.md` placeholders from synthesized source docs). 9. Agent-context cascade (Sprint 1 agents only; others lazy). 10. Sprint 1 plan + Sprint 2 backlog (incl. 10.3 — chain into Phase 11 in same session, no pause). 11. Cleanup (11.1 rationale distillation, 11.2 atomic `mv` of `.muster-onboarding/` to `.muster-archive/`, 11.3 verification, 11.4 set `onboarding_complete_at` — load-bearing routing signal that flips bootstrap to steady-state).
+
+#### `.populated` state file
+Location: `knowledge-base/agent-context/.populated`. Tracks specialist populate state + onboarding lifecycle anchors.
+- Schema: `{ version, onboarded_at, onboarding_complete_at, agents: {<name>: null | <ts>, ...}, lock }`
+- `onboarded_at`: set by setup script at init, never modified. Anchor for Rule 11 stub-accrued scan.
+- `onboarding_complete_at`: null during onboarding; set by PM at Phase 11.4 (after archive succeeds). **Routing signal** — when set, bootstrap takes steady-state path (no `reverse-discovery.md` read) regardless of individual agent state.
+- `agents.<name>`: null until first populate. PM sets during Sprint 1 cascade or JIT populate. Null entries in steady-state trigger JIT populate at first invocation, NOT re-onboarding.
+- `agents.pm` (greenfield-only signal): null at script init for greenfield. PM sets its own timestamp at Stage 1.3 of greenfield-discovery (after capturing the founder's idea). The transition `null → timestamp` flips routing from "greenfield first session, fire welcome" to "greenfield ongoing, skip welcome". For existing-project, the setup script sets `agents.pm` at init (PM is auto-engaged when adopting an existing codebase).
+- `lock`: held during in-flight populate; 15-min stale threshold.
+- Tracked in git (not gitignored — teammates pulling the repo need the state).
+- PM reads at bootstrap — see CLAUDE.md PM Mode `.populated` triggers.
+
+#### `.muster-onboarding/` transient-file protocol
+Location: `knowledge-base/.muster-onboarding/`. Gitignored by default (brain-dump may contain sensitive content).
+- Contents: `founder-brain-dump.md` (PM), `audit-brief.md` (PM), `architecture-audit-notes.md` (Developer in bootstrap mode).
+- Writers authorized: PM and bootstrap-mode Developer only (Rule 2 carve-out).
+- Retired at T+140: atomic `mv` to `.muster-archive/onboarding-<date>/`. Never present in steady-state.
+
+#### CLAUDE.md merge — two-tier decision flow
+1. **Content triage first**: route brand/tone/visual/testing/architecture/assumptions content to appropriate knowledge-base files (batch-by-destination approval).
+2. **Rule classification + two-tier approval**:
+   - Orthogonal (style, formatting): **batch-approved**
+   - Adds (net-new behavior): **batch-approved** unless founder reviews
+   - Replaces / Conflicts: **per-rule decision** (keep-user / keep-muster / merge-both / edit)
+3. Result lives in project CLAUDE.md's `## Project-Specific Rules` as current truth ("Rule 9 (this project): ..."). No "overridden by" archaeology.
+
+Full rationale: `reverse-discovery.md` → Phase 2.
 
 ### Scope Change Protocol (PM <-> Research)
 1. Scope change arises (new feature, pivot, market shift, new tool)
