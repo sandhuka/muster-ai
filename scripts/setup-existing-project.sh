@@ -464,7 +464,7 @@ if ! state_has_step "initialize_populated_file"; then
     # All specialists start null; PM writes their entries during reverse discovery.
     cat > knowledge-base/agent-context/.populated <<EOF
 {
-  "version": "1",
+  "version": "2",
   "onboarded_at": "$ONBOARDED_AT",
   "onboarding_complete_at": null,
   "agents": {
