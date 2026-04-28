@@ -1,7 +1,7 @@
 # Brand Voice Guidelines
 
 ## Purpose
-Define the writing methodology and per-surface copy patterns that implement the brand voice. The authoritative voice definition lives in `knowledge-base/brand-guidelines.md` — this skill covers how to apply it. See `team/content/skills/content-calendar.md` for copy cadence and refresh cycles.
+Define the writing methodology and per-surface copy patterns that implement the brand voice. The authoritative voice definition lives in `knowledge-base/brand-guidelines.md` — this skill covers how to apply it. See `team/content/skills/content-calendar.md` for copy cadence and refresh cycles. For external-facing artifacts (pitch decks, cold emails, DMs, social posts, landing copy, READMEs, demo scripts), apply the quality bar in `team/marketing/skills/generic/signal-density-comms.md` in addition to this skill.
 
 ## Authoritative Voice Reference
 The complete brand voice definition — personality, tone spectrum, do's/don'ts, example phrases, and competitive positioning language — lives in `knowledge-base/brand-guidelines.md` (Sections 2-3). Read that file before writing any copy. This skill file covers methodology and per-surface guidance that supplements the brand guidelines.
