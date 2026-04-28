@@ -45,17 +45,15 @@ The first line removes the v2 file the script created (tar can't restore "absenc
 
 ## Manual migration (heavily-customized `CLAUDE.md`)
 
-The script halts if it can't safely auto-patch `CLAUDE.md`. Two cases trigger this:
+The script halts if it can't find the v1 bootstrap markers in `CLAUDE.md` — i.e., the `<!-- MUSTER SYSTEM BOOTSTRAP — DO NOT REMOVE OR MODIFY THIS SECTION -->` and `<!-- END MUSTER SYSTEM BOOTSTRAP -->` comments are absent (you removed them or rewrote the file).
 
-1. The v1 `<!-- MUSTER SYSTEM BOOTSTRAP — DO NOT REMOVE OR MODIFY THIS SECTION -->` markers are absent (you removed them or rewrote the file).
-2. There's non-blank content above the start marker (the slim routing block must be at the very top of the file, before anything else).
+Content above the markers is fine — the script preserves anything outside the bootstrap block (project H1, custom sections, etc.).
 
-In either case:
+To migrate manually:
 
 1. Open `CLAUDE.md`.
-2. Make sure the file starts with the exact contents of `muster/templates/CLAUDE.md` from line 1 through the `<!-- END BOOTSTRAP -->` line. Copy that block verbatim — don't paraphrase. The phrasing is load-bearing for routing.
-3. Below that block, keep your existing project content (Product Information, Project-Specific Rules, etc.). Strip the old "System Bootstrap (Required)" section if it survived the edit.
-4. Save, then re-run `bash muster/scripts/migrate-v1-to-v2.sh`. The script will detect the v2 markers, skip the `CLAUDE.md` patch, and continue with the `.populated` and specialist refresh.
+2. Find your old "System Bootstrap (Required)" block (or wherever the v1 routing instruction lives) and replace it with the contents of `muster/templates/CLAUDE.md` from the `<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->` line through `<!-- END BOOTSTRAP -->`. Copy verbatim — phrasing is load-bearing for routing.
+3. Save, then re-run `bash muster/scripts/migrate-v1-to-v2.sh`. The script will detect the v2 markers, skip the `CLAUDE.md` patch, and continue with the `.populated` and specialist refresh.
 
 ## What the script does NOT touch
 

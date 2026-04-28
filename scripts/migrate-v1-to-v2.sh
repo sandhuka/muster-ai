@@ -107,16 +107,6 @@ else
         exit 1
     fi
 
-    V1_START_LINE=$(grep -nF "$V1_START_MARKER" "$PROJECT_CLAUDE" | head -1 | cut -d: -f1)
-    if [ "$V1_START_LINE" -gt 1 ]; then
-        ABOVE=$(head -n $((V1_START_LINE - 1)) "$PROJECT_CLAUDE" | grep -c '[^[:space:]]' || true)
-        if [ "$ABOVE" -gt 0 ]; then
-            err "Found non-blank content above the System Bootstrap marker in $PROJECT_CLAUDE."
-            err "Cannot safely auto-patch (the slim routing block must be at the very top)."
-            err "Manual instructions: muster/MIGRATING-V1-TO-V2.md"
-            exit 1
-        fi
-    fi
 fi
 
 # ---------- banner + confirm ----------
@@ -355,7 +345,7 @@ if [ "$CLAUDE_ALREADY_V2" -eq 0 ]; then
     sed -n "${V2_START_LINE_T},${V2_END_LINE_T}p" "$TEMPLATES_CLAUDE" | sed 's/^/  /'
     say "${GREEN}------------------------------------------------${RESET}"
     say ""
-    say "Everything below the bootstrap block in your CLAUDE.md will be left untouched."
+    say "Everything outside the bootstrap block in your CLAUDE.md will be left untouched."
     say ""
     printf "Apply this CLAUDE.md change? [y/N] "
     read -r CONFIRM_CLAUDE < /dev/tty
@@ -374,8 +364,13 @@ if [ "$CLAUDE_ALREADY_V2" -eq 0 ]; then
 
     TMP_OUT="$(mktemp)"
     {
+        # Preserve any content before the v1 start marker (e.g., a project H1).
+        if [ "$V1_START_LINE" -gt 1 ]; then
+            sed -n "1,$((V1_START_LINE - 1))p" "$PROJECT_CLAUDE"
+        fi
+        # v2 slim block (replaces the v1 bootstrap block in-place).
         sed -n "${V2_START_LINE_T},${V2_END_LINE_T}p" "$TEMPLATES_CLAUDE"
-        # Skip past v1 end marker line; preserve everything after.
+        # Preserve everything after the v1 end marker.
         sed -n "$((V1_END_LINE + 1)),\$p" "$PROJECT_CLAUDE"
     } > "$TMP_OUT"
     mv "$TMP_OUT" "$PROJECT_CLAUDE"
