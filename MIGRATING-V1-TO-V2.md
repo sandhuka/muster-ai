@@ -55,6 +55,10 @@ To migrate manually:
 2. Find your old "System Bootstrap (Required)" block (or wherever the v1 routing instruction lives) and replace it with the contents of `muster/templates/CLAUDE.md` from the `<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->` line through `<!-- END BOOTSTRAP -->`. Copy verbatim — phrasing is load-bearing for routing.
 3. Save, then re-run `bash muster/scripts/migrate-v1-to-v2.sh`. The script will detect the v2 markers, skip the `CLAUDE.md` patch, and continue with the `.populated` and specialist refresh.
 
+## Working files the script intentionally leaves alone
+
+- `knowledge-base/orchestration-queue.md` — v1 entries use a free-form `**Agent**/**Task**/**Prompt**` shape; v2 uses a stricter fenced-code-block-with-`@<agent>` format. The migration does not auto-rewrite these because the conversion is lossy. Either manually type `@<agent>` when copy-pasting an existing queue entry, or ask PM to re-plan the current sprint — PM will regenerate the queue in v2 format from scratch. The migrate script prints a notice if it detects v1-format entries.
+
 ## What the script does NOT touch
 
 - `knowledge-base/` files (other than creating `agent-context/.populated`). All your decisions, sprints, specs, brand guidelines, research — untouched.

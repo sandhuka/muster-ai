@@ -387,6 +387,12 @@ say ""
 say "${BOLD}Next step:${RESET} restart your Claude Code session in this project."
 say "Stale sessions won't see the new routing until reopened."
 say ""
+if [ -f "knowledge-base/orchestration-queue.md" ] && grep -q '\*\*Agent\*\*:' knowledge-base/orchestration-queue.md; then
+    say "${YELLOW}${BOLD}!${RESET} Your orchestration-queue.md still has v1-format entries (no @<agent> tag)."
+    say "  Either manually type @<agent> when copy-pasting, or ask PM to re-plan the"
+    say "  current sprint — PM will regenerate the queue in v2 format."
+    say ""
+fi
 say "Backups (kept indefinitely; safe to delete once you've confirmed v2 works):"
 say "  - $BACKUP_TARBALL"
 [ "$CLAUDE_ALREADY_V2" -eq 0 ] && say "  - $CLAUDE_BACKUP"
