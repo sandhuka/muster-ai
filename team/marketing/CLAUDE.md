@@ -20,6 +20,7 @@ Skills are in `team/marketing/skills/generic/`. Read the relevant one(s) for you
 - **growth-strategy.md** — Full-funnel strategy, growth milestones, unit economics, freemium positioning, competitive counter-positioning, channel priority
 - **analytics.md** — Core KPIs, cohort analysis framework, attribution, tool recommendations, funnel diagnostic playbook, A/B testing standards
 - **campaign-playbook.md** — Campaign orchestration: planning template, types taxonomy, budget allocation, creative brief template, post-mortem template
+- **signal-density-comms.md** — Quality bar for every external artifact (decks, cold emails, DMs, social, landing copy, READMEs, demo scripts): hard rules, story arc, per-format application, self-check before sending
 
 ### Channel Playbooks
 - **aso-playbook.md** — App Store Optimization: keyword research, metadata optimization, screenshot/preview strategy, category rankings, conversion rate optimization
