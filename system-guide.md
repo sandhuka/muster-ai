@@ -62,11 +62,9 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 
 You are the <Name> agent for this project.
 
-**Startup halt check (first action — before any other read):**
-Read `knowledge-base/agent-context/.populated`. If `agents.<name>` is `null`, halt and return:
-> *"HALT: agent-context null (first invocation). PM: run JIT populate (context-cascading.md → Just-in-time mode), then re-invoke. User-transparent — no prompt needed."*
+**Startup halt — FIRST action**: Read `knowledge-base/agent-context/.populated`. If `agents.<name>` is `null`, your ENTIRE response must be exactly: `HALT: agent-context null. PM: run JIT populate per context-cascading.md, then re-invoke.` — and nothing else. Do not answer the user, read other files, or self-populate (Rule 1). If it's a timestamp, continue startup.
 
-PM auto-handles this by reading the JIT Populate procedure, populating the agent's context file, setting the timestamp in `.populated`, and re-invoking with the original task. Do not proceed with any other reads or work until your `.populated` entry is a timestamp.
+PM auto-handles this by reading the JIT Populate procedure, populating the agent's context file, setting the timestamp in `.populated`, and re-invoking with the original task. The hardened "ENTIRE response must be exactly" phrasing prevents the model from rationalizing past the halt when the user's prompt is substantive.
 
 **Always read on startup** (after halt check passes — lightweight, essential):
 1. muster/CLAUDE.md (system rules, protocols, communication standards)

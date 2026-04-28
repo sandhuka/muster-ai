@@ -41,9 +41,12 @@ muster-ai/
 │   ├── CLAUDE.md                      # Project CLAUDE.md with placeholders
 │   └── knowledge-base/               # Pre-structured KB templates
 │
-└── scripts/
-    ├── setup-project.sh               # Scaffolds a new (greenfield) project repo
-    └── setup-existing-project.sh      # Adopts Muster into an existing codebase
+├── scripts/
+│   ├── setup-project.sh               # Scaffolds a new (greenfield) project repo
+│   ├── setup-existing-project.sh      # Adopts Muster into an existing codebase
+│   └── migrate-v1-to-v2.sh            # Upgrades a pre-v2 project to v2 (creates .populated, injects HALT check, patches CLAUDE.md)
+│
+└── MIGRATING-V1-TO-V2.md              # User-facing migration guide for the above script
 ```
 
 ### Project Repo (Your Product)
@@ -317,7 +320,7 @@ Root Claude IS the PM. No separate PM agent.
 | `.claude/agents/<name>.md` | Startup config — what to read when invoked | Copied from templates |
 | `CLAUDE.md` | Three-section project file: Muster Framework pointer (read-only), Product Information, Project-Specific Rules | Founder + PM |
 | `knowledge-base/agent-context/<name>.md` | Filtered product context per agent | PM |
-| `knowledge-base/agent-context/.populated` | Per-agent populate state + `onboarded_at`, `onboarding_complete_at`, and `agents.pm` routing anchors. Bootstrap routes into one of four paths: (A) existing-project onboarding (`onboarded_at` set + `onboarding_complete_at` null) → load `reverse-discovery.md`; (B-fresh) greenfield first session (`onboarded_at` null + `agents.pm` null) → load `greenfield-discovery.md`, fire welcome; (B-ongoing) greenfield ongoing (`onboarded_at` null + `agents.pm` set) → normal PM Mode bootstrap; (C) existing-project steady-state (both `onboarded_at` and `onboarding_complete_at` set) → normal PM Mode bootstrap. | Script (init); PM (updates: `agents.pm` at greenfield Stage 1.3 OR existing-project init; agent timestamps during cascade + JIT; `onboarding_complete_at` at Phase 11.4) |
+| `knowledge-base/agent-context/.populated` | Per-agent populate state + `version`, `onboarded_at`, `onboarding_complete_at`, and `agents.pm` routing anchors. `version: "2"` is the schema version (bump when the schema breaks; v1→v2 migration handled by `scripts/migrate-v1-to-v2.sh`). Bootstrap routes into one of four paths: (A) existing-project onboarding (`onboarded_at` set + `onboarding_complete_at` null) → load `reverse-discovery.md`; (B-fresh) greenfield first session (`onboarded_at` null + `agents.pm` null) → load `greenfield-discovery.md`, fire welcome; (B-ongoing) greenfield ongoing (`onboarded_at` null + `agents.pm` set) → normal PM Mode bootstrap; (C) existing-project steady-state (both `onboarded_at` and `onboarding_complete_at` set) → normal PM Mode bootstrap. | Script (init); PM (updates: `agents.pm` at greenfield Stage 1.3 OR existing-project init; agent timestamps during cascade + JIT; `onboarding_complete_at` at Phase 11.4) |
 | `knowledge-base/product-spec.md` | Full product specification | PM |
 | `knowledge-base/architecture.md` | Technical architecture | Developer produces, PM reviews |
 | `knowledge-base/current-sprint.md` | Task board — assignments and status | PM |

@@ -107,6 +107,7 @@ my-project/
 | [adopting-existing-project.md](adopting-existing-project.md) | Reverse-discovery onboarding for projects with existing code | Adopting Muster into an existing codebase |
 | [architecture-and-design.md](architecture-and-design.md) | Architecture deep dive — data flow, context management, how agents communicate | Evaluating whether to adopt Muster |
 | [system-guide.md](system-guide.md) | Templates, extensibility, verification checklist | Adding agents, skills, or modifying the framework |
+| [MIGRATING-V1-TO-V2.md](MIGRATING-V1-TO-V2.md) | One-shot migration guide for projects set up before v2 (`.populated` routing signal, hardened HALT check, slim `CLAUDE.md` bootstrap) | Pulled an updated `muster/` and got a "Pre-v2 Muster setup detected" halt |
 
 ## Stay Updated
 
