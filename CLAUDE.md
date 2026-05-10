@@ -83,7 +83,7 @@ Every session picks ONE role at start via a role-picker. Root Claude operates as
 
 3. **JIT populate**: if `.populated.agents.<picked-role>` is null, force-bind PM, run JIT populate per `team/pm/skills/generic/context-cascading.md`, then re-fire picker.
 
-4. **Bind**: read `muster/team/<role>/CLAUDE.md` + `knowledge-base/agent-context/<role>.md`. Declare visibly: *"I am operating as the <Role> for this session."* Write role to `.claude/.muster-bound-role.<pid>` (status-line reads this).
+4. **Bind**: declare *"Binding to <Role> for this session."* and read `.claude/agents/<role>.md` — the bootloader handles brain file + agent-context + queue + requests + role-specific reads + PM monitoring duties (PM-only). Write role to `.claude/.muster-bound-role.<pid>` (status-line reads this).
 
 5. **Last-role memory** (interactive only): write role to `.claude/.muster-last-role` (gitignored). Picker pre-selects on next session.
 
