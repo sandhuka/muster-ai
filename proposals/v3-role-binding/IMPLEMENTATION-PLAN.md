@@ -349,27 +349,43 @@
 
 **Goal:** Before exposing v3 to Arogh, verify every priority-zero path and every role bind in the sample project.
 
-**Test matrix:**
+**Strategy (founder-chosen):** Interactive smoke tests are batched and run as a single end-to-end pass at this phase, not after each earlier phase. Earlier phases verify via automated checks (file structure, cross-references, content audits). The single-pass approach minimizes founder time spent on the greenfield welcome flow (~1-2 hours attended) by running it once at the end against the fully-built v3 system rather than mid-build.
 
-| Scenario | Expected behavior | Pass? |
-|---|---|---|
-| Fresh greenfield project, first session | Picker suppressed, greenfield welcome fires | [ ] |
-| Greenfield project, second session (after Stage 1.3) | Picker fires, can pick PM | [ ] |
-| Existing-project onboarding active | Picker suppressed, reverse-discovery Phase 1 fires | [ ] |
-| Steady-state, first interactive session | Picker fires (two-step), bind any role | [ ] |
-| Each of 8 roles bound via picker | Role behaves correctly | [ ] |
-| `MUSTER_ROLE=developer` | Skip picker, bind Developer | [ ] |
-| `MUSTER_ROLE=auto` with populated queue | Bind to queue's Next Step role | [ ] |
-| `MUSTER_ROLE=invalid` | Halt with clear error | [ ] |
-| `MUSTER_ROLE=auto` with empty queue | Halt with clear error | [ ] |
-| Cross-role consult from bound tab via Agent tool | Subagent runs without firing picker | [ ] |
-| Same-role parallel via Agent tool | Subagent runs in isolation | [ ] |
-| `/rebind` mid-session | Picker re-fires, new role bound, status line updates | [ ] |
-| Two terminals open simultaneously | Each shows its own role in status line (no race) | [ ] |
-| Picker bind with null `.populated` entry | JIT populate fires, then picker re-fires | [ ] |
-| Stale PID files at session start | Pruned automatically | [ ] |
+**Automated checks** (no interactive session required — can run after any phase):
 
-**Pass criteria:** All rows checked. Any failure blocks Phase 11.
+| # | Scenario | Expected behavior | Pass? |
+|---|---|---|---|
+| A1 | New project from `setup-project.sh --muster-branch feat/v3-role-binding` | Scaffold includes `.claude/agents/pm.md`, `.muster-bound-role.*` in `.gitignore`, `agent-context/pm.md` template | [ ] |
+| A2 | All 8 roles in `.populated.agents` | `pm` listed alongside other 7 | [ ] |
+| A3 | `pm.md` cross-references resolve | brain file, agent-context, all 9 always-read files exist | [ ] |
+| A4 | No "PM Mode" or "Root Claude IS the PM" in operational paths | Only in user-facing docs (Phase 8 cleanup) and proposals/ | [ ] |
+| A5 | `MUSTER_ROLE=invalid` env handling documented | muster CLAUDE.md has explicit halt error message | [ ] |
+
+**Interactive smoke tests** (require founder-attended sessions):
+
+| # | Scenario | Expected behavior | Time | Pass? |
+|---|---|---|---|---|
+| I1 | Fresh greenfield project, first session | Picker suppressed, greenfield welcome fires | ~10 min idea share | [ ] |
+| I2 | After Stage 1.3 sets `agents.pm` timestamp, fresh session | Picker fires (two-step), can pick PM | <1 min | [ ] |
+| I3 | Existing-project onboarding-active state | Picker suppressed, reverse-discovery Phase 1 fires | <2 min orientation | [ ] |
+| I4 | Steady-state, first interactive session | Picker fires (two-step), bind any role | <1 min | [ ] |
+| I5 | Bind PM via Coordination → PM (single-option short-circuit) | pm.md loaded, monitoring duties fire, status line `[muster: pm]` | <1 min | [ ] |
+| I6 | Bind each of 7 specialists via picker | Brain + agent-context read, status line shows correct role | ~5 min total | [ ] |
+| I7 | `MUSTER_ROLE=developer claude "..."` | Skip picker, bind Developer | <1 min | [ ] |
+| I8 | `MUSTER_ROLE=auto` with populated queue | Bind to queue's Next Step role | <1 min | [ ] |
+| I9 | `MUSTER_ROLE=invalid` env | Halt with clear error listing valid roles | <1 min | [ ] |
+| I10 | `MUSTER_ROLE=auto` with empty queue | Halt with explicit "no Next Step" error | <1 min | [ ] |
+| I11 | Cross-role consult from bound tab via Agent tool | Subagent runs without firing picker | <1 min | [ ] |
+| I12 | Same-role parallel via Agent tool | Subagent runs in isolation | <1 min | [ ] |
+| I13 | `/rebind` mid-session | Picker re-fires, new role bound, status line updates | <1 min | [ ] |
+| I14 | Two terminals open simultaneously | Each shows its own role (PID-suffix file works, no race) | <1 min | [ ] |
+| I15 | Picker bind with null `.populated.agents.<role>` entry | JIT populate fires, then picker re-fires | <2 min | [ ] |
+| I16 | Stale PID files at session start | Pruned automatically (verify by leaving files manually then opening session) | <1 min | [ ] |
+| I17 | Greenfield-first with `agents.pm: null` does NOT trigger pm.md halt | Welcome fires (verifies Phase 2 audit-fix) | (subset of I1) | [ ] |
+
+**Pass criteria:** All A-rows AND all I-rows checked. Any failure blocks Phase 11.
+
+**Total interactive time estimate:** ~30-45 minutes for I2-I17 once a project is in steady-state. I1 (greenfield first session through to Stage 5) takes ~1-2 hours of attended time spread across ~3 sessions because the discovery flow is multi-session by design. Founder may opt to use the existing sandbox (already in greenfield-first state) for I1, then promote it to greenfield-ongoing/steady-state via the discovery flow before running I2-I17.
 
 ---
 
