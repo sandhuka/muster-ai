@@ -91,6 +91,13 @@ Every session picks ONE role at start via a role-picker. Root Claude operates as
 
 **Subagents**: picker fires only at primary-tab session start. `Agent({subagent_type: "<role>"})` invocations bind via the argument and never fire the picker. Same-role parallel subagents are allowed for side work (Claude Code `/btw` analog) — not a substitute for role binding for follow-up turns. Tool-permission note: picker-bound roles inherit Root Claude's full toolset; subagents are tool-restricted per their `.claude/agents/<role>.md` config.
 
+**@-mention prefix in user messages**: if the FIRST non-blank line of a user message is `@<role>`:
+- `<role>` matches your bound role → informational header; execute the rest of the message as your task. Do NOT spawn a subagent (would be redundant recursion).
+- `<role>` is a different role → spawn that role's subagent via `Agent({subagent_type: "<role>"})` with the rest of the message as the prompt.
+- First line is not an @-mention → normal user request to your bound role.
+
+This lets `orchestration-queue.md` prompts work in all modes with one format: multi-tab paste (matching prefix is no-op header), single-tab paste from PM (non-matching prefix spawns subagent), and `MUSTER_ROLE=auto` (parses the prefix as the bind target, then executes the body).
+
 **JIT populate on Task HALT return**: when a specialist returns `HALT: agent-context null`, PM auto-handles per `context-cascading.md` → Just-in-time mode. Mid-session trigger; separate from the picker JIT check above.
 
 **`/rebind`**: re-fires picker mid-session. Overwrites the bound-role PID file. Conversation context is preserved.

@@ -4,7 +4,7 @@
 
 ## Prompt Standard
 
-<!-- Every Next Step / Upcoming entry wraps the prompt in a fenced code block so the founder can copy the whole block in one shot. The @<agent> mention at the top auto-invokes that specialist when the message is sent in Claude Code — no need to type @-tag separately. -->
+<!-- Every Next Step / Upcoming entry wraps the prompt in a fenced code block so the founder can copy the whole block in one shot. The @<agent> mention on the first line is a role marker — see `muster/CLAUDE.md` → '@-mention prefix in user messages' for the routing rule (matching role tab → execute body directly; non-matching role tab → spawn subagent; `MUSTER_ROLE=auto` → parse as bind target). -->
 
 <!-- Specialist-agent format:
 
@@ -33,15 +33,18 @@ tasks (e.g., "Legal: ...", "Marketing: ..."). Keeps the queue scannable for
 multi-surface projects.
 
 Available @-tags: `@developer`, `@ui-ux`, `@qa`, `@content`, `@marketing`,
-`@legal`, `@research`. (PM is Root Claude — no @-tag; user talks to Root
-Claude directly.)
+`@legal`, `@research`, `@pm`. PM steps typically omit the @-tag because
+the founder handles them in the PM-bound tab (no specialist to invoke);
+include `@pm` only if the step is a one-shot consult intended for spawning
+PM as a subagent from another role-bound session.
 
 PM-step format (no @-tag):
 
 ### [DATE] PM: [Step title]
 
 ```
-[Task description for Root Claude. No @<agent> tag — Root Claude IS the PM.]
+[Task description for the PM-bound tab. No @<agent> tag — handled in the
+PM tab directly without spawning a subagent.]
 ```
 -->
 
@@ -52,7 +55,7 @@ PM-step format (no @-tag):
 
 ## Next Step
 <!-- The single next agent invocation. Copy the ENTIRE code block (including @<agent> at the top) and paste as one message in Claude Code. -->
-<!-- The @<agent> mention auto-invokes that specialist; the rest of the message is the task instruction. -->
+<!-- @<agent> behavior depends on receiving session — see muster/CLAUDE.md '@-mention prefix' rule. Bound to that role: header is informational, task body executes directly. Bound to a different role (typically PM): @<agent> spawns the named subagent with the body as prompt. -->
 
 ## Upcoming
 <!-- Ordered sequence of remaining steps for this sprint. -->

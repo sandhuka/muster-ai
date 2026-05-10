@@ -382,6 +382,9 @@
 | I15 | Picker bind with null `.populated.agents.<role>` entry | JIT populate fires, then picker re-fires | <2 min | [ ] |
 | I16 | Stale PID files at session start | Pruned automatically (verify by leaving files manually then opening session) | <1 min | [ ] |
 | I17 | Greenfield-first with `agents.pm: null` does NOT trigger pm.md halt | Welcome fires (verifies Phase 2 audit-fix) | (subset of I1) | [ ] |
+| I18 | Paste `@developer X` (matching prefix) into Developer-bound tab | Bound role executes task body directly, no subagent spawn | <1 min | [ ] |
+| I19 | Paste `@developer X` (non-matching prefix) into PM-bound tab | Spawns Developer subagent via Agent tool with body as prompt | <1 min | [ ] |
+| I20 | Paste plain message (no @-mention) into any role-bound tab | Treated as normal user request to bound role | <1 min | [ ] |
 
 **Pass criteria:** All A-rows AND all I-rows checked. Any failure blocks Phase 11.
 
