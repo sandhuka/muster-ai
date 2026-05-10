@@ -56,7 +56,10 @@ Agents in `.claude/agents/` (pm, content, developer, legal, marketing, qa, resea
 
 Every session picks ONE role at start via a role-picker. Root Claude operates as that role for the session lifetime.
 
-**Session-start housekeeping** (runs once before priority-zero check, on every session): prune stale bound-role files older than 1 day, left by exited sessions. One-liner: `find .claude -maxdepth 1 -name '.muster-bound-role.*' -mtime +0 -delete 2>/dev/null`. Skip if `.claude/` doesn't exist yet (uninitialized project — priority-zero will halt).
+**Session-start housekeeping** (runs once before priority-zero check, on every session):
+- Prune stale bound-role files older than 1 day: `find .claude -maxdepth 1 -name '.muster-bound-role.*' -mtime +0 -delete 2>/dev/null`
+- Rotate bind log if it exceeds 500 lines: `[ -f knowledge-base/.muster-bind-log ] && [ "$(wc -l < knowledge-base/.muster-bind-log)" -gt 500 ] && mv knowledge-base/.muster-bind-log "knowledge-base/.muster-bind-log.archive.$(date +%Y%m%d-%H%M%S)"`
+- Skip both if `.claude/` doesn't exist yet (uninitialized project — priority-zero will halt).
 
 **Priority-zero routing check** (runs before any other bootstrap reads). Read `knowledge-base/agent-context/.populated` and route on `onboarded_at`, `onboarding_complete_at`, and `agents.pm`:
 - `onboarded_at` is a timestamp AND `onboarding_complete_at` is `null` → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run its flow (Phase 1 orientation first). No picker. Do NOT load `.claude/agents/pm.md` — onboarding is self-contained in the discovery skill (the skill drives PM behavior end-to-end through Phase 11). If `reverse-discovery.md` is missing, halt: `"Onboarding skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-existing-project.sh'."`
@@ -94,7 +97,7 @@ Every session picks ONE role at start via a role-picker. Root Claude operates as
 
 5. **Last-role memory** (interactive only): write role to `.claude/.muster-last-role` (gitignored). Picker pre-selects on next session.
 
-6. **Bind log**: append `<timestamp> <role> <invoker> <pid>` to `knowledge-base/.muster-bind-log`. `<invoker>`: `interactive` | `env-var` | `auto`. Rotation in `system-guide.md`.
+6. **Bind log**: append one line to `knowledge-base/.muster-bind-log` — format: `<ISO-timestamp> <role> <invoker> <session-id>`. `<invoker>`: `interactive` | `env-var` | `auto`. Bash: `echo "$(date -Iseconds) <role> <invoker> $CLAUDE_CODE_SESSION_ID" >> knowledge-base/.muster-bind-log`. Rotation handled by session-start housekeeping (>500 lines → archived with timestamp suffix).
 
 **Subagents**: picker fires only at primary-tab session start. `Agent({subagent_type: "<role>"})` invocations bind via the argument and never fire the picker. Same-role parallel subagents are allowed for side work (Claude Code `/btw` analog) — not a substitute for role binding for follow-up turns. Tool-permission note: picker-bound roles inherit Root Claude's full toolset; subagents are tool-restricted per their `.claude/agents/<role>.md` config.
 

@@ -251,6 +251,12 @@ if ! state_has_step "scaffold_templates"; then
         cp muster/templates/.claude/settings.json .claude/settings.json
     fi
 
+    # Slash commands / skills (Phase 7 — /rebind for mid-session role change)
+    if [ -d "muster/templates/.claude/skills" ]; then
+        mkdir -p .claude/skills
+        cp -r muster/templates/.claude/skills/* .claude/skills/
+    fi
+
     if [ ! -f "CLAUDE.md" ]; then
         cp muster/templates/CLAUDE.md CLAUDE.md
     fi
@@ -259,10 +265,10 @@ if ! state_has_step "scaffold_templates"; then
 
     find . -name ".DS_Store" -delete 2>/dev/null || true
 
-    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line"
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line + skills"
     write_state create_project_dir submodule_add scaffold_templates
 else
-    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line"
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line + skills"
 fi
 
 # ---------- step 1.4: initialize_populated_file ----------
