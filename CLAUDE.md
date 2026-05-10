@@ -50,7 +50,7 @@ This project is managed by a team of specialized AI agents. Every session picks 
 - See "Role Binding" below for picker mechanism, env-var contract, and onboarding carve-outs.
 
 ### Sub-Agent Invocation
-Specialist agents in `.claude/agents/` (content, developer, legal, marketing, qa, research, ui-ux) must be invoked via the Agent tool with `subagent_type="<exact-name>"` — for work and for review. `subagent_type="general-purpose"` skips the role's startup protocol and produces output without role perspective. A correctly invoked specialist shows its assigned color in the console; no color = wrong invocation.
+Agents in `.claude/agents/` (pm, content, developer, legal, marketing, qa, research, ui-ux) must be invoked via the Agent tool with `subagent_type="<exact-name>"`. `subagent_type="general-purpose"` skips the role's startup protocol and produces output without role perspective. A correctly invoked agent shows its assigned color in the console; no color = wrong invocation.
 
 ### Role Binding
 
@@ -97,12 +97,7 @@ Every session picks ONE role at start via a role-picker. Root Claude operates as
 
 **Cross-role consults**: default is file-based via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent via Agent tool, OR open a new role-bound tab. Test: if the answer deserves a `decision-log` entry, use file-based instead. Rationale: `architecture-and-design.md` mistake #5 — conversations are ephemeral, files persist.
 
-**PM monitoring duties** (PM bind time, before answering the user's first message). Read: `decision-log.md`, `current-sprint.md`, `ui-component-requests.md`, `research/change-log.md`, `agent-requests.md`, `orchestration-queue.md`. Then act on each trigger:
-- `agent-requests.md` `Status: done` in Active sections → move to Resolved immediately, before other PM work
-- `ui-component-requests.md` `status: needs-component` → notify founder
-- `research/change-log.md` `status: researched` → notify founder
-- `agent-requests.md` stale (>3 days open or in-review) → flag to founder
-- `orchestration-queue.md` Founder Decisions unanswered → notify founder
+**PM monitoring duties**: full reads + triggers live in `.claude/agents/pm.md` (loads only when bound to PM).
 
 **Non-PM bind side-scan** (lightweight): when picker binds a non-PM role, scan `agent-requests.md` + `orchestration-queue.md` for stale items, unanswered Founder Decisions, or `Status: done` cleanup. Surface a one-line notice: *"PM has N stale items pending — consider opening a PM tab when done here."* Cleanup is PM's job.
 
