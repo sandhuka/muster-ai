@@ -56,7 +56,7 @@ Agents in `.claude/agents/` (pm, content, developer, legal, marketing, qa, resea
 
 Every session picks ONE role at start via a role-picker. Root Claude operates as that role for the session lifetime.
 
-**Session-start housekeeping** (runs once before priority-zero check, on every session): prune stale PID-suffixed bound-role files left by exited sessions. One-liner: `for f in .claude/.muster-bound-role.*; do kill -0 ${f##*.} 2>/dev/null || rm "$f"; done`. Skip if `.claude/` doesn't exist yet (uninitialized project — priority-zero will halt).
+**Session-start housekeeping** (runs once before priority-zero check, on every session): prune stale bound-role files older than 1 day, left by exited sessions. One-liner: `find .claude -maxdepth 1 -name '.muster-bound-role.*' -mtime +0 -delete 2>/dev/null`. Skip if `.claude/` doesn't exist yet (uninitialized project — priority-zero will halt).
 
 **Priority-zero routing check** (runs before any other bootstrap reads). Read `knowledge-base/agent-context/.populated` and route on `onboarded_at`, `onboarding_complete_at`, and `agents.pm`:
 - `onboarded_at` is a timestamp AND `onboarding_complete_at` is `null` → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run its flow (Phase 1 orientation first). No picker. Do NOT load `.claude/agents/pm.md` — onboarding is self-contained in the discovery skill (the skill drives PM behavior end-to-end through Phase 11). If `reverse-discovery.md` is missing, halt: `"Onboarding skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-existing-project.sh'."`
@@ -90,7 +90,7 @@ Every session picks ONE role at start via a role-picker. Root Claude operates as
 
 3. **JIT populate**: if `.populated.agents.<picked-role>` is null, force-bind PM, run JIT populate per `team/pm/skills/generic/context-cascading.md`, then re-fire picker.
 
-4. **Bind**: declare *"Binding to <Role> for this session."* and read `.claude/agents/<role>.md` — the bootloader handles brain file + agent-context + queue + requests + role-specific reads + PM monitoring duties (PM-only). Write role to `.claude/.muster-bound-role.<pid>` (status-line reads this).
+4. **Bind**: declare *"Binding to <Role> for this session."* and read `.claude/agents/<role>.md` — the bootloader handles brain file + agent-context + queue + requests + role-specific reads + PM monitoring duties (PM-only). Write the role name to `.claude/.muster-bound-role.$CLAUDE_CODE_SESSION_ID` (the status-line script reads this file using the same env var). Use a Bash tool call: `echo "<role>" > .claude/.muster-bound-role.$CLAUDE_CODE_SESSION_ID`.
 
 5. **Last-role memory** (interactive only): write role to `.claude/.muster-last-role` (gitignored). Picker pre-selects on next session.
 

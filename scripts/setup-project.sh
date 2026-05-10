@@ -240,6 +240,17 @@ if ! state_has_step "scaffold_templates"; then
     mkdir -p .claude/agents
     cp muster/templates/.claude/agents/*.md .claude/agents/
 
+    # Status-line script (Phase 6 — bound-role indicator)
+    cp muster/templates/.claude/statusline.sh .claude/statusline.sh
+    chmod +x .claude/statusline.sh
+
+    # settings.json with statusLine wired up — merge if already exists
+    if [ -f ".claude/settings.json" ]; then
+        echo "  ⚠  .claude/settings.json already exists — please add statusLine config manually from muster/templates/.claude/settings.json"
+    else
+        cp muster/templates/.claude/settings.json .claude/settings.json
+    fi
+
     if [ ! -f "CLAUDE.md" ]; then
         cp muster/templates/CLAUDE.md CLAUDE.md
     fi
@@ -248,10 +259,10 @@ if ! state_has_step "scaffold_templates"; then
 
     find . -name ".DS_Store" -delete 2>/dev/null || true
 
-    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders"
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line"
     write_state create_project_dir submodule_add scaffold_templates
 else
-    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders"
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line"
 fi
 
 # ---------- step 1.4: initialize_populated_file ----------

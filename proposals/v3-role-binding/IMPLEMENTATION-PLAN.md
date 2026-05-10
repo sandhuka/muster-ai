@@ -220,26 +220,17 @@
 - Sample project equivalents
 
 **Steps:**
-1. Create `muster/templates/.claude/statusline.sh`:
-   ```bash
-   #!/bin/bash
-   PID=$PPID
-   FILE=".claude/.muster-bound-role.$PID"
-   if [ -f "$FILE" ]; then
-     echo "[muster: $(cat "$FILE")]"
-   else
-     echo "[muster: unbound]"
-   fi
-   ```
+1. Create `muster/templates/.claude/statusline.sh` reading `$CLAUDE_CODE_SESSION_ID` env var (verified canonical session identifier in Claude Code) to find `.claude/.muster-bound-role.<session-id>`. Outputs `[muster: <role>]`, `[muster: unbound]`, or `[muster: no-session]`.
 2. Make executable: `chmod +x`.
-3. Wire into Claude Code settings.json via the `statusline-setup` skill (use the skill, don't hand-roll JSON).
-4. Verify in sample project: open terminal, picker binds to Developer, status line shows `[muster: developer]`.
+3. Create `muster/templates/.claude/settings.json` with `statusLine.type: "command"` pointing at the script.
+4. Update `setup-project.sh` to copy both files into new projects' `.claude/` and chmod the script.
+5. Verify in sample project: open terminal, picker binds to Developer, status line shows `[muster: developer]`.
 
 **Verification:**
 - [ ] Status line shows correct role after picker binds
-- [ ] Status line shows `[muster: unbound]` if file is missing (e.g., during onboarding before bind)
-- [ ] Two terminals open simultaneously each show their own role correctly (PID-suffix working)
-- [ ] After session exit + new session, stale PID file is pruned at startup
+- [ ] Status line shows `[muster: unbound]` if bind file is missing (e.g., during onboarding before bind)
+- [ ] Two terminals open simultaneously each show their own role correctly (session_id-suffix file works)
+- [ ] After session exit + new session, stale bind files pruned by mtime-based session-start housekeeping (>1 day old → deleted)
 
 **Regression risks:**
 - Status line script failures could break Claude Code's status line entirely. Test with intentionally missing file, malformed file, etc.
@@ -378,7 +369,7 @@
 | I11 | Cross-role consult from bound tab via Agent tool | Subagent runs without firing picker | <1 min | [ ] |
 | I12 | Same-role parallel via Agent tool | Subagent runs in isolation | <1 min | [ ] |
 | I13 | `/rebind` mid-session | Picker re-fires, new role bound, status line updates | <1 min | [ ] |
-| I14 | Two terminals open simultaneously | Each shows its own role (PID-suffix file works, no race) | <1 min | [ ] |
+| I14 | Two terminals open simultaneously | Each shows its own role (session_id-suffix file works, no race) | <1 min | [ ] |
 | I15 | Picker bind with null `.populated.agents.<role>` entry | JIT populate fires, then picker re-fires | <2 min | [ ] |
 | I16 | Stale PID files at session start | Pruned automatically (verify by leaving files manually then opening session) | <1 min | [ ] |
 | I17 | Greenfield-first with `agents.pm: null` does NOT trigger pm.md halt | Welcome fires (verifies Phase 2 audit-fix) | (subset of I1) | [ ] |
