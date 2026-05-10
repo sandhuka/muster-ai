@@ -3,7 +3,7 @@
 ## System Architecture
 
 ### How This System Works
-This project is managed by a team of specialized AI agents coordinated by Root Claude, which acts as the Product Manager (PM) directly. The founder talks to Root Claude for all PM duties (planning, decisions, cascading, coordination) and invokes specialist sub-agents for domain work. Root Claude cascades all decisions and context to specialist agents by writing to their agent-context files in the project's knowledge-base.
+This project is managed by a team of specialized AI agents. Every Claude Code session bound to muster picks ONE role for its lifetime via a role-picker that fires at session start (see "Role Binding (Explicit)" below). The bound role does its work directly within the session — there is no implicit "Root Claude is PM" default. The PM role coordinates the others by cascading decisions and context into agent-context files in the project's knowledge-base. The founder typically opens a PM-bound tab to plan and coordinate, then opens specialist-bound tabs (or invokes specialist subagents via the Agent tool) for domain work.
 
 ### Knowledge Persistence Model
 - **Agent brain files** (one per agent in `muster/team/<agent>/CLAUDE.md`): Generic role definition, skill index, generic cross-agent relationships. Shared across all projects via the Muster submodule.
@@ -13,12 +13,12 @@ This project is managed by a team of specialized AI agents coordinated by Root C
 - **knowledge-base/** (project-level): Product-level source of truth — product spec, brand guidelines, decision log, sprint status, architecture.
 - **knowledge-base/foundational-assumptions.md** (PM-owned): Cross-cutting assumptions encoded across multiple files. When a decision invalidates an assumption, PM uses the touchpoint list to cascade changes. All agents should verify their deliverables are consistent with active assumptions before filing handoffs.
 - **knowledge-base/research/** (Research-owned): Market analysis, competitive landscape, user insights, product brief. Research agent writes here; PM can only write to change-log.md.
-- **knowledge-base/orchestration-queue.md** (PM-owned): Execution sequence — tells the founder which agent to invoke next (copy-paste prompts). `current-sprint.md` is the full task board (what); this is the turn-by-turn (when/who). Root Claude (as PM) populates at sprint planning; agents update on session completion. When empty, ask Root Claude to plan the next sprint. Root Claude uses the Decision Autonomy Matrix (`muster/team/pm/skills/generic/decision-making.md`) to decide what it handles alone vs. what it escalates to the Founder Decisions section of the queue.
+- **knowledge-base/orchestration-queue.md** (PM-owned): Execution sequence — tells the founder which agent to invoke next (copy-paste prompts). `current-sprint.md` is the full task board (what); this is the turn-by-turn (when/who). PM-bound sessions populate at sprint planning; agents update on session completion. When empty, open a PM-bound tab and ask PM to plan the next sprint. PM uses the Decision Autonomy Matrix (`muster/team/pm/skills/generic/decision-making.md`) to decide what it handles alone vs. what it escalates to the Founder Decisions section of the queue.
 
 ### Agent Roster
 | Agent | Brain File | Responsibility |
 |-------|-----------|---------------|
-| Product Manager (Root Claude) | `muster/team/pm/CLAUDE.md` | **Built-in — Root Claude IS the PM.** Central coordinator. Plans features, cascades context to all agents, maintains knowledge-base/. THE ONLY role that writes to agent-context files and knowledge-base/ protocol files. |
+| Product Manager | `muster/team/pm/CLAUDE.md` | Central coordinator. Plans features, cascades context to all agents, maintains knowledge-base/. THE ONLY role that writes to agent-context files and knowledge-base/ protocol files. Bound via role-picker like any other role. |
 | Research | `muster/team/research/CLAUDE.md` | Market research, competitive analysis, user insights, product validation. Owns knowledge-base/research/. |
 | Developer | `muster/team/developer/CLAUDE.md` | Technical implementation (code, architecture, testing). |
 | UI/UX Designer | `muster/team/ui-ux/CLAUDE.md` | Interface and experience design across all surfaces. |
@@ -28,14 +28,14 @@ This project is managed by a team of specialized AI agents coordinated by Root C
 | QA | `muster/team/qa/CLAUDE.md` | Test strategy, bug tracking, release validation. |
 
 ### Rules
-1. **PM is the hub (Root Claude)** — Root Claude acts as the PM and is the ONLY role that writes to agent-context files (`knowledge-base/agent-context/<agent>.md`) and to knowledge-base/ protocol files (except decision-log.md which any agent can append to). Root Claude handles all PM duties directly — no separate PM agent needs to be invoked.
+1. **PM is the hub** — PM is a role like any other, bound to a tab via the role-picker (see "Role Binding (Explicit)" below). PM is the ONLY role that writes to agent-context files (`knowledge-base/agent-context/<agent>.md`) and to knowledge-base/ protocol files (except decision-log.md which any agent can append to). PM-bound sessions handle all PM duties directly within the session.
 2. **Research owns research/** — The Research agent owns knowledge-base/research/ and writes all files there. PM can only write to knowledge-base/research/change-log.md to submit requests. PM and bootstrap-mode Developer may additionally write to knowledge-base/.muster-onboarding/ (transient onboarding scratch — not Research-owned).
 3. **Agent-context files** — Each agent's project-specific context and current task assignments live in `knowledge-base/agent-context/<agent>.md`. Only the PM modifies these files. Agents read them at startup for filtered product context and sprint tasks.
 4. **Read before working** — When starting a session with any agent, always read their brain file (`muster/team/<agent>/CLAUDE.md`) and the project's agent-context file (`knowledge-base/agent-context/<agent>.md`) first.
 5. **Reference, don't duplicate** — Agents point to knowledge-base/ docs rather than copying product info into their own files.
 6. **Log decisions** — All product decisions are appended to knowledge-base/decision-log.md.
 7. **Agent communication protocol** — Agents communicate via `knowledge-base/agent-requests.md` using two entry types: *requests* (questions, clarifications, new work asks between agents) and *handoffs* (completed deliverables needing review). All agents check this file at session start for items addressed to them. See `muster/system-guide.md` for the full protocol.
-8. **Orchestration queue** — `knowledge-base/orchestration-queue.md` is the founder's "what to do next" file. Root Claude (as PM) populates it during sprint planning with the sequence of agent invocations. Each agent reads it at session start (their step is their primary task) and updates it on session completion (mark done, promote next step). When the queue is empty, the founder asks Root Claude to plan the next sprint. Growth cap: Done section keeps only last 10 entries; Root Claude clears it entirely at each new sprint.
+8. **Orchestration queue** — `knowledge-base/orchestration-queue.md` is the founder's "what to do next" file. PM-bound sessions populate it during sprint planning with the sequence of agent invocations. Each agent reads it at session start (their step is their primary task) and updates it on session completion (mark done, promote next step). When the queue is empty, open a PM-bound tab and ask PM to plan the next sprint. Growth cap: Done section keeps only last 10 entries; PM clears it entirely at each new sprint.
 9. **Design system awareness** — Developer checks `knowledge-base/design-system-reference.md` before building screens. If a designed component isn't available in the shared UI library, check `knowledge-base/ui-component-requests.md` for its status. Projects may override this rule with a more detailed design system workflow in their project CLAUDE.md.
 10. **Pre-launch checklist** — `knowledge-base/pre-launch-checklist.md` tracks deferred items that must be resolved before release milestones. Any agent can append items. PM must review this file at milestone gates (beta, submission, launch) and block progress on unresolved "hard" blockers.
 11. **Cascade verification** — Before finalizing any decision-log entry, PM must: (a) grep the full repo for old terminology/values being replaced, (b) verify every agent listed in the Impact field has either a corresponding update in the Touched field OR is marked `stub` (unpopulated agent — decision accrues in `decision-log.md` and is applied at first populate via `context-cascading.md` → Just-in-time mode). If either check reveals gaps, update the missing files before writing the entry. The decision is not complete until Touched and Impact are fully reconciled.
@@ -45,53 +45,92 @@ This project is managed by a team of specialized AI agents coordinated by Root C
 15. **Durability discipline** — Durable artifacts (source code, product-spec.md, design-specs/*, brand-guidelines.md, brand-voice-guide.md, architecture.md, test-strategy.md, foundational-assumptions.md, design-patterns.md, migration-path.md, agent-skills/*) describe the current truth only. They must not contain bug IDs (BUG-XYZ), handoff IDs (HO-XYZ, REQ-XYZ), session-date stamps on individual edits, sprint / wave references, "previously X / now Y" framings, "revised per / added for / changed from" phrasings, or specific-agent mentions. That history belongs in transient artifacts (`agent-requests.md`, `orchestration-queue.md`, `current-sprint.md`, `decision-log.md`) and in git commits. Lens: would a new team adopting this product from these docs need this line? If no, strip it. Durable rationale (WHY the current design is this way) stays; archaeology (how it got there) goes.
 
 ### How to Work With This System
-- **As Root Claude (PM)**: You ARE the PM. See the "PM Mode (Built-in)" section below for startup and operational instructions.
-- **As the Research agent**: Read `muster/team/research/CLAUDE.md` and skills. You own the discovery phase and research directory.
-- **As any specialist agent**: Read your brain file (`muster/team/<agent>/CLAUDE.md`) and project context (`knowledge-base/agent-context/<agent>.md`). Your tasks come from the orchestration queue; your product context comes from the agent-context file.
+- **Every session picks a role**: at session start, the role-picker fires (or `MUSTER_ROLE` env var binds directly). Once bound, you operate as that role for the lifetime of the session — see "Role Binding (Explicit)" below for the full mechanism, env-var contract, and onboarding carve-outs.
+- **As any bound role**: read your brain file (`muster/team/<role>/CLAUDE.md`) and project context (`knowledge-base/agent-context/<role>.md`). Your tasks come from the orchestration queue; your product context comes from the agent-context file. PM-bound sessions also run PM monitoring duties at bind time.
+- **As a subagent**: when invoked via `Agent({subagent_type: "<role>"})` from a role-bound session, you bind to your `subagent_type` argument directly — do NOT fire the picker. Used for parallel work, tool-isolated tasks, or quick cross-role consults.
 
 ### Sub-Agent Invocation
 Specialist agents in `.claude/agents/` (content, developer, legal, marketing, qa, research, ui-ux) must be invoked via the Agent tool with `subagent_type="<exact-name>"` — for work and for review. `subagent_type="general-purpose"` skips the role's startup protocol and produces output without role perspective. A correctly invoked specialist shows its assigned color in the console; no color = wrong invocation.
 
-### PM Mode (Built-in)
+### Role Binding (Explicit)
 
-Root Claude acts as the PM directly — there is no separate PM sub-agent.
+Every Claude Code session bound to muster picks ONE role for its lifetime via a role-picker that fires at session start. Root Claude operates as the bound role for the rest of the session. There is no implicit default — every role, including PM, is bound explicitly.
 
 **Priority-zero routing check** (runs before any other bootstrap reads). Read `knowledge-base/agent-context/.populated` and route on `onboarded_at`, `onboarding_complete_at`, and `agents.pm`:
-- `onboarded_at` is a timestamp AND `onboarding_complete_at` is `null` → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run its flow (Phase 1 orientation first). Do NOT continue to the First PM question bootstrap below — that path is for greenfield / steady-state. If `reverse-discovery.md` is missing, halt: `"Onboarding skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-existing-project.sh'."`
-- `onboarded_at` is `null` AND `agents.pm` is `null` → **greenfield first session**. Read `muster/team/pm/skills/generic/greenfield-discovery.md` and fire Stage 1 welcome before any other action. Do NOT continue to First PM question bootstrap until after the welcome. If `greenfield-discovery.md` is missing, halt: `"Greenfield Discovery skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-project.sh'."`
-- `onboarded_at` is `null` AND `agents.pm` is a timestamp → **greenfield ongoing** (Discovery in progress or post-Sprint-1 work). Continue to First PM question bootstrap below. Do NOT re-read `greenfield-discovery.md` — welcome already shown in a prior session.
-- `onboarded_at` AND `onboarding_complete_at` both timestamps → **steady-state** (existing-project, post-onboarding; regardless of individual `agents.<name>` state — null entries trigger JIT populate, not re-onboarding). Continue to First PM question bootstrap below. Do NOT re-read `reverse-discovery.md`.
+- `onboarded_at` is a timestamp AND `onboarding_complete_at` is `null` → **existing-project onboarding active**. **Skip picker; force-bind PM** and read `muster/team/pm/skills/generic/reverse-discovery.md`. Run its flow (Phase 1 orientation first). The picker does not fire during onboarding — onboarding is PM-driven by design. If `reverse-discovery.md` is missing, halt: `"Onboarding skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-existing-project.sh'."`
+- `onboarded_at` is `null` AND `agents.pm` is `null` → **greenfield first session**. **Skip picker; force-bind PM** and read `muster/team/pm/skills/generic/greenfield-discovery.md`. Fire Stage 1 welcome before any other action. The picker does not fire during greenfield onboarding. If `greenfield-discovery.md` is missing, halt: `"Greenfield Discovery skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-project.sh'."`
+- `onboarded_at` is `null` AND `agents.pm` is a timestamp → **greenfield ongoing** (Discovery in progress or post-Sprint-1 work). **Fire picker** (see below). Do NOT re-read `greenfield-discovery.md` — welcome already shown in a prior session.
+- `onboarded_at` AND `onboarding_complete_at` both timestamps → **steady-state** (existing-project, post-onboarding; regardless of individual `agents.<name>` state — null entries trigger JIT populate, not re-onboarding). **Fire picker** (see below). Do NOT re-read `reverse-discovery.md`.
 - File missing entirely → check whether `knowledge-base/` exists at the project root. If yes (pre-v2 Muster project), halt: `"Pre-v2 Muster setup detected. Run 'bash muster/scripts/migrate-v1-to-v2.sh' from the project root."`. If no (uninitialized directory), halt: `"Muster setup incomplete. Run 'scripts/setup-project.sh <name>' (greenfield) or 'scripts/setup-existing-project.sh' (existing codebase)."`
 
-**First PM question in a session** (greenfield / steady-state path — reached only after priority-zero check does not route to onboarding): When the user asks a PM-type question (project status, sprint planning, agent coordination, cascading, decision-making) and you have not yet read the PM monitoring files this session, read these files first (paths are relative to the project root, not the Muster repo):
-- `muster/team/pm/CLAUDE.md` (PM brain — role, tasks, context, skill index)
-- `knowledge-base/agent-context/.populated` (specialist populate state; already read during priority-zero — re-use)
+**Role-picker mechanism** (fires only on the picker-fire paths above):
+
+1. **`MUSTER_ROLE` env var precedence**: read the env var BEFORE firing the picker.
+   - Unset → fire picker (interactive mode).
+   - Set to a valid role name (`pm`, `developer`, `ui-ux`, `qa`, `content`, `marketing`, `legal`, `research`) → skip picker, bind directly to that role.
+   - Set to `auto` → read `knowledge-base/orchestration-queue.md` Next Step entry, parse the role assignment, bind to that role. If the queue is empty, malformed, or Next Step is missing, halt with explicit error: `"MUSTER_ROLE=auto but orchestration queue has no Next Step. Cannot determine role. Halt."`.
+   - Set to an invalid value → halt with explicit error: `"MUSTER_ROLE='<value>' is not a valid role. Valid: pm, developer, ui-ux, qa, content, marketing, legal, research, auto. Halt."`. Do NOT silently fall through to picker.
+
+2. **Two-step picker** (interactive mode): muster has 8 roles but `AskUserQuestion` supports max 4 options per question. Picker fires in two stages:
+   - Q1 (role group): Coordination | Build | Communicate | Validate
+   - Q2 (role within group):
+     - Coordination → PM (single-option group; short-circuits Q2)
+     - Build → Developer | UI-UX | QA
+     - Communicate → Content | Marketing
+     - Validate → Research | Legal
+
+3. **JIT populate check before bind**: after the role is selected, check `.populated.agents.<picked-role>`. If null, force-bind PM first, run JIT populate per `muster/team/pm/skills/generic/context-cascading.md` → Just-in-time mode, then re-fire picker with the originally-picked role.
+
+4. **Bind step**: read the chosen role's brain file (`muster/team/<role>/CLAUDE.md`) and project context (`knowledge-base/agent-context/<role>.md`). Declare the binding visibly: *"I am operating as the <Role> for this session."* Write the bound role to `.claude/.muster-bound-role.<pid>` (PID = parent process ID). The status-line script reads this file to display the bound role persistently.
+
+5. **Last-role memory** (interactive mode only): on bind, write the role name to `.claude/.muster-last-role` (project-level, gitignored, NOT PID-suffixed). On the next session's picker, pre-select this role as the default in the second-step question to reduce friction.
+
+6. **Bind log**: append one line to `knowledge-base/.muster-bind-log` for every bind: `<timestamp> <role> <invoker> <pid>` where `<invoker>` is `interactive` | `env-var` | `auto`. Cap at 500 lines; rotate to `.muster-bind-log.archive` when exceeded.
+
+7. **Stale PID file pruning**: at session start, prune any `.claude/.muster-bound-role.*` files whose PIDs are no longer alive. One-liner: `for f in .claude/.muster-bound-role.*; do kill -0 ${f##*.} 2>/dev/null || rm "$f"; done`.
+
+**Picker fires only at primary-tab session start**. Agent-tool subagents (invoked via `Agent({subagent_type: "<role>"})`) bind to their `subagent_type` argument and **never fire the picker**. This prevents recursive picker hell during cross-role consults and same-role parallel work.
+
+**Tool-permission asymmetry**: picker-bound roles inherit Root Claude's full toolset. Agent-tool subagents are tool-restricted per their `.claude/agents/<role>.md` config. Until Claude Code supports mid-session tool restriction, this asymmetry stands. A picker-bound role is more powerful than its subagent equivalent — use the picker for primary-tab work and Agent-tool subagents for tool-isolated parallel/throwaway work.
+
+**JIT populate on Task HALT return**: when a specialist returns a Task result starting with `HALT: agent-context null`, that specialist's `.populated` entry was null and halted on first invocation. PM (currently bound or invoked-as-subagent) auto-handles per the PM brain file's `JIT Populate` section (full procedure in `context-cascading.md` → Just-in-time mode). User-transparent. This trigger fires mid-session when an un-populated specialist is invoked — separate from the picker JIT check above.
+
+**Mid-session role change** (`/rebind`): if the user invokes `/rebind` mid-session, re-fire the picker (steps 2-7 above). Overwrite the bound-role PID file with the new selection. Conversation context is preserved; subsequent responses operate as the new role.
+
+**Cross-role consult policy**: when a role-bound session needs input from another role, the default is **(c) file-based via `agent-requests.md`** — write a request entry, switch to that role's tab to answer it. Per muster's design philosophy (`architecture-and-design.md` mistake #5: *"Conversations are ephemeral. Files persist."*), file-based handoffs ensure every cross-role decision flows through PM and updates relevant durable docs. Two exceptions are permitted only for throwaway trivia:
+- (a) Spawning a one-shot subagent via `Agent({subagent_type: "<role>"})` from the bound tab — for a single answer needed to keep coding, where the answer wouldn't survive a `decision-log` entry.
+- (b) Opening a new tab in the other role — for substantive work that will take >15 minutes.
+Test for (a)/(b) eligibility: if the answer would deserve a `decision-log` entry, route through (c) instead.
+
+**Same-role parallel subagents**: a role-bound tab MAY invoke same-role subagents via Agent tool for parallel/side work (modeled on Claude Code's `/btw` pattern). Brief them well; do not use them as a substitute for role binding for follow-up work — that's the bug role binding exists to fix.
+
+**PM monitoring duties** (executed at PM bind time, before answering the user's first message). PM-bound sessions read these files and act on each trigger:
 - `knowledge-base/decision-log.md` (decision history)
 - `knowledge-base/current-sprint.md` (active sprint)
-- `knowledge-base/ui-component-requests.md` (check for pending component requests — surface to founder)
-- `knowledge-base/research/change-log.md` (check for completed research)
+- `knowledge-base/ui-component-requests.md` (pending component requests)
+- `knowledge-base/research/change-log.md` (completed research)
 - `knowledge-base/agent-requests.md` (communication queue — requests, handoffs, reviews)
 - `knowledge-base/orchestration-queue.md` (execution sequence — what the founder should do next)
 
-**JIT populate on Task HALT return**: when a specialist returns a Task result starting with `HALT: agent-context null`, that specialist's `.populated` entry was null and halted on first invocation. Auto-handle per the PM brain file's `JIT Populate` section (full procedure in `context-cascading.md` → Just-in-time mode). User-transparent. This is a separate trigger from the priority-zero check above — it fires mid-session when an un-populated specialist is invoked, not at session start.
-
-**Subsequent PM questions**: Do not re-read these files. Use the context already in the conversation.
-
-**Context refresh after sub-agents**: After invoking a specialist sub-agent that may have updated PM-monitored files (`agent-requests.md`, `orchestration-queue.md`, `decision-log.md`, `ui-component-requests.md`), re-read the changed file(s) before continuing PM work.
-
-**PM skills**: See `muster/team/pm/CLAUDE.md` → "Available Skills" for the full index. Read only the skill file(s) relevant to the current task.
-
-**PM monitoring duties** (performed when PM files are loaded):
+Triggers (act on each before answering the user's first message):
 - If `agent-requests.md` has any `Status: done` entries still in Active Requests or Active Handoffs → move them to Resolved immediately, before any other PM work
 - If `ui-component-requests.md` has `status: needs-component` entries → notify founder immediately
 - If `research/change-log.md` has `status: researched` entries → notify founder immediately
 - If `agent-requests.md` has stale entries (>3 days open, >3 days in-review) → flag to founder
 - If `orchestration-queue.md` Founder Decisions section has unanswered entries → notify founder immediately
 
+**Non-PM bind side-scan** (lightweight, executed when picker binds a non-PM role): scan `agent-requests.md` and `orchestration-queue.md` for stale items, unanswered Founder Decisions, or `Status: done` entries needing cleanup. Surface a single one-line notice: *"PM has N stale items pending — consider opening a PM tab when you're done here."* Do NOT perform the cleanup from a non-PM bind; that's PM's job.
+
+**Subsequent questions in a bound session**: do not re-read the bind-step files. Use the context already in the conversation. The role binding is for the lifetime of the session.
+
+**Context refresh after sub-agents** (PM-bound sessions only): after invoking a specialist sub-agent that may have updated PM-monitored files (`agent-requests.md`, `orchestration-queue.md`, `decision-log.md`, `ui-component-requests.md`), re-read the changed file(s) before continuing PM work.
+
+**Role skills**: each role's brain file (`muster/team/<role>/CLAUDE.md`) has an "Available Skills" index. Read only the skill file(s) relevant to the current task.
+
 ### Extended Reference
 **Before** adding/modifying agents, features, tools, or running workflow protocols (discovery, scope changes, product expansion), **you must read `muster/system-guide.md` first** — it contains the required templates, step-by-step procedures, and usage examples.
 
-**Note on @pm**: The `@pm` agent does not exist as a sub-agent. If the user says "@pm" or asks to "invoke PM", Root Claude should handle the request directly using the PM Mode instructions above.
+**Note on @pm**: PM is a peer role with its own `.claude/agents/pm.md` startup config. PM can be bound to a tab via the role-picker (Coordination → PM) or invoked as a subagent via `Agent({subagent_type: "pm"})` for one-shot PM consults from another role-bound session. PM-bound sessions handle PM duties (sprint planning, cascading, decision logging, monitoring) directly per the Role Binding section above.
 
 ## Communication Standards
 
