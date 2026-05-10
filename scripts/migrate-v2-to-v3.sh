@@ -316,33 +316,36 @@ fi
 write_state pm_bootloader pm_agent_context statusline rebind_skill settings_json gitignore claude_md_routing
 
 # ---------- final verification ----------
-section_header "Final verification"
+# Skip in dry-run mode (nothing was changed; verification would always fail)
+if [ "$DRY_RUN" -eq 0 ]; then
+    section_header "Final verification"
 
-failures=0
+    failures=0
 
-verify() {
-    if eval "$2"; then
-        substep_done "" "$1"
-    else
-        printf "  %s✗%s %s%s%s\n" "$RED$BOLD" "$RESET" "$BOLD" "$1" "$RESET"
-        failures=$((failures + 1))
+    verify() {
+        if eval "$2" 2>/dev/null; then
+            substep_done "" "$1"
+        else
+            printf "  %s✗%s %s%s%s\n" "$RED$BOLD" "$RESET" "$BOLD" "$1" "$RESET"
+            failures=$((failures + 1))
+        fi
+    }
+
+    verify ".claude/agents/pm.md present"               "[ -f .claude/agents/pm.md ]"
+    verify ".claude/statusline.sh present + executable" "[ -x .claude/statusline.sh ]"
+    verify ".claude/settings.json has statusLine"       "[ -f .claude/settings.json ] && grep -q statusLine .claude/settings.json"
+    verify ".claude/skills/rebind/SKILL.md present"     "[ -f .claude/skills/rebind/SKILL.md ]"
+    verify "knowledge-base/agent-context/pm.md present" "[ -f knowledge-base/agent-context/pm.md ]"
+    verify ".gitignore has .muster-bound-role.*"        "grep -qxF '.claude/.muster-bound-role.*' .gitignore"
+    verify ".gitignore has .muster-last-role"           "grep -qxF '.claude/.muster-last-role' .gitignore"
+    verify "CLAUDE.md mentions Role Binding"            "grep -q 'Role Binding' CLAUDE.md"
+    verify "CLAUDE.md no longer says 'PM Mode'"         "! grep -q 'PM Mode' CLAUDE.md"
+
+    if [ "$failures" -gt 0 ]; then
+        err ""
+        err "$failures verification failure(s). Migration is incomplete."
+        exit 1
     fi
-}
-
-verify ".claude/agents/pm.md present"           "[ -f .claude/agents/pm.md ]"
-verify ".claude/statusline.sh present + executable" "[ -x .claude/statusline.sh ]"
-verify ".claude/settings.json has statusLine"   "grep -q statusLine .claude/settings.json"
-verify ".claude/skills/rebind/SKILL.md present" "[ -f .claude/skills/rebind/SKILL.md ]"
-verify "knowledge-base/agent-context/pm.md present" "[ -f knowledge-base/agent-context/pm.md ]"
-verify ".gitignore has .muster-bound-role.*"    "grep -qxF '.claude/.muster-bound-role.*' .gitignore"
-verify ".gitignore has .muster-last-role"       "grep -qxF '.claude/.muster-last-role' .gitignore"
-verify "CLAUDE.md mentions Role Binding"        "grep -q 'Role Binding' CLAUDE.md"
-verify "CLAUDE.md no longer says 'PM Mode'"     "! grep -q 'PM Mode' CLAUDE.md"
-
-if [ "$failures" -gt 0 ]; then
-    err ""
-    err "$failures verification failure(s). Migration is incomplete."
-    exit 1
 fi
 
 # ---------- completion ----------
