@@ -7,11 +7,16 @@
 # muster/CLAUDE.md "Role Binding" section.
 #
 # Output:
-#   [muster: <role>]  — when bound
-#   [muster: unbound] — when no bind file exists for this session
+#   [muster: <role>]   — when bound
+#   [muster: unbound]  — when no bind file exists for this session
 #   [muster: no-session] — when CLAUDE_CODE_SESSION_ID is missing
 #
 # Wired in .claude/settings.json under statusLine.command.
+#
+# Assumption: Claude Code invokes this script with cwd = project root
+# (same cwd as the Claude session that wrote the bind file). Both writer
+# and reader resolve `.claude/.muster-bound-role.*` against the same cwd
+# under Claude Code's normal invocation pattern.
 
 SESSION_ID="${CLAUDE_CODE_SESSION_ID:-}"
 
@@ -23,7 +28,10 @@ fi
 FILE=".claude/.muster-bound-role.$SESSION_ID"
 
 if [ -f "$FILE" ]; then
-    ROLE=$(cat "$FILE" 2>/dev/null)
+    # Strip all whitespace (handles trailing newline from `echo`, and any
+    # malformed content like spaces-only) — empty or whitespace-only file
+    # falls through to "unbound" rather than displaying garbage.
+    ROLE=$(cat "$FILE" 2>/dev/null | tr -d '[:space:]')
     if [ -n "$ROLE" ]; then
         echo "[muster: $ROLE]"
     else

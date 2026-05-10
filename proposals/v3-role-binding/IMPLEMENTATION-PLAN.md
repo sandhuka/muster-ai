@@ -317,22 +317,30 @@
 **Steps:**
 1. Identify what an existing v2 project needs to do to adopt v3:
    - Add `.claude/agents/pm.md` (copy from v3 template)
-   - Add `.claude/statusline.sh` and wire into settings.json
-   - Add `.gitignore` entries for `.muster-bound-role.*` and `.muster-last-role`
-   - Optionally add `knowledge-base/agent-context/pm.md` if doesn't exist
-   - Update project-level `CLAUDE.md` if it has any PM-Mode references
+   - Add `.claude/statusline.sh` (copy from v3 template) and `chmod +x`
+   - **Settings.json handling** (the tricky case): if `.claude/settings.json` does NOT exist → copy v3 template. If it EXISTS → check whether it has a `statusLine` field; if absent → merge in the v3 statusLine block (use `jq` if available; halt with manual-merge instructions if not); if present → leave alone (user already has a status line, don't clobber). Idempotent on re-run.
+   - Add `knowledge-base/agent-context/pm.md` if doesn't exist (PM didn't have agent-context in v2)
+   - Update project root `CLAUDE.md` routing block: replace v2 routing (PM Mode references) with v3 routing block from `templates/CLAUDE.md`. Preserve all content above and below the bootstrap markers.
+   - Update `.gitignore`: add `.claude/.muster-bound-role.*` and `.claude/.muster-last-role` if missing (idempotent grep-and-append, like setup-project.sh does for greenfield).
+   - Bump muster submodule pointer: optional during migration script run (founder may want to do this manually after script verifies migration succeeded).
 2. **Recommendation**: write a script. The migration is mechanical and identical for every v2 project. A script reduces error vs documenting steps.
-3. Write `MIGRATING-V2-TO-V3.md` modeled on `MIGRATING-V1-TO-V2.md`.
+3. Write `MIGRATING-V2-TO-V3.md` modeled on `MIGRATING-V1-TO-V2.md`. Document the settings.json merge handling explicitly — it's the most likely source of confusion.
 4. Test the migration on a fresh-ish v2 project (the sample project from Phase 0 if you didn't reset it; otherwise spin up a v2-vintage project).
 
 **Verification:**
-- [ ] Migration script runs cleanly on a v2 project
+- [ ] Migration script runs cleanly on a v2 project with NO existing settings.json
+- [ ] Migration script runs cleanly on a v2 project WITH existing settings.json that has no statusLine (jq merge succeeds, status line works)
+- [ ] Migration script halts gracefully on a v2 project WITH existing settings.json that has statusLine (preserves user config, leaves note)
 - [ ] Migrated project boots into v3 picker on next session
-- [ ] All v2 state (current sprint, decision log, agent-requests) preserved unchanged
+- [ ] All v2 state (current sprint, decision log, agent-requests, agent-context files) preserved unchanged
+- [ ] Idempotent: running migration twice on the same project produces same result, no errors
 
 **Regression risks:**
-- Migration script is the most likely source of project-level data loss. Test extensively. Make it idempotent (running twice produces same result).
-- Document what to do if migration partially fails (e.g., script halts mid-way).
+- **Settings.json clobber risk** (HIGH): if migration script blindly overwrites existing settings.json, user loses their custom config. Mitigation: explicit detection + merge-or-halt logic (above).
+- **CLAUDE.md routing block migration risk** (MEDIUM): existing v2 projects' root CLAUDE.md has the v2 routing block at the top. Migration must replace ONLY the bootstrap block (between markers `<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->` and `<!-- END BOOTSTRAP -->`), preserving all other content (product info, project-specific rules). Use sed or awk on those markers; do NOT regex-match on routing content.
+- **Migration script is the most likely source of project-level data loss.** Test extensively. Make it idempotent (running twice produces same result).
+- **statusline.sh not executable**: if chmod fails (filesystem doesn't support it, e.g., NTFS), status line won't run. Detect chmod success; halt with explicit error if it fails.
+- Document what to do if migration partially fails (e.g., script halts mid-way) — provide a `--resume` flag like setup-project.sh.
 
 ---
 
