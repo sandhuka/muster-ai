@@ -2,8 +2,8 @@
 **First tool call this session: Read `knowledge-base/agent-context/.populated`.** Do not LS/Grep/Glob first — the file is the routing signal.
 
 Route on `.populated` (JSON: `onboarded_at`, `onboarding_complete_at`, `agents.<name>` — each timestamp-or-null):
-- `onboarded_at` is a timestamp AND `onboarding_complete_at` is null → **existing-project onboarding active**. Skip role-picker; force-bind PM. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run it (Phase 1 first). Do NOT run PM monitoring-duty reads (no decision-log, current-sprint, orchestration-queue, agent-requests) — those are for greenfield-ongoing/steady-state.
-- `onboarded_at` is null AND `agents.pm` is null → **greenfield first session**. Skip role-picker; force-bind PM. Read `muster/team/pm/skills/generic/greenfield-discovery.md` and fire Stage 1 welcome. Do NOT skip the welcome — first impression matters.
+- `onboarded_at` is a timestamp AND `onboarding_complete_at` is null → **existing-project onboarding active**. Read `muster/team/pm/skills/generic/reverse-discovery.md` and run it (Phase 1 first). No picker. Do NOT load `.claude/agents/pm.md` — onboarding is self-contained in the discovery skill.
+- `onboarded_at` is null AND `agents.pm` is null → **greenfield first session**. Read `muster/team/pm/skills/generic/greenfield-discovery.md` and fire Stage 1 welcome. No picker. Do NOT load `.claude/agents/pm.md` — the discovery skill drives PM behavior through Stage 1.3.
 - `onboarded_at` is null AND `agents.pm` is a timestamp → **greenfield ongoing**. Read `muster/CLAUDE.md` and follow Role Binding. Do NOT re-read `greenfield-discovery.md`.
 - `onboarded_at` AND `onboarding_complete_at` both timestamps → **steady-state** (null `agents.*` entries trigger JIT populate, NOT re-onboarding). Read `muster/CLAUDE.md` and follow Role Binding. Do NOT read `reverse-discovery.md`.
 - File missing/invalid → halt: *"Muster setup incomplete. Run `scripts/setup-existing-project.sh --resume` or `scripts/setup-project.sh <name>` at repo root."*

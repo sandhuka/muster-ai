@@ -201,7 +201,7 @@ Use `team/pm/skills/generic/sprint-planning.md`. Ask the founder: *"What's the f
 
 Tell the founder: *"Discovery complete. Your queue is in `orchestration-queue.md` — first task is `<feature>`. Open the queue, copy the next prompt, invoke the listed agent."*
 
-End the session. From this point on, the project is in steady-state greenfield: future sessions take normal PM Mode bootstrap, no welcome, no Discovery flow.
+End the session. From this point on, the project is in steady-state greenfield: future sessions take the normal Role Binding picker (no welcome, no Discovery flow).
 
 ## Edge cases and design rationale
 
