@@ -20,12 +20,15 @@
 
 ## Branch setup
 
-**Muster repo** (`/Users/kanwarsandhu/Desktop/arogh/muster/`):
-- Create `feat/v3-role-binding` branched from `main`. All v3 work lives here.
-- Two-commit protocol per muster CLAUDE.md Rule 13 applies for every change: commit + push inside submodule, then commit pointer bump in the consuming project (sample project initially, Arogh dogfood branch later).
+**Muster repo — standalone clone** (`/Users/kanwarsandhu/Desktop/muster-ai/`):
+- All v3 development happens in this **standalone clone**, NOT in the arogh submodule (`/Users/kanwarsandhu/Desktop/arogh/muster/`). Keeps arogh `git status` clean and avoids mental-model mixing between muster framework work and Arogh product work.
+- Branch: `feat/v3-role-binding` tracking `origin/feat/v3-role-binding`. All v3 commits land here.
+- Review surface: open PR at https://github.com/sandhuka/muster-ai/pull/new/feat/v3-role-binding for ongoing diff review across the multi-phase rollout.
+- Two-commit protocol (Rule 13) still applies when consuming projects (sample project, Arogh dogfood branch later) need to bump their submodule pointer to pick up new v3 commits — but the muster commits themselves are made in the standalone clone.
 
 **Arogh repo** (`/Users/kanwarsandhu/Desktop/arogh/`):
 - Stay on `develop` for normal product work. Do NOT bump the muster submodule on `develop` until v3 is merged to muster main and verified.
+- The arogh submodule's local checkout stays on muster main during v3 dev (so arogh `git status` doesn't show `M muster`).
 - When ready to dogfood: branch `feat/muster-v3-dogfood` from `develop`, point submodule at `feat/v3-role-binding`, use that branch for sprint work during dogfood phase.
 
 **Sample project** (created in Phase 0, location TBD — recommend `/Users/kanwarsandhu/Desktop/muster-v3-sandbox/`):
