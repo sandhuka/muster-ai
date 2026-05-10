@@ -103,43 +103,50 @@ Layer 5: src/                          ACTUAL CODE          "The thing being bui
 ## System Architecture
 
 ```
-                     +-----------------------+
-                     |      FOUNDER          |
-                     |  (You, in terminal)   |
-                     +----------+------------+
-                                |
-                      Talks to Root Claude
-                      (which IS the PM)
-                                |
-                     +----------v------------+
-                     |    ROOT CLAUDE (PM)    |
-                     |                        |
-                     |  - Plans sprints       |
-                     |  - Makes decisions     |
-                     |  - Cascades context    |
-                     |  - Reviews deliverables|
-                     +----------+-------------+
-                                |
-          Writes to agent-context files (knowledge-base/agent-context/)
-          Writes to knowledge-base/ (source of truth)
-                                |
-         +------+------+------+-+--+------+------+------+
-         |      |      |      |    |      |      |      |
-         v      v      v      v    v      v      v      v
-        Res    Dev   UI/UX  Content Mkt  Legal   QA   ...
-         |      |      |      |    |      |      |
-         +------+------+------+----+------+------+
-                          |
-               Each agent reads on startup:
-               0. agent-context/.populated (halt check — if agent's
-                  entry is null, halt to PM for one-time populate;
-                  user-transparent. See Context Window Management.)
-               1. muster/CLAUDE.md (system rules)
-               2. muster/team/<name>/CLAUDE.md (role)
-               3. agent-context/<name>.md (product context)
-               4. orchestration-queue.md (their task)
-               5. agent-requests.md (messages to them)
+              +-----------------------+
+              |      FOUNDER          |
+              |  (You, in terminal)   |
+              +----------+------------+
+                         |
+                   Opens Claude in project
+                         |
+                         v
+              +-----------------------+
+              |   ROLE PICKER fires   |  ← MUSTER_ROLE env var skips
+              |   (two-step)          |    for scripts / autonomous mode
+              |                       |
+              |   Coordination → PM   |
+              |   Build → Dev/UI-UX/QA|
+              |   Communicate → Cont/Mkt
+              |   Validate → Res/Legal|
+              +----------+------------+
+                         |
+                  Bound role for session
+                         |
+   +-----+------+------+--+--+------+------+------+
+   |     |      |      |     |      |      |      |
+   v     v      v      v     v      v      v      v
+  PM    Dev   UI/UX   QA   Cont   Mkt   Legal   Res
+   |     |     |      |     |      |     |      |
+   |     |     |      |     |      |     |      |
+   |   <----- specialists read role-specific context ----->
+   |
+   + PM (when bound):
+     - Plans sprints, makes decisions
+     - Cascades context to agent-context files
+     - Reviews handoffs, monitors stale items
+
+         Each role's bootloader (.claude/agents/<role>.md) reads at bind:
+         1. muster/CLAUDE.md (system rules)
+         2. muster/team/<role>/CLAUDE.md (role identity + skill index)
+         3. knowledge-base/agent-context/<role>.md (product context)
+         4. orchestration-queue.md (their task)
+         5. agent-requests.md (messages to them)
+         6. role-specific extras (PM: 5 monitoring files;
+            Developer/UI-UX/QA: ui-component-requests; etc.)
 ```
+
+**Onboarding carve-outs**: greenfield first session and existing-project onboarding skip the picker and force-bind PM, then run the relevant discovery skill (`greenfield-discovery.md` or `reverse-discovery.md`). Picker fires for all subsequent sessions.
 
 ---
 
@@ -236,30 +243,36 @@ Every file that agents read at startup has a size cap to prevent context window 
 ## The Orchestration Loop
 
 ```
-1. Open Claude Code (Root Claude = PM)
+1. Open Claude Code → picker fires → bind PM
             |
             v
-2. PM reads monitoring files:
-   orchestration-queue, agent-requests, decision-log, current-sprint
+2. PM bind step reads 6 monitoring files
+   (decision-log, current-sprint, ui-component-requests,
+    research/change-log, agent-requests, orchestration-queue)
+   plus runs PM monitoring duties (stale items, Founder Decisions)
             |
             v
-3. PM tells you: "Next: invoke @developer with this prompt: ..."
+3. PM tells you: "Next: open a Developer tab and paste this prompt: ..."
             |
             v
-4. You invoke the agent (or multiple agents in parallel for independent tasks)
+4. Open new tab → picker fires → bind Developer (or use MUSTER_ROLE=developer)
             |
             v
-5. Agent reads startup files, does the work
+5. Developer bootloader loads role-specific context, executes the task
             |
             v
-6. Agent files a handoff in agent-requests.md,
+6. Developer files handoff in agent-requests.md,
    updates orchestration queue (marks done, promotes next step)
             |
             v
-7. Back to PM. Reviews the handoff. Accepts or requests revision.
+7. Back to PM tab. PM reviews the handoff. Accepts or requests revision.
             |
             v
 8. Repeat from step 3 until sprint is done
+
+Autonomous variant: MUSTER_ROLE=auto in a loop reads the queue's
+Next Step, binds the listed role, executes, and exits — no founder
+intervention until queue empties.
 ```
 
 ---
@@ -284,7 +297,7 @@ Each handoff has named reviewers with individual statuses. The producing agent r
 
 ## How the PM Manages Everything
 
-Root Claude IS the PM. No separate PM agent.
+PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`.claude/agents/pm.md`), which loads PM brain + agent-context + 6 monitoring files, then runs PM monitoring duties before answering the user's first message.
 
 **Key responsibilities:**
 1. **Sprint planning** — Break work into agent tasks, sequence by dependencies, populate orchestration queue
@@ -308,7 +321,7 @@ Root Claude IS the PM. No separate PM agent.
 
 | File | Purpose | Who Writes |
 |------|---------|------------|
-| `muster/CLAUDE.md` | System rules, protocols, agent roster, PM mode | Framework maintainer |
+| `muster/CLAUDE.md` | System rules, protocols, agent roster, role-binding mechanism | Framework maintainer |
 | `muster/team/<name>/CLAUDE.md` | Agent role definition, skill index | Framework maintainer |
 | `muster/team/<name>/skills/` | Domain methodology — how to do the work | Framework maintainer |
 | `muster/system-guide.md` | Templates, extensibility, verification checklist | Framework maintainer |
@@ -320,7 +333,7 @@ Root Claude IS the PM. No separate PM agent.
 | `.claude/agents/<name>.md` | Startup config — what to read when invoked | Copied from templates |
 | `CLAUDE.md` | Three-section project file: Muster Framework pointer (read-only), Product Information, Project-Specific Rules | Founder + PM |
 | `knowledge-base/agent-context/<name>.md` | Filtered product context per agent | PM |
-| `knowledge-base/agent-context/.populated` | Per-agent populate state + `version`, `onboarded_at`, `onboarding_complete_at`, and `agents.pm` routing anchors. `version: "2"` is the schema version (bump when the schema breaks; v1→v2 migration handled by `scripts/migrate-v1-to-v2.sh`). Bootstrap routes into one of four paths: (A) existing-project onboarding (`onboarded_at` set + `onboarding_complete_at` null) → load `reverse-discovery.md`; (B-fresh) greenfield first session (`onboarded_at` null + `agents.pm` null) → load `greenfield-discovery.md`, fire welcome; (B-ongoing) greenfield ongoing (`onboarded_at` null + `agents.pm` set) → normal PM Mode bootstrap; (C) existing-project steady-state (both `onboarded_at` and `onboarding_complete_at` set) → normal PM Mode bootstrap. | Script (init); PM (updates: `agents.pm` at greenfield Stage 1.3 OR existing-project init; agent timestamps during cascade + JIT; `onboarding_complete_at` at Phase 11.4) |
+| `knowledge-base/agent-context/.populated` | Per-agent populate state + `onboarded_at`, `onboarding_complete_at`, and `agents.<role>` timestamps. The priority-zero check routes into one of four paths based on these fields: (A) existing-project onboarding (`onboarded_at` set + `onboarding_complete_at` null) → force-bind PM, load `reverse-discovery.md`; (B-fresh) greenfield first session (`onboarded_at` null + `agents.pm` null) → force-bind PM, load `greenfield-discovery.md`, fire welcome; (B-ongoing) greenfield ongoing (`onboarded_at` null + `agents.pm` set) → fire role picker; (C) steady-state (both timestamps set) → fire role picker. Null `agents.<role>` entries trigger JIT populate at first invocation, not re-onboarding. | Script (init); PM (updates: `agents.pm` at greenfield Stage 1.3 OR existing-project init; agent timestamps during cascade + JIT; `onboarding_complete_at` at end of reverse-discovery) |
 | `knowledge-base/product-spec.md` | Full product specification | PM |
 | `knowledge-base/architecture.md` | Technical architecture | Developer produces, PM reviews |
 | `knowledge-base/current-sprint.md` | Task board — assignments and status | PM |
