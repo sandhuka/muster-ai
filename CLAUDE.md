@@ -69,9 +69,16 @@ Every session picks ONE role at start via a role-picker. Root Claude operates as
 
 1. **`MUSTER_ROLE` env var precedence**: read the env var BEFORE firing the picker.
    - Unset → fire picker (interactive mode).
-   - Set to a valid role name (`pm`, `developer`, `ui-ux`, `qa`, `content`, `marketing`, `legal`, `research`) → skip picker, bind directly to that role.
-   - Set to `auto` → read `knowledge-base/orchestration-queue.md` Next Step entry, parse the role assignment, bind to that role. If the queue is empty, malformed, or Next Step is missing, halt with explicit error: `"MUSTER_ROLE=auto but orchestration queue has no Next Step. Cannot determine role. Halt."`.
+   - Set to a valid role name (`pm`, `developer`, `ui-ux`, `qa`, `content`, `marketing`, `legal`, `research`) → skip picker, bind directly to that role. Continue to step 3 (JIT) and step 4 (Bind).
+   - Set to `auto` → read `knowledge-base/orchestration-queue.md`, locate the `## Next Step` section, find the first fenced code block under it. Bind to: the `@<role>` from the code block's first non-blank line if present, OR `pm` if the code block has no @-prefix (PM steps omit the @-tag per the @-mention prefix rule below). If `## Next Step` is missing, empty, contains no fenced code block, or the parsed role is invalid, halt with explicit error: `"MUSTER_ROLE=auto but orchestration queue has no parseable Next Step. Cannot determine role. Halt."`. Continue to step 3 (JIT) and step 4 (Bind).
    - Set to an invalid value → halt with explicit error: `"MUSTER_ROLE='<value>' is not a valid role. Valid: pm, developer, ui-ux, qa, content, marketing, legal, research, auto. Halt."`. Do NOT silently fall through to picker.
+
+   **Invoker tag** (for bind log step 6): `env-var` if `MUSTER_ROLE` is set to a role name, `auto` if set to `auto`, `interactive` otherwise.
+
+   **Invocation examples**:
+   - `MUSTER_ROLE=developer claude --dangerously-skip-permissions "build feature X"` (CI step / scripted run)
+   - `MUSTER_ROLE=auto claude --dangerously-skip-permissions "execute next step"` (orchestrator daemon loop — reads queue, binds, executes, exits; loop again)
+   - `unset MUSTER_ROLE; claude` (return to interactive picker after env-var sessions)
 
 2. **Two-step picker** (interactive mode): muster has 8 roles but `AskUserQuestion` supports max 4 options per question. Picker fires in two stages:
    - Q1 (role group): Coordination | Build | Communicate | Validate
