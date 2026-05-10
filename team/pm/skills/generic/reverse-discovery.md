@@ -6,7 +6,7 @@ Procedural methodology for PM to conduct existing-project onboarding — the rev
 ## When This Skill Runs
 
 PM reads this skill when:
-1. At session start, PM reads `knowledge-base/agent-context/.populated` (per Root Claude bootstrap behavior) and finds it has **any `null` entries**.
+1. At session start, PM reads `knowledge-base/agent-context/.populated` (per the priority-zero check in muster CLAUDE.md) and finds it has **any `null` entries**.
 2. Before producing any user-facing output, PM must have this skill loaded. This is mandatory — see CLAUDE.md bootstrap behavior for the rule.
 
 **Missing-skill fallback**: if this file is missing or unreadable when PM attempts the read, PM halts with:
@@ -234,7 +234,7 @@ Framing is deliberate — claims to **verify or correct**, not evidence to find.
 
 ### 5.2 Invoke Developer
 
-Invoke via Task tool with `subagent_type="developer"`. The audit is never performed inline by Root Claude — bootstrap mode's tool restrictions depend on this invocation pattern.
+Invoke via Task tool with `subagent_type="developer"`. The audit is never performed inline by PM — bootstrap mode's tool restrictions depend on this invocation pattern.
 
 Wait for Developer's audit to complete (~10-25 min LLM time). Developer writes to `.muster-onboarding/architecture-audit-notes.md` (and optionally `design-system-reference.md` starter). Bootstrap mode tool restrictions keep the audit read-only.
 

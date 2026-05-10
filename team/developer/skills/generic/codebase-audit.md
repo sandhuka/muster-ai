@@ -30,7 +30,7 @@ PM writes `knowledge-base/.muster-onboarding/audit-brief.md` before invoking Dev
 - Skipped-list disclosure requirement
 
 ### Invocation
-PM invokes Developer via the Task tool with `subagent_type="developer"`. The audit is never performed inline by Root Claude.
+PM invokes Developer via the Task tool with `subagent_type="developer"`. The audit is never performed inline by PM.
 
 ## Audit Procedure
 
