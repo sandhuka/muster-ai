@@ -291,6 +291,8 @@ if ! state_has_step "gitignore_updated"; then
         "*.swo"
         "*~"
         ".muster-setup-state.json"
+        ".claude/.muster-bound-role.*"
+        ".claude/.muster-last-role"
     )
 
     touch .gitignore
