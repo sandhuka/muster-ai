@@ -205,31 +205,33 @@ MUSTER_ROLE=auto claude "anything"
 
 ---
 
-### @-mention prefix routing (Phase 4 follow-up rule)
+### Queue prompt routing (`Role:` marker, NOT @-mention)
 
-#### I18 — Matching prefix: bound role executes directly
+**Design note**: I18 originally tested an `@-mention prefix` rule (matching @-prefix → bound role executes; non-matching → spawn subagent). That rule was found unimplementable: Claude Code's input parser auto-routes `@<agent>` mentions to the named subagent at the platform layer, before muster's instructions can apply. Queue prompts now use `Role: <role>` as a non-auto-routed marker. Tests below reflect the new design.
+
+#### I18 — Queue prompt with matching `Role:` in role-bound tab → bound role executes ✓ DESIGN-CHANGED (was @-prefix)
 **Steps**:
 1. In a Developer-bound tab, paste:
 ```
-@developer
+Role: developer
 
 Tell me what you'd build for the pre-workout cue overlay.
 ```
-2. **Expect**: Bound Developer treats `@developer` as informational, executes the task body directly. NO subagent spawn.
-**Pass criteria**: Task executed in the bound session, not delegated to subagent.
+2. **Expect**: Bound Developer reads "Role: developer" as informational text, executes the task body directly. NO subagent spawn (no @-mention to auto-route).
+**Pass criteria**: Task executed in the bound session, no subagent.
 
-#### I19 — Non-matching prefix: spawns subagent
+#### I19 — Queue prompt with `Role:` for different role in PM tab → PM spawns subagent
 **Steps**:
 1. In a PM-bound tab, paste:
 ```
-@developer
+Role: developer
 
 Tell me what you'd build for the pre-workout cue overlay.
 ```
-2. **Expect**: PM spawns Developer subagent via Agent tool with the task body.
-**Pass criteria**: Subagent spawned, task delegated.
+2. **Expect**: PM reads "Role: developer" marker, recognizes it's for Developer (not PM's bound role), explicitly invokes `Agent({subagent_type: "developer"})` with the task body as prompt.
+**Pass criteria**: Developer subagent spawned by PM's explicit Agent call, task delegated.
 
-#### I20 — Plain message (no @-mention): normal request
+#### I20 — Plain message (no `Role:` marker, no @-mention): normal request
 **Steps**:
 1. In any bound tab, type a plain message: "what's my next task"
 2. **Expect**: Bound role responds directly to user. No subagent spawn.

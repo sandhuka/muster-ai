@@ -73,7 +73,7 @@ Every session picks ONE role at start via a role-picker. Root Claude operates as
 1. **`MUSTER_ROLE` env var precedence**: BEFORE firing the picker, you MUST actively check the env var by running the Bash tool. **Action**: invoke the Bash tool with command `echo "${MUSTER_ROLE:-UNSET}"` and read the output. Then route on the result:
    - Output is `UNSET` (or empty) → fire picker (interactive mode, step 2).
    - Output is a valid role name (`pm`, `developer`, `ui-ux`, `qa`, `content`, `marketing`, `legal`, `research`) → skip picker entirely, jump directly to step 3 (JIT) and step 4 (Bind) with that role.
-   - Output is `auto` → read `knowledge-base/orchestration-queue.md`, locate the `## Next Step` section, find the first fenced code block under it. Bind to: the `@<role>` from the code block's first non-blank line if present, OR `pm` if the code block has no @-prefix (PM steps omit the @-tag per the @-mention prefix rule below). If `## Next Step` is missing, empty, contains no fenced code block, or the parsed role is invalid, halt with explicit error: `"MUSTER_ROLE=auto but orchestration queue has no parseable Next Step. Cannot determine role. Halt."`. Continue to step 3 (JIT) and step 4 (Bind).
+   - Output is `auto` → read `knowledge-base/orchestration-queue.md`, locate the `## Next Step` section, find the first fenced code block under it. Look for a `Role: <role>` line (typically the first non-blank line) and bind to that role. If no `Role:` line is present, bind to `pm` (PM steps may omit the marker — they're handled directly in the bound PM tab). If `## Next Step` is missing, empty, contains no fenced code block, or the parsed role is invalid, halt with explicit error: `"MUSTER_ROLE=auto but orchestration queue has no parseable Next Step. Cannot determine role. Halt."`. Continue to step 3 (JIT) and step 4 (Bind).
    - Output is anything else → halt with explicit error: `"MUSTER_ROLE='<value>' is not a valid role. Valid: pm, developer, ui-ux, qa, content, marketing, legal, research, auto. Halt."`. Do NOT silently fall through to picker.
 
    **Critical**: do NOT skip the Bash check. The picker should NEVER fire when `MUSTER_ROLE` is set — always check first.
@@ -103,12 +103,7 @@ Every session picks ONE role at start via a role-picker. Root Claude operates as
 
 **Subagents**: picker fires only at primary-tab session start. `Agent({subagent_type: "<role>"})` invocations bind via the argument and never fire the picker. Same-role parallel subagents are allowed for side work (Claude Code `/btw` analog) — not a substitute for role binding for follow-up turns. Tool-permission note: picker-bound roles inherit Root Claude's full toolset; subagents are tool-restricted per their `.claude/agents/<role>.md` config.
 
-**@-mention prefix in user messages**: if the FIRST non-blank line of a user message is `@<role>`:
-- `<role>` matches your bound role → informational header; execute the rest of the message as your task. Do NOT spawn a subagent (would be redundant recursion).
-- `<role>` is a different role → spawn that role's subagent via `Agent({subagent_type: "<role>"})` with the rest of the message as the prompt.
-- First line is not an @-mention → normal user request to your bound role.
-
-This lets `orchestration-queue.md` prompts work in all modes with one format: multi-tab paste (matching prefix is no-op header), single-tab paste from PM (non-matching prefix spawns subagent), and `MUSTER_ROLE=auto` (parses the prefix as the bind target, then executes the body).
+**@-mentions in user input**: Claude Code's input parser auto-routes any `@<agent>` mention in user-typed input to that subagent — this happens at the platform layer, before muster's instructions can apply. Implication: `orchestration-queue.md` prompts MUST NOT use `@<role>` as a role marker (would auto-spawn even when user is in the matching role's tab). Use `Role: <role>` instead — see Prompt Standard in `team/pm/skills/generic/sprint-planning.md`. (@-mentions in file contents Claude reads are NOT auto-routed; only user-typed input.)
 
 **JIT populate on Task HALT return**: when a specialist returns `HALT: agent-context null`, PM auto-handles per `context-cascading.md` → Just-in-time mode. Mid-session trigger; separate from the picker JIT check above.
 

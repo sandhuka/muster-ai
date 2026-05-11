@@ -4,14 +4,14 @@
 
 ## Prompt Standard
 
-<!-- Every Next Step / Upcoming entry wraps the prompt in a fenced code block so the founder can copy the whole block in one shot. The @<agent> mention on the first line is a role marker — see `muster/CLAUDE.md` → '@-mention prefix in user messages' for the routing rule (matching role tab → execute body directly; non-matching role tab → spawn subagent; `MUSTER_ROLE=auto` → parse as bind target). -->
+<!-- Every Next Step / Upcoming entry wraps the prompt in a fenced code block so the founder can copy the whole block in one shot. The `Role: <agent>` line at the top is a role marker — informational text that tells the founder which role-bound tab to open (or which subagent to spawn from a PM tab) and is parsed by `MUSTER_ROLE=auto` to determine the bind target. **Do NOT use `@<agent>` as a role marker** — Claude Code's input parser auto-routes @-mentions to that subagent regardless of bound role, causing redundant spawns when pasted into a role-bound tab. -->
 
 <!-- Specialist-agent format:
 
 ### [DATE] [Agent (platform)]: [Step title]
 
 ```
-@<agent-name>
+Role: <agent-name>
 
 **Task:** [1-line description]
 
@@ -32,19 +32,16 @@ when the task spans surfaces, or omit the parenthetical for platform-agnostic
 tasks (e.g., "Legal: ...", "Marketing: ..."). Keeps the queue scannable for
 multi-surface projects.
 
-Available @-tags: `@developer`, `@ui-ux`, `@qa`, `@content`, `@marketing`,
-`@legal`, `@research`, `@pm`. PM steps typically omit the @-tag because
-the founder handles them in the PM-bound tab (no specialist to invoke);
-include `@pm` only if the step is a one-shot consult intended for spawning
-PM as a subagent from another role-bound session.
+Available `Role:` values: `developer`, `ui-ux`, `qa`, `content`, `marketing`,
+`legal`, `research`, `pm`. PM steps may omit the `Role:` marker since they're
+handled directly in the bound PM tab.
 
-PM-step format (no @-tag):
+PM-step format (Role: marker optional):
 
 ### [DATE] PM: [Step title]
 
 ```
-[Task description for the PM-bound tab. No @<agent> tag — handled in the
-PM tab directly without spawning a subagent.]
+[Task description for the PM-bound tab. Handled directly in the PM tab.]
 ```
 -->
 
@@ -54,8 +51,8 @@ PM tab directly without spawning a subagent.]
 <!-- Format: - [DATE] [Agent]: [Question] -->
 
 ## Next Step
-<!-- The single next agent invocation. Copy the ENTIRE code block (including @<agent> at the top) and paste as one message in Claude Code. -->
-<!-- @<agent> behavior depends on receiving session — see muster/CLAUDE.md '@-mention prefix' rule. Bound to that role: header is informational, task body executes directly. Bound to a different role (typically PM): @<agent> spawns the named subagent with the body as prompt. -->
+<!-- The single next agent invocation. Copy the ENTIRE code block (including `Role: <agent>` at the top) and paste as one message in Claude Code. -->
+<!-- The `Role:` marker tells you which tab to open. Multi-tab: open a tab in that role (picker → matching role) and paste; bound role executes the task body directly. Single-tab from PM: paste in PM tab; PM reads the `Role:` marker and explicitly invokes Agent tool with `subagent_type=<role>`. -->
 
 ## Upcoming
 <!-- Ordered sequence of remaining steps for this sprint. -->
