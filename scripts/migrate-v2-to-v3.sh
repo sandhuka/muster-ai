@@ -194,7 +194,23 @@ fi
 
 # 1.3 Status line script
 if [ -f ".claude/statusline.sh" ]; then
-    substep_skip "1.3" "Add .claude/statusline.sh" "already exists"
+    if cmp -s ".claude/statusline.sh" "muster/templates/.claude/statusline.sh" 2>/dev/null; then
+        substep_skip "1.3" "Add .claude/statusline.sh" "already matches muster template (idempotent skip)"
+    else
+        substep_skip "1.3" "Add .claude/statusline.sh" "custom statusline preserved"
+        if [ "$DRY_RUN" -eq 0 ]; then
+            warn ""
+            warn "Your existing .claude/statusline.sh has been preserved (it differs from muster's template)."
+            warn "To get the muster bound-role indicator alongside your existing output, add this to your statusline.sh:"
+            warn ""
+            warn "    JSON_INPUT=\$(cat)"
+            warn "    MUSTER=\$(echo \"\$JSON_INPUT\" | bash muster/scripts/muster-bound-role.sh)"
+            warn "    echo \"\$YOUR_OUTPUT [muster: \$MUSTER]\""
+            warn ""
+            warn "See muster/scripts/muster-bound-role.sh for full integration options."
+            warn ""
+        fi
+    fi
 else
     if [ "$DRY_RUN" -eq 0 ]; then
         cp muster/templates/.claude/statusline.sh .claude/statusline.sh

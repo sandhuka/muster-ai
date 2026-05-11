@@ -443,12 +443,34 @@ if ! state_has_step "scaffold_templates"; then
     cp muster/templates/.claude/agents/*.md .claude/agents/
 
     # Status-line script (v3 — bound-role indicator)
-    cp muster/templates/.claude/statusline.sh .claude/statusline.sh
-    chmod +x .claude/statusline.sh
+    if [ -f ".claude/statusline.sh" ]; then
+        if cmp -s ".claude/statusline.sh" "muster/templates/.claude/statusline.sh"; then
+            : # Already matches muster template — idempotent skip
+        else
+            echo ""
+            echo "  ⚠  .claude/statusline.sh already exists with custom content — preserving."
+            echo "    To get the muster bound-role indicator alongside your existing output,"
+            echo "    add this to your statusline.sh (replace YOUR_OUTPUT with your existing logic):"
+            echo ""
+            echo "      JSON_INPUT=\$(cat)"
+            echo "      MUSTER=\$(echo \"\$JSON_INPUT\" | bash muster/scripts/muster-bound-role.sh)"
+            echo "      echo \"\$YOUR_OUTPUT [muster: \$MUSTER]\""
+            echo ""
+            echo "    See muster/scripts/muster-bound-role.sh for full integration options."
+            echo ""
+        fi
+    else
+        cp muster/templates/.claude/statusline.sh .claude/statusline.sh
+        chmod +x .claude/statusline.sh
+    fi
 
     # settings.json with statusLine wired up — merge if already exists
     if [ -f ".claude/settings.json" ]; then
-        echo "  ⚠  .claude/settings.json already exists — please add statusLine config manually from muster/templates/.claude/settings.json"
+        if grep -q '"statusLine"' .claude/settings.json; then
+            : # Already has statusLine field — preserving user's config
+        else
+            echo "  ⚠  .claude/settings.json exists without statusLine — please add statusLine config manually from muster/templates/.claude/settings.json"
+        fi
     else
         cp muster/templates/.claude/settings.json .claude/settings.json
     fi
