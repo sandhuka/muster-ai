@@ -12,11 +12,66 @@ The sandbox at `/Users/kanwarsandhu/Desktop/muster-v3-sandbox/` is currently in 
 
 ---
 
+## Test progress (as of last session)
+
+**Tests passed (7 of 20):**
+
+| # | Test | Result | Notes |
+|---|---|---|---|
+| I1 | Greenfield welcome fires | ✓ PASS | Truncated form — welcome appears |
+| I17 | Greenfield-first doesn't trigger pm.md halt | ✓ PASS | Subset of I1 |
+| I3 | Existing-project onboarding (reverse-discovery) | ✓ PASS | Tested with FoodTrucks; surfaced 6 bugs that have all been fixed |
+| I4 | Steady-state picker fires (two-step) | ✓ PASS | Sandbox after manual .populated edit |
+| I5 | Coordination → PM short-circuit | ✓ PASS | Got `[muster: pm]` in status line |
+| I7 | MUSTER_ROLE=<role> skips picker | ✓ PASS | `MUSTER_ROLE=qa claude "..."` → `[muster: qa]` |
+| I9 | MUSTER_ROLE=invalid halts | ✓ PASS | Halt with explicit error message |
+
+**Tests remaining (13 of 20):**
+
+| # | Test | Time |
+|---|---|---|
+| I2 | Greenfield-ongoing picker fires after Stage 1.3 | <1 min |
+| I6 | Each of 7 specialists binds (representative subset OK) | ~3 min |
+| I8 | MUSTER_ROLE=auto with populated queue | ~2 min |
+| I10 | MUSTER_ROLE=auto with empty queue | ~1 min |
+| I11 | Cross-role consult subagent | ~2 min |
+| I12 | Same-role parallel subagent | ~1 min |
+| I13 | /rebind mid-session | ~1 min |
+| I14 | Two terminals open simultaneously | ~1 min |
+| I15 | Picker bind with null .populated entry triggers JIT | ~3 min |
+| I16 | Stale PID files pruned at session start | ~1 min |
+| I18 | @-mention matching prefix (executes directly) | ~1 min |
+| I19 | @-mention non-matching prefix (spawns subagent) | ~1 min |
+| I20 | Plain message (no @-mention) treated normally | <1 min |
+
+**Total remaining time**: ~20 minutes for all 13.
+
+**Implicitly validated by passing tests above** (no separate run needed):
+- Picker step 4 bind file write mechanism (status line shows correct role after bind)
+- Status line script JSON stdin parsing (Bug 3 fix from I3 testing)
+- Bind file write during onboarding force-bind (Bug 4 fix; verified via `.muster-bound-role.<uuid>` containing `pm`)
+- User-level statusline preservation + integration (Test A path in I3)
+- Project-level statusline mode (sandbox)
+- Two-step picker mechanism (group → role; verified by binding succeeding in I4/I5)
+
+**Bugs found and fixed during testing (all verified):**
+- B1: setup-existing-project.sh missed v3 artifacts (statusline, settings, skills/, gitignore entries)
+- B2: Welcome wording said "seven specialists" — now "eight-role AI team"
+- B3: statusline.sh couldn't read session_id (used env var; canonical is JSON stdin)
+- B4: Bind file not written during onboarding (force-bind path bypassed picker step 4)
+- B5: statusline.sh would overwrite custom user file
+- B6: User-level statusline (~/.claude/settings.json) silently overridden by project-level
+- B7: MUSTER_ROLE env var check was passive ("read the env var") — Claude didn't actively run Bash; made explicit "invoke the Bash tool with command echo..."
+
+**Recommendation**: continue with I8 (MUSTER_ROLE=auto) since the env var contract is now warm in your head from I7/I9. Then I13 (/rebind), I18-I20 (@-mention rule — most novel v3 behavior), then mop up the rest.
+
+---
+
 ## The 20 tests — full catalog
 
 ### Greenfield welcome path (the time-expensive one)
 
-#### I1 — Fresh greenfield, first session: welcome fires
+#### I1 — Fresh greenfield, first session: welcome fires ✓ PASS
 **State setup**: sandbox `.populated` shows `onboarded_at: null, agents.pm: null` (current state).
 **Steps**:
 1. `cd ~/Desktop/muster-v3-sandbox && claude`
@@ -26,11 +81,11 @@ The sandbox at `/Users/kanwarsandhu/Desktop/muster-v3-sandbox/` is currently in 
 **Full Discovery time**: 1-2 hours across 3 sessions (idea share → research → go/no-go → spec drafting → Sprint 1).
 **Fast-track**: Stop after seeing the welcome (don't actually do Discovery). Total time: ~2 min.
 
-#### I17 — Greenfield-first does NOT trigger pm.md halt (verifies Phase 2 audit-fix)
+#### I17 — Greenfield-first does NOT trigger pm.md halt (verifies Phase 2 audit-fix) ✓ PASS
 **Subset of I1**. The fact that the welcome fires (instead of `HALT: PM not initialized`) proves the carve-out works.
 **Pass criteria**: Same as I1 — welcome appears.
 
-#### I3 — Existing-project onboarding active: reverse-discovery Phase 1 fires
+#### I3 — Existing-project onboarding active: reverse-discovery Phase 1 fires ✓ PASS (with FoodTrucks; surfaced 6 bugs all fixed)
 **State setup**: requires a project that ran `setup-existing-project.sh` but didn't complete Phase 11.
 **Steps**:
 1. Create a minimal fake existing project: `mkdir -p /tmp/fake-existing-project && cd /tmp/fake-existing-project && git init && echo "test code" > main.py`
@@ -44,7 +99,7 @@ The sandbox at `/Users/kanwarsandhu/Desktop/muster-v3-sandbox/` is currently in 
 
 ### Picker mechanism (the meat)
 
-#### I4 — Steady-state: picker fires
+#### I4 — Steady-state: picker fires ✓ PASS
 **State setup**: project where both `onboarded_at` AND `onboarding_complete_at` are timestamps. Easiest: manually edit sandbox `.populated`.
 **Steps**:
 1. `cd ~/Desktop/muster-v3-sandbox`
@@ -55,7 +110,7 @@ The sandbox at `/Users/kanwarsandhu/Desktop/muster-v3-sandbox/` is currently in 
 6. **Expect**: Two-step picker fires (Q1: Coordination/Build/Communicate/Validate)
 **Pass criteria**: Picker fires before any other response.
 
-#### I5 — PM bind via Coordination → PM (single-option short-circuit)
+#### I5 — PM bind via Coordination → PM (single-option short-circuit) ✓ PASS
 **Steps** (continue from I4):
 7. Pick "Coordination"
 8. **Expect**: No second question (PM is the only Coordination option — short-circuits); Claude declares "Binding to PM for this session"; status line shows `[muster: pm]`; PM monitoring duties run.
@@ -86,7 +141,7 @@ The sandbox at `/Users/kanwarsandhu/Desktop/muster-v3-sandbox/` is currently in 
 
 ### Env var contract (`MUSTER_ROLE`)
 
-#### I7 — `MUSTER_ROLE=developer` skips picker, binds directly
+#### I7 — `MUSTER_ROLE=developer` skips picker, binds directly ✓ PASS (verified with MUSTER_ROLE=qa)
 **Steps**:
 ```bash
 cd ~/Desktop/muster-v3-sandbox
@@ -115,7 +170,7 @@ MUSTER_ROLE=auto claude "execute next step"
 **Expect**: Reads queue, parses `@developer`, binds Developer, executes the task.
 **Pass criteria**: Correct role auto-detected from queue.
 
-#### I9 — `MUSTER_ROLE=invalid` halts
+#### I9 — `MUSTER_ROLE=invalid` halts ✓ PASS
 **Steps**:
 ```bash
 MUSTER_ROLE=foo claude "anything"
