@@ -442,6 +442,23 @@ if ! state_has_step "scaffold_templates"; then
     mkdir -p .claude/agents
     cp muster/templates/.claude/agents/*.md .claude/agents/
 
+    # Status-line script (v3 — bound-role indicator)
+    cp muster/templates/.claude/statusline.sh .claude/statusline.sh
+    chmod +x .claude/statusline.sh
+
+    # settings.json with statusLine wired up — merge if already exists
+    if [ -f ".claude/settings.json" ]; then
+        echo "  ⚠  .claude/settings.json already exists — please add statusLine config manually from muster/templates/.claude/settings.json"
+    else
+        cp muster/templates/.claude/settings.json .claude/settings.json
+    fi
+
+    # Slash commands / skills (v3 — /rebind for mid-session role change)
+    if [ -d "muster/templates/.claude/skills" ]; then
+        mkdir -p .claude/skills
+        cp -r muster/templates/.claude/skills/* .claude/skills/
+    fi
+
     if [ ! -f "CLAUDE.md" ]; then
         cp muster/templates/CLAUDE.md CLAUDE.md
     fi
@@ -451,16 +468,16 @@ if ! state_has_step "scaffold_templates"; then
     # Remove template .DS_Store files if any
     find . -name ".DS_Store" -delete 2>/dev/null || true
 
-    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders"
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line + skills"
     write_state "$REPO_SHAPE" archive_existing submodule_add scaffold_templates
 else
-    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders"
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line + skills"
 fi
 
 # ---------- step 1.4: initialize_populated_file ----------
 if ! state_has_step "initialize_populated_file"; then
     ONBOARDED_AT="$(iso_now)"
-    # PM (Root Claude) is always "populated" — it's the populator, not a populate target.
+    # PM is always "populated" — it's the populator, not a populate target.
     # All specialists start null; PM writes their entries during reverse discovery.
     cat > knowledge-base/agent-context/.populated <<EOF
 {
@@ -509,6 +526,8 @@ if ! state_has_step "gitignore_updated"; then
         ".muster-archive/"
         ".muster-setup-state.json"
         "knowledge-base/.muster-onboarding/"
+        ".claude/.muster-bound-role.*"
+        ".claude/.muster-last-role"
     )
 
     touch .gitignore

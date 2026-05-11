@@ -47,11 +47,11 @@ Render this markdown block as the very first response. Founder will see this BEF
 
 > # ✨ Welcome — let's bring your idea to life
 >
-> Over the next few sessions (typically **3 sessions across a day or two**), we'll go from your raw product idea to a Sprint 1 plan with your AI team ready to build. I'm Claude, acting as your product manager — I coordinate the specialist agents (Developer, UI/UX, QA, Content, Marketing, Legal, Research) and handle planning, decisions, and cross-agent context.
+> Over the next few sessions (typically **3 sessions across a day or two**), we'll go from your raw product idea to a Sprint 1 plan with your AI team ready to build. I'm Claude, currently bound to the **PM** role for this session — one of eight peer agents in your team. I handle planning, decisions, and cross-agent context; the seven specialists handle their own domains when you bind a session to that role.
 >
 > ## What you're getting
 >
-> Seven specialists — **Developer, UI/UX, QA, Content, Marketing, Legal, Research** — coordinated by me as your product manager. Every decision logged. Every sprint planned. No re-explaining your product to a fresh AI chat ever again.
+> An eight-role AI team: **PM** (me — coordinator), **Developer**, **UI/UX**, **QA**, **Content**, **Marketing**, **Legal**, **Research**. Every decision logged. Every sprint planned. No re-explaining your product to a fresh AI chat ever again.
 >
 > **Why it's worth the time:** every sprint after Discovery is fast. The agents already know your product. You spend your time shipping, not re-onboarding.
 >

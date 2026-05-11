@@ -73,11 +73,11 @@ Deliver this verbatim (substitute the product name if the founder has already id
 
 > # ✨ Welcome — let's set up your AI team
 >
-> Over the next ~2 hours, we're going to turn your project into a place where **a coordinated team of specialist AI agents** can actually work together — knowing your product, your code, and your decisions, sprint after sprint.
+> Over the next ~2 hours, we're going to turn your project into a place where **a coordinated team of AI agents** can actually work together — knowing your product, your code, and your decisions, sprint after sprint. I'm Claude, currently bound to the **PM** role for this session.
 >
 > ## What you're getting
 >
-> Seven specialists — **Developer, UI/UX, QA, Content, Marketing, Legal, Research** — coordinated by me as your product manager. Every decision logged. Every sprint planned. No re-explaining your product to a fresh AI chat ever again.
+> An eight-role AI team: **PM** (me — coordinator), **Developer**, **UI/UX**, **QA**, **Content**, **Marketing**, **Legal**, **Research**. Every decision logged. Every sprint planned. No re-explaining your product to a fresh AI chat ever again.
 >
 > **Why it's worth the next 2 hours:** every sprint after this one is fast. The agents already know your product. You spend your time shipping, not re-onboarding.
 >
