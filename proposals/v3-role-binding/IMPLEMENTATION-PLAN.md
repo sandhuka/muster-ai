@@ -354,11 +354,23 @@
 
 | # | Scenario | Expected behavior | Pass? |
 |---|---|---|---|
-| A1 | New project from `setup-project.sh --muster-branch feat/v3-role-binding` | Scaffold includes `.claude/agents/pm.md`, `.muster-bound-role.*` in `.gitignore`, `agent-context/pm.md` template | [ ] |
-| A2 | All 8 roles in `.populated.agents` | `pm` listed alongside other 7 | [ ] |
-| A3 | `pm.md` cross-references resolve | brain file, agent-context, all 9 always-read files exist | [ ] |
-| A4 | No "PM Mode" or "Root Claude IS the PM" in operational paths | Only in user-facing docs (Phase 8 cleanup) and proposals/ | [ ] |
-| A5 | `MUSTER_ROLE=invalid` env handling documented | muster CLAUDE.md has explicit halt error message | [ ] |
+| A1 | New project from `setup-project.sh --muster-branch feat/v3-role-binding` | Scaffold includes 8 agent bootloaders, statusline.sh + chmod, settings.json, skills/rebind/, agent-context/pm.md, .gitignore v3 entries, CLAUDE.md v3 routing | [x] **15/15 ✓** |
+| A2 | All 8 roles in `.populated.agents` | `pm` listed alongside other 7 | [x] **✓** |
+| A3 | `pm.md` cross-references resolve | brain file, agent-context, all 9 always-read files exist | [x] **10/10 ✓** |
+| A4 | No "PM Mode" or "Root Claude IS the PM" in operational paths | Only in user-facing docs (Phase 8 cleanup) and proposals/ | [x] **✓** |
+| A5 | `MUSTER_ROLE=invalid` env handling documented | muster CLAUDE.md has explicit halt error message | [x] **✓** |
+| E1 | All 8 bootloaders have correct YAML frontmatter (name + color) | Yes | [x] **8/8 ✓** |
+| E2 | All 8 bootloaders use unique colors | blue, cyan, green, orange, pink, purple, red, yellow | [x] **✓** |
+| E3 | settings.json template is valid JSON | Parses cleanly | [x] **✓** |
+| E4 | statusline.sh works in 3 cases (env+file/env+nofile/no-env) | `[muster: <role>]` / `[muster: unbound]` / `[muster: no-session]` | [x] **3/3 ✓** |
+| E5 | rebind skill has frontmatter + allowed-tools | description, allowed-tools fields present | [x] **✓** |
+| E6 | muster CLAUDE.md picker mechanism documented | Priority-zero, two-step picker, MUSTER_ROLE, auto, JIT, @-mention, housekeeping, bind log all present | [x] **8/8 ✓** |
+| E7 | Bind log rotation oneliner works | >500-line file gets archived with timestamp suffix | [x] **✓** |
+| E8 | Stale PID/session prune oneliner works | Files >1d old deleted, fresh files preserved | [x] **✓** |
+| M2 | Migration script `--dry-run` has no side effects | File state unchanged after dry-run | [x] **✓** |
+| M3 | PM color doesn't conflict with any other agent | 8 unique colors | [x] **✓** |
+
+**All 15 automated checks pass.** Verified on a fresh project scaffolded from current `feat/v3-role-binding` branch tip.
 
 **Interactive smoke tests** (require founder-attended sessions):
 
