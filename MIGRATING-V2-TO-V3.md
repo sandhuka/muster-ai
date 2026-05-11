@@ -109,13 +109,39 @@ Open Claude in your project. Expected:
 
 ---
 
-## Settings.json — the tricky case
+## Settings.json + statusline — the tricky cases
 
-If your project already has `.claude/settings.json` with custom configuration (model, env vars, hooks), the migration script detects three cases:
+The migration script preserves any existing customization at three levels of priority. Highest priority wins.
 
+### Priority 1: Project-level `.claude/statusline.sh` exists
+Migration preserves it; never overwrites. If file matches muster's template exactly → idempotent skip. If file differs → script prints a snippet you can paste into your custom statusline to also show `[muster: <role>]`.
+
+### Priority 2: User-level statusline (`~/.claude/settings.json` has `statusLine`)
+This is the case for users who configured a global statusline that shows in all their Claude sessions (a common power-user setup). Migration **does NOT install project-level** `.claude/statusline.sh` or `.claude/settings.json` — doing so would override your user-level config for this project (Claude Code's project-level settings take precedence over user-level).
+
+Instead, the script prints integration instructions: edit your user-level statusline script (typically `~/.claude/statusline-command.sh` or wherever your `~/.claude/settings.json` `statusLine.command` points) to add:
+
+```bash
+JSON_INPUT=$(cat)
+YOUR_OUTPUT="...your existing line..."
+if [ -f "muster/scripts/muster-bound-role.sh" ]; then
+  MUSTER=$(echo "$JSON_INPUT" | bash muster/scripts/muster-bound-role.sh)
+  echo "$YOUR_OUTPUT [muster: $MUSTER]"
+else
+  echo "$YOUR_OUTPUT"
+fi
+```
+
+The if-check makes your statusline graceful in non-muster projects (no error if `muster-bound-role.sh` doesn't exist).
+
+### Priority 3: No project-level OR user-level statusline
+Migration installs muster's `.claude/statusline.sh` and `.claude/settings.json` cleanly.
+
+### Settings.json conflict cases (when no user-level statusline)
+If you don't have user-level statusline, the script handles project-level settings.json in three sub-cases:
 1. **No `.claude/settings.json`** → script copies the v3 template
 2. **Has settings.json without `statusLine`** → script uses `jq` to deep-merge the v3 statusLine block in. Your existing fields (`model`, `env`, `hooks`, etc.) are preserved
-3. **Has settings.json WITH `statusLine`** → script skips and preserves your existing config. You'll need to manually verify your status line config works for muster (or replace it with the muster template if you want the bound-role indicator)
+3. **Has settings.json WITH `statusLine`** → script skips and preserves your existing config
 
 If `jq` is not installed, the script halts in case 2 with manual-merge instructions. Install jq (`brew install jq` / `apt install jq` / `dnf install jq`) and re-run.
 

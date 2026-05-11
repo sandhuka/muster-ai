@@ -443,7 +443,14 @@ if ! state_has_step "scaffold_templates"; then
     cp muster/templates/.claude/agents/*.md .claude/agents/
 
     # Status-line script (v3 — bound-role indicator)
+    # Priority: project-level > user-level > muster default
+    HAS_USER_STATUSLINE=0
+    if [ -f "$HOME/.claude/settings.json" ] && grep -q '"statusLine"' "$HOME/.claude/settings.json" 2>/dev/null; then
+        HAS_USER_STATUSLINE=1
+    fi
+
     if [ -f ".claude/statusline.sh" ]; then
+        # Project-level already exists — preserve (highest priority)
         if cmp -s ".claude/statusline.sh" "muster/templates/.claude/statusline.sh"; then
             : # Already matches muster template — idempotent skip
         else
@@ -459,13 +466,40 @@ if ! state_has_step "scaffold_templates"; then
             echo "    See muster/scripts/muster-bound-role.sh for full integration options."
             echo ""
         fi
+    elif [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
+        # User has user-level statusline — don't install project-level (would override)
+        echo ""
+        echo "  ⚠  Detected user-level statusline at ~/.claude/settings.json."
+        echo "    NOT creating project-level .claude/statusline.sh or .claude/settings.json"
+        echo "    (project-level config would override your user-level statusline)."
+        echo ""
+        echo "    To get the muster bound-role indicator alongside your user-level output,"
+        echo "    edit your user-level statusline script (e.g. ~/.claude/statusline-command.sh)"
+        echo "    to add this snippet:"
+        echo ""
+        echo "      # In your user-level statusline script:"
+        echo "      JSON_INPUT=\$(cat)"
+        echo "      YOUR_OUTPUT=\"...your existing line...\""
+        echo "      if [ -f \"muster/scripts/muster-bound-role.sh\" ]; then"
+        echo "        MUSTER=\$(echo \"\$JSON_INPUT\" | bash muster/scripts/muster-bound-role.sh)"
+        echo "        echo \"\$YOUR_OUTPUT [muster: \$MUSTER]\""
+        echo "      else"
+        echo "        echo \"\$YOUR_OUTPUT\""
+        echo "      fi"
+        echo ""
+        echo "    The if-check makes the statusline graceful in non-muster projects."
+        echo "    See muster/scripts/muster-bound-role.sh for full integration options."
+        echo ""
     else
+        # No project-level, no user-level — install muster's project-level
         cp muster/templates/.claude/statusline.sh .claude/statusline.sh
         chmod +x .claude/statusline.sh
     fi
 
-    # settings.json with statusLine wired up — merge if already exists
-    if [ -f ".claude/settings.json" ]; then
+    # settings.json — only install project-level if no user-level statusline AND no project-level
+    if [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
+        : # User has user-level statusLine — skip project-level (already advised above)
+    elif [ -f ".claude/settings.json" ]; then
         if grep -q '"statusLine"' .claude/settings.json; then
             : # Already has statusLine field — preserving user's config
         else

@@ -193,6 +193,12 @@ else
 fi
 
 # 1.3 Status line script
+# Priority: project-level > user-level > muster default
+HAS_USER_STATUSLINE=0
+if [ -f "$HOME/.claude/settings.json" ] && grep -q '"statusLine"' "$HOME/.claude/settings.json" 2>/dev/null; then
+    HAS_USER_STATUSLINE=1
+fi
+
 if [ -f ".claude/statusline.sh" ]; then
     if cmp -s ".claude/statusline.sh" "muster/templates/.claude/statusline.sh" 2>/dev/null; then
         substep_skip "1.3" "Add .claude/statusline.sh" "already matches muster template (idempotent skip)"
@@ -210,6 +216,30 @@ if [ -f ".claude/statusline.sh" ]; then
             warn "See muster/scripts/muster-bound-role.sh for full integration options."
             warn ""
         fi
+    fi
+elif [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
+    substep_skip "1.3" "Add .claude/statusline.sh" "user-level statusline detected — not creating project-level"
+    if [ "$DRY_RUN" -eq 0 ]; then
+        warn ""
+        warn "Detected user-level statusline at ~/.claude/settings.json."
+        warn "NOT creating project-level .claude/statusline.sh or .claude/settings.json"
+        warn "(would override your user-level statusline for this project)."
+        warn ""
+        warn "To get the muster bound-role indicator alongside your user-level output,"
+        warn "edit your user-level statusline script (e.g. ~/.claude/statusline-command.sh)"
+        warn "to add this snippet:"
+        warn ""
+        warn "    JSON_INPUT=\$(cat)"
+        warn "    YOUR_OUTPUT=\"...your existing line...\""
+        warn "    if [ -f \"muster/scripts/muster-bound-role.sh\" ]; then"
+        warn "      MUSTER=\$(echo \"\$JSON_INPUT\" | bash muster/scripts/muster-bound-role.sh)"
+        warn "      echo \"\$YOUR_OUTPUT [muster: \$MUSTER]\""
+        warn "    else"
+        warn "      echo \"\$YOUR_OUTPUT\""
+        warn "    fi"
+        warn ""
+        warn "The if-check makes the statusline graceful in non-muster projects."
+        warn ""
     fi
 else
     if [ "$DRY_RUN" -eq 0 ]; then
@@ -238,8 +268,10 @@ write_state pm_bootloader pm_agent_context statusline rebind_skill
 
 section_header "Step 2: Settings.json handling"
 
-# 2.1 settings.json — three cases
-if [ ! -f ".claude/settings.json" ]; then
+# 2.1 settings.json — skip if user-level statusline exists (already advised in step 1.3)
+if [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
+    substep_skip "2.1" "Settings.json handling" "user-level statusline detected — not creating project-level"
+elif [ ! -f ".claude/settings.json" ]; then
     if [ "$DRY_RUN" -eq 0 ]; then
         cp muster/templates/.claude/settings.json .claude/settings.json
     fi
@@ -348,14 +380,21 @@ if [ "$DRY_RUN" -eq 0 ]; then
     }
 
     verify ".claude/agents/pm.md present"               "[ -f .claude/agents/pm.md ]"
-    verify ".claude/statusline.sh present + executable" "[ -x .claude/statusline.sh ]"
-    verify ".claude/settings.json has statusLine"       "[ -f .claude/settings.json ] && grep -q statusLine .claude/settings.json"
     verify ".claude/skills/rebind/SKILL.md present"     "[ -f .claude/skills/rebind/SKILL.md ]"
     verify "knowledge-base/agent-context/pm.md present" "[ -f knowledge-base/agent-context/pm.md ]"
     verify ".gitignore has .muster-bound-role.*"        "grep -qxF '.claude/.muster-bound-role.*' .gitignore"
     verify ".gitignore has .muster-last-role"           "grep -qxF '.claude/.muster-last-role' .gitignore"
     verify "CLAUDE.md mentions Role Binding"            "grep -q 'Role Binding' CLAUDE.md"
     verify "CLAUDE.md no longer says 'PM Mode'"         "! grep -q 'PM Mode' CLAUDE.md"
+
+    # Statusline + settings.json checks: only required if no user-level statusline
+    if [ "$HAS_USER_STATUSLINE" -eq 0 ]; then
+        verify ".claude/statusline.sh present + executable" "[ -x .claude/statusline.sh ]"
+        verify ".claude/settings.json has statusLine"       "[ -f .claude/settings.json ] && grep -q statusLine .claude/settings.json"
+    else
+        substep_done "" ".claude/statusline.sh skipped (user-level statusline detected)"
+        substep_done "" ".claude/settings.json skipped (user-level statusline detected)"
+    fi
 
     if [ "$failures" -gt 0 ]; then
         err ""
