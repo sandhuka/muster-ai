@@ -36,6 +36,27 @@ Skills are in `team/ui-ux/skills/`. Read the relevant one(s) for your current ta
 - **ios-system-integration.md** — Notifications, widgets, Live Activities, Siri/Shortcuts, HealthKit, deep linking, system settings
 - **ios-copy-fitting-microstates.md** — Copy-fitting rules, microstate inventory, tone-safe placeholders, action label rules, Content agent handoff format
 
+### Web (`web/`)
+
+Cross-references use flat paths (`team/ui-ux/skills/web-X.md`, no `/web/` segment) to match the iOS convention. Files live in the `web/` subfolder; the cross-reference is a platform-agnostic documentation pointer.
+
+- **web-design-system.md** — Anchor: two-tier tokens, Tailwind v4 `@theme`, OKLCH + spring + z-index + disabled tokens, dark mode, forced-colors, shadcn (Radix + `cva`)
+- **web-responsive-patterns.md** — Mobile-first, container queries by default, fluid `clamp()` + `cqi`, intrinsic layout primitives, `svh`/`dvh`, orientation + tablet adaptation
+- **web-wireframe-methodology.md** — Text-based ASCII wireframes, two-viewport rule (375 + 1280 wireframed; landscape/tablet verified), good/flat/decorated examples, canvas carve-out
+- **web-screen-specification.md** — Developer-handoff template: Route Context (incl. PPR), wireframes, server/client islands, per-origin empty + per-category error coverage, a11y intent, component inventory, quality checklist
+- **web-content-hierarchy.md** — Hierarchy precedes wireframing. Four levers (scale/space/position/restraint) + weight; fold, F/Z-pattern, heading semantics; ladders for 7 screen types; scannability checks
+- **web-data-display.md** — Tables/grids/dense lists; surface picker; density modes; tabular figures; sticky headers + frozen column; selection; bulk actions; URL-encoded filters; pagination over infinite-scroll; mobile reflow
+- **web-information-architecture.md** — Navigation as system; URL as UX; per-surface roles; command palette (cmd-K); modal-as-URL via intercepting routes; back-button as contract; IA audit
+- **web-form-patterns.md** — Label-above; blur + submit validation; multi-step as routes; autosave; signed-URL upload; native pickers; toggle vs switch vs checkbox; password discipline; autocomplete attributes
+- **web-empty-error-and-edge-states.md** — Empty taxonomy (5 origins); 7 error categories; 404/500/maintenance as brand moments; recovery patterns; error voice; skeleton matches content after 200ms
+- **web-interaction-patterns.md** — Overlays: modals/sheets/popovers/tooltips/toasts (mobile sheet vs desktop dialog; modal `inert`; modal-as-route); dropdowns; Undo over Confirm; optimistic UI; drag-drop with keyboard alternative
+- **web-accessibility.md** — Design-side a11y. WCAG 2.2 AA floor; token-layer contrast; focus rings; 44×44 touch floor (source of truth); forced colors; pointer cancellation; `<search>` landmark; reduced motion
+- **web-onboarding-flows.md** — Anonymous-first; five-stage motivation curve; auth: Conditional UI passkey → social → magic link → password; cookie consent first; activation event ends onboarding
+- **web-localization-and-i18n.md** — Logical properties; RTL via paired directional icons; full `Intl.*` (DisplayNames/Collator/Segmenter/plurals); `lang` attribute; IME composition; `<bdi>`; ICU MessageFormat; locale URL + `hreflang`
+- **web-marketing-and-conversion-pages.md** — One promise + one CTA; cinematic hero + scrollytelling + video + FAQ; three-tier SaaS-canonical; annual default; honest comparison/trial-end/paywall; LCP/INP/CLS budgets
+- **web-iconography-and-visual-language.md** — Brand-mark vs functional-icon; one icon library + stroke + size; no stock/AI imagery; designed dark-mode logo; brand motion + signature transitions; favicon + PWA + splash
+- **web-emails-and-system-messages.md** — Progressive-enhancement rendering (legacy Outlook tables + modern CSS elsewhere); single column 600px; `react-email` default; `List-Unsubscribe` + BIMI; cross-channel coordination (email/push/SMS/in-app/tab-title)
+
 ## Project Skills
 Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.
 
