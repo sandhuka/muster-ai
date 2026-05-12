@@ -1,23 +1,35 @@
 # Muster
 
-**A multi-agent product team that runs inside Claude Code.**
+**Ship a product. Without a team.**
+
+*Eight AI specialists. Persistent memory. Just Claude Code.*
 
 ![Muster sprint status — PM coordinating multiple agents across a real iOS project](assets/sprint-status.png)
 
-Muster coordinates specialized AI agents — PM, Developer, UI/UX, QA, Content, Marketing, Legal, Research — through persistent markdown files. No external frameworks. No API dependencies. Just Claude Code and the filesystem.
+A real product needs design, code, QA, content, marketing, legal, and research.
+
+You can't hire all of that. You don't have to.
+
+Muster turns Claude Code into a coordinated team of eight AI specialists with persistent memory, quality guardrails, and conversational continuity. Every decision persists. Every sprint plans itself forward. Every specialist remembers the discussion across follow-ups — no re-briefing on every turn, no Claude amnesia between sessions.
+
+Just markdown files. No external frameworks. No API wiring. No subscriptions.
 
 ```
 You (Founder)
      |
      v
-  Open Claude in project   →   Role picker fires (or MUSTER_ROLE env var)
+  Open Claude in project   →   Pick a role at session start
                                        |
                                        v
                               Session bound to ONE role:
                        PM | Dev | UI/UX | QA | Content | Mkt | Legal | Research
 ```
 
-Every Claude session picks one role at start. PM-bound sessions plan and coordinate. Specialist-bound sessions execute and file handoffs. PM reads broad context; each specialist reads only what's relevant to their task. That's the core idea.
+The PM coordinates: plans sprints, makes decisions, cascades context to specialists. Specialists do the domain work in their own session and file handoffs. Status line shows `[muster: <role>]` so you always know which tab is which.
+
+Built and validated on a real iOS app, mid-construction. Not framework theory.
+
+Just open Claude Code. Pick a role. Ship.
 
 ## The problem
 
