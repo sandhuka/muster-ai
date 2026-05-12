@@ -104,8 +104,8 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 6. Add `@<name>` to `muster/CLAUDE.md` Sub-Agent Access line
 7. Create `knowledge-base/agent-context/<name>.md` from template in the project repo
 8. Add `<name>: null` to `knowledge-base/agent-context/.populated` (project-level) AND to `templates/knowledge-base/agent-context/.populated` (framework-level so future projects scaffold with the new agent)
-9. Root Claude (as PM) populates the agent-context file with project-specific content and sets the agent's timestamp in `.populated`
-10. Root Claude mirrors cross-agent dependencies in the Muster brain file (generic relationships only)
+9. PM (in a PM-bound session) populates the agent-context file with project-specific content and sets the agent's timestamp in `.populated`
+10. PM mirrors cross-agent dependencies in the Muster brain file (generic relationships only)
 
 ### Safety Checklist
 
@@ -127,7 +127,7 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 If the agent needs to own a directory (like Research owns `knowledge-base/research/`):
 1. Add a new rule in `muster/CLAUDE.md`
 2. Create an async channel (like `change-log.md`) for PM communication
-3. Add monitoring instruction to `muster/CLAUDE.md` "PM Mode" section
+3. Add monitoring instruction to `muster/CLAUDE.md` "Role Binding" section (or to `templates/.claude/agents/pm.md` "Monitoring duties" if the trigger is PM-only at PM bind time)
 4. Document the boundary in `muster/team/pm/skills/generic/agent-management.md`
 
 ---
@@ -291,7 +291,7 @@ When a change affects how agents structurally operate (not product content, but 
 
 ## System Verification Checklist
 
-Run **once after completing a batch of related framework changes** — not after each individual edit. Root Claude runs this directly.
+Run **once after completing a batch of related framework changes** — not after each individual edit. A PM-bound session runs this directly.
 
 **Layer 1 — Reference integrity**: For every file added, removed, renamed, or whose role changed — grep startup configs, brain files, PM skills, system-guide, and CLAUDE.md. Confirm no stale pointers or orphaned references.
 
@@ -315,14 +315,26 @@ Run **once after completing a batch of related framework changes** — not after
 
 ### Invocation Patterns
 
-Muster supports two specialist invocation patterns. Use the right one for the moment.
+Muster supports three invocation modes. Use the right one for the moment.
 
-- **Option A (PM-mediated)** — Founder asks Root Claude a PM-type question; PM bootstraps the 7 monitoring files (~600 lines), crafts a tailored prompt for the specialist, and reviews the handoff on return. Use for: sprint planning, scope changes, handoff review, cross-agent coordination, decisions requiring product judgment.
-- **Option B (direct)** — Founder reads the next step in `orchestration-queue.md` and invokes the listed specialist with the queue's prompt verbatim. No PM bootstrap. Use for: routine execution within a planned sprint. This is the hot loop — the queue file is literally designed around it.
+- **Mode A (interactive picker)** — Open Claude in the project. The role picker fires (Coordination / Build / Communicate / Validate → role). Pick the role this session needs. Use for: founder-driven workflow, multi-tab sessions, anything attended.
 
-**Default:** Option B for routine execution between handoff-review moments; Option A at planning and review boundaries.
+- **Mode B (env-var bind)** — `MUSTER_ROLE=<role> claude "..."` skips the picker and binds directly. Use for: scripts, power-users with stable role per shell, CI steps with a known role. Set `MUSTER_ROLE=auto` to bind to whatever role the orchestration queue's Next Step lists (parses the `@<role>` prefix). Use `MUSTER_ROLE=auto` for: orchestrator daemons, scheduled runs, autonomous loops with `--dangerously-skip-permissions`.
 
-**Closeout guarantee (both patterns):** specialists run the Pre-Handoff Self-Review Checklist before filing any handoff. Item 9 enforces queue + decision-log update, so Option B stays safe without PM reconciling state after every step. Brain files reference this checklist to make it non-optional regardless of whether the invoking prompt mentions it.
+- **Mode C (subagent)** — From any role-bound session, invoke `Agent({subagent_type: "<role>"})` for parallel work, tool-isolated tasks, or quick cross-role consults. The subagent runs with its own startup config (does NOT fire the picker). Use for: spawning a Developer subagent from a PM tab to do a quick task; same-role parallel work; throwaway cross-role trivia.
+
+**Defaults**:
+- Founder-attended workflow: Mode A. Open one tab per active role; PM tab for planning, specialist tabs for execution.
+- Scripted/CI: Mode B with explicit role.
+- Autonomous orchestration: Mode B with `MUSTER_ROLE=auto`.
+
+**Closeout guarantee (all modes):** specialists run the Pre-Handoff Self-Review Checklist before filing any handoff. Item 9 enforces queue + decision-log update — sessions stay state-consistent without PM reconciling after every step.
+
+**Cross-role consult policy**: when a role-bound session needs input from another role, default to **file-based** via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent (Mode C), OR open a new role-bound tab. Test: if the answer would deserve a `decision-log` entry, use file-based instead. Rationale: conversations are ephemeral, files persist.
+
+**Mid-session role swap**: `/rebind` re-fires the picker mid-session. Use when you bound the wrong role at start, or finished one role's work and want to switch without opening a new tab.
+
+**Status line**: `[muster: <role>]` shows the bound role at the bottom of the terminal. Updates after every bind. `[muster: unbound]` indicates the bind file is missing for this session (shouldn't happen in normal flow).
 
 ### Agent Communication Protocol
 
@@ -398,7 +410,7 @@ Full procedure lives in `team/pm/skills/generic/greenfield-discovery.md` (5 user
 
 **User-facing nomenclature**: Stage 1: Idea share, Stage 2: Market research, Stage 3: Go/no-go decision, Stage 4: Draft review, Stage 5: Sprint 1 plan.
 
-**Entry detection**: PM reads `.populated` at bootstrap. If `onboarded_at` is null AND `agents.pm` is null → first greenfield session, fire welcome via `greenfield-discovery.md`. After Stage 1.3 (idea captured), PM sets `agents.pm` timestamp; subsequent sessions skip the welcome and proceed with normal PM Mode bootstrap.
+**Entry detection**: priority-zero check reads `.populated` at session start. If `onboarded_at` is null AND `agents.pm` is null → first greenfield session, force-bind PM (skip picker), fire welcome via `greenfield-discovery.md`. After Stage 1.3 (idea captured), PM sets `agents.pm` timestamp; subsequent sessions hit the role picker normally.
 
 **High-level flow**:
 1. Stage 1: Founder shares idea → PM seeds `knowledge-base/research/product-brief.md` Founder's Idea section, writes change-log entry (`status: needs-research`), queues Research step. Sets `agents.pm` timestamp.
@@ -428,7 +440,7 @@ Location: `knowledge-base/agent-context/.populated`. Tracks specialist populate 
 - `agents.pm` (greenfield-only signal): null at script init for greenfield. PM sets its own timestamp at Stage 1.3 of greenfield-discovery (after capturing the founder's idea). The transition `null → timestamp` flips routing from "greenfield first session, fire welcome" to "greenfield ongoing, skip welcome". For existing-project, the setup script sets `agents.pm` at init (PM is auto-engaged when adopting an existing codebase).
 - `lock`: held during in-flight populate; 15-min stale threshold.
 - Tracked in git (not gitignored — teammates pulling the repo need the state).
-- PM reads at bootstrap — see CLAUDE.md PM Mode `.populated` triggers.
+- Priority-zero check reads at session start — see CLAUDE.md "Role Binding" → Priority-zero routing for the four routing paths.
 
 #### `.muster-onboarding/` transient-file protocol
 Location: `knowledge-base/.muster-onboarding/`. Gitignored by default (brain-dump may contain sensitive content).

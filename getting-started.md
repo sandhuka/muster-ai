@@ -51,7 +51,9 @@ Then send Claude this first message:
 
 > Let's start Discovery.
 
-**Any first message works** — PM reads `.populated` on the first message it processes, detects greenfield first-session state, and fires the Discovery welcome. The welcome message will ask for your product idea — describe it then, not before. (If you do include the idea in your first message, PM will still capture it correctly, but you'll see the welcome prompt for it first.)
+**Any first message works** — Claude reads `.populated` on the first message it processes, detects greenfield first-session state, and PM is auto-bound (picker is suppressed for the welcome). The Discovery welcome fires and asks for your product idea — describe it then, not before. (If you include the idea in your first message, PM still captures it correctly; you'll just see the welcome prompt for it first.)
+
+**Status line check**: after a moment, the bottom of your terminal should show `[muster: pm]` — confirms PM is bound for this session.
 
 ## What to Expect
 
@@ -84,7 +86,16 @@ If the score recommends CONDITIONAL or NO-GO, don't override casually. Slow-down
 
 ### Steady-state (after Discovery)
 
-From here, you follow the queue directly: open each step in `knowledge-base/orchestration-queue.md`, copy the prompt, and invoke the listed specialist (**Option B — direct**). You only return to Root Claude/PM (**Option A — PM-mediated**) at planning and handoff-review moments: scope changes, sprint retros, reviewing a completed deliverable, or when the queue points back to PM. See `muster/system-guide.md` → Invocation Patterns for the full distinction.
+From here, you follow the orchestration queue. For each step:
+
+1. Open a Claude session — picker fires
+2. Pick the role the queue says is next (e.g., Build → Developer)
+3. Paste the queue's prompt block
+4. The bound role executes the work, files a handoff, promotes the next step
+
+Multi-tab is the canonical pattern: open one tab per role you're actively working with. PM tab for planning and review; specialist tabs for execution. The status line `[muster: <role>]` keeps each tab clearly identified.
+
+Power-user shortcut: `MUSTER_ROLE=<role> claude` skips the picker. `MUSTER_ROLE=auto claude --dangerously-skip-permissions "execute next step"` runs the queue's next step autonomously. See `muster/system-guide.md` → Invocation Patterns for the full distinction between manual, env-var, and autonomous modes.
 
 ---
 
@@ -92,14 +103,16 @@ From here, you follow the queue directly: open each step in `knowledge-base/orch
 
 Think of yourself as the "runner" — PM is the brain, you're the hands.
 
-- **You** make the final calls. You talk to the PM.
-- **Root Claude (PM)** plans sprints, coordinates agents, makes product decisions. You talk to Root Claude directly — it IS the PM.
-- **Specialist agents** do the domain work. You invoke them when the PM tells you to, one at a time or in parallel when tasks are independent.
+- **You** make the final calls. You drive sessions and answer the picker.
+- **PM-bound session** plans sprints, coordinates agents, makes product decisions. Open a Claude session and pick PM (Coordination → PM in the picker).
+- **Specialist-bound sessions** do the domain work. Open a session and pick the role per the orchestration queue. Run multiple in parallel when tasks are independent.
 
 **Where everything lives:**
 - `muster/` — The framework (agent brains, skills, methodology). You don't edit this.
 - `knowledge-base/` — Your project's source of truth (product spec, decisions, sprint tasks, research). PM manages this.
-- `.claude/agents/` — The agent configs that let you invoke `@research`, `@developer`, etc.
+- `.claude/agents/` — Bootloaders for all 8 roles (loaded by the picker on bind, or by `Agent({subagent_type: "<role>"})` for one-shot subagent calls).
+- `.claude/skills/rebind/` — `/rebind` slash command for swapping roles mid-session.
+- `.claude/statusline.sh` — Status-line script showing which role this session is bound to.
 
 ---
 

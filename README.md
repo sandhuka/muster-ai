@@ -1,16 +1,35 @@
 # Muster
 
-**A multi-agent product team that runs inside Claude Code.**
+**Ship a product. Without a team.**
+
+*Eight AI specialists. Persistent memory. Just Claude Code.*
 
 ![Muster sprint status — PM coordinating multiple agents across a real iOS project](assets/sprint-status.png)
 
-Muster coordinates specialized AI agents — PM, Developer, UI/UX, Content, Marketing, Research, Legal, QA — through persistent markdown files. No external frameworks. No API dependencies. Just Claude Code and the filesystem.
+A real product needs design, code, QA, content, marketing, legal, and research.
+
+You can't hire all of that. You don't have to.
+
+Muster turns Claude Code into a coordinated team of eight AI specialists with persistent memory, quality guardrails, and conversational continuity. Every decision persists. Every sprint plans itself forward. Every specialist remembers the discussion across follow-ups — no re-briefing on every turn, no Claude amnesia between sessions.
+
+Just markdown files. No external frameworks. No API wiring. No subscriptions.
 
 ```
-You (Founder) --> Root Claude (PM) --> Dev | UI/UX | Content | Marketing | Legal | QA | Research
+You (Founder)
+     |
+     v
+  Open Claude in project   →   Pick a role at session start
+                                       |
+                                       v
+                              Session bound to ONE role:
+                       PM | Dev | UI/UX | QA | Content | Mkt | Legal | Research
 ```
 
-The PM reads everything. Each specialist reads only what's relevant to their current task. That's the core idea.
+The PM coordinates: plans sprints, makes decisions, cascades context to specialists. Specialists do the domain work in their own session and file handoffs. Status line shows `[muster: <role>]` so you always know which tab is which.
+
+Built and validated on a real iOS app, mid-construction. Not framework theory.
+
+Just open Claude Code. Pick a role. Ship.
 
 ## The problem
 
@@ -44,7 +63,7 @@ cd ~/Desktop/my-project
 claude
 ```
 
-Tell Root Claude your product idea. Claude opens with a brief welcome and walks you through five Discovery stages — idea share, market research, go/no-go decision, draft review, Sprint 1 plan. Total founder time is **~1–2 hours across ~3 sessions** over a day or two.
+When Claude starts in a fresh project, the greenfield welcome fires automatically (no picker — onboarding is PM-driven). Tell Claude your product idea. The welcome walks you through five Discovery stages — idea share, market research, go/no-go decision, draft review, Sprint 1 plan. Total founder time is **~1–2 hours across ~3 sessions** over a day or two.
 
 See [getting-started.md](getting-started.md) for the full walkthrough.
 
@@ -61,22 +80,26 @@ See [adopting-existing-project.md](adopting-existing-project.md) for the full wa
 
 ## How it works
 
-You describe your idea to Root Claude — which is the PM. The PM sends Research to investigate the market, then writes the product spec, plans a sprint, and queues up agent tasks if the idea is viable.
+You describe your idea in the first session — PM is auto-bound for the greenfield welcome. PM sends Research to investigate the market, then writes the product spec, plans a sprint, and queues up agent tasks if the idea is viable.
 
-You invoke agents following the PM's sequence — one at a time, or in parallel across separate terminals when tasks are independent. Each agent reads its filtered context, does the work, files a handoff, and promotes the next step. Repeat until shipped.
+After Discovery, you follow the orchestration queue. For each step, open a Claude session — pick the listed role from the picker (or set `MUSTER_ROLE=<role>` to skip the picker for scripts/automation). Sessions can run in parallel across separate terminals when tasks are independent. Each session reads its filtered context, does the work, files a handoff, and promotes the next step. Repeat until shipped.
+
+The status line shows `[muster: <role>]` so you always know which role this session is bound to. `/rebind` swaps roles mid-session if you picked wrong.
 
 ## Agent roster
 
 | Agent | Role |
 |-------|------|
-| **PM (Root Claude)** | Plans sprints, cascades context, reviews deliverables, makes decisions |
+| **PM** | Plans sprints, cascades context, reviews deliverables, makes decisions |
 | **Research** | Market analysis, competitive teardowns, user insights, product validation |
-| **Developer** | Production code, architecture, testing — iOS, backend, and generic skills |
+| **Developer** | Production code, architecture, testing — iOS, backend, web, and generic skills |
 | **UI/UX** | Wireframes, user flows, component specs, design tokens |
+| **QA** | Test strategy, bug tracking, release validation |
 | **Content** | In-app copy, blog, email, store listings, help docs |
 | **Marketing** | Growth strategy, campaigns, user acquisition, analytics |
 | **Legal** | Compliance, privacy, terms of service, IP protection (guidance, not legal advice) |
-| **QA** | Test strategy, bug tracking, release validation |
+
+All eight are peer roles bound the same way (picker or `MUSTER_ROLE` env var). PM is special only in what it owns (knowledge-base writes), not in how sessions bind to it.
 
 ## How is this different?
 
@@ -95,14 +118,19 @@ Muster uses a two-repo model.
 
 ```
 my-project/
-├── .claude/agents/        # Agent startup configs (invoke with @developer, @research, ...)
-├── CLAUDE.md              # Product info + project-specific rules
+├── .claude/
+│   ├── agents/            # Bootloaders for all 8 roles (invoke via picker or @<role>)
+│   ├── skills/rebind/     # /rebind slash command (mid-session role swap)
+│   ├── statusline.sh      # Status-line script (shows [muster: <role>])
+│   └── settings.json      # Wires statusline + Claude Code config
+├── CLAUDE.md              # Product info + project-specific rules + bootstrap routing
 ├── muster/                # <-- Git submodule (this repo)
 ├── knowledge-base/
 │   ├── agent-context/     # Per-agent filtered product context (PM writes, agents read)
 │   ├── product-spec.md
 │   ├── orchestration-queue.md
-│   └── agent-requests.md
+│   ├── agent-requests.md
+│   └── .muster-bind-log   # Audit trail of role binds per session
 └── src/                   # Your code
 ```
 
@@ -116,6 +144,7 @@ my-project/
 | [adopting-existing-project.md](adopting-existing-project.md) | Reverse-discovery onboarding for projects with existing code | Adopting Muster into an existing codebase |
 | [architecture-and-design.md](architecture-and-design.md) | Architecture deep dive — data flow, context management, agent communication | Evaluating whether to adopt Muster |
 | [system-guide.md](system-guide.md) | Templates, extensibility, verification checklist | Adding agents, skills, or modifying the framework |
+| [MIGRATING-V2-TO-V3.md](MIGRATING-V2-TO-V3.md) | Upgrade an existing v2 project to v3 (role-picker, status line, /rebind) | Adopting v3 from an existing v2 project |
 | [MIGRATING-V1-TO-V2.md](MIGRATING-V1-TO-V2.md) | One-shot migration for projects set up before v2 | A `muster/` update halted with "Pre-v2 Muster setup detected" |
 
 ## Stay updated

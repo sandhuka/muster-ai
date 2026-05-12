@@ -6,7 +6,7 @@ Procedural methodology for PM to conduct existing-project onboarding — the rev
 ## When This Skill Runs
 
 PM reads this skill when:
-1. At session start, PM reads `knowledge-base/agent-context/.populated` (per Root Claude bootstrap behavior) and finds it has **any `null` entries**.
+1. At session start, PM reads `knowledge-base/agent-context/.populated` (per the priority-zero check in muster CLAUDE.md) and finds it has **any `null` entries**.
 2. Before producing any user-facing output, PM must have this skill loaded. This is mandatory — see CLAUDE.md bootstrap behavior for the rule.
 
 **Missing-skill fallback**: if this file is missing or unreadable when PM attempts the read, PM halts with:
@@ -73,11 +73,11 @@ Deliver this verbatim (substitute the product name if the founder has already id
 
 > # ✨ Welcome — let's set up your AI team
 >
-> Over the next ~2 hours, we're going to turn your project into a place where **a coordinated team of specialist AI agents** can actually work together — knowing your product, your code, and your decisions, sprint after sprint.
+> Over the next ~2 hours, we're going to turn your project into a place where **a coordinated team of AI agents** can actually work together — knowing your product, your code, and your decisions, sprint after sprint. I'm Claude, currently bound to the **PM** role for this session.
 >
 > ## What you're getting
 >
-> Seven specialists — **Developer, UI/UX, QA, Content, Marketing, Legal, Research** — coordinated by me as your product manager. Every decision logged. Every sprint planned. No re-explaining your product to a fresh AI chat ever again.
+> An eight-role AI team: **PM** (me — coordinator), **Developer**, **UI/UX**, **QA**, **Content**, **Marketing**, **Legal**, **Research**. Every decision logged. Every sprint planned. No re-explaining your product to a fresh AI chat ever again.
 >
 > **Why it's worth the next 2 hours:** every sprint after this one is fast. The agents already know your product. You spend your time shipping, not re-onboarding.
 >
@@ -234,7 +234,7 @@ Framing is deliberate — claims to **verify or correct**, not evidence to find.
 
 ### 5.2 Invoke Developer
 
-Invoke via Task tool with `subagent_type="developer"`. The audit is never performed inline by Root Claude — bootstrap mode's tool restrictions depend on this invocation pattern.
+Invoke via Task tool with `subagent_type="developer"`. The audit is never performed inline by PM — bootstrap mode's tool restrictions depend on this invocation pattern.
 
 Wait for Developer's audit to complete (~10-25 min LLM time). Developer writes to `.muster-onboarding/architecture-audit-notes.md` (and optionally `design-system-reference.md` starter). Bootstrap mode tool restrictions keep the audit read-only.
 

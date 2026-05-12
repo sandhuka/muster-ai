@@ -240,6 +240,62 @@ if ! state_has_step "scaffold_templates"; then
     mkdir -p .claude/agents
     cp muster/templates/.claude/agents/*.md .claude/agents/
 
+    # Status-line script (Phase 6 — bound-role indicator)
+    # Priority: project-level > user-level > muster default
+    HAS_USER_STATUSLINE=0
+    if [ -f "$HOME/.claude/settings.json" ] && grep -q '"statusLine"' "$HOME/.claude/settings.json" 2>/dev/null; then
+        HAS_USER_STATUSLINE=1
+    fi
+
+    if [ -f ".claude/statusline.sh" ]; then
+        if cmp -s ".claude/statusline.sh" "muster/templates/.claude/statusline.sh"; then
+            :
+        else
+            echo ""
+            echo "  ⚠  .claude/statusline.sh already exists with custom content — preserving."
+            echo "    To get the muster bound-role indicator alongside your existing output:"
+            echo "      JSON_INPUT=\$(cat)"
+            echo "      MUSTER=\$(echo \"\$JSON_INPUT\" | bash muster/scripts/muster-bound-role.sh)"
+            echo "      echo \"\$YOUR_OUTPUT [muster: \$MUSTER]\""
+            echo ""
+        fi
+    elif [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
+        echo ""
+        echo "  ⚠  Detected user-level statusline at ~/.claude/settings.json."
+        echo "    NOT creating project-level .claude/statusline.sh (would override your user-level)."
+        echo "    To get muster bound-role indicator, add to your user-level statusline:"
+        echo "      JSON_INPUT=\$(cat)"
+        echo "      if [ -f \"muster/scripts/muster-bound-role.sh\" ]; then"
+        echo "        MUSTER=\$(echo \"\$JSON_INPUT\" | bash muster/scripts/muster-bound-role.sh)"
+        echo "        echo \"\$YOUR_OUTPUT [muster: \$MUSTER]\""
+        echo "      else"
+        echo "        echo \"\$YOUR_OUTPUT\""
+        echo "      fi"
+        echo ""
+    else
+        cp muster/templates/.claude/statusline.sh .claude/statusline.sh
+        chmod +x .claude/statusline.sh
+    fi
+
+    # settings.json — only install project-level if no user-level statusline AND no project-level
+    if [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
+        :
+    elif [ -f ".claude/settings.json" ]; then
+        if grep -q '"statusLine"' .claude/settings.json; then
+            :
+        else
+            echo "  ⚠  .claude/settings.json exists without statusLine — please add statusLine config manually from muster/templates/.claude/settings.json"
+        fi
+    else
+        cp muster/templates/.claude/settings.json .claude/settings.json
+    fi
+
+    # Slash commands / skills (Phase 7 — /rebind for mid-session role change)
+    if [ -d "muster/templates/.claude/skills" ]; then
+        mkdir -p .claude/skills
+        cp -r muster/templates/.claude/skills/* .claude/skills/
+    fi
+
     if [ ! -f "CLAUDE.md" ]; then
         cp muster/templates/CLAUDE.md CLAUDE.md
     fi
@@ -248,10 +304,10 @@ if ! state_has_step "scaffold_templates"; then
 
     find . -name ".DS_Store" -delete 2>/dev/null || true
 
-    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders"
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line + skills"
     write_state create_project_dir submodule_add scaffold_templates
 else
-    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders"
+    substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line + skills"
 fi
 
 # ---------- step 1.4: initialize_populated_file ----------
@@ -291,6 +347,8 @@ if ! state_has_step "gitignore_updated"; then
         "*.swo"
         "*~"
         ".muster-setup-state.json"
+        ".claude/.muster-bound-role.*"
+        ".claude/.muster-last-role"
     )
 
     touch .gitignore
