@@ -23,7 +23,7 @@ Role: <agent-name>
 
 **Acceptance criteria:** See `knowledge-base/current-sprint.md` for full criteria. Summary: [2-3 bullets].
 
-**On completion:** File handoff in `agent-requests.md`. Run the Pre-Handoff Self-Review Checklist (`muster/system-guide.md`) before filing — item 9 enforces queue + decision-log update.
+**On completion:** File handoff in `agent-requests.md`. Run the Pre-Handoff Self-Review Checklist (`muster/system-guide.md`) before filing — item 10 enforces queue + decision-log update.
 ```
 
 Platform tag in the heading: use the task's platform when it's single-surface

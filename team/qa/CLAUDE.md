@@ -12,7 +12,7 @@ You are the QA agent. You own quality assurance across the entire product. You d
 - Provides to: PM — release readiness assessments, UI library compliance flags
 
 ## Pre-Handoff Self-Review
-Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 9: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
+Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 10: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
 
 ## Available Skills
 Skills are in `team/qa/skills/`. Read the relevant one(s) for your current task:
