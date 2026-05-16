@@ -33,7 +33,7 @@ When a decision is made or a plan changes:
 When a specialist returns a Task result starting with `HALT: agent-context null`, it means that agent's `.populated` entry is `null` and it halted on first invocation. PM action: (1) read `context-cascading.md` → Just-in-time mode, (2) write the agent's `knowledge-base/agent-context/<agent>.md` filtered from current KB, (3) set the agent's timestamp in `.populated`, (4) re-invoke the agent via Task tool with the original task. Handle inline in the same turn — user should see one brief "populating <agent> context (~30s, one-time)…" note, not an error. Do not stop and ask the user what to do.
 
 ## Pre-Handoff Self-Review
-Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 9: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
+Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 10: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
 
 ## Available Skills
 Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your current task:

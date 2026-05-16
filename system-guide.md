@@ -328,7 +328,7 @@ Muster supports three invocation modes. Use the right one for the moment.
 - Scripted/CI: Mode B with explicit role.
 - Autonomous orchestration: Mode B with `MUSTER_ROLE=auto`.
 
-**Closeout guarantee (all modes):** specialists run the Pre-Handoff Self-Review Checklist before filing any handoff. Item 9 enforces queue + decision-log update — sessions stay state-consistent without PM reconciling after every step.
+**Closeout guarantee (all modes):** specialists run the Pre-Handoff Self-Review Checklist before filing any handoff. Item 10 enforces queue + decision-log update — sessions stay state-consistent without PM reconciling after every step.
 
 **Cross-role consult policy**: when a role-bound session needs input from another role, default to **file-based** via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent (Mode C), OR open a new role-bound tab. Test: if the answer would deserve a `decision-log` entry, use file-based instead. Rationale: conversations are ephemeral, files persist.
 
@@ -393,8 +393,9 @@ Before filing a handoff, the producing agent MUST run this self-review:
 5. **Foundational assumptions**: Read `foundational-assumptions.md`. Verify consistency with active assumptions. Use EXACT terminology — flag any new terms not in assumptions or product spec.
 6. **Open questions**: List unresolved questions explicitly in the revision log.
 7. **Missing assets**: List assets the agent cannot produce (logos, illustrations) as founder dependencies.
-8. **Durability discipline** (Rule 15): Strip bug IDs, handoff IDs, session-date stamps, sprint / wave references, "previously / now" framings, and specific-agent mentions from durable artifacts (source code, product spec, design specs, brand docs, architecture, test strategy, foundational assumptions, agent-skills). That history belongs in `agent-requests.md`, `orchestration-queue.md`, `current-sprint.md`, `decision-log.md`, and git commits.
-9. **Session closeout**: Update `orchestration-queue.md` — mark your step Done (one-line summary; trim oldest if Done exceeds 10) and promote the next Upcoming step to Next Step. Append any resolved decisions to `decision-log.md`. If your handoff needs review before the next step proceeds, add an "Awaiting review" note to the Done entry.
+8. **Test failure discipline**: If a test failure surfaces in your run, do NOT label it "flaky" or "pre-existing" without a root-cause look. A failure may be tagged "flaky" exactly once across handoffs; on its second appearance, the next agent that observes it MUST either root-cause it, quarantine it with a filed bug ID, or escalate to PM. Copy-pasting prior handoffs' "flaky test, scoped to QA regression" language forward across multiple sessions is a self-review violation — it masks deterministic bugs under the cover of a false story.
+9. **Durability discipline** (Rule 15): Strip bug IDs, handoff IDs, session-date stamps, sprint / wave references, "previously / now" framings, and specific-agent mentions from durable artifacts (source code, product spec, design specs, brand docs, architecture, test strategy, foundational assumptions, agent-skills). That history belongs in `agent-requests.md`, `orchestration-queue.md`, `current-sprint.md`, `decision-log.md`, and git commits.
+10. **Session closeout**: Update `orchestration-queue.md` — mark your step Done (one-line summary; trim oldest if Done exceeds 10) and promote the next Upcoming step to Next Step. Append any resolved decisions to `decision-log.md`. If your handoff needs review before the next step proceeds, add an "Awaiting review" note to the Done entry.
 
 If any check fails, fix before filing. Log what self-review caught in the revision log.
 
