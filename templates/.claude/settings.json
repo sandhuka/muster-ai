@@ -3,5 +3,12 @@
     "type": "command",
     "command": ".claude/statusline.sh",
     "padding": 1
+  },
+  "permissions": {
+    "allow": [
+      "Bash(bash muster/scripts/muster-housekeeping.sh)",
+      "Bash(bash muster/scripts/muster-bind.sh:*)",
+      "Bash(echo \"${MUSTER_ROLE:-UNSET}\")"
+    ]
   }
 }
