@@ -23,7 +23,7 @@ Agent brain files contain NO product-specific content. Product context is provid
 Per-project filtered context for each agent. PM-managed. Standard sections:
 - **Product Context**: Filtered product information relevant to this agent's role. Includes key references as bullet points at the end.
 - **Project Skills**: Index of product-specific skill files in `knowledge-base/agent-skills/<agent>/`.
-- **Current Tasks**: Full sprint task specs (deliverable, priority, effort, dependencies, acceptance criteria, key skills, key refs). Tasks must be self-contained.
+- **Current Tasks**: Full sprint task specs (deliverable, priority, effort, dependencies, acceptance criteria, key refs). Tasks must be self-contained. Do NOT inline a per-task skill list — the agent's brain file already lists every available skill with descriptions, organized by platform subfolder. If a task needs unusual methodology, PM calls out the specific skill in the task description prose.
 - **Agent-Specific Context** (optional): Agent-owned notes
 
 Size varies by role:
@@ -388,7 +388,7 @@ Before filing a handoff, the producing agent MUST run this self-review:
 
 1. **Internal consistency**: Grep the deliverable for contradictions. Pay attention to assumptions that appear in multiple sections.
 2. **Acceptance criteria**: Re-read criteria from `current-sprint.md`. Verify each is met. Document ambiguous interpretations in the revision log.
-3. **Cross-references**: Spot-check at least 3 references to other knowledge-base files (file exists, section exists, content matches).
+3. **Cross-references**: Spot-check at least 3 references to other knowledge-base files (file exists, section exists, content matches). For skill paths specifically: any `team/<role>/skills/...` path cited in this handoff (in prose, agent-context updates, or cascade docs) must resolve on disk — skills live under platform subfolders (`skills/{generic,ios,backend,android,web}/`), so a flat `skills/<name>.md` path is stale.
 4. **Feature ID validation**: Grep `product-spec.md` for every feature ID referenced. Every ID must exist — fix or remove phantoms.
 5. **Foundational assumptions**: Read `foundational-assumptions.md`. Verify consistency with active assumptions. Use EXACT terminology — flag any new terms not in assumptions or product spec.
 6. **Open questions**: List unresolved questions explicitly in the revision log.

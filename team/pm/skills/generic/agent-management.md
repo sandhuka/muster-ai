@@ -24,13 +24,13 @@ This skill defines how the PM updates agent-context files (`knowledge-base/agent
   - Deliverable: [specific output]
   - Dependencies: [agent-name] must complete [thing] first
   - Acceptance criteria: [2-3 bullets]
-  - Key skills: [muster/team/<agent>/skills/ paths]
   - Key refs: [knowledge-base/ paths]
 **Rules:**
 - Keep to 3-5 active tasks max per agent
 - Move completed tasks to a "Recently Completed" subsection (keep last 5)
 - Archive older completed tasks to decision-log.md
 - Tasks must be self-contained — an agent should be able to work from just its agent-context file without reading current-sprint.md
+- Do NOT inline skill paths per task. The agent's brain file (`team/<role>/CLAUDE.md`) already lists every available skill with a one-line description, organized by platform subfolder (`skills/{generic,ios,backend,android,web}/`) — agents self-select per task from that index. If a task involves unusual methodology an agent might otherwise miss, call out the specific skill in the task description prose (e.g., "involves screen-reader behavior — consult `team/qa/skills/ios/accessibility-testing.md`"). That's the exception; default is no skill list. Inlining a per-task skill subset duplicates the brain-file index with strictly less information and ages poorly when skills reorganize.
 
 ### Cross-Agent Dependencies
 Cross-agent dependencies are maintained in agent **brain files** (`muster/team/<agent>/CLAUDE.md`), not in agent-context files. These describe generic role relationships (e.g., "Developer depends on UI/UX for design specs") that apply to any project.

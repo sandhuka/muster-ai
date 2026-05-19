@@ -15,8 +15,9 @@
   - **Acceptance criteria**:
     - [Criterion 1]
     - [Criterion 2]
-  - **Key skills**: [Relevant skill files]
   - **Key refs**: [Knowledge-base files to read]
+
+Do NOT include a per-task skill list. The agent's brain file (`team/<role>/CLAUDE.md`) holds the complete skill index with one-line descriptions organized by platform subfolder — agents self-select per task. If a task needs unusual methodology, call out the specific skill in the task description prose.
 
 Platform field guidance:
 - Use a specific value (ios, android, web, backend, desktop, cli) when the task touches that surface only
