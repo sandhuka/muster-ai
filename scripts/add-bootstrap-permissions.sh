@@ -6,6 +6,16 @@
 # of inlining those commands, and adds the matching pre-approval entries to
 # .claude/settings.json so they fire without permission prompts.
 #
+# Settings.json handling (three cases):
+#   1. Project-level .claude/settings.json exists      → merge permissions in place
+#   2. No project-level, user-level has content        → print manual-merge
+#                                                        instructions for user-level
+#                                                        (creating project-level
+#                                                        would silently override
+#                                                        user-level config)
+#   3. Neither exists                                  → create project-level from
+#                                                        template
+#
 # Idempotent. Re-running is a no-op if already applied.
 #
 # Usage:
@@ -135,16 +145,19 @@ NEW_ENTRIES='[
   "Bash(echo \"${MUSTER_ROLE:-UNSET}\")"
 ]'
 
-if [ ! -f ".claude/settings.json" ]; then
-    if [ "$DRY_RUN" -eq 1 ]; then
-        ok "Would create .claude/settings.json with permissions block + statusLine"
-    else
-        # No settings.json at all — copy template (which now has both statusLine and permissions)
-        cp muster/templates/.claude/settings.json .claude/settings.json
-        ok "Created .claude/settings.json from template"
-    fi
-else
-    # Check if all 3 entries already present
+USER_SETTINGS="$HOME/.claude/settings.json"
+
+# Detect what exists
+PROJECT_EXISTS=0
+[ -f ".claude/settings.json" ] && PROJECT_EXISTS=1
+
+USER_KEYS=0
+if [ -f "$USER_SETTINGS" ]; then
+    USER_KEYS=$(jq 'length' "$USER_SETTINGS" 2>/dev/null || echo 0)
+fi
+
+if [ "$PROJECT_EXISTS" -eq 1 ]; then
+    # Case 1: project-level exists — merge in place (preserves any existing fields)
     MISSING=$(jq --argjson new "$NEW_ENTRIES" '
         ($new - (.permissions.allow // [])) | length
     ' .claude/settings.json)
@@ -153,7 +166,7 @@ else
         skip ".claude/settings.json permissions" "all 3 entries already present"
     else
         if [ "$DRY_RUN" -eq 1 ]; then
-            ok "Would add $MISSING permission entry/entries to .claude/settings.json"
+            ok "Would add $MISSING permission entry/entries to .claude/settings.json (project-level)"
         else
             TMPFILE=$(mktemp)
             jq --argjson new "$NEW_ENTRIES" '
@@ -164,12 +177,65 @@ else
             ok "Added $MISSING permission entry/entries to .claude/settings.json"
         fi
     fi
+elif [ "$USER_KEYS" -gt 0 ]; then
+    # Case 2: no project-level, user-level has content — instruct manual merge
+    # (creating project-level from template would silently override user-level
+    # statusline, model, theme, plugins, etc., since project-level wins)
+    USER_MISSING=$(jq --argjson new "$NEW_ENTRIES" '
+        ($new - (.permissions.allow // [])) | length
+    ' "$USER_SETTINGS")
+
+    if [ "$USER_MISSING" = "0" ]; then
+        skip "project-level skipped" "user-level $USER_SETTINGS already has all 3 entries"
+    else
+        STEP2_DEFERRED=1
+        say ""
+        warn "Project-level .claude/settings.json does not exist."
+        warn "User-level $USER_SETTINGS has $USER_KEYS top-level keys — creating a"
+        warn "project-level file from the template would override your user-level"
+        warn "config (statusline, model, theme, plugins, etc.) for this project."
+        say ""
+        say "${BOLD}Manual step:${RESET} add the following $USER_MISSING entry/entries to your"
+        say "user-level settings file ($USER_SETTINGS) inside the permissions.allow"
+        say "array (create the permissions section if it doesn't exist):"
+        say ""
+        say '  "Bash(bash muster/scripts/muster-housekeeping.sh)",'
+        say '  "Bash(bash muster/scripts/muster-bind.sh:*)",'
+        say '  "Bash(echo \"${MUSTER_ROLE:-UNSET}\")"'
+        say ""
+        say "Paths are project-relative — these only match when CWD is inside a"
+        say "muster project. Adding at user level means every muster project you"
+        say "adopt gets these pre-approvals automatically; no per-project migration."
+        say ""
+        if [ "$DRY_RUN" -eq 1 ]; then
+            ok "Would print user-level merge instructions (above)"
+        else
+            warn "Step 2 deferred — apply the manual step above"
+        fi
+    fi
+else
+    # Case 3: neither exists — safe to create project-level from template
+    if [ "$DRY_RUN" -eq 1 ]; then
+        ok "Would create .claude/settings.json with permissions block + statusLine"
+    else
+        cp muster/templates/.claude/settings.json .claude/settings.json
+        ok "Created .claude/settings.json from template"
+    fi
 fi
 
 # ---------- done ----------
 say ""
 if [ "$DRY_RUN" -eq 1 ]; then
     say "${BOLD}Dry run complete.${RESET} Re-run without --dry-run to apply."
+elif [ "${STEP2_DEFERRED:-0}" -eq 1 ]; then
+    say "${YELLOW}${BOLD}Partial:${RESET} CLAUDE.md updated, but settings.json step needs your manual edit (above)."
+    say "Permission prompts will continue to fire until you add the 3 entries to your user-level settings."
+    say ""
+    say "Commit the CLAUDE.md change when ready:"
+    say "  git add CLAUDE.md"
+    say "  git commit -m \"enable scripted bootstrap (CLAUDE.md side)\""
+    say ""
+    say "After adding the entries to $USER_SETTINGS, re-run this script to verify."
 else
     say "${GREEN}${BOLD}Done.${RESET} Bootstrap permission prompts will no longer fire on session start."
     say ""
