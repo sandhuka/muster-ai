@@ -3,6 +3,8 @@
 
 Then run session-start housekeeping: `bash muster/scripts/muster-housekeeping.sh` (idempotent — prunes stale bind files >1 day old, rotates bind log if >500 lines). Skip if the script is missing (uninitialized project — routing below will halt).
 
+**Each bootstrap Bash call must be a separate tool call** — do not chain with `&&` or `;` (housekeeping, env-var check, and bind script each match their own pre-approval pattern; chains don't match).
+
 Route on `.populated` (JSON: `onboarded_at`, `onboarding_complete_at`, `agents.<name>` — each timestamp-or-null):
 - `onboarded_at` is a timestamp AND `onboarding_complete_at` is null → **existing-project onboarding active**. Bind PM via Bash: `bash muster/scripts/muster-bind.sh pm onboarding` (writes bind file, appends bind log). Then read `muster/team/pm/skills/generic/reverse-discovery.md` and run it (Phase 1 first). No picker. Do NOT load `.claude/agents/pm.md` — onboarding is self-contained in the discovery skill.
 - `onboarded_at` is null AND `agents.pm` is null → **greenfield first session**. Bind PM via Bash: `bash muster/scripts/muster-bind.sh pm onboarding` (writes bind file, appends bind log). Then read `muster/team/pm/skills/generic/greenfield-discovery.md` and fire Stage 1 welcome. No picker. Do NOT load `.claude/agents/pm.md` — the discovery skill drives PM behavior through Stage 1.3.
