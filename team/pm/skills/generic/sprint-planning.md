@@ -106,6 +106,28 @@ When adding a bug-fix wave to a sprint, structure it based on which bug types ar
 - **Visual/Copy bugs present**: Multi-step wave — UI/UX and/or Content first → PM review gate → Developer fix → QA verify
 - **Mixed types**: Combine into one wave with ordered steps — upstream agents first (UI/UX, Content), then Developer handles all fix types in one session, then QA verifies everything
 
+## Wave Gates (Autonomous Sprint Runs)
+
+When a sprint runs unattended (`muster/scripts/muster-sprint-run.sh`), the autonomous unit is a **wave, not the whole sprint**: the loop runs a wave, the founder reviews at the wave boundary, then the loop resumes into the next wave. Worst-case unwind is one wave, never a sprint. Two containment layers — mechanical gates inside a wave, human gates between waves — and **both ride on the existing `Role: halt` signal**; planning conventions are all that's new (no driver changes, no new queue primitive).
+
+### Wave sizing
+Size a wave as the largest run of steps whose output can be verified in one review pass. Keep waves small enough that one bad wave is cheap to discard. A natural wave boundary is where the surface being built changes (logic → UI) or where a deliverable needs human eyes before later steps build on it.
+
+### Conditional gate flag (the autonomy dial)
+Not every wave needs a human gate. At planning, flag each wave: *does it produce something only a human can verify?*
+- **Backend / logic wave** → covered by automated tests → **no gate step; the loop flows straight through.**
+- **UI / behavioral wave** → needs human eyes → **insert a gate step at its end.**
+A conditional gate is therefore just the presence or absence of a gate step — zero new machinery. As automated testing improves, fewer waves qualify for a human gate and autonomy grows.
+
+### Gate-step insertion convention
+For each wave needing human verification, insert a **wave-gate step** at its end:
+- A `Role: halt` step with a recognizable title (e.g., `### [DATE] Wave N Gate — founder review`). The loop already stops on `Role: halt`.
+- Its block points to the build and to `knowledge-base/wave-review.md`, where PM writes the human-only verification checklist (Output) and the founder writes the verdict (Input). The loop does not parse `wave-review.md`; PM reads it on resume.
+- Resume after a gate is **not** a blind re-run (a mechanical `Role: halt` can't self-clear): the founder writes their verdict to `wave-review.md`, then runs `muster/scripts/muster-sprint-resume.sh` **from inside the sprint worktree** (it operates on the CWD's queue and `wave-review.md`; the wrong tree processes the wrong files), which has PM process the verdict (insert a fix step per bug, or clear the gate and promote the next wave's first step if approved) and then re-enters the loop.
+
+### Mechanical gate — halt on red build / failing tests
+Agents must **not advance the queue past a red build or failing tests** — they set `Role: halt` instead (the hard-stop form of test-failure discipline, self-review item 8, for autonomous runs). This contains mechanical compounding on every wave, gated or not. Halt-on-red is the rule; an autonomous fix-loop is deliberately not used.
+
 ## Sprint Planning Principles
 - **Sequence before assigning.** Never assign tasks without first mapping dependencies. An agent with three tasks that all depend on another agent's unfinished work has zero effective tasks.
 - **The solo founder constraint is a hard constraint, not a preference.** Plan as if parallelism is impossible, because it is. Sequential batching by domain area reduces context-switching cost for the founder.

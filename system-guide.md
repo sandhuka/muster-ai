@@ -355,6 +355,12 @@ A non-empty Next Step block with no `Role:` line defaults to `pm` (PM steps may 
 
 **Resume is free.** After answering a parked blocker (or clearing the condition that stopped the loop), re-run the driver in the same worktree — file state makes it continue from where it stopped. No resume flag.
 
+**Wave gates** make the autonomous unit a *wave* rather than the whole sprint, so a bad wave is contained instead of compounding across a sprint. They ride entirely on existing mechanics — `muster-sprint-run.sh` does not change:
+- A wave gate is a **planned `Role: halt` step** PM inserts at the end of a wave that needs human verification (UI/behavioral waves; logic waves covered by tests flow straight through). Its block points to the build and to `knowledge-base/wave-review.md`.
+- **`wave-review.md`** (template in `templates/knowledge-base/`; PM-owned; tier-2, read on demand) is the file-mediated I/O contract: PM writes the human-only verification checklist (Output) at the gate; the founder writes the verdict (Input). The loop never parses it — PM reads it on resume. This is the seam a future remote/mobile feedback bridge plugs into.
+- A mechanical `Role: halt` can't self-clear, so resume across a gate uses **`muster/scripts/muster-sprint-resume.sh`**, run **from inside the sprint worktree** (it acts on the CWD's queue and `wave-review.md`; it carries the same Tier-1 worktree guard as the driver): it has PM process the founder's verdict (insert a fix step per bug, or clear the gate and promote the next wave on approval — if no verdict is present yet it leaves the gate in place), then re-enters the loop. Each resume restarts the loop with a fresh step counter, so `MAX_STEPS` naturally scopes per wave-segment.
+- **Mechanical inside-wave gate:** agents must halt (set `Role: halt`) rather than advance the queue past a red build or failing tests — see `team/pm/skills/generic/sprint-planning.md` → Wave Gates and the halting set in `decision-making.md`.
+
 ### Agent Communication Protocol
 
 Agents communicate via `knowledge-base/agent-requests.md` using two entry types. Format templates also live as HTML comments in the file itself.
