@@ -23,6 +23,11 @@
 **Revision log:**
 - [DATE]: Filed.
 
+**Observations** (optional — items NOT tied to deliverable acceptance; omit when none):
+- OBS-NNN — [title]   Severity: low | med | high
+  Evidence: [what was seen; file:line where possible]
+  Suggested action: [1 sentence, or "PM decides"]
+
 END TEMPLATES -->
 
 ## Active Requests
