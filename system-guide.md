@@ -336,6 +336,25 @@ Muster supports three invocation modes. Use the right one for the moment.
 
 **Status line**: `[muster: <role>]` shows the bound role at the bottom of the terminal. Updates after every bind. `[muster: unbound]` indicates the bind file is missing for this session (shouldn't happen in normal flow).
 
+### Autonomous Sprint Execution
+
+`muster/scripts/muster-sprint-run.sh` walks the orchestration queue to completion unattended — the machine middle of a sprint whose bookends stay human (plan + approve the queue at the start; review the branch diff and `## Founder Decisions` at the end). It is **Mode B with `MUSTER_ROLE=auto` run in a loop**: each iteration is a fresh `claude -p` process that binds the role named in the queue's Next Step, does the work, files its handoff, and **advances the queue itself** (Pre-Handoff Self-Review item 10). Fresh-process-per-step is deliberate — it keeps every step's context window bounded; do not warm or reuse sessions across steps.
+
+The driver only **reads** the queue and honors stop signals — it never writes the queue. It stops on any of **four conditions plus a hard cap**:
+1. **Next Step empty** (whitespace-only block) → sprint complete.
+2. **`Role: halt`** → an agent hit a hard block only the founder can resolve (it also wrote the question to `## Founder Decisions`). There is no checkbox convention; `Role: halt` is the signal.
+3. **Next Step unchanged** after a step → the agent didn't advance the queue (stuck / failed). This is also the safety net for an agent that forgets to advance.
+4. **Non-zero exit** from `claude` → stop for the founder.
+- **`MAX_STEPS`** (default 30, env-overridable) is a cost circuit-breaker.
+
+A non-empty Next Step block with no `Role:` line defaults to `pm` (PM steps may omit the marker); only a whitespace-only block means "complete."
+
+**Handoff-integrity lint** (`muster/scripts/muster-lint-handoff.sh`, called at the top of each iteration): the most-recent `## Done` entry's `HO-NNN` references must already be filed in `agent-requests.md`. A dangling reference (Done entry advanced, handoff never filed) **stops** the loop — it does not auto-file. Zero-padding is normalized (`HO-37` ≡ `HO-037`); all referenced IDs are checked; Done entries with no HO reference (PM / coordination steps) are skipped.
+
+**Worktree only — never the main checkout.** Running `--dangerously-skip-permissions` unattended on the primary tree is irreversible, so the driver refuses to start there unless `MUSTER_SPRINT_ALLOW_PRIMARY=1` is set. Use `muster/scripts/muster-sprint-sandbox.sh`, which creates an isolated worktree on a fresh `sprint/auto-*` branch, runs the loop there, and prints review/merge/discard commands. (Manual equivalent: `git worktree add ../<proj>-sprint -b sprint/auto-<stamp>`, then run the driver inside it.)
+
+**Resume is free.** After answering a parked blocker (or clearing the condition that stopped the loop), re-run the driver in the same worktree — file state makes it continue from where it stopped. No resume flag.
+
 ### Agent Communication Protocol
 
 Agents communicate via `knowledge-base/agent-requests.md` using two entry types. Format templates also live as HTML comments in the file itself.
@@ -395,7 +414,7 @@ Before filing a handoff, the producing agent MUST run this self-review:
 7. **Missing assets**: List assets the agent cannot produce (logos, illustrations) as founder dependencies.
 8. **Test failure discipline**: If a test failure surfaces in your run, do NOT label it "flaky" or "pre-existing" without a root-cause look. A failure may be tagged "flaky" exactly once across handoffs; on its second appearance, the next agent that observes it MUST either root-cause it, quarantine it with a filed bug ID, or escalate to PM. Copy-pasting prior handoffs' "flaky test, scoped to QA regression" language forward across multiple sessions is a self-review violation — it masks deterministic bugs under the cover of a false story.
 9. **Durability discipline** (Rule 15): Strip bug IDs, handoff IDs, session-date stamps, sprint / wave references, "previously / now" framings, and specific-agent mentions from durable artifacts (source code, product spec, design specs, brand docs, architecture, test strategy, foundational assumptions, agent-skills). That history belongs in `agent-requests.md`, `orchestration-queue.md`, `current-sprint.md`, `decision-log.md`, and git commits.
-10. **Session closeout**: Update `orchestration-queue.md` — mark your step Done (one-line summary; trim oldest if Done exceeds 10) and promote the next Upcoming step to Next Step. Append any resolved decisions to `decision-log.md`. If your handoff needs review before the next step proceeds, add an "Awaiting review" note to the Done entry.
+10. **Session closeout**: Update `orchestration-queue.md` — add your step to the top of `## Done` (newest first) and promote the next Upcoming step to Next Step (trim oldest if Done exceeds 10). A specialist Done entry is a **one-line pointer to the handoff, not a substitute for it**: `- DATE — Step N: <title> (HO-NNN). <one-line outcome>.` If it grows past ~5 lines, the summary content belongs in the HO body, not the queue. Append any resolved decisions to `decision-log.md`. If your handoff needs review before the next step proceeds, add an "Awaiting review" note to the Done entry.
 
 If any check fails, fix before filing. Log what self-review caught in the revision log.
 
