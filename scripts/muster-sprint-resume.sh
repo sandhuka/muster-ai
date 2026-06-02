@@ -6,7 +6,8 @@ set -uo pipefail
 
 # Same Tier-1 worktree guard as the driver, BEFORE the skip-permissions PM call below —
 # otherwise resume would run --dangerously-skip-permissions unguarded on the primary checkout.
-source "$(dirname "$0")/muster-guard-worktree.sh"
+# Fail CLOSED: a missing/unreadable guard file must refuse to run, not bypass the guard.
+source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard missing — refusing to run."; exit 1; }
 
 MUSTER_ROLE=pm claude -p --dangerously-skip-permissions --max-turns 50 \
   "Process the wave gate per knowledge-base/wave-review.md: read the founder's latest verdict. \

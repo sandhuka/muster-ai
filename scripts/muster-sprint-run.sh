@@ -7,7 +7,8 @@ set -uo pipefail
 
 # --- Tier-1 deterministic guard: refuse to run on the primary checkout. ---
 # Sourced from a shared file so the resume wrapper enforces the identical guard (no drift).
-source "$(dirname "$0")/muster-guard-worktree.sh"
+# Fail CLOSED: a missing/unreadable guard file must refuse to run, not bypass the guard.
+source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard missing — refusing to run."; exit 1; }
 
 QUEUE="knowledge-base/orchestration-queue.md"
 MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
