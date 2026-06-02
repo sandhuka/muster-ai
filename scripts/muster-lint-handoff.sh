@@ -47,8 +47,12 @@ refs="$(printf '%s' "$recent_done" | grep -oiE 'HO-[0-9]+' | tr '[:lower:]' '[:u
 [ -n "$refs" ] || exit 0
 
 # Numbers actually defined as handoff entries in agent-requests.md, zero-stripped.
-# Matches the '### [DATE] HO-NNN — Title' heading form from the Handoff Entry template.
-defined="$(grep -oiE 'HO-[0-9]+' "$REQUESTS" \
+# Anchor to the '### [DATE] HO-NNN — Title' heading form from the Handoff Entry template:
+# a mere prose mention of HO-NNN (e.g. a revision-log "depends on HO-NNN") is NOT a filed
+# handoff and must not count as defined. Safe against resolved HOs because the lint only
+# checks the most-recent Done entry, whose HO was just filed and is still a live ### heading.
+defined="$(grep -iE '^###[[:space:]].*HO-[0-9]+' "$REQUESTS" \
+  | grep -oiE 'HO-[0-9]+' \
   | grep -oE '[0-9]+' \
   | sed 's/^0*\([0-9]\)/\1/' \
   | sort -u)"
