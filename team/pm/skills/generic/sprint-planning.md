@@ -9,13 +9,16 @@
 ## Planning Process
 0. **Run QA consistency audit** — invoke QA with `consistency-audit.md` skill before planning. Fix all findings before proceeding. This is mandatory at every sprint boundary.
 1. Review knowledge-base/current-sprint.md for carry-over items
-2. Review knowledge-base/decision-log.md for new decisions needing implementation
+2. Review knowledge-base/decision-log.md for new decisions needing implementation, and scan `knowledge-base/triage-log.md` **DEFER** entries — deferred observations that were parked for "later" are candidates to pull into this sprint (see `observation-triage.md`)
 3. Break down work into agent-specific tasks with clear deliverables
 4. Identify cross-agent dependencies and sequence work (upstream first)
 5. Update each affected agent's agent-context file (`knowledge-base/agent-context/<agent>.md`) Current Tasks section with their full task spec (deliverable, priority, effort, acceptance criteria — not just a pointer to current-sprint.md). An agent's agent-context file must be self-contained for their tasks.
 6. Mirror all cross-agent dependencies in both agents' files
 7. Update knowledge-base/current-sprint.md with the full sprint plan
 8. Populate knowledge-base/orchestration-queue.md — translate the sprint plan into a founder-executable sequence of agent invocations (Next Step + Upcoming list). Use the agent invocation sequence from Solo Founder Model below. Clear the Done section from the previous sprint. **Validation**: Do not promote an agent's step to Next Step unless that agent's agent-context file Current Tasks has real tasks inlined (not a pointer to current-sprint.md). **Prompt standard** (mandatory — see full schema in `orchestration-queue.md` Prompt Standard comment): each step's prompt MUST be wrapped in a fenced code block (triple-backtick) with `Role: <agent-name>` as the first line of the code block (e.g., `Role: developer` for Developer steps). The `Role:` marker is informational text that tells the founder which role-bound tab to open (or which subagent to spawn from a PM tab) and is parsed by `MUSTER_ROLE=auto` to determine the bind target. **Do NOT use `@<agent>` as the role marker** — Claude Code's input parser auto-routes `@<agent>` mentions to that subagent regardless of the bound role, which causes redundant recursive spawns when the founder pastes a queue step into a role-bound tab. PM steps may omit the `Role:` marker (they're handled directly in the bound PM tab). Each prompt body must include: (a) structured **Inputs** list, (b) **Deliverable** path, (c) **Acceptance criteria** summary with "See `knowledge-base/current-sprint.md` for full criteria" reference, and (d) **On completion** instruction citing the Pre-Handoff Self-Review Checklist (`muster/system-guide.md`).
+
+### Step 8.5: Interleave PM review steps
+When populating the queue, interleave `Role: pm` review steps between specialist steps (e.g. after a wave's deliverables) rather than batching all review to the end. In an autonomous run these are the points where PM accepts/reviews handoffs and triages any observations filed in them (`observation-triage.md`). A PM step may omit the `Role:` marker (it defaults to `pm`); use a recognizable title so the queue stays scannable.
 
 ### Step 9: Skill Gap Scan (Lightweight)
 After populating the orchestration queue, scan for skill gaps:

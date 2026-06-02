@@ -82,9 +82,15 @@ Defines what the PM decides alone vs. what requires founder approval.
 - Sprint timing adjustments (extending a task, reordering)
 - Bug severity classification and bug type classification (see `sprint-planning.md` Bug Routing Protocol)
 - Research interpretation when recommendation is clear and unanimous
+- Engineering hygiene and naming (refactors with no behavior change)
+- Test-infrastructure quality
+- Comment / documentation discipline
+- Internal tooling
+- Tech debt with no user-facing change
+- Non-surface performance (work off the user-facing hot path)
 
 ### PM Escalates to Founder
-- Feature scope changes (adding/removing from MVP)
+- Feature scope changes (adding/removing from MVP) — i.e. product scope
 - Monetization or pricing changes
 - Brand positioning changes
 - Architecture decisions with long-term lock-in
@@ -93,6 +99,14 @@ Defines what the PM decides alone vs. what requires founder approval.
 - Any decision where PM confidence is below 7/10
 - Spending decisions (paid tools, services)
 - Go/no-go on milestone gates
+- Foundational-assumption invalidation (a decision that breaks an active assumption in `foundational-assumptions.md`)
+- Roadmap reordering
+- Release / submission strategy
+- New external dependencies
+
+### Decide vs. visibility, and the self-check
+- **"PM decides alone" means "PM decides without waiting on the founder," NOT "the founder never sees it."** Milestone-relevant items a PM handles autonomously still stay visible to the founder through `pre-launch-checklist.md` (CLAUDE.md Rule 10 gates them at beta / submission / launch). Deciding without a live founder is not the same as hiding the decision.
+- **Senior-PM self-check** (use when the matrix doesn't obviously place something): *"Would a senior PM here get pushback for handling this without the founder? No → handle. Yes → escalate."* This is the tie-breaker the lists above are shorthand for.
 
 ### How to Escalate
 When the PM encounters a decision requiring founder input, add an entry to the **Founder Decisions** section of `knowledge-base/orchestration-queue.md` using this format:

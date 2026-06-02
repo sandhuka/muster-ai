@@ -361,6 +361,8 @@ A non-empty Next Step block with no `Role:` line defaults to `pm` (PM steps may 
 - A mechanical `Role: halt` can't self-clear, so resume across a gate uses **`muster/scripts/muster-sprint-resume.sh`**, run **from inside the sprint worktree** (it acts on the CWD's queue and `wave-review.md`; it carries the same Tier-1 worktree guard as the driver): it has PM process the founder's verdict (insert a fix step per bug, or clear the gate and promote the next wave on approval — if no verdict is present yet it leaves the gate in place), then re-enters the loop. Each resume restarts the loop with a fresh step counter, so `MAX_STEPS` naturally scopes per wave-segment.
 - **Mechanical inside-wave gate:** agents must halt (set `Role: halt`) rather than advance the queue past a red build or failing tests — see `team/pm/skills/generic/sprint-planning.md` → Wave Gates and the halting set in `decision-making.md`.
 
+**Observations are non-blocking.** Agents may file observations (handoff Observations block); PM triages them per `team/pm/skills/generic/observation-triage.md`. Escalated observations park in `## Founder Decisions` and the loop keeps running — only the halting set above stops it. Triage never adds queue steps (no autonomous scope mutation), and handle-vs-escalate is decided solely by the Decision Autonomy Matrix. (When a wave gate is present, founder gate feedback is itself triaged through this same mechanism.)
+
 ### Agent Communication Protocol
 
 Agents communicate via `knowledge-base/agent-requests.md` using two entry types. Format templates also live as HTML comments in the file itself.
@@ -390,7 +392,14 @@ Agents communicate via `knowledge-base/agent-requests.md` using two entry types.
 
 **Revision log:**
 - DATE: Description of revision or feedback event.
+
+**Observations** (optional — items NOT tied to deliverable acceptance; omit the block when there's nothing to raise):
+- OBS-NNN — [title]   Severity: low | med | high
+  Evidence: [what was seen; file:line where possible]
+  Suggested action: [1 sentence, or "PM decides"]
 ```
+
+Observations let an agent flag something it noticed that isn't part of whether this deliverable passes — tech debt, a hygiene issue, a scope idea. They are **non-blocking by definition**: filing one never holds up the handoff or (in autonomous runs) stops the loop. PM triages them per `team/pm/skills/generic/observation-triage.md`. IDs are HO-scoped (`OBS-001`, `OBS-002` within a handoff); reference across handoffs as `OBS-001 (HO-036)`. Soft cap ~3 per handoff — more than that usually means a deliverable problem that belongs in the revision log instead.
 
 #### Status Lifecycles
 - Requests: `open` -> `done`
