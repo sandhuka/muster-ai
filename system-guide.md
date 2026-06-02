@@ -399,7 +399,7 @@ Agents communicate via `knowledge-base/agent-requests.md` using two entry types.
   Suggested action: [1 sentence, or "PM decides"]
 ```
 
-Observations let an agent flag something it noticed that isn't part of whether this deliverable passes — tech debt, a hygiene issue, a scope idea. They are **non-blocking by definition**: filing one never holds up the handoff or (in autonomous runs) stops the loop. PM triages them per `team/pm/skills/generic/observation-triage.md`. IDs are HO-scoped (`OBS-001`, `OBS-002` within a handoff); reference across handoffs as `OBS-001 (HO-036)`. Soft cap ~3 per handoff — more than that usually means a deliverable problem that belongs in the revision log instead.
+Observations let an agent flag something it noticed that isn't part of whether this deliverable passes — tech debt, a hygiene issue, a scope idea. They are **non-blocking by definition**: filing one never holds up the handoff or (in autonomous runs) stops the loop. PM triages them per `team/pm/skills/generic/observation-triage.md`. IDs are HO-scoped (`OBS-001`, `OBS-002` within a handoff); reference across handoffs as `OBS-001 (HO-NNN)`. Soft cap ~3 per handoff — more than that usually means a deliverable problem that belongs in the revision log instead.
 
 #### Status Lifecycles
 - Requests: `open` -> `done`
