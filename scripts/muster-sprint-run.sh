@@ -6,18 +6,8 @@
 set -uo pipefail
 
 # --- Tier-1 deterministic guard: refuse to run on the primary checkout. ---
-# --dangerously-skip-permissions unattended on your main tree is irreversible. Enforce the
-# worktree requirement MECHANICALLY instead of trusting the operator to remember it.
-if [ "${MUSTER_SPRINT_ALLOW_PRIMARY:-0}" != "1" ]; then
-  gitdir="$(git rev-parse --git-dir 2>/dev/null)" || { echo "⛔ Not a git repo."; exit 1; }
-  case "$gitdir" in
-    */worktrees/*) : ;;  # linked worktree — OK
-    *) echo "⛔ Refusing to run on the primary checkout (irreversible with skip-permissions)."
-       echo "   Create a worktree first (scripts/muster-sprint-sandbox.sh),"
-       echo "   or set MUSTER_SPRINT_ALLOW_PRIMARY=1 to override deliberately."
-       exit 1 ;;
-  esac
-fi
+# Sourced from a shared file so the resume wrapper enforces the identical guard (no drift).
+source "$(dirname "$0")/muster-guard-worktree.sh"
 
 QUEUE="knowledge-base/orchestration-queue.md"
 MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
