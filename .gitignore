@@ -2,3 +2,8 @@
 
 # Private files - local only, never pushed
 private/
+
+# Local Claude Code session state — never commit (settings.local.json holds secrets)
+.claude/settings.local.json
+.claude/.muster-bound-role.*
+.claude/worktrees/
