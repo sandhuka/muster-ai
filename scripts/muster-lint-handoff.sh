@@ -40,19 +40,32 @@ recent_done="$(awk '
 # Nothing in Done yet — nothing to verify.
 [ -n "$recent_done" ] || exit 0
 
-# Extract every HO-NNN referenced in that one entry (case-insensitive).
-refs="$(printf '%s' "$recent_done" | grep -oiE 'HO-[0-9]+' | tr '[:lower:]' '[:upper:]')"
+# Extract every HO-NNN referenced in that one entry (case-insensitive), de-duplicated so the
+# failure message can't repeat an ID (e.g. "HO-034 HO-034").
+refs="$(printf '%s' "$recent_done" | grep -oiE 'HO-[0-9]+' | tr '[:lower:]' '[:upper:]' | sort -u)"
 
 # Conditional: a Done entry with no HO reference is skipped (rule 2).
 [ -n "$refs" ] || exit 0
 
-# Numbers actually defined as handoff entries in agent-requests.md, zero-stripped.
-# Anchor to the '### [DATE] HO-NNN — Title' heading form from the Handoff Entry template:
-# a mere prose mention of HO-NNN (e.g. a revision-log "depends on HO-NNN") is NOT a filed
-# handoff and must not count as defined. Safe against resolved HOs because the lint only
-# checks the most-recent Done entry, whose HO was just filed and is still a live ### heading.
-defined="$(grep -iE '^###[[:space:]].*HO-[0-9]+' "$REQUESTS" \
-  | grep -oiE 'HO-[0-9]+' \
+# Build the set of HO-NNN that are provably FILED. A filed HO leaves a definition trace in two
+# normal states, and BOTH count:
+#   (a) live handoff heading — '### [DATE] HO-NNN — Title' (status open/in-review/needs-revision).
+#   (b) a bullet in the '## Resolved' section — when PM accepts an HO it moves it here and DELETES
+#       the ### heading, so a resolved-but-filed HO has NO heading. The most-recent Done entry
+#       routinely points at such an HO (loop start after manual steps; any interleaved PM review
+#       step that resolves the HO it reviewed) — checking headings only would false-positive.
+# Prose mentions (e.g. a revision-log "depends on HO-027") are NOT definitions: they live inside
+# Active-Handoff ### blocks, never as a '### ' heading nor a Resolved bullet, so neither source
+# matches them. A genuinely never-filed HO (e.g. HO-999) appears in neither → still trips the lint.
+# Resolved is section-scoped (any bullet between '## Resolved' and the next '## ') rather than
+# format-matched, because the template only promises "one-liner summaries" — no fixed bullet shape.
+heading_hos="$(grep -iE '^###[[:space:]].*HO-[0-9]+' "$REQUESTS" | grep -oiE 'HO-[0-9]+')"
+resolved_hos="$(awk '
+  /^##[[:space:]]+[Rr]esolved/ {inres=1; next}
+  inres && /^## /             {exit}
+  inres && /^[[:space:]]*-/   {print}
+' "$REQUESTS" | grep -oiE 'HO-[0-9]+')"
+defined="$(printf '%s\n%s\n' "$heading_hos" "$resolved_hos" \
   | grep -oE '[0-9]+' \
   | sed 's/^0*\([0-9]\)/\1/' \
   | sort -u)"

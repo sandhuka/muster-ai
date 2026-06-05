@@ -14,6 +14,16 @@ QUEUE="knowledge-base/orchestration-queue.md"
 MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
 [ -f "$QUEUE" ] || { echo "No queue at $QUEUE — run from a project root."; exit 1; }
 
+# Fail fast on an unpopulated/partial muster checkout. `git worktree add` does not check out
+# submodules, so a worktree's muster/ can be empty (the sandbox helper inits it; this guards the
+# manual-worktree and partial-checkout paths). Resolved relative to THIS script so it never
+# false-fails when muster IS the repo — the framework's own tree has system-guide.md at its root.
+[ -f "$(dirname "$0")/../system-guide.md" ] || {
+  echo "⛔ muster/ appears unpopulated in this worktree."
+  echo "   Run: git submodule update --init --recursive"
+  exit 1
+}
+
 # Path to the handoff-integrity lint (sits next to this driver).
 LINT="$(dirname "$0")/muster-lint-handoff.sh"
 
