@@ -27,16 +27,30 @@ MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
 # Path to the handoff-integrity lint (sits next to this driver).
 LINT="$(dirname "$0")/muster-lint-handoff.sh"
 
-# Text of the Next Step block (between '## Next Step' and the next '## ' heading).
-next_block(){ awk '/^## Next Step/{f=1;next} /^## /{f=0} f' "$QUEUE"; }
+# Text of the Next Step block: everything between '## Next Step' and the boundary that ends it.
+# The boundary is the next top-level '## ' heading OR an 'Upcoming' heading at ANY level. Older
+# projects nest the upcoming list as '### Upcoming' / '#### Step N' under Next Step; without the
+# any-level Upcoming stop the block would over-capture the whole list and completion would be
+# unreachable. The '$'-anchored Upcoming match means only a bare 'Upcoming' heading ends the block,
+# so a step whose title merely contains the word "Upcoming" does not falsely terminate it.
+next_block(){
+  awk '
+    /^## Next Step/ {f=1; next}
+    f && (/^## / || /^#+[[:space:]]+Upcoming[[:space:]]*$/) {f=0}
+    f
+  ' "$QUEUE"
+}
 
-# Bind role for the current Next Step, mirroring MUSTER_ROLE=auto:
-#   non-empty block with 'Role:' line -> that role
-#   non-empty block, no 'Role:' line  -> 'pm'   (PM steps may omit the marker)
-#   empty/whitespace block            -> ''     (queue complete)
+# Bind role for the current Next Step, mirroring the MUSTER_ROLE=auto contract in CLAUDE.md:
+#   block has a fenced code block, with a 'Role:' line -> that role
+#   block has a fenced code block, no 'Role:' line     -> 'pm'  (PM steps may omit the marker)
+#   block has NO fenced code block                     -> ''    (queue complete)
+# Completion keys on the ABSENCE of a ``` fence, NOT on whitespace: at sprint end agents write a
+# human-readable placeholder (e.g. "_(empty — sprint complete)_") that is non-whitespace but
+# fenceless. A real step (specialist or PM) always wraps its prompt in a ``` fence.
 next_role(){
   local blk; blk="$(next_block)"
-  printf '%s' "$blk" | grep -q '[^[:space:]]' || return 0
+  printf '%s\n' "$blk" | grep -q '^```' || return 0   # col-0 fence, symmetric with the ^Role: grep below
   local r; r="$(printf '%s' "$blk" | grep -m1 -i '^Role:' | sed 's/^[Rr]ole:[[:space:]]*//')"
   [ -n "$r" ] && printf '%s' "$r" || printf 'pm'
 }

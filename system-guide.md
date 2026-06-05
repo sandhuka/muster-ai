@@ -341,13 +341,13 @@ Muster supports three invocation modes. Use the right one for the moment.
 `muster/scripts/muster-sprint-run.sh` walks the orchestration queue to completion unattended — the machine middle of a sprint whose bookends stay human (plan + approve the queue at the start; review the branch diff and `## Founder Decisions` at the end). It is **Mode B with `MUSTER_ROLE=auto` run in a loop**: each iteration is a fresh `claude -p` process that binds the role named in the queue's Next Step, does the work, files its handoff, and **advances the queue itself** (Pre-Handoff Self-Review item 10). Fresh-process-per-step is deliberate — it keeps every step's context window bounded; do not warm or reuse sessions across steps.
 
 The driver only **reads** the queue and honors stop signals — it never writes the queue. It stops on any of **four conditions plus a hard cap**:
-1. **Next Step empty** (whitespace-only block) → sprint complete.
+1. **Next Step has no fenced code block** (whitespace, or a human-readable "sprint complete" placeholder) → sprint complete. Completion keys on the absence of a ``` fence, matching the `MUSTER_ROLE=auto` contract in `CLAUDE.md`.
 2. **`Role: halt`** → an agent hit a hard block only the founder can resolve (it also wrote the question to `## Founder Decisions`). There is no checkbox convention; `Role: halt` is the signal.
 3. **Next Step unchanged** after a step → the agent didn't advance the queue (stuck / failed). This is also the safety net for an agent that forgets to advance.
 4. **Non-zero exit** from `claude` → stop for the founder.
 - **`MAX_STEPS`** (default 30, env-overridable) is a cost circuit-breaker.
 
-A non-empty Next Step block with no `Role:` line defaults to `pm` (PM steps may omit the marker); only a whitespace-only block means "complete."
+A Next Step block that has a fenced code block but no `Role:` line defaults to `pm` (PM steps may omit the marker); a block with no fenced code block means "complete." The block is bounded at the next `## ` heading **or** an `Upcoming` heading of any level, so the loop reads the true Next Step even in older projects that nest the upcoming list as `### Upcoming`.
 
 **Handoff-integrity lint** (`muster/scripts/muster-lint-handoff.sh`, called at the top of each iteration): the most-recent `## Done` entry's `HO-NNN` references must already be filed in `agent-requests.md`. A dangling reference (Done entry advanced, handoff never filed) **stops** the loop — it does not auto-file. Zero-padding is normalized (`HO-37` ≡ `HO-037`); all referenced IDs are checked; Done entries with no HO reference (PM / coordination steps) are skipped.
 

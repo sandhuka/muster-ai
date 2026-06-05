@@ -54,7 +54,7 @@ PM-step format (Role: marker optional):
 ## Next Step
 <!-- The single next agent invocation. Copy the ENTIRE code block (including `Role: <agent>` at the top) and paste as one message in Claude Code. -->
 <!-- The `Role:` marker tells you which tab to open. Multi-tab: open a tab in that role (picker → matching role) and paste; bound role executes the task body directly. Single-tab from PM: paste in PM tab; PM reads the `Role:` marker and explicitly invokes Agent tool with `subagent_type=<role>`. -->
-<!-- Autonomous hard-block signal: set `Role: halt` here (and record the question in `## Founder Decisions`) when a step cannot proceed without a founder answer. The autonomous loop (`muster/scripts/muster-sprint-run.sh`) stops on `Role: halt`. A whitespace-only block means the sprint is complete; a non-empty block with no `Role:` line defaults to `pm`. -->
+<!-- Autonomous hard-block signal: set `Role: halt` here (and record the question in `## Founder Decisions`) when a step cannot proceed without a founder answer. The autonomous loop (`muster/scripts/muster-sprint-run.sh`) stops on `Role: halt`. Sprint completion is detected by the ABSENCE of a fenced code block under Next Step (matching the `MUSTER_ROLE=auto` contract in `muster/CLAUDE.md`) — a whitespace block or a human-readable "sprint complete" placeholder both read as complete. A block that has a fence but no `Role:` line defaults to `pm`. -->
 
 ## Upcoming
 <!-- Ordered sequence of remaining steps for this sprint. -->
