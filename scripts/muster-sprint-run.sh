@@ -78,9 +78,13 @@ while :; do
   if ! MUSTER_ROLE=auto claude -p --dangerously-skip-permissions --max-turns 50 \
         "Execute the current Next Step in $QUEUE end-to-end: do the work, file your handoff, \
 run the Pre-Handoff Self-Review (muster/system-guide.md), and update the queue (move your step \
-to Done, promote the next Upcoming step to Next Step). If you hit a hard blocker only the \
-founder can resolve, write it to '## Founder Decisions' AND set the Next Step block's Role to \
-'halt'. Do NOT guess and do NOT expand sprint scope (no new queue steps)."; then
+to Done, promote the next Upcoming step to Next Step). PM is the sole party that calls the \
+founder: if you are a specialist and hit a blocker you cannot resolve (a decision you lack \
+authority for, a missing input, a bug you cannot crack, a red build), do NOT set Role: halt and \
+do NOT write to '## Founder Decisions' — instead file the blocker as a PM-addressed request and \
+re-point Next Step to a 'Role: pm' assessment step (see decision-making.md → Autonomous-mode \
+boundary). Only PM sets Role: halt. Do NOT guess and do NOT expand sprint scope (no new queue \
+steps)."; then
     echo "⛔ claude exited non-zero on step $step — stopping for founder"; break                   # cond 4
   fi
 done

@@ -129,7 +129,7 @@ For each wave needing human verification, insert a **wave-gate step** at its end
 - Resume after a gate is **not** a blind re-run (a mechanical `Role: halt` can't self-clear): the founder writes their verdict to `wave-review.md`, then runs `muster/scripts/muster-sprint-resume.sh` **from inside the sprint worktree** (it operates on the CWD's queue and `wave-review.md`; the wrong tree processes the wrong files), which has PM process the verdict (insert a fix step per bug, or clear the gate and promote the next wave's first step if approved) and then re-enters the loop.
 
 ### Mechanical gate — halt on red build / failing tests
-Agents must **not advance the queue past a red build or failing tests** — they set `Role: halt` instead (the hard-stop form of test-failure discipline, self-review item 8, for autonomous runs). This contains mechanical compounding on every wave, gated or not. Halt-on-red is the rule; an autonomous fix-loop is deliberately not used.
+Agents must **not advance the queue past a red build or failing tests**. Rather than calling the founder directly, a specialist routes the failure to PM (re-points `## Next Step` to a `Role: pm` assessment step — see `decision-making.md` → Autonomous-mode boundary), and PM sets `Role: halt` (the hard-stop form of test-failure discipline, self-review item 8, for autonomous runs). This contains mechanical compounding on every wave, gated or not, while keeping PM the sole party that summons the founder. Halt-on-red is the rule; an autonomous fix-loop is deliberately not used.
 
 ## Sprint Planning Principles
 - **Sequence before assigning.** Never assign tasks without first mapping dependencies. An agent with three tasks that all depend on another agent's unfinished work has zero effective tasks.
