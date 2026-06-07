@@ -74,6 +74,21 @@ next_role(){
   [ -n "$r" ] && printf '%s' "$r" || printf 'pm'
 }
 
+# Count the STEPS in the Next Step section = the number of fenced blocks (each step wraps its prompt
+# in one ``` fence). Count fence OPENINGS via a toggle, NOT '###' headings: a step's prompt BODY may
+# legitimately contain '### ' lines (e.g. a content step describing section structure), which would
+# fool a heading count, but it cannot contain a ``` line (that would break the wrapping fence — so
+# nested fences are unsupported by the queue convention). Same section bounding as next_block.
+next_step_count(){
+  awk '
+    /^## Next Step/ {f=1; next}
+    f && (/^## / || /^#+[[:space:]]+Upcoming[[:space:]]*$/) {f=0}
+    !f {next}
+    /^```/ { infence = !infence; if (infence) n++; next }   # count each fence opening = one step
+    END {print n+0}
+  ' "$QUEUE"
+}
+
 step=0; prev=""
 while :; do
   step=$((step+1))
@@ -90,6 +105,16 @@ while :; do
   [ "$role" = halt ]   && { echo "⛔ Role: halt — agent hard-block, handing to founder"; break; }  # cond 2
 
   blk="$(next_block)"
+  # Queue-contract guard: '## Next Step' must hold exactly ONE step. PM gate-processing of a
+  # changes-requested verdict can mis-place a re-review gate as a 2nd step here; the fix's closeout
+  # could then promote the wrong step and drop the gate (skipped human re-review). Catch it
+  # deterministically — a mechanical integrity check, symmetric with the handoff lint (not policy).
+  steps="$(next_step_count)"
+  [ "${steps:-0}" -gt 1 ] && {
+    echo "⛔ '## Next Step' holds $steps steps — the contract is one step per Next Step."           # cond: one-step-per-next-step
+    echo "   Extra steps (e.g. a re-review gate) belong under '## Upcoming'. Stopping for founder."
+    break
+  }
   [ "$blk" = "$prev" ] && { echo "⛔ Next Step unchanged — agent didn't advance / failure"; break; } # cond 3
   prev="$blk"
 

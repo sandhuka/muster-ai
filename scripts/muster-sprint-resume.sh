@@ -13,6 +13,9 @@ MAX_TURNS="${MAX_TURNS:-50}"   # per-step model-turn budget (mirrors muster-spri
 MUSTER_ROLE=pm claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
   "Process the wave gate per knowledge-base/wave-review.md: read the founder's latest verdict. \
 If there is no verdict yet, do nothing and leave the gate in place (the loop will halt again). \
-For each bug, insert a fix step into the queue; if approved with no bugs, remove the wave-gate halt \
-step and promote the next wave's first step to Next Step. Then stop. Do not expand scope."
+For each bug, insert a fix step. Put EXACTLY ONE step in '## Next Step' (the first fix) — never two \
+fenced blocks there. Place any remaining fixes and then the re-review 'Role: halt' gate under \
+'## Upcoming' (the gate AFTER the last fix, so the founder re-verifies once the fixes ship). If \
+approved with no bugs, remove the wave-gate halt step and promote the next wave's first step to \
+Next Step. Then stop. Do not expand scope."
 exec bash "$(dirname "$0")/muster-sprint-run.sh"
