@@ -28,6 +28,24 @@ MAX_TURNS="${MAX_TURNS:-50}"          # per-step model-turn budget — raise for
 # Path to the handoff-integrity lint (sits next to this driver).
 LINT="$(dirname "$0")/muster-lint-handoff.sh"
 
+# Observability: each step streams its work (stream-json) through a formatter that prints a
+# human-readable trail AND tees a full-fidelity raw log for debugging. Presentation only — the
+# loop's stop conditions still key off claude's exit code (PIPESTATUS[0]), never the formatter.
+FMT="$(dirname "$0")/muster-sprint-format.sh"
+LOGDIR=".muster-sprint-logs"
+mkdir -p "$LOGDIR" 2>/dev/null || true
+# Prune old run logs — keep the most recent KEEP_RUNS runs (each run = a .log + .jsonl pair).
+# The driver owns these logs, so it prunes them here (session-start housekeeping never fires in
+# the worktree/bash context the loop runs in). Count-based: debugging artifacts, kept across runs.
+KEEP_RUNS="${KEEP_RUNS:-20}"
+ls -1t "$LOGDIR"/run-*.log 2>/dev/null | tail -n +"$((KEEP_RUNS+1))" | while IFS= read -r old; do
+  rm -f "$old" "${old%.log}.jsonl"
+done
+RUN_TS="$(date +%Y%m%d-%H%M%S)"
+HUMANLOG="$LOGDIR/run-$RUN_TS.log"     # readable trail (scannable)
+RAWLOG="$LOGDIR/run-$RUN_TS.jsonl"     # full-fidelity stream-json (deep debug)
+echo "📓 trail: $HUMANLOG  (raw: $RAWLOG)"
+
 # Text of the Next Step block: everything between '## Next Step' and the boundary that ends it.
 # The boundary is the next top-level '## ' heading OR an 'Upcoming' heading at ANY level. Older
 # projects nest the upcoming list as '### Upcoming' / '#### Step N' under Next Step; without the
@@ -75,8 +93,11 @@ while :; do
   [ "$blk" = "$prev" ] && { echo "⛔ Next Step unchanged — agent didn't advance / failure"; break; } # cond 3
   prev="$blk"
 
-  echo "▶ step $step → role: $role"
-  if ! MUSTER_ROLE=auto claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
+  echo "▶ step $step → role: $role" | tee -a "$HUMANLOG"
+  # Stream the step's work through the formatter (live trail + logs). PIPESTATUS[0] is claude's
+  # own exit code — the formatter/tee cannot change it, so cond-4 stays accurate (verified).
+  MUSTER_ROLE=auto claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
+        --output-format stream-json --verbose \
         "Execute the current Next Step in $QUEUE end-to-end: do the work, file your handoff, \
 run the Pre-Handoff Self-Review (muster/system-guide.md), and update the queue (move your step \
 to Done, promote the next Upcoming step to Next Step). PM is the sole party that calls the \
@@ -85,10 +106,12 @@ authority for, a missing input, a bug you cannot crack, a red build), do NOT set
 do NOT write to '## Founder Decisions' — instead file the blocker as a PM-addressed request and \
 re-point Next Step to a 'Role: pm' assessment step (see decision-making.md → Autonomous-mode \
 boundary). Only PM sets Role: halt. Do NOT guess and do NOT expand sprint scope (no new queue \
-steps)."; then
-    echo "⛔ claude exited non-zero on step $step — stopping for founder"                          # cond 4
-    echo "   (if this was a heavy step, it may have hit MAX_TURNS=$MAX_TURNS — raise MAX_TURNS and"
-    echo "    re-run to continue, or split the step at planning. Safe to resume: state was not advanced.)"
+steps)." | bash "$FMT" "$RAWLOG" | tee -a "$HUMANLOG"
+  if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+    { echo "⛔ claude exited non-zero on step $step — stopping for founder"                         # cond 4
+      echo "   (if this was a heavy step, it may have hit MAX_TURNS=$MAX_TURNS — raise MAX_TURNS and"
+      echo "    re-run to continue, or split the step at planning. Safe to resume: state was not advanced.)"
+    } | tee -a "$HUMANLOG"
     break
   fi
 done

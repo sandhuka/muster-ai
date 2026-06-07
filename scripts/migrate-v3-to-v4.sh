@@ -140,6 +140,15 @@ for src in muster/templates/knowledge-base/*; do
     fi
 done
 
+# ---------- migration step: gitignore the sprint logs ----------
+section_header "Step 2: Ignore autonomous sprint logs"
+if grep -qxF ".muster-sprint-logs/" .gitignore 2>/dev/null; then
+    substep_skip "2" ".muster-sprint-logs/" "already in .gitignore"
+else
+    [ "$DRY_RUN" -eq 0 ] && { touch .gitignore; printf "%s\n" ".muster-sprint-logs/" >> .gitignore; }
+    substep_done "2" ".muster-sprint-logs/ (added to .gitignore)"
+fi
+
 # ---------- summary ----------
 section_header "Migration complete"
 if [ "$DRY_RUN" -eq 1 ]; then
