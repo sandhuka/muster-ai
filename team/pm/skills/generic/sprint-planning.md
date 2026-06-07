@@ -99,7 +99,7 @@ Bugs found during a sprint (by QA, founder, or any agent) are triaged by PM and 
 3. **PM reviews upstream handoffs before Developer starts** — PM checks the spec update for correctness, token validity, and cross-file consistency (using deliverable-review skill). If Content is also involved, Content reviews the UI/UX handoff for copy implications before PM finalizes.
 4. **Reviewer set per handoff**: UI/UX handoffs are reviewed by PM + Content (if copy-adjacent) + Developer (feasibility). Content handoffs are reviewed by PM + Developer. Developer handoffs are reviewed by PM + QA.
 5. **Logic/Code bugs skip upstream agents** — they go directly to Developer, same as the standard bug-fix wave pattern.
-6. **Mixed-type bug batches**: When a wave contains multiple bug types, group by route. UI/UX handles all visual bugs in one session, Content handles all copy bugs in one session, then Developer implements all fixes in one session. This preserves the solo-founder sequential model.
+6. **Mixed-type bug batches**: When a wave contains multiple bug types, group by route, then **size each route's steps by cohesion** (see "Size steps by cohesion" in Sprint Planning Principles): an agent handles cohesive fixes (shared screen/files/context) in one session; genuinely independent fixes are separate steps. Don't bundle unrelated fixes into one session — in an autonomous run a grab-bag step exhausts the turn budget and stalls. The sequential model is preserved either way (one step at a time).
 
 ### Wave Structure for Bug Fix Waves
 
@@ -107,7 +107,7 @@ When adding a bug-fix wave to a sprint, structure it based on which bug types ar
 
 - **Logic-only bugs**: Single wave — Developer fix + QA verify (Wave 3→4 precedent)
 - **Visual/Copy bugs present**: Multi-step wave — UI/UX and/or Content first → PM review gate → Developer fix → QA verify
-- **Mixed types**: Combine into one wave with ordered steps — upstream agents first (UI/UX, Content), then Developer handles all fix types in one session, then QA verifies everything
+- **Mixed types**: Combine into one wave with ordered steps — upstream agents first (UI/UX, Content), then Developer handles the fixes grouped by cohesion (cohesive fixes together; independent fixes as separate steps — see "Size steps by cohesion"), then QA verifies everything
 
 ## Wave Gates (Autonomous Sprint Runs)
 
@@ -115,9 +115,6 @@ When a sprint runs unattended (`muster/scripts/muster-sprint-run.sh`), the auton
 
 ### Wave sizing
 Size a wave as the largest run of steps whose output can be verified in one review pass. Keep waves small enough that one bad wave is cheap to discard. A natural wave boundary is where the surface being built changes (logic → UI) or where a deliverable needs human eyes before later steps build on it.
-
-### Step sizing for autonomous runs
-Each autonomous step is one fresh `claude -p` process with a per-step turn budget (`MAX_TURNS`, default 50). A step that bundles many changes — several bug fixes plus features across many files plus tests — can exhaust that budget mid-work; the loop then stops safely (no state corruption) but the step doesn't finish. Size autonomous steps to fit the budget: **prefer several focused steps over one heavy bundle.** A multi-change bundle a human would do in one manual sitting should be split for autonomous execution — this keeps each step bounded and sharp (the point of fresh-per-step) and avoids turn-cap stalls. Raising `MAX_TURNS` is the escape hatch for a genuinely large step; splitting is the durable answer.
 
 ### Conditional gate flag (the autonomy dial)
 Not every wave needs a human gate. At planning, flag each wave: *does it produce something only a human can verify?*
@@ -138,5 +135,6 @@ Agents must **not advance the queue past a red build or failing tests**. Rather 
 - **Sequence before assigning.** Never assign tasks without first mapping dependencies. An agent with three tasks that all depend on another agent's unfinished work has zero effective tasks.
 - **The solo founder constraint is a hard constraint, not a preference.** Plan as if parallelism is impossible, because it is. Sequential batching by domain area reduces context-switching cost for the founder.
 - **Specificity prevents blockers.** Vague task definitions ("work on the design") generate mid-sprint questions. Specific deliverables ("deliver annotated wireframes for onboarding screens 1-4 in Figma-ready format") don't.
+- **Size steps by cohesion, not by turn count.** A step is one cohesive unit of work — group changes that share context, separate changes that don't. Three bugs on the same screen (same files, same mental model) are one step; splitting them just forces re-reading the same files and re-deriving the same context. Three bugs on unrelated screens are three steps. A single feature is one step — unless it's large enough to strain the per-step turn budget or carry too much context, in which case decompose it along its most natural internal seam (data model → UI → wiring), which are themselves cohesive sub-units. The test is *what belongs together*, never an arbitrary turn count. Don't bundle unrelated changes into one step: it's harder to review and recover, and in an autonomous run a grab-bag step exhausts `MAX_TURNS` and stalls. When a step is large but genuinely cohesive, raise `MAX_TURNS` rather than fragment shared context — but split a *too-large* cohesive task along a real internal seam, not by leaning on an ever-higher cap.
 - **Sprint velocity is one agent at a time.** Don't plan sprints as if all agents are running simultaneously. The effective sprint is the sum of sequential agent sessions, not a parallel workstream.
 - **Leave the buffer.** The 20% buffer isn't optional. Solo founders working with AI agents encounter unexpected output quality issues, scope clarifications, and decision points that weren't anticipated. Plan for them.
