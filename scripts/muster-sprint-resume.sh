@@ -9,7 +9,8 @@ set -uo pipefail
 # Fail CLOSED: a missing/unreadable guard file must refuse to run, not bypass the guard.
 source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard missing — refusing to run."; exit 1; }
 
-MUSTER_ROLE=pm claude -p --dangerously-skip-permissions --max-turns 50 \
+MAX_TURNS="${MAX_TURNS:-50}"   # per-step model-turn budget (mirrors muster-sprint-run.sh); raise for heavy steps
+MUSTER_ROLE=pm claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
   "Process the wave gate per knowledge-base/wave-review.md: read the founder's latest verdict. \
 If there is no verdict yet, do nothing and leave the gate in place (the loop will halt again). \
 For each bug, insert a fix step into the queue; if approved with no bugs, remove the wave-gate halt \

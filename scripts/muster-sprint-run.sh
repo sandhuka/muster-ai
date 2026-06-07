@@ -12,6 +12,7 @@ source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard 
 
 QUEUE="knowledge-base/orchestration-queue.md"
 MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
+MAX_TURNS="${MAX_TURNS:-50}"          # per-step model-turn budget — raise for heavy steps
 [ -f "$QUEUE" ] || { echo "No queue at $QUEUE — run from a project root."; exit 1; }
 
 # Fail fast on an unpopulated/partial muster checkout. `git worktree add` does not check out
@@ -75,7 +76,7 @@ while :; do
   prev="$blk"
 
   echo "▶ step $step → role: $role"
-  if ! MUSTER_ROLE=auto claude -p --dangerously-skip-permissions --max-turns 50 \
+  if ! MUSTER_ROLE=auto claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
         "Execute the current Next Step in $QUEUE end-to-end: do the work, file your handoff, \
 run the Pre-Handoff Self-Review (muster/system-guide.md), and update the queue (move your step \
 to Done, promote the next Upcoming step to Next Step). PM is the sole party that calls the \
@@ -85,7 +86,10 @@ do NOT write to '## Founder Decisions' — instead file the blocker as a PM-addr
 re-point Next Step to a 'Role: pm' assessment step (see decision-making.md → Autonomous-mode \
 boundary). Only PM sets Role: halt. Do NOT guess and do NOT expand sprint scope (no new queue \
 steps)."; then
-    echo "⛔ claude exited non-zero on step $step — stopping for founder"; break                   # cond 4
+    echo "⛔ claude exited non-zero on step $step — stopping for founder"                          # cond 4
+    echo "   (if this was a heavy step, it may have hit MAX_TURNS=$MAX_TURNS — raise MAX_TURNS and"
+    echo "    re-run to continue, or split the step at planning. Safe to resume: state was not advanced.)"
+    break
   fi
 done
 echo "Run ended at step $step."

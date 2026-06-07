@@ -116,6 +116,9 @@ When a sprint runs unattended (`muster/scripts/muster-sprint-run.sh`), the auton
 ### Wave sizing
 Size a wave as the largest run of steps whose output can be verified in one review pass. Keep waves small enough that one bad wave is cheap to discard. A natural wave boundary is where the surface being built changes (logic → UI) or where a deliverable needs human eyes before later steps build on it.
 
+### Step sizing for autonomous runs
+Each autonomous step is one fresh `claude -p` process with a per-step turn budget (`MAX_TURNS`, default 50). A step that bundles many changes — several bug fixes plus features across many files plus tests — can exhaust that budget mid-work; the loop then stops safely (no state corruption) but the step doesn't finish. Size autonomous steps to fit the budget: **prefer several focused steps over one heavy bundle.** A multi-change bundle a human would do in one manual sitting should be split for autonomous execution — this keeps each step bounded and sharp (the point of fresh-per-step) and avoids turn-cap stalls. Raising `MAX_TURNS` is the escape hatch for a genuinely large step; splitting is the durable answer.
+
 ### Conditional gate flag (the autonomy dial)
 Not every wave needs a human gate. At planning, flag each wave: *does it produce something only a human can verify?*
 - **Backend / logic wave** → covered by automated tests → **no gate step; the loop flows straight through.**
