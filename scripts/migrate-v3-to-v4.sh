@@ -126,6 +126,7 @@ say "muster framework version: ${BOLD}${MUSTER_VERSION}${RESET}"
 section_header "Step 1: Seed missing knowledge-base files (copy-if-absent)"
 
 copied=0
+gitignored=0
 for src in muster/templates/knowledge-base/*; do
     # Top-level files only — subdirectories are handled at setup and have their own structure.
     [ -f "$src" ] || continue
@@ -147,16 +148,19 @@ if grep -qxF ".muster-sprint-logs/" .gitignore 2>/dev/null; then
 else
     [ "$DRY_RUN" -eq 0 ] && { touch .gitignore; printf "%s\n" ".muster-sprint-logs/" >> .gitignore; }
     substep_done "2" ".muster-sprint-logs/ (added to .gitignore)"
+    gitignored=1
 fi
 
 # ---------- summary ----------
 section_header "Migration complete"
 if [ "$DRY_RUN" -eq 1 ]; then
     say "Dry run — no files changed. Re-run without --dry-run to apply."
+elif [ "$copied" -eq 0 ] && [ "$gitignored" -eq 0 ]; then
+    say "Nothing to do — knowledge-base files present and sprint logs already ignored. Project is on v4."
 elif [ "$copied" -eq 0 ]; then
-    say "Nothing to do — all knowledge-base files already present. Project is on v4."
+    say "Knowledge-base files already present; sprint logs now gitignored. Project is now on v4."
 else
-    say "Seeded $copied new knowledge-base file(s). Project is now on v4."
+    say "Seeded $copied new knowledge-base file(s); sprint logs gitignored. Project is now on v4."
 fi
 say ""
 say "Next:"
