@@ -12,7 +12,7 @@ source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard 
 
 QUEUE="knowledge-base/orchestration-queue.md"
 MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
-MAX_TURNS="${MAX_TURNS:-50}"          # per-step model-turn budget — raise for heavy steps
+MAX_TURNS="${MAX_TURNS:-150}"         # per-step model-turn budget — raise for heavy steps
 [ -f "$QUEUE" ] || { echo "No queue at $QUEUE — run from a project root."; exit 1; }
 
 # Fail fast on an unpopulated/partial muster checkout. `git worktree add` does not check out
