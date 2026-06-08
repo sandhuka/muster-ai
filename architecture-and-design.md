@@ -148,6 +148,8 @@ Layer 5: src/                          ACTUAL CODE          "The thing being bui
 
 **Onboarding carve-outs**: greenfield first session and existing-project onboarding skip the picker and force-bind PM, then run the relevant discovery skill (`greenfield-discovery.md` or `reverse-discovery.md`). Picker fires for all subsequent sessions.
 
+**Three operating modes**: the picker above is **Manual** mode — warm tabs you drive. You can also have PM spawn each step as a subagent (**Assisted**), or let a script walk the queue unattended in a worktree (**Autonomous**). All three share the same file-mediated coordination and bind mechanism; they differ in how much you drive. See [operating-modes.md](operating-modes.md) for when to pick each.
+
 ---
 
 ## Data Flow

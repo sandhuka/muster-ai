@@ -315,22 +315,22 @@ Run **once after completing a batch of related framework changes** — not after
 
 ### Invocation Patterns
 
-Muster supports three invocation modes. Use the right one for the moment.
+Muster runs three ways — **Manual**, **Assisted**, and **Autonomous**. Use the right one for the moment; see [operating-modes.md](operating-modes.md) for when to pick each, the cost/quality tradeoffs, and mixing them.
 
-- **Mode A (interactive picker)** — Open Claude in the project. The role picker fires (Coordination / Build / Communicate / Validate → role). Pick the role this session needs. Use for: founder-driven workflow, multi-tab sessions, anything attended.
+- **Manual (warm multi-tab)** — Open Claude in the project; the role picker fires (Coordination / Build / Communicate / Validate → role). Pick the role this session needs, one tab per active role. Each tab stays warm — follow-ups don't re-bootstrap. Use for: founder-driven, attended work; deep iteration with one agent. Power-user shortcut: `MUSTER_ROLE=<role> claude "..."` skips the picker and binds directly (stable role per shell, CI steps with a known role).
 
-- **Mode B (env-var bind)** — `MUSTER_ROLE=<role> claude "..."` skips the picker and binds directly. Use for: scripts, power-users with stable role per shell, CI steps with a known role. Set `MUSTER_ROLE=auto` to bind to whatever role the orchestration queue's Next Step lists (parses the `@<role>` prefix). Use `MUSTER_ROLE=auto` for: orchestrator daemons, scheduled runs, autonomous loops with `--dangerously-skip-permissions`.
+- **Assisted (PM spawns subagents)** — From a role-bound session (usually PM), invoke `Agent({subagent_type: "<role>"})`. The subagent runs with its own startup config (does NOT fire the picker). Use for: PM coordinating a short sequence you watch; parallel or tool-isolated tasks; throwaway cross-role consults.
 
-- **Mode C (subagent)** — From any role-bound session, invoke `Agent({subagent_type: "<role>"})` for parallel work, tool-isolated tasks, or quick cross-role consults. The subagent runs with its own startup config (does NOT fire the picker). Use for: spawning a Developer subagent from a PM tab to do a quick task; same-role parallel work; throwaway cross-role trivia.
+- **Autonomous (sprint loop)** — `MUSTER_ROLE=auto` binds the role named in the queue's Next Step (the `Role:` line), run in a loop by the sprint scripts (`muster-sprint-new.sh` / `-sandbox.sh` / `-run.sh` / `-resume.sh`) inside a git worktree with `--dangerously-skip-permissions`. Walks the queue unattended. Use for: a well-planned sprint you want to run hands-off. See **Autonomous Sprint Execution** below for the mechanics.
 
 **Defaults**:
-- Founder-attended workflow: Mode A. Open one tab per active role; PM tab for planning, specialist tabs for execution.
-- Scripted/CI: Mode B with explicit role.
-- Autonomous orchestration: Mode B with `MUSTER_ROLE=auto`.
+- Attended work: Manual. One tab per active role; PM tab for planning, specialist tabs for execution.
+- Quick coordinated bits / parallel side-work: Assisted.
+- A planned sprint, hands-off: Autonomous.
 
 **Closeout guarantee (all modes):** specialists run the Pre-Handoff Self-Review Checklist before filing any handoff. Item 10 enforces queue + decision-log update — sessions stay state-consistent without PM reconciling after every step.
 
-**Cross-role consult policy**: when a role-bound session needs input from another role, default to **file-based** via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent (Mode C), OR open a new role-bound tab. Test: if the answer would deserve a `decision-log` entry, use file-based instead. Rationale: conversations are ephemeral, files persist.
+**Cross-role consult policy**: when a role-bound session needs input from another role, default to **file-based** via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent (Assisted mode), OR open a new role-bound tab. Test: if the answer would deserve a `decision-log` entry, use file-based instead. Rationale: conversations are ephemeral, files persist.
 
 **Mid-session role swap**: `/rebind` re-fires the picker mid-session. Use when you bound the wrong role at start, or finished one role's work and want to switch without opening a new tab.
 
@@ -338,9 +338,9 @@ Muster supports three invocation modes. Use the right one for the moment.
 
 ### Autonomous Sprint Execution
 
-`muster/scripts/muster-sprint-run.sh` walks the orchestration queue to completion unattended — the machine middle of a sprint whose bookends stay human (plan + approve the queue at the start; review the branch diff and `## Founder Decisions` at the end). It is **Mode B with `MUSTER_ROLE=auto` run in a loop**: each iteration is a fresh `claude -p` process that binds the role named in the queue's Next Step, does the work, files its handoff, and **advances the queue itself** (Pre-Handoff Self-Review item 10). Fresh-process-per-step is deliberate — it keeps every step's context window bounded; do not warm or reuse sessions across steps.
+`muster/scripts/muster-sprint-run.sh` walks the orchestration queue to completion unattended — the machine middle of a sprint whose bookends stay human (plan + approve the queue at the start; review the branch diff and `## Founder Decisions` at the end). It is **Autonomous mode — `MUSTER_ROLE=auto` run in a loop**: each iteration is a fresh `claude -p` process that binds the role named in the queue's Next Step, does the work, files its handoff, and **advances the queue itself** (Pre-Handoff Self-Review item 10). Fresh-process-per-step is deliberate — it keeps every step's context window bounded; do not warm or reuse sessions across steps.
 
-**Observability — the run trail.** Each step streams its work (`--output-format stream-json`) through `muster/scripts/muster-sprint-format.sh`, which prints a live human-readable trail (📖 read · ✏️ edit · 🧪 bash · ⚠️ error · ✓ step done with turn count + cost) and writes two logs under `.muster-sprint-logs/` in the run directory: a scannable `run-<ts>.log` and a full-fidelity `run-<ts>.jsonl` for deep debugging. This is presentation only — the loop's stop conditions key off claude's exit code (`PIPESTATUS[0]`), never the formatter, so a formatter problem can never affect control flow. The driver keeps the most recent `KEEP_RUNS` runs (default 20) and prunes older logs at startup; the log dir is gitignored. Per-step turn budget is `MAX_TURNS` (default 50, env-overridable); a heavy step that exhausts it stops safely (no state advance) — raise `MAX_TURNS` (large but cohesive) or split it along a real seam (`sprint-planning.md` → Size steps by cohesion).
+**Observability — the run trail.** Each step streams its work (`--output-format stream-json`) through `muster/scripts/muster-sprint-format.sh`, which prints a live human-readable trail (📖 read · ✏️ edit · 🧪 bash · ⚠️ error · ✓ step done with turn count + cost) and writes two logs under `.muster-sprint-logs/` in the run directory: a scannable `run-<ts>.log` and a full-fidelity `run-<ts>.jsonl` for deep debugging. This is presentation only — the loop's stop conditions key off claude's exit code (`PIPESTATUS[0]`), never the formatter, so a formatter problem can never affect control flow. The driver keeps the most recent `KEEP_RUNS` runs (default 20) and prunes older logs at startup; the log dir is gitignored. Per-step turn budget is `MAX_TURNS` (default 150, env-overridable); a heavy step that exhausts it stops safely (no state advance) — raise `MAX_TURNS` (large but cohesive) or split it along a real seam (`sprint-planning.md` → Size steps by cohesion).
 
 The driver only **reads** the queue and honors stop signals — it never writes the queue. It stops on any of **four conditions plus a hard cap**:
 1. **Next Step has no fenced code block** (whitespace, or a human-readable "sprint complete" placeholder) → sprint complete. Completion keys on the absence of a ``` fence, matching the `MUSTER_ROLE=auto` contract in `CLAUDE.md`.
