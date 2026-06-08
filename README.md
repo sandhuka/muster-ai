@@ -86,6 +86,18 @@ After Discovery, you follow the orchestration queue. For each step, open a Claud
 
 The status line shows `[muster: <role>]` so you always know which role this session is bound to. `/rebind` swaps roles mid-session if you picked wrong.
 
+## Three ways to run it
+
+Muster runs the same team three ways — pick by how much you want to drive.
+
+| Mode | What it is | Use it when |
+|------|-----------|-------------|
+| **Manual** | A warm tab per role; you hop between them | You're thinking *with* one agent — planning, debugging, design |
+| **Assisted** | One PM tab spawns each specialist as a subagent | PM coordinates a short sequence while you watch |
+| **Autonomous** | A script walks the queue unattended in a git worktree | You've planned a sprint and want to walk away |
+
+Planning is always interactive; execution is where you choose — and you can switch mid-sprint. See [operating-modes.md](operating-modes.md) for the full guide, including the cost and quality tradeoffs.
+
 ## Agent roster
 
 | Agent | Role |
@@ -144,8 +156,12 @@ my-project/
 | [adopting-existing-project.md](adopting-existing-project.md) | Reverse-discovery onboarding for projects with existing code | Adopting Muster into an existing codebase |
 | [architecture-and-design.md](architecture-and-design.md) | Architecture deep dive — data flow, context management, agent communication | Evaluating whether to adopt Muster |
 | [system-guide.md](system-guide.md) | Templates, extensibility, verification checklist | Adding agents, skills, or modifying the framework |
+| [operating-modes.md](operating-modes.md) | The three ways to run a sprint — Manual, Assisted, Autonomous — with cost/quality tradeoffs | Choosing how to run a sprint |
+| [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md) | Upgrade an existing v3 project to v4 (autonomous sprint execution) | Adopting v4 from an existing v3 project |
 | [MIGRATING-V2-TO-V3.md](MIGRATING-V2-TO-V3.md) | Upgrade an existing v2 project to v3 (role-picker, status line, /rebind) | Adopting v3 from an existing v2 project |
 | [MIGRATING-V1-TO-V2.md](MIGRATING-V1-TO-V2.md) | One-shot migration for projects set up before v2 | A `muster/` update halted with "Pre-v2 Muster setup detected" |
+
+Current framework version: **4** (autonomous sprint execution). Upgrading an existing project? Bump the `muster/` submodule and run `muster/scripts/migrate-v3-to-v4.sh` — see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md).
 
 ## Stay updated
 

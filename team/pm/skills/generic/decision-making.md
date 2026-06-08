@@ -82,9 +82,15 @@ Defines what the PM decides alone vs. what requires founder approval.
 - Sprint timing adjustments (extending a task, reordering)
 - Bug severity classification and bug type classification (see `sprint-planning.md` Bug Routing Protocol)
 - Research interpretation when recommendation is clear and unanimous
+- Engineering hygiene and naming (refactors with no behavior change)
+- Test-infrastructure quality
+- Comment / documentation discipline
+- Internal tooling
+- Tech debt with no user-facing change
+- Non-surface performance (work off the user-facing hot path)
 
 ### PM Escalates to Founder
-- Feature scope changes (adding/removing from MVP)
+- Feature scope changes (adding/removing from MVP) — i.e. product scope
 - Monetization or pricing changes
 - Brand positioning changes
 - Architecture decisions with long-term lock-in
@@ -93,6 +99,14 @@ Defines what the PM decides alone vs. what requires founder approval.
 - Any decision where PM confidence is below 7/10
 - Spending decisions (paid tools, services)
 - Go/no-go on milestone gates
+- Foundational-assumption invalidation (a decision that breaks an active assumption in `foundational-assumptions.md`)
+- Roadmap reordering
+- Release / submission strategy
+- New external dependencies
+
+### Decide vs. visibility, and the self-check
+- **"PM decides alone" means "PM decides without waiting on the founder," NOT "the founder never sees it."** Milestone-relevant items a PM handles autonomously still stay visible to the founder through `pre-launch-checklist.md` (CLAUDE.md Rule 10 gates them at beta / submission / launch). Deciding without a live founder is not the same as hiding the decision.
+- **Senior-PM self-check** (use when the matrix doesn't obviously place something): *"Would a senior PM here get pushback for handling this without the founder? No → handle. Yes → escalate."* This is the tie-breaker the lists above are shorthand for.
 
 ### How to Escalate
 When the PM encounters a decision requiring founder input, add an entry to the **Founder Decisions** section of `knowledge-base/orchestration-queue.md` using this format:
@@ -108,6 +122,16 @@ When the PM encounters a decision requiring founder input, add an entry to the *
 **Surfacing rule**: When you write a Founder Decision, you must also tell the founder directly in the current session output — do not just write to the file silently. State the decision title, your recommendation, and what's blocked. The file entry is the record; the session output is the alert.
 
 The founder responds by editing the file directly or in the next PM session. PM reads the response on its next invocation and acts on it.
+
+### Autonomous-mode boundary
+When PM runs inside an autonomous sprint loop (no founder live in the session):
+- **PM is the sole escalation authority.** Only PM (or a planned wave gate, which PM authors at planning) summons the founder by setting `Role: halt`. Specialists never call the founder directly — a specialist that hits a block routes it to PM (see below), and PM applies the Decision Autonomy Matrix to decide handle-vs-escalate. This is the single escalation path: agent → PM → (matrix) → founder only if PM cannot resolve it. It keeps PM aware of every block so the queue, decision-log, and context files stay current, and it catches over-escalation (a specialist that thinks it needs the founder when PM can decide).
+- **A blocked specialist routes to PM, it does not halt.** When a specialist cannot complete its step (a decision it lacks authority for, a missing input, a bug it cannot crack), it does **not** set `Role: halt` and does **not** advance to the next planned step. It writes the blocker as a PM-addressed request and re-points `## Next Step` to a `Role: pm` assessment step describing the blocker. The loop then binds PM, which either resolves it (decides per the matrix, files a REQ back to the specialist, re-queues the specialist's step) or escalates.
+- **Never expand approved sprint scope.** PM must not auto-promote new queue steps for work not in the approved plan. A genuine scope need is a `## Founder Decisions` escalation (non-halting), not an autonomous action. Consistent with "Feature scope changes → escalate."
+- **How PM escalates a hard block.** When PM determines a block genuinely needs the founder (or a deliverable cannot be accepted and downstream depends on it), write the question to `## Founder Decisions` **and** set the Next Step block's `Role:` to `halt` so the loop stops. Blocking non-acceptance is bounded by the existing revision cap (`agent-management.md` → Revision Loop Escalation: 3+ revision items escalates to the founder) — in autonomous mode that escalation takes the `Role: halt` form, set by PM.
+- **Surfacing rule adapts:** the "tell the founder directly in session output" rule becomes — the run log is the alert; `## Founder Decisions` is the record.
+- **The full HALTING set** (all set by PM, or pre-authored by PM as a planned gate): a block PM assessed as needing the founder; blocking non-acceptance (downstream depends on a deliverable that can't pass review); a **planned wave gate** (a checkpoint PM inserts at planning for a wave only a human can verify — resumed via `muster/scripts/muster-sprint-resume.sh`); a **red build or failing tests** (a specialist routes this to PM, and PM halts rather than starting an auto-fix — see the mechanical-gate rule in `sprint-planning.md`).
+- **Non-halting:** observation and scope escalations park in `## Founder Decisions` and the loop continues — only the HALTING set above stops it. If observation/scope escalations halted, a long run would stop on the first one and autonomy would be theater.
 
 ## Decision Principles
 - **Log decisions in real time, not retrospectively.** A decision without a log entry didn't happen — future agents and sprints will re-litigate it.

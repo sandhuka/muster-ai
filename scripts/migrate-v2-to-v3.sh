@@ -4,7 +4,8 @@ set -euo pipefail
 # Muster — Migrate v2 → v3
 #
 # Updates an existing Muster v2 project to v3 (role-binding, status-line,
-# /rebind, MUSTER_ROLE env var, autonomous mode). Run from the project root.
+# /rebind, MUSTER_ROLE env var). Run from the project root.
+# (Autonomous sprint execution is v4 — see migrate-v3-to-v4.sh.)
 #
 # Usage:
 #   bash muster/scripts/migrate-v2-to-v3.sh

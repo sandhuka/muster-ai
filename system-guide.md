@@ -315,26 +315,59 @@ Run **once after completing a batch of related framework changes** — not after
 
 ### Invocation Patterns
 
-Muster supports three invocation modes. Use the right one for the moment.
+Muster runs three ways — **Manual**, **Assisted**, and **Autonomous**. Use the right one for the moment; see [operating-modes.md](operating-modes.md) for when to pick each, the cost/quality tradeoffs, and mixing them.
 
-- **Mode A (interactive picker)** — Open Claude in the project. The role picker fires (Coordination / Build / Communicate / Validate → role). Pick the role this session needs. Use for: founder-driven workflow, multi-tab sessions, anything attended.
+- **Manual (warm multi-tab)** — Open Claude in the project; the role picker fires (Coordination / Build / Communicate / Validate → role). Pick the role this session needs, one tab per active role. Each tab stays warm — follow-ups don't re-bootstrap. Use for: founder-driven, attended work; deep iteration with one agent. Power-user shortcut: `MUSTER_ROLE=<role> claude "..."` skips the picker and binds directly (stable role per shell, CI steps with a known role).
 
-- **Mode B (env-var bind)** — `MUSTER_ROLE=<role> claude "..."` skips the picker and binds directly. Use for: scripts, power-users with stable role per shell, CI steps with a known role. Set `MUSTER_ROLE=auto` to bind to whatever role the orchestration queue's Next Step lists (parses the `@<role>` prefix). Use `MUSTER_ROLE=auto` for: orchestrator daemons, scheduled runs, autonomous loops with `--dangerously-skip-permissions`.
+- **Assisted (PM spawns subagents)** — From a role-bound session (usually PM), invoke `Agent({subagent_type: "<role>"})`. The subagent runs with its own startup config (does NOT fire the picker). Use for: PM coordinating a short sequence you watch; parallel or tool-isolated tasks; throwaway cross-role consults.
 
-- **Mode C (subagent)** — From any role-bound session, invoke `Agent({subagent_type: "<role>"})` for parallel work, tool-isolated tasks, or quick cross-role consults. The subagent runs with its own startup config (does NOT fire the picker). Use for: spawning a Developer subagent from a PM tab to do a quick task; same-role parallel work; throwaway cross-role trivia.
+- **Autonomous (sprint loop)** — `MUSTER_ROLE=auto` binds the role named in the queue's Next Step (the `Role:` line), run in a loop by the sprint scripts (`muster-sprint-new.sh` / `-sandbox.sh` / `-run.sh` / `-resume.sh`) inside a git worktree with `--dangerously-skip-permissions`. Walks the queue unattended. Use for: a well-planned sprint you want to run hands-off. See **Autonomous Sprint Execution** below for the mechanics.
 
 **Defaults**:
-- Founder-attended workflow: Mode A. Open one tab per active role; PM tab for planning, specialist tabs for execution.
-- Scripted/CI: Mode B with explicit role.
-- Autonomous orchestration: Mode B with `MUSTER_ROLE=auto`.
+- Attended work: Manual. One tab per active role; PM tab for planning, specialist tabs for execution.
+- Quick coordinated bits / parallel side-work: Assisted.
+- A planned sprint, hands-off: Autonomous.
 
 **Closeout guarantee (all modes):** specialists run the Pre-Handoff Self-Review Checklist before filing any handoff. Item 10 enforces queue + decision-log update — sessions stay state-consistent without PM reconciling after every step.
 
-**Cross-role consult policy**: when a role-bound session needs input from another role, default to **file-based** via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent (Mode C), OR open a new role-bound tab. Test: if the answer would deserve a `decision-log` entry, use file-based instead. Rationale: conversations are ephemeral, files persist.
+**Cross-role consult policy**: when a role-bound session needs input from another role, default to **file-based** via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent (Assisted mode), OR open a new role-bound tab. Test: if the answer would deserve a `decision-log` entry, use file-based instead. Rationale: conversations are ephemeral, files persist.
 
 **Mid-session role swap**: `/rebind` re-fires the picker mid-session. Use when you bound the wrong role at start, or finished one role's work and want to switch without opening a new tab.
 
 **Status line**: `[muster: <role>]` shows the bound role at the bottom of the terminal. Updates after every bind. `[muster: unbound]` indicates the bind file is missing for this session (shouldn't happen in normal flow).
+
+### Autonomous Sprint Execution
+
+`muster/scripts/muster-sprint-run.sh` walks the orchestration queue to completion unattended — the machine middle of a sprint whose bookends stay human (plan + approve the queue at the start; review the branch diff and `## Founder Decisions` at the end). It is **Autonomous mode — `MUSTER_ROLE=auto` run in a loop**: each iteration is a fresh `claude -p` process that binds the role named in the queue's Next Step, does the work, files its handoff, and **advances the queue itself** (Pre-Handoff Self-Review item 10). Fresh-process-per-step is deliberate — it keeps every step's context window bounded; do not warm or reuse sessions across steps.
+
+**Observability — the run trail.** Each step streams its work (`--output-format stream-json`) through `muster/scripts/muster-sprint-format.sh`, which prints a live human-readable trail (📖 read · ✏️ edit · 🧪 bash · ⚠️ error · ✓ step done with turn count + cost) and writes two logs under `.muster-sprint-logs/` in the run directory: a scannable `run-<ts>.log` and a full-fidelity `run-<ts>.jsonl` for deep debugging. This is presentation only — the loop's stop conditions key off claude's exit code (`PIPESTATUS[0]`), never the formatter, so a formatter problem can never affect control flow. The driver keeps the most recent `KEEP_RUNS` runs (default 20) and prunes older logs at startup; the log dir is gitignored. Per-step turn budget is `MAX_TURNS` (default 150, env-overridable); a heavy step that exhausts it stops safely (no state advance) — raise `MAX_TURNS` (large but cohesive) or split it along a real seam (`sprint-planning.md` → Size steps by cohesion).
+
+The driver only **reads** the queue and honors stop signals — it never writes the queue. It stops on any of **four conditions plus a hard cap**:
+1. **Next Step has no fenced code block** (whitespace, or a human-readable "sprint complete" placeholder) → sprint complete. Completion keys on the absence of a ``` fence, matching the `MUSTER_ROLE=auto` contract in `CLAUDE.md`.
+2. **`Role: halt`** → PM escalated a block to the founder (it also wrote the question to `## Founder Decisions`), or a planned wave gate was reached. **PM is the sole escalation authority** — a specialist that hits a block routes it to a `Role: pm` assessment step rather than halting itself, and PM decides handle-vs-escalate per the Decision Autonomy Matrix (`team/pm/skills/generic/decision-making.md` → Autonomous-mode boundary). There is no checkbox convention; `Role: halt` is the signal.
+3. **Next Step unchanged** after a step → the agent didn't advance the queue (stuck / failed). This is also the safety net for an agent that forgets to advance.
+4. **Non-zero exit** from `claude` → stop for the founder.
+- **`MAX_STEPS`** (default 30, env-overridable) is a cost circuit-breaker.
+
+A Next Step block that has a fenced code block but no `Role:` line defaults to `pm` (PM steps may omit the marker); a block with no fenced code block means "complete." The block is bounded at the next `## ` heading **or** an `Upcoming` heading of any level, so the loop reads the true Next Step even in older projects that nest the upcoming list as `### Upcoming`.
+
+**Handoff-integrity lint** (`muster/scripts/muster-lint-handoff.sh`, called at the top of each iteration): the most-recent `## Done` entry's `HO-NNN` references must already be filed in `agent-requests.md`. A dangling reference (Done entry advanced, handoff never filed) **stops** the loop — it does not auto-file. Zero-padding is normalized (`HO-37` ≡ `HO-037`); all referenced IDs are checked; Done entries with no HO reference (PM / coordination steps) are skipped.
+
+**One-step-per-Next-Step guard** (driver, each iteration): `## Next Step` must hold exactly one fenced step. The driver counts fence openings — so a `### ` heading inside a step's prompt body is safe — and **stops** if it finds more than one, which keeps a changes-requested fix's closeout from promoting the wrong step and dropping the re-review gate. See `team/pm/skills/generic/sprint-planning.md` → Changes-requested processing for the authoring convention.
+
+**Worktree only — never the main checkout.** Running `--dangerously-skip-permissions` unattended on the primary tree is irreversible, so the driver refuses to start there unless `MUSTER_SPRINT_ALLOW_PRIMARY=1` is set. Use `muster/scripts/muster-sprint-sandbox.sh`, which creates an isolated worktree on a fresh `sprint/auto-*` branch, populates the `muster/` submodule in it (`git worktree add` does not check out submodules), runs the loop there, and prints review/merge/discard commands. (Manual equivalent: `git worktree add ../<proj>-sprint -b sprint/auto-<stamp>`, `git -C ../<proj>-sprint submodule update --init --recursive`, then run the driver inside it.) The worktree inherits the **committed** submodule pointer — if you've bumped `muster/` to a different ref, commit that pointer in the project first, or the sandbox runs the old version.
+
+**Resume is free.** After answering a parked blocker (or clearing the condition that stopped the loop), re-run the driver in the same worktree — file state makes it continue from where it stopped. No resume flag.
+
+**Wave gates** make the autonomous unit a *wave* rather than the whole sprint, so a bad wave is contained instead of compounding across a sprint. They ride entirely on existing mechanics — `muster-sprint-run.sh` does not change:
+- A wave gate is a **planned `Role: halt` step** PM inserts at the end of a wave that needs human verification (UI/behavioral waves; logic waves covered by tests flow straight through). Its block points to the build and to `knowledge-base/wave-review.md`.
+- **`wave-review.md`** (template in `templates/knowledge-base/`; PM-owned; tier-2, read on demand) is the file-mediated I/O contract: PM writes the human-only verification checklist (Output) at the gate; the founder writes the verdict (Input). The loop never parses it — PM reads it on resume. This is the seam a future remote/mobile feedback bridge plugs into.
+- A mechanical `Role: halt` can't self-clear, so resume across a gate uses **`muster/scripts/muster-sprint-resume.sh`**, run **from inside the sprint worktree** (it acts on the CWD's queue and `wave-review.md`; it carries the same Tier-1 worktree guard as the driver): it has PM process the founder's verdict (insert a fix step per bug, or clear the gate and promote the next wave on approval — if no verdict is present yet it leaves the gate in place), then re-enters the loop. Each resume restarts the loop with a fresh step counter, so `MAX_STEPS` naturally scopes per wave-segment.
+- **Mechanical inside-wave gate:** agents must not advance the queue past a red build or failing tests — the specialist routes the failure to a `Role: pm` assessment step and PM halts (no auto-fix) — see `team/pm/skills/generic/sprint-planning.md` → Wave Gates and the halting set in `decision-making.md`.
+
+**Observations are non-blocking.** Agents may file observations (handoff Observations block); PM triages them per `team/pm/skills/generic/observation-triage.md`. Escalated observations park in `## Founder Decisions` and the loop keeps running — only the halting set above stops it. Triage never adds queue steps (no autonomous scope mutation), and handle-vs-escalate is decided solely by the Decision Autonomy Matrix. (When a wave gate is present, founder gate feedback is itself triaged through this same mechanism.)
+
+**Mixing modes during an autonomous run.** The autonomous loop is not exclusive — because all coordination is file-mediated and the loop runs in a worktree, you can drop into a warm tab (open a role-bound session *inside the same worktree*) to hand-hold work the loop is poor at — most often iterative debugging of a runtime bug the loop keeps failing to fix. (The autonomous loop is for forward progress on planned, test-verifiable work; deep iterative debugging is warm-tab work — recognize the class early rather than round-tripping the loop on it. The revision cap, `agent-management.md`, is the built-in non-convergence signal that surfaces as a PM halt — your cue to take it manual.) Two rules keep this safe: (1) **drive manually only while the loop is stopped** — never run the loop mid-step while a manual tab writes the same files (a race); (2) **every manual excursion ends with PM closeout before you resume** — hand the specialist's summary to PM so PM updates the queue, decision-log, and context files, *then* re-run the driver. Rule 2 is the same gatekeeping invariant (PM sees the state before things move on), just human-initiated; skipping it resumes the loop on stale state.
 
 ### Agent Communication Protocol
 
@@ -365,7 +398,14 @@ Agents communicate via `knowledge-base/agent-requests.md` using two entry types.
 
 **Revision log:**
 - DATE: Description of revision or feedback event.
+
+**Observations** (optional — items NOT tied to deliverable acceptance; omit the block when there's nothing to raise):
+- OBS-NNN — [title]   Severity: low | med | high
+  Evidence: [what was seen; file:line where possible]
+  Suggested action: [1 sentence, or "PM decides"]
 ```
+
+Observations let an agent flag something it noticed that isn't part of whether this deliverable passes — tech debt, a hygiene issue, a scope idea. They are **non-blocking by definition**: filing one never holds up the handoff or (in autonomous runs) stops the loop. PM triages them per `team/pm/skills/generic/observation-triage.md`. IDs are HO-scoped (`OBS-001`, `OBS-002` within a handoff); reference across handoffs as `OBS-001 (HO-NNN)`. Soft cap ~3 per handoff — more than that usually means a deliverable problem that belongs in the revision log instead.
 
 #### Status Lifecycles
 - Requests: `open` -> `done`
@@ -395,7 +435,7 @@ Before filing a handoff, the producing agent MUST run this self-review:
 7. **Missing assets**: List assets the agent cannot produce (logos, illustrations) as founder dependencies.
 8. **Test failure discipline**: If a test failure surfaces in your run, do NOT label it "flaky" or "pre-existing" without a root-cause look. A failure may be tagged "flaky" exactly once across handoffs; on its second appearance, the next agent that observes it MUST either root-cause it, quarantine it with a filed bug ID, or escalate to PM. Copy-pasting prior handoffs' "flaky test, scoped to QA regression" language forward across multiple sessions is a self-review violation — it masks deterministic bugs under the cover of a false story.
 9. **Durability discipline** (Rule 15): Strip bug IDs, handoff IDs, session-date stamps, sprint / wave references, "previously / now" framings, and specific-agent mentions from durable artifacts (source code, product spec, design specs, brand docs, architecture, test strategy, foundational assumptions, agent-skills). That history belongs in `agent-requests.md`, `orchestration-queue.md`, `current-sprint.md`, `decision-log.md`, and git commits.
-10. **Session closeout**: Update `orchestration-queue.md` — mark your step Done (one-line summary; trim oldest if Done exceeds 10) and promote the next Upcoming step to Next Step. Append any resolved decisions to `decision-log.md`. If your handoff needs review before the next step proceeds, add an "Awaiting review" note to the Done entry.
+10. **Session closeout**: Update `orchestration-queue.md` — add your step to the top of `## Done` (newest first) and promote the next Upcoming step to Next Step (trim oldest if Done exceeds 10). A specialist Done entry is a **one-line pointer to the handoff, not a substitute for it**: `- DATE — Step N: <title> (HO-NNN). <one-line outcome>.` If it grows past ~5 lines, the summary content belongs in the HO body, not the queue. Append any resolved decisions to `decision-log.md`. If your handoff needs review before the next step proceeds, add an "Awaiting review" note to the Done entry.
 
 If any check fails, fix before filing. Log what self-review caught in the revision log.
 

@@ -349,6 +349,7 @@ if ! state_has_step "gitignore_updated"; then
         ".muster-setup-state.json"
         ".claude/.muster-bound-role.*"
         ".claude/.muster-last-role"
+        ".muster-sprint-logs/"
     )
 
     touch .gitignore
