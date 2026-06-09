@@ -410,6 +410,7 @@ Observations let an agent flag something it noticed that isn't part of whether t
 #### Status Lifecycles
 - Requests: `open` -> `done`
 - Handoffs: `open` -> `in-review` -> `needs-revision` (if flagged) -> `done` (all reviewers complete)
+- A handoff also reaches `done` via **boundary reconciliation**: when its deliverable was validated collectively by a later regression/validation handoff rather than by its own reviewer ticks, PM closes it at sprint closeout citing the covering HO. See `team/pm/skills/generic/sprint-planning.md` Sprint Closeout (run via `muster/scripts/muster-list-open-items.sh`).
 
 #### Self-Cleaning Rules
 - The agent that flips status to `done` moves the entry to Resolved as a one-liner. If completing a request also creates a handoff (REQ -> HO), move the request to Resolved first.

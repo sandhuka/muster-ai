@@ -160,8 +160,9 @@ my-project/
 | [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md) | Upgrade an existing v3 project to v4 (autonomous sprint execution) | Adopting v4 from an existing v3 project |
 | [MIGRATING-V2-TO-V3.md](MIGRATING-V2-TO-V3.md) | Upgrade an existing v2 project to v3 (role-picker, status line, /rebind) | Adopting v3 from an existing v2 project |
 | [MIGRATING-V1-TO-V2.md](MIGRATING-V1-TO-V2.md) | One-shot migration for projects set up before v2 | A `muster/` update halted with "Pre-v2 Muster setup detected" |
+| [CHANGELOG.md](CHANGELOG.md) | Version history — what changed at each bump | Tracing behavior to a framework version |
 
-Current framework version: **4** (autonomous sprint execution). Upgrading an existing project? Bump the `muster/` submodule and run `muster/scripts/migrate-v3-to-v4.sh` — see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md).
+Current framework version: **4.1** (autonomous sprint execution + handoff boundary reconciliation; see [CHANGELOG.md](CHANGELOG.md)). Upgrading an existing v3 project to v4? Bump the `muster/` submodule and run `muster/scripts/migrate-v3-to-v4.sh` — see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md). The 4.0 → 4.1 bump is additive — it arrives with a pointer bump, no migration.
 
 ## Stay updated
 
