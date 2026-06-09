@@ -8,7 +8,7 @@
 
 ## Planning Process
 0. **Run QA consistency audit** — invoke QA with `consistency-audit.md` skill before planning. Fix all findings before proceeding. This is mandatory at every sprint boundary.
-1. Review knowledge-base/current-sprint.md for carry-over items
+1. **Catch anything an interrupted closeout left behind**: run `bash muster/scripts/muster-list-open-items.sh` and reconcile any lingering items per Sprint Closeout step 5 (close-if-validated / carry-forward / defer) before building the new queue — covers the case where the prior sprint's closeout session ended before the board was reconciled. Then review knowledge-base/current-sprint.md for carry-over items
 2. Review knowledge-base/decision-log.md for new decisions needing implementation, and scan `knowledge-base/triage-log.md` **DEFER** entries — deferred observations that were parked for "later" are candidates to pull into this sprint (see `observation-triage.md`)
 3. Break down work into agent-specific tasks with clear deliverables
 4. Identify cross-agent dependencies and sequence work (upstream first)
@@ -61,9 +61,10 @@ This project is run by a solo founder working with AI agents sequentially — NO
 2. Move completed tasks from Current Tasks to decision-log.md as accomplishments
 3. Carry over incomplete tasks with updated priority/notes
 4. Write sprint summary in current-sprint.md
-5. **Archive completed sprint**: Move the completed sprint's task board and summary from current-sprint.md to `knowledge-base/sprint-archive.md`. Only the active sprint should remain in current-sprint.md.
-6. **Archive old decisions**: Move decision-log.md entries from before the current sprint to `knowledge-base/decision-log-archive.md`. Keep only entries from the current sprint in the active log.
-7. Plan next sprint
+5. **Reconcile the communication board**: Run `bash muster/scripts/muster-list-open-items.sh` (deterministic enumeration of everything still unresolved in `agent-requests.md` + `research/change-log.md`; detection only — it never blocks closeout). For each **handoff** it lists: if the deliverable was validated — by its own reviewers OR by a later validation/regression handoff — flip it to `done` and move it to Resolved with a one-liner citing the covering HO; otherwise carry it forward with a note. For each **request / research item**: carry-or-defer explicitly. **Conservative default — if you cannot confirm validation, carry forward; never close on assumption.** Invariant: no prior-sprint handoff stays `in-review` after closeout. (Resolved is capped at 10; bulk closures trim oldest — full history lives in git.)
+6. **Archive completed sprint**: Move the completed sprint's task board and summary from current-sprint.md to `knowledge-base/sprint-archive.md`. Only the active sprint should remain in current-sprint.md.
+7. **Archive old decisions**: Move decision-log.md entries from before the current sprint to `knowledge-base/decision-log-archive.md`. Keep only entries from the current sprint in the active log.
+8. Plan next sprint
 
 ## Blocker Protocol
 A blocker is any condition that prevents an agent from completing their assigned task.
