@@ -39,12 +39,23 @@ mkdir -p "$LOGDIR" 2>/dev/null || true
 # the worktree/bash context the loop runs in). Count-based: debugging artifacts, kept across runs.
 KEEP_RUNS="${KEEP_RUNS:-20}"
 ls -1t "$LOGDIR"/run-*.log 2>/dev/null | tail -n +"$((KEEP_RUNS+1))" | while IFS= read -r old; do
-  rm -f "$old" "${old%.log}.jsonl"
+  rm -f "$old" "${old%.log}.jsonl" "${old%.log}.metrics"
 done
-RUN_TS="$(date +%Y%m%d-%H%M%S)"
+RUN_TS="$(date +%Y%m%d-%H%M%S)-$$"   # PID suffix: two runs in the same second must not share logs
 HUMANLOG="$LOGDIR/run-$RUN_TS.log"     # readable trail (scannable)
 RAWLOG="$LOGDIR/run-$RUN_TS.jsonl"     # full-fidelity stream-json (deep debug)
-echo "📓 trail: $HUMANLOG  (raw: $RAWLOG)"
+METRICS="$LOGDIR/run-$RUN_TS.metrics"  # formatter-written, one line per step — summary table source
+
+# Trail layout: heavy rules (═) mark only the places a human decision lives — run start, a halt,
+# run end. Per-step lines carry the QUEUE's own step heading; the iteration counter is plumbing
+# (the MAX_STEPS circuit-breaker) and surfaces only at run start, near the cap, and when it fires.
+RULE_H="═══════════════════════════════════════════════════════════"
+RULE_L="───────────────────────────────────────────────────────────"
+{ echo "📓 sprint trail · run-$RUN_TS  (run budget: $MAX_STEPS steps)"
+  echo "   log: $HUMANLOG · raw: $RAWLOG"
+  echo "$RULE_H"
+  echo
+} | tee -a "$HUMANLOG"
 
 # Text of the Next Step block: everything between '## Next Step' and the boundary that ends it.
 # The boundary is the next top-level '## ' heading OR an 'Upcoming' heading at ANY level. Older
@@ -89,39 +100,121 @@ next_step_count(){
   ' "$QUEUE"
 }
 
+# Human label for a step: the first markdown heading line inside the Next Step block
+# (e.g. '### Step 16 — Content: browser copy' -> 'Step 16 — Content: browser copy').
+# Echoed text for the trail and commit messages ONLY — never parsed for control: step numbering
+# is a PM authoring convention, not a contract (32.5 / 9-fix-2 / unnumbered fixes are legitimate).
+next_label(){
+  printf '%s\n' "$1" | sed -n 's/^#\{1,4\}[[:space:]]\{1,\}//p' | head -1
+}
+
+# Optional per-step model override: a 'Model: <id>' line inside the fenced block, same parsing
+# pattern as 'Role:'. Absent -> empty -> no --model flag -> the session default applies. An
+# invalid id makes claude exit non-zero -> stop condition 4 catches it; no validation here, and
+# the value is only ever echoed into the flag — never branched on.
+next_model(){
+  printf '%s' "$1" | grep -m1 -i '^Model:' | sed 's/^[Mm]odel:[[:space:]]*//'
+}
+
+# Founder channels — terminal output of an autonomous step is never read by the founder, so
+# "tell the founder X" executed in chat is a swallowed notification. The durable channel is
+# knowledge-base/founder-notices.md (agents append dated one-line FYIs); the driver diffs it
+# after each step and echoes new entries loudly. It also alerts when '## Founder Decisions'
+# changes mid-run (escalated observations park there while the loop keeps running). Read-only
+# diffs — the driver never writes either channel. Missing notices file = no notices (older
+# projects); agents create it on first append.
+NOTICES="knowledge-base/founder-notices.md"
+fd_section(){ awk '/^## Founder Decisions/{f=1;next} f&&/^## /{f=0} f' "$QUEUE" 2>/dev/null | cksum; }
+notices_seen="$(wc -l < "$NOTICES" 2>/dev/null | tr -d ' ')"; notices_seen="${notices_seen:-0}"
+fd_snap="$(fd_section)"
+notices_run=0
+report_founder_channels(){
+  local now fd
+  now="$(wc -l < "$NOTICES" 2>/dev/null | tr -d ' ')"; now="${now:-0}"
+  if [ "$now" -gt "$notices_seen" ]; then
+    { echo "  📣 FOUNDER NOTICE:"
+      sed -n "$((notices_seen+1)),${now}p" "$NOTICES" | sed 's/^/     /'
+    } | tee -a "$HUMANLOG"
+    notices_run=$((notices_run + now - notices_seen))
+    notices_seen="$now"
+  fi
+  fd="$(fd_section)"
+  if [ "$fd" != "$fd_snap" ]; then
+    echo "  📌 '## Founder Decisions' changed this step — review $QUEUE" | tee -a "$HUMANLOG"
+    fd_snap="$fd"
+  fi
+  return 0
+}
+
 step=0; prev=""
+reason="interrupted"; reason_note=""; executed=0; ROWS=""
 while :; do
   step=$((step+1))
-  [ "$step" -gt "$MAX_STEPS" ] && { echo "⛔ MAX_STEPS=$MAX_STEPS reached — stopping"; break; }
+  if [ "$step" -gt "$MAX_STEPS" ]; then
+    nl="$(next_label "$(next_block)")"
+    { echo "⛔ Run cap reached (MAX_STEPS=$MAX_STEPS) — cost circuit-breaker, not an error."
+      echo "   Sprint position is saved in the queue (next: ${nl:-see $QUEUE})."
+      echo "   Re-run muster-sprint-run.sh to continue with a fresh $MAX_STEPS-step budget."
+    } | tee -a "$HUMANLOG"
+    reason="run cap"; break
+  fi
 
   # Handoff-integrity lint (§7.8): the most-recent Done entry's HO refs must be filed.
   # Top-of-loop so it also gates resume — a missing HO must exist before proceeding.
   if ! bash "$LINT" "$QUEUE" "knowledge-base/agent-requests.md"; then
-    echo "⛔ Handoff missing for most-recent Done entry — stopping for founder"; break          # cond: HO-existence
+    echo "⛔ Handoff missing for most-recent Done entry — stopping for founder" | tee -a "$HUMANLOG" # cond: HO-existence
+    reason="handoff lint"; break
   fi
 
-  role="$(next_role)"
-  [ -z "$role" ]       && { echo "✅ Next Step empty — sprint complete"; break; }                  # cond 1
-  [ "$role" = halt ]   && { echo "⛔ Role: halt — agent hard-block, handing to founder"; break; }  # cond 2
-
   blk="$(next_block)"
+  role="$(next_role)"
+  label="$(next_label "$blk")"
+
+  if [ -z "$role" ]; then                                                                          # cond 1
+    echo "✅ Next Step empty — sprint complete" | tee -a "$HUMANLOG"
+    reason="sprint complete"; break
+  fi
+  if [ "$role" = halt ]; then                                                                      # cond 2
+    { echo "$RULE_H"
+      echo "⛔ HALT — ${label:-founder checkpoint}   (Role: halt)"
+      echo
+      echo "   The loop stopped for founder input — nothing is wrong."
+      echo "   • Wave gate: review knowledge-base/wave-review.md, write your verdict in its"
+      echo "     ## Verdict section, then run: bash muster/scripts/muster-sprint-resume.sh"
+      echo "     (from this worktree)."
+      echo "   • PM escalation: see '## Founder Decisions' in $QUEUE, answer, then re-run"
+      echo "     muster-sprint-run.sh."
+      echo "$RULE_H"
+    } | tee -a "$HUMANLOG"
+    reason="halt"; reason_note="${label:-Role: halt}"
+    ROWS="${ROWS}$(printf '  %-36.36s %5s' "${label:-Role: halt}" "halt")"$'\n'
+    break
+  fi
   # Queue-contract guard: '## Next Step' must hold exactly ONE step. PM gate-processing of a
   # changes-requested verdict can mis-place a re-review gate as a 2nd step here; the fix's closeout
   # could then promote the wrong step and drop the gate (skipped human re-review). Catch it
   # deterministically — a mechanical integrity check, symmetric with the handoff lint (not policy).
   steps="$(next_step_count)"
   [ "${steps:-0}" -gt 1 ] && {
-    echo "⛔ '## Next Step' holds $steps steps — the contract is one step per Next Step."           # cond: one-step-per-next-step
-    echo "   Extra steps (e.g. a re-review gate) belong under '## Upcoming'. Stopping for founder."
-    break
+    { echo "⛔ '## Next Step' holds $steps steps — the contract is one step per Next Step."         # cond: one-step-per-next-step
+      echo "   Extra steps (e.g. a re-review gate) belong under '## Upcoming'. Stopping for founder."
+    } | tee -a "$HUMANLOG"
+    reason="queue guard"; break
   }
-  [ "$blk" = "$prev" ] && { echo "⛔ Next Step unchanged — agent didn't advance / failure"; break; } # cond 3
+  [ "$blk" = "$prev" ] && {                                                                         # cond 3
+    echo "⛔ Next Step unchanged — agent didn't advance / failure" | tee -a "$HUMANLOG"
+    reason="step did not advance"; reason_note="$label"; break
+  }
   prev="$blk"
 
-  echo "▶ step $step → role: $role" | tee -a "$HUMANLOG"
+  model="$(next_model "$blk")"
+  hdr="▶ ${label:-step $step (role: $role)}"
+  [ -n "$model" ] && hdr="$hdr  [$model]"
+  echo "$hdr" | tee -a "$HUMANLOG"
   # Stream the step's work through the formatter (live trail + logs). PIPESTATUS[0] is claude's
   # own exit code — the formatter/tee cannot change it, so cond-4 stays accurate (verified).
   MUSTER_ROLE=auto claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
+        ${model:+--model} ${model:+"$model"} \
         --output-format stream-json --verbose \
         "Execute the current Next Step in $QUEUE end-to-end: do the work, file your handoff, \
 run the Pre-Handoff Self-Review (muster/system-guide.md), and update the queue (move your step \
@@ -130,15 +223,27 @@ founder: if you are a specialist and hit a blocker you cannot resolve (a decisio
 authority for, a missing input, a bug you cannot crack, a red build), do NOT set Role: halt and \
 do NOT write to '## Founder Decisions' — instead file the blocker as a PM-addressed request and \
 re-point Next Step to a 'Role: pm' assessment step (see decision-making.md → Autonomous-mode \
-boundary). Only PM sets Role: halt. Do NOT guess and do NOT expand sprint scope (no new queue \
-steps)." | bash "$FMT" "$RAWLOG" | tee -a "$HUMANLOG"
+boundary). Only PM sets Role: halt. The founder does NOT read this session's output: anything \
+the founder must SEE goes in a file — append a dated one-line FYI to \
+knowledge-base/founder-notices.md (parallel-track kickoffs, heads-ups, deadlines); never \
+'surface' or 'tell' anything in chat. Do NOT guess and do NOT expand sprint scope (no new queue \
+steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   if [ "${PIPESTATUS[0]}" -ne 0 ]; then
     { echo "⛔ claude exited non-zero on step $step — stopping for founder"                         # cond 4
       echo "   (if this was a heavy step, it may have hit MAX_TURNS=$MAX_TURNS — raise MAX_TURNS and"
       echo "    re-run to continue, or split the step at planning. Safe to resume: state was not advanced.)"
     } | tee -a "$HUMANLOG"
-    break
+    reason="error (non-zero exit)"; reason_note="$label"; break
   fi
+
+  report_founder_channels
+
+  # Summary row for this step, paired with the formatter's metrics line (dashes if it degraded).
+  executed=$((executed+1))
+  m="$(sed -n "${executed}p" "$METRICS" 2>/dev/null)"
+  IFS='|' read -r mt mc mp mo _ <<< "${m:-—|—|—|—|0}"
+  mc_disp="—"; [ "$mc" != "—" ] && mc_disp="\$$mc"
+  ROWS="${ROWS}$(printf '  %-36.36s %5s %8s %5s %6s' "${label:-step $step}" "$mt" "$mc_disp" "$mp" "$mo")"$'\n'
 
   # Step-boundary commit floor: one commit per completed step, regardless of model or whether
   # the agent's closeout remembered to commit. Agents committing their own work stays the
@@ -146,8 +251,9 @@ steps)." | bash "$FMT" "$RAWLOG" | tee -a "$HUMANLOG"
   # a skipped closeout commit can't blur two steps' work into one diff. --ignore-submodules=dirty
   # keeps a content-dirty muster/ checkout (e.g. a hand-patched script) from firing this every
   # step — a moved submodule POINTER still commits. Logs dir excluded defensively (gitignored).
-  if [ -n "$(git status --porcelain --ignore-submodules=dirty)" ]; then
-    label="$(printf '%s\n' "$blk" | sed -n 's/^#\{1,4\}[[:space:]]\{1,\}//p' | head -1)"
+  dirty="$(git status --porcelain --ignore-submodules=dirty -- . ":(exclude)$LOGDIR" 2>/dev/null \
+           || git status --porcelain --ignore-submodules=dirty)"
+  if [ -n "$dirty" ]; then
     git add -A -- . ":(exclude)$LOGDIR" 2>/dev/null || git add -A
     if git commit -q -m "sprint step boundary: ${label:-step $step}"; then
       echo "  📦 step-boundary commit (agent left uncommitted work)" | tee -a "$HUMANLOG"
@@ -155,5 +261,29 @@ steps)." | bash "$FMT" "$RAWLOG" | tee -a "$HUMANLOG"
       echo "  ⚠️ step-boundary commit failed — tree left as-is for diagnosis" | tee -a "$HUMANLOG"
     fi
   fi
+
+  # Near-cap warning — the only mid-run appearance of the budget counter.
+  if [ "$MAX_STEPS" -ge 5 ] && [ "$step" -eq $(( MAX_STEPS * 8 / 10 )) ]; then
+    echo "⚠️  run budget: $step of $MAX_STEPS steps used this run" | tee -a "$HUMANLOG"
+  fi
+  echo | tee -a "$HUMANLOG"
 done
-echo "Run ended at step $step."
+
+# Run summary — per-step rows (queue labels) + totals from the metrics file, and WHY the run
+# stopped. This is where step-sizing judgment happens: scan the ctx% column for outliers.
+{ echo "── run summary ────────────────────────────────────────────"
+  [ -n "$ROWS" ] && printf '%s' "$ROWS"
+  echo "$RULE_L"
+  if [ -s "$METRICS" ]; then
+    awk -F'|' '{t+=$1; c+=$2; o+=$5} END {
+      ok = (o>=1000) ? sprintf("%dk", int(o/1000+0.5)) : o
+      printf "  %d steps · %d turns · $%.2f · out %s", NR, t, c, ok }' "$METRICS"
+  else
+    printf '  %d steps' "$executed"
+  fi
+  echo " · stopped: $reason${reason_note:+ ($reason_note)}"
+  if [ "$notices_run" -gt 0 ]; then
+    echo "  📣 $notices_run founder notice(s) this run — read $NOTICES"
+  fi
+} | tee -a "$HUMANLOG"
+exit 0

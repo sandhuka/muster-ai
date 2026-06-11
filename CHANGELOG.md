@@ -11,16 +11,42 @@ the next `muster/` submodule pointer bump with no project-side migration.
 
 ## 4.2 — 2026-06-11
 
-Step-boundary commit floor — first prose-trust failure observed in field use (Arogh Sprint 5:
-a model override ran a step that skipped its closeout commit, blurring two steps' work and
-breaking the one-commit-per-step review unit).
+Autonomous-loop operability — everything the first real field sprint (Arogh Sprint 5) surfaced.
+Display/routing only; the deterministic control floor (stop conditions, guards, lint) is untouched.
 
-- **Changed:** `scripts/muster-sprint-run.sh` — at the end of each successful step, if the agent
-  left uncommitted changes, the driver commits them (`sprint step boundary: <step heading>`).
-  No-op on a clean tree (agents committing in closeout remains the convention; this is the
-  deterministic floor). `--ignore-submodules=dirty` so a hand-patched `muster/` checkout doesn't
-  fire it every step; run-logs dir excluded.
-- **Changed:** `system-guide.md` → Autonomous Sprint Execution documents the floor.
+- **New — trail rebuild** (`muster-sprint-run.sh` + `muster-sprint-format.sh`): per-step trail
+  lines carry the queue's own step heading (`▶ Step 16 — Content: …`) instead of the iteration
+  counter, which is demoted to plumbing (run-start `run budget: N steps`, ~80% warning, and a
+  self-explaining cap-stop message); halts print a self-explaining HALT block (wave-gate +
+  PM-escalation guidance); each step closes with an icon-count activity summary and token
+  telemetry (`✓ 74 turns · $4.05 · peak ctx 188k/1M 19% · out 21k` — peak ctx = largest single
+  prompt, the step-sizing signal; total input deliberately excluded as misleading); runs end
+  with a per-step summary table + totals + stop reason. New `run-<ts>.metrics` file per run.
+  Deviation from the parked spec: the live per-event river is KEPT (paths are the diagnostic
+  trail); compression is the step-close summary line, not in-place ticking.
+- **New — per-step model routing**: optional `Model: <model-id>` line in a queue step's fenced
+  block (after `Role:`) is passed as `--model`; absent → session default; value echoed into the
+  flag, never branched on (invalid id = stop condition 4). `sprint-planning.md` Prompt standard
+  documents assignment-by-step-weight; trail header shows `[model]` when overridden.
+- **New — step-boundary commit floor**: first prose-trust failure observed in the field (a model
+  override skipped its closeout commit, blurring two steps' work). At the end of each successful
+  step, the driver commits any uncommitted changes (`sprint step boundary: <step heading>`);
+  no-op on a clean tree. `--ignore-submodules=dirty`; logs dir excluded.
+- **New — founder-notices channel**: field incident — a queue step's "surface the pod-build
+  track to the founder" executed correctly into the run log, which nobody reads; the notice
+  silently died and the deadline-bearing track was discovered days later. Fix is file-mediated:
+  agents append dated one-line FYIs to `knowledge-base/founder-notices.md` (new template); the
+  driver diffs it after each step, echoes new entries (📣), and counts them in the run summary;
+  PM folds unread notices into the next `wave-review.md` packet; the driver also alerts (📌)
+  when `## Founder Decisions` changes mid-run. Wrapper prompt + `sprint-planning.md` Prompt
+  standard ban "tell/surface to the founder" vocabulary in favor of file actions. Driver reads
+  both channels, never writes them.
+- **Fixed:** formatter forces `LC_ALL=C` — macOS bash 3.2 multibyte case-glob/trim corrupts
+  emoji under UTF-8 locales (eats lead bytes, breaks counters). Run logs get a PID suffix so
+  same-second runs can't share files.
+- **Changed:** `system-guide.md` → Autonomous Sprint Execution documents all of the above.
+- Verified end-to-end against a disposable stub-claude fixture (17 assertions: labels, telemetry,
+  model flag pass-through, cap/halt messages, summary table, commit floor, clean-tree invariant).
 
 ## 4.1 — 2026-06-09
 
