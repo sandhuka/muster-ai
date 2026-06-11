@@ -139,5 +139,21 @@ steps)." | bash "$FMT" "$RAWLOG" | tee -a "$HUMANLOG"
     } | tee -a "$HUMANLOG"
     break
   fi
+
+  # Step-boundary commit floor: one commit per completed step, regardless of model or whether
+  # the agent's closeout remembered to commit. Agents committing their own work stays the
+  # convention (and the normal case — this is then a no-op on a clean tree); the floor exists so
+  # a skipped closeout commit can't blur two steps' work into one diff. --ignore-submodules=dirty
+  # keeps a content-dirty muster/ checkout (e.g. a hand-patched script) from firing this every
+  # step — a moved submodule POINTER still commits. Logs dir excluded defensively (gitignored).
+  if [ -n "$(git status --porcelain --ignore-submodules=dirty)" ]; then
+    label="$(printf '%s\n' "$blk" | sed -n 's/^#\{1,4\}[[:space:]]\{1,\}//p' | head -1)"
+    git add -A -- . ":(exclude)$LOGDIR" 2>/dev/null || git add -A
+    if git commit -q -m "sprint step boundary: ${label:-step $step}"; then
+      echo "  📦 step-boundary commit (agent left uncommitted work)" | tee -a "$HUMANLOG"
+    else
+      echo "  ⚠️ step-boundary commit failed — tree left as-is for diagnosis" | tee -a "$HUMANLOG"
+    fi
+  fi
 done
 echo "Run ended at step $step."

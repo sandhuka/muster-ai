@@ -9,6 +9,19 @@ the next `muster/` submodule pointer bump with no project-side migration.
 
 ---
 
+## 4.2 — 2026-06-11
+
+Step-boundary commit floor — first prose-trust failure observed in field use (Arogh Sprint 5:
+a model override ran a step that skipped its closeout commit, blurring two steps' work and
+breaking the one-commit-per-step review unit).
+
+- **Changed:** `scripts/muster-sprint-run.sh` — at the end of each successful step, if the agent
+  left uncommitted changes, the driver commits them (`sprint step boundary: <step heading>`).
+  No-op on a clean tree (agents committing in closeout remains the convention; this is the
+  deterministic floor). `--ignore-submodules=dirty` so a hand-patched `muster/` checkout doesn't
+  fire it every step; run-logs dir excluded.
+- **Changed:** `system-guide.md` → Autonomous Sprint Execution documents the floor.
+
 ## 4.1 — 2026-06-09
 
 Handoff / request boundary reconciliation — closes the gap where unresolved items leaked across
