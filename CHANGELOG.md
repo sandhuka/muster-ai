@@ -45,8 +45,11 @@ Display/routing only; the deterministic control floor (stop conditions, guards, 
   emoji under UTF-8 locales (eats lead bytes, breaks counters). Run logs get a PID suffix so
   same-second runs can't share files.
 - **Changed:** `system-guide.md` → Autonomous Sprint Execution documents all of the above.
-- Verified end-to-end against a disposable stub-claude fixture (17 assertions: labels, telemetry,
-  model flag pass-through, cap/halt messages, summary table, commit floor, clean-tree invariant).
+- **New:** `scripts/test-sprint-driver.sh` — the stub-claude end-to-end fixture that verified
+  this release (22 assertions: labels, telemetry, model pass-through, cap/halt messages, summary
+  table, commit floor, notices echo, clean-tree invariant), checked in as the standing regression
+  gate for any change touching the driver or formatter. First slice of the framework regression
+  suite. Deterministic, remote-severed, self-cleaning on green.
 
 ## 4.1 — 2026-06-09
 
