@@ -202,8 +202,23 @@ limit_resume_epoch(){
   echo $((target + LIMIT_BUFFER))
 }
 
-step=0; prev=""
+# Run-status surface: ONE tiny overwrite-in-place file any tab reads to answer "where is the
+# run?" — including the MID-step state that the trail and metrics (completed work only) cannot
+# show. First rung of the Guide's cheap-read ladder (guide/skills/operating-help.md). Lives in
+# $LOGDIR — gitignored and excluded from the commit floor, so it never pollutes step commits.
+status_write(){ # $1 = state ("running step N" / "sleeping …" / "complete" / "halted: <reason>")
+  { echo "run: run-$RUN_TS"
+    echo "state: $1"
+    echo "step: ${label:-—}"
+    echo "step started: ${step_started:-—}"
+    echo "last completed: ${last_done:-—}"
+    echo "totals: $(awk -F'|' '{t+=$1; c+=$2} END {printf "%d attempt(s) · %d turns · $%.2f", NR, t, c}' "$METRICS" 2>/dev/null)"
+  } > "$LOGDIR/STATUS" 2>/dev/null || true
+}
+
+step=0; prev=""; last_done=""; step_started=""
 reason="interrupted"; reason_note=""; executed=0; ROWS=""
+status_write "starting"
 while :; do
   step=$((step+1))
   if [ "$step" -gt "$MAX_STEPS" ]; then
@@ -267,6 +282,8 @@ while :; do
   hdr="▶ ${label:-step $step (role: $role)}"
   [ -n "$model" ] && hdr="$hdr  [$model]"
   echo "$hdr" | tee -a "$HUMANLOG"
+  step_started="$(date '+%Y-%m-%d %H:%M:%S')"
+  status_write "running step $step"
 
   # Mid-step continuation: the commit floor guarantees a clean tree at every successful step
   # boundary, so a dirty tree at step START deterministically means an interrupted prior attempt
@@ -306,6 +323,7 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
     if resume_at="$(limit_resume_epoch)"; then
       buf="+$((LIMIT_BUFFER/60))m buffer"; [ "$LIMIT_BUFFER" -lt 60 ] && buf="+${LIMIT_BUFFER}s buffer"
       echo "⏸ usage limit — sleeping until $(epoch_hm "$resume_at") ($buf)" | tee -a "$HUMANLOG"
+      status_write "sleeping until $(epoch_hm "$resume_at") (usage limit)"
       s=$(( resume_at - $(date +%s) ))
       [ "$s" -gt 0 ] && sleep "$s"
       prev=""   # the same Next Step re-runs on purpose — don't trip cond 3 on re-entry
@@ -328,6 +346,8 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   IFS='|' read -r mt mc mp mo _ <<< "${m:-—|—|—|—|0}"
   mc_disp="—"; [ "$mc" != "—" ] && mc_disp="\$$mc"
   ROWS="${ROWS}$(printf '  %-36.36s %5s %8s %5s %6s' "${label:-step $step}" "$mt" "$mc_disp" "$mp" "$mo")"$'\n'
+  last_done="${label:-step $step} · ${mt} turns · ${mc_disp} · out ${mo}"
+  status_write "between steps"
 
   # Step-boundary commit floor: one commit per completed step, regardless of model or whether
   # the agent's closeout remembered to commit. Agents committing their own work stays the
@@ -352,6 +372,13 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   fi
   echo | tee -a "$HUMANLOG"
 done
+
+# Final status: same stop reason the summary prints.
+if [ "$reason" = "sprint complete" ]; then
+  status_write "complete"
+else
+  status_write "halted: $reason${reason_note:+ ($reason_note)}"
+fi
 
 # Run summary — per-step rows (queue labels) + totals from the metrics file, and WHY the run
 # stopped. This is where step-sizing judgment happens: scan the ctx% column for outliers.

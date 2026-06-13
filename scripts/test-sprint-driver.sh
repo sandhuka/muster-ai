@@ -109,6 +109,7 @@ if [ -f "\$DIR/mode-limit" ]; then                        # one-shot: usage-limi
   sed "s/RESET_TIME_PLACEHOLDER/\$RESET/" "\$DIR/limit-payload.jsonl"
   exit 1
 fi
+cp "\$PWD/.muster-sprint-logs/STATUS" "\$DIR/status-during" 2>/dev/null   # mid-step snapshot
 n=\$(cat "\$DIR/count" 2>/dev/null || echo 0); n=\$((n+1)); echo \$n > "\$DIR/count"
 echo "step \$n output" >> "\$PWD/deliverable.md"          # leave UNCOMMITTED work (floor must catch)
 cp "\$DIR/q\$((n+1)).md" "\$PWD/knowledge-base/orchestration-queue.md"
@@ -222,6 +223,9 @@ ok "A–D: no ↻ on clean boundaries"        '! grep -aq "↻" "$TEST/runA.out"
 ok "G: ⏸ limit line with resume time"     'grep -aq "⏸ usage limit — sleeping until" "$TEST/runG.out"'
 ok "G: same step re-ran after resume"     '[ "$(grep -ac "▶ Step 2 — PM: fixture review" "$TEST/runG.out")" = "2" ]'
 ok "G: run bridged the limit to the gate" 'grep -aq "stopped: halt" "$TEST/runG.out"'
+ok "STATUS: running state mid-step"       'grep -aq "state: running step" "$TEST/status-during"'
+ok "STATUS: carries the queue label"      'grep -aq "step: Step 2 — PM: fixture review" "$TEST/status-during"'
+ok "STATUS: final state = summary reason" 'grep -aq "state: halted: halt (Step 3 — GATE 1: fixture gate)" "$PROJ/.muster-sprint-logs/STATUS"'
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed   (fixture: $TEST)"
