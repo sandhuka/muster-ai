@@ -308,6 +308,13 @@ if ! state_has_step "scaffold_templates"; then
         cp muster/templates/.muster/config .muster/config
     fi
 
+    # Quiet test runner (v4.2 — raw suite output to a log, summary to the session)
+    if [ -f "muster/templates/scripts/test.sh" ] && [ ! -f "scripts/test.sh" ]; then
+        mkdir -p scripts
+        cp muster/templates/scripts/test.sh scripts/test.sh
+        chmod +x scripts/test.sh
+    fi
+
     find . -name ".DS_Store" -delete 2>/dev/null || true
 
     substep_done "1.3" "Scaffold knowledge-base + agent bootloaders + status line + skills"

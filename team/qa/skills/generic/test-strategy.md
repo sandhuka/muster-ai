@@ -57,6 +57,18 @@ If your product serves rich media content:
 - Smoke test suite for hotfix validation (15-minute critical path check)
 - Regression suite maintained by QA, execution automated in CI
 
+## Suite-Run Discipline (all platforms)
+- **Quiet by default**: suites run through the project's `scripts/test.sh` — raw output to a
+  log file, only pass/fail counts + failing tests with file:line + exit code in the session.
+  Verbose runner output ingested into a session is re-read every turn; it is the dominant cost
+  of test-heavy steps and buries the failures the model should attend to.
+- **Targeted then full**: iterate against only the affected test class/file; the full suite
+  runs exactly once at pre-closeout. One full run per step, not per iteration.
+- **CI is a backstop, never the primary gate**: agents must know the suite is green BEFORE
+  closeout (the queue never advances past a red build). Post-commit CI is welcome redundant
+  verification — its failures land in `founder-notices.md` — but it is async by nature, and a
+  gate nobody is watching is a swallowed failure.
+
 ## Device Testing Matrix
 - Minimum: [smallest supported device], current [mainstream device], [largest device]
 - OS versions: current and current-1 (e.g., iOS 18 and iOS 17)

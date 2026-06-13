@@ -3,6 +3,23 @@
 ## Purpose
 Define testing standards using Swift Testing (primary) and XCTest (UI tests only) for iOS codebases. See `team/developer/skills/ios-code-standards.md` for naming conventions. See `team/developer/skills/ios-swiftdata.md` for in-memory persistence testing patterns. See `team/developer/skills/ios-modern-api.md` for concurrency rules relevant to async tests.
 
+## Running Tests — Quiet by Default, Targeted Then Full
+
+Test EXECUTION is free; test OUTPUT is not — every line a runner prints into the session is
+context re-read on every subsequent turn, and xcodebuild is the loudest offender (thousands of
+build + per-test lines per run).
+
+- **Quiet by default**: run suites through the project's `scripts/test.sh` (raw output → log
+  file; the session sees pass/fail counts, failing tests with file:line, exit code). Read the
+  log only for a specific failure's detail — never ingest a full verbose run.
+- **Targeted then full**: while iterating on a fix, run only the affected test class
+  (`-only-testing:AppTests/UserProfileViewModelTests`). The FULL suite runs exactly once, at
+  pre-closeout — one full run per step, not per iteration.
+- **CI is a backstop, never the gate**: you must know the suite is green BEFORE closeout — the
+  queue never advances past a red build. CI re-running the suite on push is welcome redundancy
+  (its failures land in `founder-notices.md`), but waiting on CI to learn your own result is a
+  closeout violation.
+
 ## Testing Pyramid
 - Unit tests: 70% — ViewModels, Services, Models in isolation (Swift Testing)
 - Integration tests: 20% — Feature flows, API contract validation (Swift Testing)

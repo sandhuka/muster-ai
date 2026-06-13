@@ -3,6 +3,23 @@
 ## Purpose
 Define the testing strategy for modern Next.js + React 19 web apps: the test pyramid, Vitest patterns, React Testing Library principles, testing Server Components and Server Actions, Playwright E2E, mocking discipline, coverage targets. The architecture from `web-architecture.md` makes testing tractable; this skill is how to use the seams it provides. See `team/developer/skills/web-architecture.md` for the dependency-injection pattern that makes tests work without mocking the universe. See `team/developer/skills/web-best-practices.md` for the quality gates that enforce these tests in CI. See `team/developer/skills/web-modern-react.md` for the component patterns being tested. Target: **Vitest 2+, React Testing Library 16+, Playwright 1.45+, Testing Library/jest-dom**.
 
+## Running Tests — Quiet by Default, Targeted Then Full
+
+Test EXECUTION is free; test OUTPUT is not — every line a runner prints into the session is
+context re-read on every subsequent turn.
+
+- **Quiet by default**: run suites through the project's `scripts/test.sh` (raw output → log
+  file; the session sees pass/fail counts, failing tests with file:line, exit code). For direct
+  runs, prefer minimal reporters (`vitest run --reporter=dot`). Read the log only for a specific
+  failure's detail.
+- **Targeted then full**: while iterating on a fix, run only the affected file
+  (`vitest run src/domain/scoring.test.ts`). The FULL suite (including Playwright) runs exactly
+  once, at pre-closeout — one full run per step, not per iteration.
+- **CI is a backstop, never the gate**: you must know the suite is green BEFORE closeout — the
+  queue never advances past a red build. CI re-running on push is welcome redundancy (failures
+  land in `founder-notices.md`), but waiting on CI to learn your own result is a closeout
+  violation.
+
 ## Testing Philosophy
 
 The framework's testing posture in one line: **test behavior, not implementation, at the layer where the behavior lives.**
