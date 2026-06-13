@@ -51,6 +51,75 @@ Display/routing only; the deterministic control floor (stop conditions, guards, 
   gate for any change touching the driver or formatter. First slice of the framework regression
   suite. Deterministic, remote-severed, self-cleaning on green.
 
+### Bundle 2 — the framework agent + self-healing run (founder-approved 2026-06-12, built via `private/builds/4.2/`)
+
+The framework gains its own agent and the autonomous loop becomes self-healing. This bundle adds
+surface (an agent) and touches control flow (auto-resume, continuation), unlike Bundle 1's
+display-only changes — the driver fixture grew to 35 assertions to cover it.
+
+- **New — Muster, the framework's own agent** (`MUSTER.md` at repo root, `guide/skills/`,
+  `private/xo/`): one persona, two homes — the **Guide** in a project, the **XO** in the
+  framework repo. Question-routing is the load-bearing rule: **process** questions (where did the
+  run stop, which mode, how to resume) are the Guide's; **project** questions (what did the
+  developer decide) route to PM, never answered from a stale read. Constraints: it is an **opt-in
+  load, not a 9th picker role** (the picker is untouched); **`/muster` is the single front door**
+  — name-invocation was dropped (a deterministic harness trigger beats a prose trigger that can
+  mis-fire), and `/muster` branches on bound state (unbound → bind; bound → one-shot consult, the
+  tab keeps its role). The Guide **never writes product state** (queue, knowledge-base, code) —
+  only framework plumbing (`.muster/config`, drafted reports). The **XO is founder-only via three
+  locks** (possession of `private/`, repo write perms, channel auth) and obeys a **no-meta-loop
+  fence** (never runs autonomous sprints on the framework repo).
+- **New — `.muster/config` knob layer** (`templates/.muster/config`, sourced by the driver):
+  project-local, committed so worktrees inherit it. Precedence is **explicit env > config >
+  built-in default**, enforced in the driver (invocation env captured and re-applied around the
+  source). Day-one knobs are every variable the driver already read from the environment
+  (`MAX_STEPS`, `MAX_TURNS`, `ANTHROPIC_MODEL`, `KEEP_RUNS`, `LIMIT_RESUME_AT`) — exposing them
+  is free. Constraint: **no speculative knobs** — new ones arrive only via knob-ify when field
+  reports prove demand.
+- **New — self-healing-run trio** (`muster-sprint-run.sh` only): **sleep-proof loop**
+  (`caffeinate -i -w $$` held for the driver's lifetime, `command -v`-guarded so non-mac is a
+  no-op); **mid-step continuation** (a dirty tree at step start — guaranteed meaningful by
+  Bundle 1's commit floor — prepends a continue-don't-restart preamble to the wrapper prompt and
+  prints `↻`; the queue is never edited); **limit-aware auto-resume** (a usage-limit death is
+  classified against the real captured 429 payload, then the driver sleeps past the stated reset
+  +buffer and re-enters the step). Constraints, all do-not-revisit: **proactive pre-step
+  usage-gating is REJECTED** (no reliable usage signal; the economics are illusory — reactive
+  only); **classification is fail-closed** (any uncertainty halts as before); auto-resume bridges
+  this one mechanical error class and **never a `Role: halt` founder checkpoint**; **deliberate
+  discard of partial work stays manual** (`git checkout .` by the founder — destructive choices
+  are never automated).
+- **New — `STATUS` run-status surface** (`$LOGDIR/STATUS`, ~8 lines, overwritten at run/step
+  start, step end, limit-sleep, and final): the deterministic answer to multi-tab state sync and
+  the **first rung of the Guide's cheap-read ladder** — it carries the *mid-step* state the trail
+  and metrics (completed work only) cannot. Excluded from the commit floor's pathspec, so it
+  never pollutes step commits.
+- **New — quiet-test discipline** (`templates/scripts/test.sh` + testing-skill edits): test
+  EXECUTION is free, test OUTPUT is not (a verbose xcodebuild suite ingested per fix-iteration
+  was the dominant cost of a $47 field step). The runner sends raw output to a log and only
+  pass/fail counts + failing `file:line` + exit code to the session; skills add **targeted-then-
+  full** iteration (affected class while fixing, full suite once at pre-closeout). Constraint:
+  **CI-as-the-gate is REJECTED** (agents must know green BEFORE closeout — the queue never
+  advances past a red build; post-commit CI is async and nobody watches it). CI is a welcome
+  **backstop** feeding `founder-notices.md`, never the gate.
+- **New — pillar-budget gate** (`scripts/test-pillar-budgets.sh` + `.github/workflows/muster-ci.yml`):
+  the always-read (tier-1) token surface is statically measurable, so it is guarded mechanically
+  — project `CLAUDE.md` template, each agent bootloader, `MUSTER.md`, the driver's wrapper prompt
+  (char budget), the tier-1 bind-path total (Rule 14's 600 lines), and always-read KB templates.
+  Budgets set at encoding size + ~10% headroom: green at birth, red on GROWTH. The fixed-cost
+  audit converted from prose duty to release gate. CI runs both gates on every push/PR.
+- **Changed — model policy inverted** (`sprint-planning.md`): **Opus-family is now the default**
+  for queue steps — the deterministic gates guarantee correctness mechanically, so premium buys
+  judgment, not correctness. A **premium model (Fable) is the exception, reserved for
+  foundation-critical creation and requiring explicit founder acceptance** at planning (PM
+  proposes, founder confirms). Replaces the prior "strongest model by default" guidance.
+- **New — field-report feedback pipeline** (`guide/skills/field-report.md` + XO `triage.md`):
+  the Guide drafts a scrubbed framework-level report, shows the **verbatim payload** as the
+  consent gate (never sends what the user hasn't seen character-for-character), and files it via
+  `gh issue create --label field-report`; the XO pulls open reports at bind time and closes the
+  loop with outcome labels (`shipped-in-4.2` / `captured` / `rejected`). Constraint:
+  **shipping credentials with the framework was REJECTED** (public repo = key theft) — the
+  fallback prints the report for manual filing instead.
+
 ## 4.1 — 2026-06-09
 
 Handoff / request boundary reconciliation — closes the gap where unresolved items leaked across
