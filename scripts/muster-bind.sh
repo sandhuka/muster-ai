@@ -20,10 +20,10 @@ set -euo pipefail
 ROLE="${1:-}"
 INVOKER="${2:-}"
 
-# Validate role
+# Validate role (guide/xo are Muster's own binds — via MUSTER.md, not picker roles)
 case "$ROLE" in
-    pm|developer|ui-ux|qa|content|marketing|legal|research) ;;
-    *) echo "muster-bind: invalid role '$ROLE'. Valid: pm developer ui-ux qa content marketing legal research" >&2; exit 1 ;;
+    pm|developer|ui-ux|qa|content|marketing|legal|research|guide|xo) ;;
+    *) echo "muster-bind: invalid role '$ROLE'. Valid: pm developer ui-ux qa content marketing legal research guide xo" >&2; exit 1 ;;
 esac
 
 # Validate invoker
@@ -42,14 +42,19 @@ fi
 mkdir -p .claude
 echo "$ROLE" > ".claude/.muster-bound-role.${CLAUDE_CODE_SESSION_ID}"
 
-# 2. Append bind log (knowledge-base/ must exist — fail loud if not)
+# 2. Append bind log (knowledge-base/ must exist — fail loud if not).
+# Exception: guide/xo bind in the FRAMEWORK repo too, which has no knowledge-base/ — the bind
+# file (status line) is the point there; skip the log rather than fail.
 if [ ! -d knowledge-base ]; then
-    echo "muster-bind: knowledge-base/ not found in PWD ($(pwd)). Run from project root." >&2
-    exit 1
+    case "$ROLE" in
+        guide|xo) exit 0 ;;
+        *) echo "muster-bind: knowledge-base/ not found in PWD ($(pwd)). Run from project root." >&2; exit 1 ;;
+    esac
 fi
 echo "$(date -Iseconds) $ROLE $INVOKER $CLAUDE_CODE_SESSION_ID" >> knowledge-base/.muster-bind-log
 
-# 3. Last-role memory (interactive only — gitignored)
-if [ "$INVOKER" = "interactive" ]; then
+# 3. Last-role memory (interactive only — gitignored). guide/xo never write it: it pre-selects
+# the PICKER, and they aren't picker roles.
+if [ "$INVOKER" = "interactive" ] && [ "$ROLE" != "guide" ] && [ "$ROLE" != "xo" ]; then
     echo "$ROLE" > .claude/.muster-last-role
 fi

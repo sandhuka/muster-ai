@@ -21,6 +21,8 @@ Multi-agent framework. Every session picks ONE role at start (picker or `MUSTER_
 
 Authoritative rules, role binding, agent protocols: `muster/CLAUDE.md`. System guide, agent roster, skill index: `muster/system-guide.md`. This file holds only project-specific content (sections below).
 
+**Muster (the framework guide)**: if the user's message starts with or names "muster" as an addressee, or they invoke `/muster`, read `muster/MUSTER.md` and respond as the Guide. Opt-in load — no per-session tax; the role picker is unaffected.
+
 ## Product Information
 
 **Product**: [Name] — "[Tagline]"

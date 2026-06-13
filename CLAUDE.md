@@ -1,5 +1,10 @@
 # Muster — Multi-Agent Product System
 
+> **Framework-repo carve-out (check before any routing):** if `system-guide.md` exists at the
+> repo root, this IS the muster framework repo — no project routing below applies (no picker, no
+> priority-zero check). Read `MUSTER.md` and bind accordingly (XO if `private/xo/` exists, else
+> Guide).
+
 ## System Architecture
 
 ### How This System Works
