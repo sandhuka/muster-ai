@@ -102,6 +102,13 @@ if [ -f "\$DIR/mode-fail" ]; then                         # one-shot: die mid-st
   echo '{"type":"result","subtype":"error_during_execution","is_error":true,"num_turns":3,"total_cost_usd":0.10,"usage":{"output_tokens":10}}'
   exit 1
 fi
+if [ -f "\$DIR/mode-limit" ]; then                        # one-shot: usage-limit death (real
+  rm -f "\$DIR/mode-limit"                                # payload, reset time = now → resume
+  echo "limit-partial work" >> "\$PWD/deliverable.md"     # is immediate under LIMIT_BUFFER=1)
+  RESET="\$(date +%I:%M%p | tr '[:upper:]' '[:lower:]' | sed 's/^0//')"
+  sed "s/RESET_TIME_PLACEHOLDER/\$RESET/" "\$DIR/limit-payload.jsonl"
+  exit 1
+fi
 n=\$(cat "\$DIR/count" 2>/dev/null || echo 0); n=\$((n+1)); echo \$n > "\$DIR/count"
 echo "step \$n output" >> "\$PWD/deliverable.md"          # leave UNCOMMITTED work (floor must catch)
 cp "\$DIR/q\$((n+1)).md" "\$PWD/knowledge-base/orchestration-queue.md"
@@ -117,6 +124,13 @@ JSON
 exit 0
 EOF
 chmod +x "$TEST/bin/claude"
+
+# Usage-limit payload — captured from a REAL limit-killed run (arogh sprint, 2026-06-11; trimmed
+# to valid JSON, reset time parameterized). The classifier keys on api_error_status 429 + the
+# limit result text; this is the ground truth it was built against.
+cat > "$TEST/limit-payload.jsonl" <<'EOF'
+{"type":"result","subtype":"success","is_error":true,"api_error_status":429,"duration_ms":2802155,"duration_api_ms":2782450,"num_turns":140,"result":"You've hit your session limit · resets RESET_TIME_PLACEHOLDER (America/Los_Angeles)","stop_reason":"stop_sequence","session_id":"aa6c0775-78a3-4e94-95f6-751f15a5770b","total_cost_usd":46.91,"usage":{"input_tokens":17808,"cache_creation_input_tokens":609376,"cache_read_input_tokens":25407405,"output_tokens":182656}}
+EOF
 
 # Fake caffeinate (PATH-injected): shadows the real one on macOS so the test never asserts real
 # power state, and proves the sleep-proof guard invokes it when present. On Linux CI there is no
@@ -163,6 +177,15 @@ touch "$TEST/mode-fail"
 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runE.out"
 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runF.out"
 
+echo "=================== RUN G (usage limit → auto-resume) ============"
+# Queue sits at q2 after run F. The stub dies once with the captured limit payload (reset time
+# stamped "now", LIMIT_BUFFER=1 keeps the sleep to ~0s), then the driver must re-enter the loop,
+# re-run the same step (dirty tree → continuation preamble again), and reach the q3 gate. Run E
+# already proves the fail-closed side: a generic error never resumes. Env MAX_STEPS=3 gives the
+# re-attempt budget headroom.
+touch "$TEST/mode-limit"
+LIMIT_BUFFER=1 MAX_STEPS=3 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runG.out"
+
 echo "=================== ASSERTIONS ==================="
 pass=0; fail=0
 ok(){ if eval "$2"; then echo "PASS: $1"; pass=$((pass+1)); else echo "FAIL: $1"; fail=$((fail+1)); fi; }
@@ -180,10 +203,10 @@ ok "B: step 1 got NO --model flag"        '! head -1 "$TEST/args.log" | grep -aq
 ok "B: halt block + wave-review guidance" 'grep -aq "HALT — Step 3 — GATE 1: fixture gate" "$TEST/runB.out" && grep -aq "wave-review.md" "$TEST/runB.out"'
 ok "B: summary has halt row"              'grep -aq "Step 3 — GATE 1: fixture gate.*halt" "$TEST/runB.out"'
 ok "B: summary totals line"               'grep -aq "1 steps · 7 turns · \$1.23 · out 4k · stopped: halt" "$TEST/runB.out"'
-ok "commit floor: 5 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "sprint step boundary")" = "5" ]'
+ok "commit floor: 6 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "sprint step boundary")" = "6" ]'
 ok "commit floor: messages carry labels"  '[ -n "$(git -C "$PROJ" log --format=%s | grep -a "boundary: Step 2")" ]'
 ok "clean tree at end"                    '[ -z "$(git -C "$PROJ" status --porcelain)" ]'
-ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "6" ]'
+ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "8" ]'
 ok "B: founder notice echoed loudly"      'grep -aq "📣 FOUNDER NOTICE" "$TEST/runB.out" && grep -aq "pod-build track" "$TEST/runB.out"'
 ok "B: notice counted in run summary"     'grep -aq "1 founder notice(s) this run" "$TEST/runB.out"'
 ok "B: Founder Decisions change alert"    'grep -aq "Founder Decisions. changed" "$TEST/runB.out"'
@@ -194,8 +217,11 @@ ok "C: config MAX_STEPS=1 respected"      'grep -aq "Run cap reached (MAX_STEPS=
 ok "D: env MAX_STEPS beats config"        'grep -aq "HALT — Step 3 — GATE 1: fixture gate" "$TEST/runD.out" && ! grep -aq "MAX_STEPS=1" "$TEST/runD.out"'
 ok "E: mid-step death → hard halt"        'grep -aq "claude exited non-zero" "$TEST/runE.out" && grep -aq "stopped: error (non-zero exit)" "$TEST/runE.out"'
 ok "F: ↻ continuation line"               'grep -aq "↻ dirty tree — continuation preamble added" "$TEST/runF.out"'
-ok "F: stub received preamble once"       '[ "$(grep -ac "Do NOT start over" "$TEST/args.log")" = "1" ]'
+ok "F+G: preamble exactly on dirty starts" '[ "$(grep -ac "Do NOT start over" "$TEST/args.log")" = "2" ]'
 ok "A–D: no ↻ on clean boundaries"        '! grep -aq "↻" "$TEST/runA.out" && ! grep -aq "↻" "$TEST/runB.out" && ! grep -aq "↻" "$TEST/runC.out" && ! grep -aq "↻" "$TEST/runD.out"'
+ok "G: ⏸ limit line with resume time"     'grep -aq "⏸ usage limit — sleeping until" "$TEST/runG.out"'
+ok "G: same step re-ran after resume"     '[ "$(grep -ac "▶ Step 2 — PM: fixture review" "$TEST/runG.out")" = "2" ]'
+ok "G: run bridged the limit to the gate" 'grep -aq "stopped: halt" "$TEST/runG.out"'
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed   (fixture: $TEST)"

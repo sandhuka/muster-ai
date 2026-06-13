@@ -24,6 +24,7 @@ fi
 QUEUE="knowledge-base/orchestration-queue.md"
 MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
 MAX_TURNS="${MAX_TURNS:-150}"         # per-step model-turn budget — raise for heavy steps
+LIMIT_BUFFER="${LIMIT_BUFFER:-300}"   # seconds past a stated usage-limit reset before resuming
 [ -f "$QUEUE" ] || { echo "No queue at $QUEUE — run from a project root."; exit 1; }
 
 # Fail fast on an unpopulated/partial muster checkout. `git worktree add` does not check out
@@ -162,6 +163,45 @@ report_founder_channels(){
   return 0
 }
 
+# ---- limit-aware auto-resume (refines stop condition 4) ----
+# A usage-limit death is mechanical and bridgeable: classify the run's FINAL result event
+# against the captured real payload shape ("api_error_status":429 + a limit-text result),
+# parse the stated reset time, sleep past it (+LIMIT_BUFFER), re-enter the loop. FAIL-CLOSED:
+# anything uncertain (no 429, no limit text, unparseable time with no LIMIT_RESUME_AT override)
+# returns 1 and the normal hard-halt path runs unchanged. 'Role: halt' gates are untouched —
+# auto-resume bridges this one mechanical error class, never founder checkpoints. Proactive
+# pre-step gating was stress-tested and REJECTED (no reliable usage signal; economics illusory)
+# — do not add it; see limit-aware-driver IDEA / CHANGELOG.
+hm_to_epoch(){ # "HH:MM" (24h, today, local) -> epoch; BSD date first, then GNU
+  date -j -f "%Y-%m-%d %H:%M" "$(date +%Y-%m-%d) $1" +%s 2>/dev/null \
+    || date -d "$(date +%Y-%m-%d) $1" +%s 2>/dev/null
+}
+epoch_hm(){ date -r "$1" +%H:%M 2>/dev/null || date -d "@$1" +%H:%M 2>/dev/null; }
+limit_resume_epoch(){
+  local line t h m ap now target
+  line="$(grep -a '"type":"result"' "$RAWLOG" 2>/dev/null | tail -1)"
+  printf '%s' "$line" | grep -q '"api_error_status":429' || return 1
+  printf '%s' "$line" | grep -qi 'limit' || return 1
+  now="$(date +%s)"
+  # reset time as stated in the payload, e.g. "resets 4:50pm" (assumed machine-local tz)
+  t="$(printf '%s' "$line" | sed -n 's/.*resets \([0-9]\{1,2\}\):\([0-9]\{2\}\)\([ap]m\).*/\1 \2 \3/p')"
+  if [ -n "$t" ]; then
+    read -r h m ap <<< "$t"; h=$((10#$h)); m=$((10#$m))
+    [ "$ap" = "pm" ] && [ "$h" -ne 12 ] && h=$((h+12))
+    [ "$ap" = "am" ] && [ "$h" -eq 12 ] && h=0
+    target="$(hm_to_epoch "$(printf '%02d:%02d' "$h" "$m")")" || return 1
+  elif [ -n "${LIMIT_RESUME_AT:-}" ]; then
+    target="$(hm_to_epoch "$LIMIT_RESUME_AT")" || return 1
+  else
+    return 1
+  fi
+  [ -n "$target" ] || return 1
+  # a reset stamped within the last ~2 min means the window just reset (resume now);
+  # anything older today means the stated time is tomorrow's
+  [ "$target" -lt $((now - 120)) ] && target=$((target + 86400))
+  echo $((target + LIMIT_BUFFER))
+}
+
 step=0; prev=""
 reason="interrupted"; reason_note=""; executed=0; ROWS=""
 while :; do
@@ -263,6 +303,14 @@ knowledge-base/founder-notices.md (parallel-track kickoffs, heads-ups, deadlines
 'surface' or 'tell' anything in chat. Do NOT guess and do NOT expand sprint scope (no new queue \
 steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+    if resume_at="$(limit_resume_epoch)"; then
+      buf="+$((LIMIT_BUFFER/60))m buffer"; [ "$LIMIT_BUFFER" -lt 60 ] && buf="+${LIMIT_BUFFER}s buffer"
+      echo "⏸ usage limit — sleeping until $(epoch_hm "$resume_at") ($buf)" | tee -a "$HUMANLOG"
+      s=$(( resume_at - $(date +%s) ))
+      [ "$s" -gt 0 ] && sleep "$s"
+      prev=""   # the same Next Step re-runs on purpose — don't trip cond 3 on re-entry
+      continue
+    fi
     { echo "⛔ claude exited non-zero on step $step — stopping for founder"                         # cond 4
       echo "   (if this was a heavy step, it may have hit MAX_TURNS=$MAX_TURNS — raise MAX_TURNS and"
       echo "    re-run to continue, or split the step at planning. Safe to resume: state was not advanced.)"
@@ -272,9 +320,11 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
 
   report_founder_channels
 
-  # Summary row for this step, paired with the formatter's metrics line (dashes if it degraded).
+  # Summary row for this step, paired with the formatter's newest metrics line (dashes if it
+  # degraded). tail -1, not an executed-index lookup: failed limit attempts also write metrics
+  # lines (their cost is real), so line number ≠ success count once auto-resume exists.
   executed=$((executed+1))
-  m="$(sed -n "${executed}p" "$METRICS" 2>/dev/null)"
+  m="$(tail -1 "$METRICS" 2>/dev/null)"
   IFS='|' read -r mt mc mp mo _ <<< "${m:-—|—|—|—|0}"
   mc_disp="—"; [ "$mc" != "—" ] && mc_disp="\$$mc"
   ROWS="${ROWS}$(printf '  %-36.36s %5s %8s %5s %6s' "${label:-step $step}" "$mt" "$mc_disp" "$mp" "$mo")"$'\n'
