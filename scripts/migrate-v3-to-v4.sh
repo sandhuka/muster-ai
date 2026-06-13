@@ -14,8 +14,12 @@ set -euo pipefail
 #
 # What this does:
 #   - Seeds any NEW knowledge-base template files the project is missing
-#     (copy-if-absent) — currently wave-review.md (wave-gate I/O) and triage-log.md
-#     (observation-disposition audit log). Never overwrites existing content.
+#     (copy-if-absent) — wave-review.md (wave-gate I/O), triage-log.md
+#     (observation-disposition audit log), and founder-notices.md (autonomous-run
+#     surface). Never overwrites existing content.
+#   - Seeds the .muster/config tuning file (copy-if-absent) so a migrated project
+#     can set driver knobs (MAX_STEPS, MAX_TURNS, models, KEEP_RUNS) without
+#     editing the submodule.
 #
 # What this does NOT do:
 #   - Bump the muster submodule pointer (do that FIRST:
@@ -122,8 +126,8 @@ MUSTER_VERSION="$(cat muster/VERSION 2>/dev/null || echo '?')"
 say ""
 say "muster framework version: ${BOLD}${MUSTER_VERSION}${RESET}"
 
-# ---------- migration step: seed missing knowledge-base templates ----------
-section_header "Step 1: Seed missing knowledge-base files (copy-if-absent)"
+# ---------- migration step: seed missing template files ----------
+section_header "Step 1: Seed missing template files (copy-if-absent)"
 
 copied=0
 gitignored=0
@@ -140,6 +144,23 @@ for src in muster/templates/knowledge-base/*; do
         copied=$((copied+1))
     fi
 done
+
+# .muster/config — the project-local driver tuning file (4.2). Lives at the project
+# root, not under knowledge-base/, so it's seeded separately. Copy-if-absent: never
+# clobber a project's own knob settings.
+config_src="muster/templates/.muster/config"
+if [ -f "$config_src" ]; then
+    if [ -e ".muster/config" ]; then
+        substep_skip "1" ".muster/config" "already present — preserved"
+    else
+        if [ "$DRY_RUN" -eq 0 ]; then
+            mkdir -p .muster
+            cp "$config_src" .muster/config
+        fi
+        substep_done "1" ".muster/config (seeded from template)"
+        copied=$((copied+1))
+    fi
+fi
 
 # ---------- migration step: gitignore the sprint logs ----------
 section_header "Step 2: Ignore autonomous sprint logs"
