@@ -112,6 +112,12 @@ exit 0
 EOF
 chmod +x "$TEST/bin/claude"
 
+# Fake caffeinate (PATH-injected): shadows the real one on macOS so the test never asserts real
+# power state, and proves the sleep-proof guard invokes it when present. On Linux CI there is no
+# real caffeinate either way — the guard's no-op path is what keeps the driver green there.
+printf '#!/usr/bin/env bash\ntouch "%s/caffeinate.invoked"\n' "$TEST" > "$TEST/bin/caffeinate"
+chmod +x "$TEST/bin/caffeinate"
+
 cd "$PROJ"
 git init -q && git config user.email t@t && git config user.name t
 git add -A && git commit -qm init
@@ -163,6 +169,7 @@ ok "B: notice counted in run summary"     'grep -aq "1 founder notice(s) this ru
 ok "B: Founder Decisions change alert"    'grep -aq "Founder Decisions. changed" "$TEST/runB.out"'
 ok "A: no notice noise on quiet steps"    '! grep -aq "FOUNDER NOTICE" "$TEST/runA.out"'
 ok "driver exits 0"                       '[ "$DRIVER_RC" = "0" ]'
+ok "sleep-proof: caffeinate invoked"      '[ -f "$TEST/caffeinate.invoked" ]'
 ok "C: config MAX_STEPS=1 respected"      'grep -aq "Run cap reached (MAX_STEPS=1)" "$TEST/runC.out"'
 ok "D: env MAX_STEPS beats config"        'grep -aq "HALT — Step 3 — GATE 1: fixture gate" "$TEST/runD.out" && ! grep -aq "MAX_STEPS=1" "$TEST/runD.out"'
 

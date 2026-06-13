@@ -36,6 +36,11 @@ MAX_TURNS="${MAX_TURNS:-150}"         # per-step model-turn budget — raise for
   exit 1
 }
 
+# Sleep-proof: hold macOS idle-sleep exactly while the driver lives (-w $$ ties the assertion
+# to this PID and auto-releases on exit — overnight runs survive lid-closed-adjacent idling).
+# The command -v guard makes non-mac a no-op (Linux analog for a future port: systemd-inhibit).
+command -v caffeinate >/dev/null && caffeinate -i -w $$ &
+
 # Path to the handoff-integrity lint (sits next to this driver).
 LINT="$(dirname "$0")/muster-lint-handoff.sh"
 
