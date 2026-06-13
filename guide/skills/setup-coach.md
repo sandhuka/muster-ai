@@ -15,7 +15,9 @@ do next without you, not a user who got a lecture.
 
 ## The Plan-Tier Question (ask during setup, once)
 
-One AskUserQuestion — **Pro or Max?** — then write `.muster/config` to match and confirm:
+One AskUserQuestion — **Pro or Max?** — with the why stated in the question text itself: *"sets
+muster's defaults to match your plan's token budget so runs end before your usage window does."*
+Then write `.muster/config` to match and confirm:
 
 - **Pro** (the design target): conservative run caps so an autonomous run ends before the usage
   window does, cheaper session-default model for routine work, and a nudge toward manual mode
@@ -42,12 +44,21 @@ tradeoffs; the one-line versions:
 
 ## Auto-Mode Coaching → the 3-Tab End State
 
-When they're ready for their first autonomous run, don't describe the worktree dance — **do it**:
+When they're ready for their first autonomous run, don't describe the worktree dance — **do it**,
+after one acknowledgment (creating a worktree is state-changing; ask first is the house rule):
 
-1. You (the Muster tab) run the worktree setup yourself: `git worktree add ../<proj>-sprint -b
-   sprint/auto-<stamp>`, then `git -C ../<proj>-sprint submodule update --init --recursive`.
+1. One AskUserQuestion — *"Ready for me to set up the autonomous workspace?"* On yes, run the
+   worktree setup yourself: `git worktree add ../<proj>-sprint -b sprint/auto-<stamp>`, then
+   `git -C ../<proj>-sprint submodule update --init --recursive`.
 2. Print the two commands the user runs, exactly:
    - **PM tab**: `cd ../<proj>-sprint && claude` → bind PM (plan/review inside the worktree).
    - **Loop tab**: `cd ../<proj>-sprint && bash muster/scripts/muster-sprint-run.sh`.
 3. End state: three tabs — this Muster tab (status questions), a PM tab, a loop tab. The loop
    stops at gates; `operating-help.md` covers everything after that.
+
+## Teach the Front Door (before the session ends)
+
+Make sure the user leaves knowing how to summon you again: **`/muster` — anytime, any tab.** In
+a role-bound tab it answers one-shot without disturbing the role; in a fresh tab it binds. The
+role picker shows the same signpost ("Framework help: `/muster`"), so they'll be reminded at
+every session start.
