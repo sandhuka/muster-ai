@@ -97,6 +97,7 @@ Every session picks ONE role at start via a role-picker. Root Claude operates as
      - Build → Developer | UI-UX | QA
      - Communicate → Content | Marketing
      - Validate → Research | Legal
+   - With Q1, print one signpost line: *"Framework help: `/muster`"*.
 
 3. **JIT populate**: if `.populated.agents.<picked-role>` is null, force-bind PM, run JIT populate per `team/pm/skills/generic/context-cascading.md`, then re-fire picker.
 
