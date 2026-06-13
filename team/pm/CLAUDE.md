@@ -45,6 +45,7 @@ Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your curre
 - **brand-guidelines.md** — Brand guidelines document structure (identity, personality, messaging, visual direction, naming)
 - **roadmapping.md** — Roadmap structure from MVP through future versions, sequencing principles, milestone definitions
 - **deliverable-review.md** — Reviewing agent handoffs: universal checklist, per-agent focus areas, review depth calibration, one-pass rule
+- **verification-discipline.md** (`team/qa/skills/generic/`) — Trust-then-verify when accepting a handoff: spot-check the claim against the deliverable file before cascading; don't rubber-stamp
 - **observation-triage.md** — Disposing of agent-filed observations: per-observation flow, 4-way disposition + routing (ACT/DEFER/IGNORE/ESCALATE), triage-log format; points to the Decision Autonomy Matrix for the authority call
 - **product-evaluation.md** — Post-research go/no-go evaluation: founder parameter gathering, 6-dimension scoring rubric, verdict logic, evaluation output template, kill criteria
 - **skill-gap-classification.md** — Classifying new skills as generic (Muster framework) or product-specific (project directory), strict 5-criteria test, contribution trigger

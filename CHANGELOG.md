@@ -119,6 +119,22 @@ display-only changes — the driver fixture grew to 35 assertions to cover it.
   loop with outcome labels (`shipped-in-4.2` / `captured` / `rejected`). Constraint:
   **shipping credentials with the framework was REJECTED** (public repo = key theft) — the
   fallback prints the report for manual filing instead.
+- **New — verification-discipline skill** (`team/qa/skills/generic/verification-discipline.md`):
+  trust-then-verify as shared methodology — independently re-run checks, mechanical-over-prose,
+  build a fixture if none exists, verify against source-of-truth not summaries. QA-owned, with
+  cross-role pointers (PM accepting handoffs, Developer before handoff) and XO cross-load before
+  declaring a framework change shipped.
+- **New — migration regression gate** (`scripts/test-migrate.sh`, wired into CI): a throwaway
+  v3-project sandbox exercises `migrate-v3-to-v4.sh` for dry-run safety, copy-if-absent seeding
+  (`founder-notices.md` + `.muster/config`), preservation, idempotency, and no-clobber of a
+  user's config. Scoped to **v3→v4 only** — the live upgrade path; v1→v2 and v2→v3 are finite
+  historical populations and deliberately not gated (gating a run-once path is upkeep with no
+  ongoing payoff).
+- **Convention — build proposals** (`release-discipline.md`): a non-trivial build earns an HTML
+  proposal at `private/builds/<version>/<name>-proposal.html` (ranking/what/why/stress-cases —
+  including those that did NOT survive, carried as named open questions/regression/commit plan)
+  before code. **No-build is a valid ruling** (`roi-doctrine.md`): "what should we build next?"
+  may answer "validate/release first" — no proposal is manufactured for it.
 
 ## 4.1 — 2026-06-09
 

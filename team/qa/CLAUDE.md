@@ -22,6 +22,7 @@ Skills are in `team/qa/skills/`. Read the relevant one(s) for your current task:
 - **bug-reporting.md** — Bug report template, severity definitions (Critical/High/Medium/Low), triage process, bug lifecycle
 - **release-checklist.md** — Pre-release checks (testing, legal, content, metadata), beta testing, store submission, post-release monitoring
 - **consistency-audit.md** — Cross-file consistency validation: feature IDs, terminology drift, data model alignment, foundational assumption touchpoints
+- **verification-discipline.md** — Trust-then-verify: independently re-run checks, mechanical-over-prose, build a fixture if none exists. Owned here; cross-role (PM/Developer reference it, XO cross-loads it)
 
 ### iOS (`ios/`)
 - **ios-testing.md** — iOS-specific testing: Swift Testing framework, XCUITest, SwiftData persistence, StoreKit 2, SwiftUI validation, performance profiling, network mocking, code coverage
