@@ -164,6 +164,8 @@ my-project/
 
 Current framework version: **4.1** (autonomous sprint execution + handoff boundary reconciliation; see [CHANGELOG.md](CHANGELOG.md)). Upgrading an existing v3 project to v4? Bump the `muster/` submodule and run `muster/scripts/migrate-v3-to-v4.sh` — see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md). The 4.0 → 4.1 bump is additive — it arrives with a pointer bump, no migration.
 
+**Upgrading and want it done for you?** From any version, bump the `muster/` submodule, then tell Claude: *"Read `muster/MUSTER.md` and act as the Guide; coach me through upgrading this project to the latest Muster."* The Guide runs the migration with backups and per-step verification — see the callout atop each `MIGRATING-*.md`.
+
 ## Stay updated
 
 Star or watch this repo for release notifications on GitHub. For major version notes — new agents, new skills, framework improvements — [subscribe to email updates](https://buttondown.com/muster-ai). Release notes only.
