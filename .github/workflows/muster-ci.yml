@@ -1,8 +1,9 @@
 name: muster regression gates
 
-# The framework's two deterministic release gates, run on every push and PR. Both are
-# remote-severed and self-contained (a PATH-injected stub claude; bash line/char counts) — no
-# model, no network, no secrets. Red here blocks the change, mirroring the local release rule.
+# The framework's deterministic release gates, run on every push and PR. All are remote-severed
+# and self-contained (a PATH-injected stub claude; bash line/char counts; a throwaway migration
+# sandbox) — no model, no network, no secrets. Red here blocks the change, mirroring the local
+# release rule.
 on: [push, pull_request]
 
 jobs:
@@ -16,3 +17,6 @@ jobs:
 
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
+
+      - name: Migration gate (v3→v4 upgrade path)
+        run: bash scripts/test-migrate.sh
