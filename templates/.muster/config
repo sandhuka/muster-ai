@@ -1,0 +1,20 @@
+# .muster/config — project-local sprint-driver knobs (bash-sourced by muster-sprint-run.sh).
+# Committed on purpose: worktrees inherit it, so autonomous runs see your settings.
+# Precedence: explicit env at invocation > this file > built-in default.
+# Uncomment a line to set it. The Guide (/muster) can tune these for you conversationally.
+
+# Run budget — steps per driver run (cost circuit-breaker). Pro-plan suggestion: 8.
+#MAX_STEPS=30
+
+# Per-step model-turn budget. Raise for heavy-but-cohesive steps.
+#MAX_TURNS=150
+
+# Session-default model for autonomous steps. Per-step `Model:` queue lines still win.
+# Pro-plan suggestion: a cheaper model for routine steps, e.g. claude-sonnet-4-6.
+#ANTHROPIC_MODEL=
+
+# How many runs of sprint logs to keep in .muster-sprint-logs/.
+#KEEP_RUNS=20
+
+# Fallback resume time (HH:MM) when a usage-limit reset time can't be parsed from the error.
+#LIMIT_RESUME_AT=

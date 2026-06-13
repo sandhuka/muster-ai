@@ -10,6 +10,17 @@ set -uo pipefail
 # Fail CLOSED: a missing/unreadable guard file must refuse to run, not bypass the guard.
 source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard missing — refusing to run."; exit 1; }
 
+# Project knobs: ./.muster/config (plain KNOB=value lines, committed so worktrees inherit it)
+# supplies project defaults for the driver's env knobs. Precedence: explicit env at invocation >
+# config > built-in default — invocation env is captured before the source and re-applied after,
+# so a config line can never override what the user typed on the command line.
+if [ -f ./.muster/config ]; then
+  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT 2>/dev/null)"
+  . ./.muster/config
+  eval "$_inv_env"
+  export ANTHROPIC_MODEL 2>/dev/null || true   # claude reads it from env; config-set needs the export
+fi
+
 QUEUE="knowledge-base/orchestration-queue.md"
 MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
 MAX_TURNS="${MAX_TURNS:-150}"         # per-step model-turn budget — raise for heavy steps

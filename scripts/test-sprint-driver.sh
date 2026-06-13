@@ -126,6 +126,17 @@ bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runB.out"
 DRIVER_RC="${PIPESTATUS[0]}"
 set -o pipefail
 
+echo "=================== RUN C/D (.muster/config knobs) ==============="
+# Reset fixture state (queue → q1, stub counter → 0), drop a config file, commit so the tree
+# starts clean. Run C: config MAX_STEPS=1 alone must cap the run. Run D: explicit env
+# MAX_STEPS=2 must beat the config (run reaches the q3 gate and halts instead of capping at 1).
+cp "$TEST/q1.md" "$PROJ/knowledge-base/orchestration-queue.md"
+echo 0 > "$TEST/count"
+mkdir -p "$PROJ/.muster"; echo "MAX_STEPS=1" > "$PROJ/.muster/config"
+git -C "$PROJ" add -A && git -C "$PROJ" commit -qm "reset for config runs"
+bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runC.out"
+MAX_STEPS=2 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runD.out"
+
 echo "=================== ASSERTIONS ==================="
 pass=0; fail=0
 ok(){ if eval "$2"; then echo "PASS: $1"; pass=$((pass+1)); else echo "FAIL: $1"; fail=$((fail+1)); fi; }
@@ -143,15 +154,17 @@ ok "B: step 1 got NO --model flag"        '! head -1 "$TEST/args.log" | grep -aq
 ok "B: halt block + wave-review guidance" 'grep -aq "HALT — Step 3 — GATE 1: fixture gate" "$TEST/runB.out" && grep -aq "wave-review.md" "$TEST/runB.out"'
 ok "B: summary has halt row"              'grep -aq "Step 3 — GATE 1: fixture gate.*halt" "$TEST/runB.out"'
 ok "B: summary totals line"               'grep -aq "1 steps · 7 turns · \$1.23 · out 4k · stopped: halt" "$TEST/runB.out"'
-ok "commit floor: 2 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "sprint step boundary")" = "2" ]'
+ok "commit floor: 4 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "sprint step boundary")" = "4" ]'
 ok "commit floor: messages carry labels"  '[ -n "$(git -C "$PROJ" log --format=%s | grep -a "boundary: Step 2")" ]'
 ok "clean tree at end"                    '[ -z "$(git -C "$PROJ" status --porcelain)" ]'
-ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "2" ]'
+ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "4" ]'
 ok "B: founder notice echoed loudly"      'grep -aq "📣 FOUNDER NOTICE" "$TEST/runB.out" && grep -aq "pod-build track" "$TEST/runB.out"'
 ok "B: notice counted in run summary"     'grep -aq "1 founder notice(s) this run" "$TEST/runB.out"'
 ok "B: Founder Decisions change alert"    'grep -aq "Founder Decisions. changed" "$TEST/runB.out"'
 ok "A: no notice noise on quiet steps"    '! grep -aq "FOUNDER NOTICE" "$TEST/runA.out"'
 ok "driver exits 0"                       '[ "$DRIVER_RC" = "0" ]'
+ok "C: config MAX_STEPS=1 respected"      'grep -aq "Run cap reached (MAX_STEPS=1)" "$TEST/runC.out"'
+ok "D: env MAX_STEPS beats config"        'grep -aq "HALT — Step 3 — GATE 1: fixture gate" "$TEST/runD.out" && ! grep -aq "MAX_STEPS=1" "$TEST/runD.out"'
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed   (fixture: $TEST)"
