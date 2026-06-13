@@ -227,12 +227,30 @@ while :; do
   hdr="▶ ${label:-step $step (role: $role)}"
   [ -n "$model" ] && hdr="$hdr  [$model]"
   echo "$hdr" | tee -a "$HUMANLOG"
+
+  # Mid-step continuation: the commit floor guarantees a clean tree at every successful step
+  # boundary, so a dirty tree at step START deterministically means an interrupted prior attempt
+  # (or a manual excursion that skipped closeout — identical treatment). Prepend a continuation
+  # preamble to the WRAPPER prompt (the queue file is never edited) so the fresh agent
+  # inventories and continues instead of restarting. Deliberate discard stays a manual founder
+  # call (git checkout .) — destructive choices are never automated.
+  preamble=""
+  dirty_start="$(git status --porcelain --ignore-submodules=dirty -- . ":(exclude)$LOGDIR" 2>/dev/null \
+                 || git status --porcelain --ignore-submodules=dirty)"
+  if [ -n "$dirty_start" ]; then
+    preamble="The working tree contains uncommitted changes — almost certainly partial work \
+from an interrupted previous attempt at this step. Do NOT start over. First inventory it \
+(git status, git diff --stat), reconcile against the step's task, and continue from that state. \
+If the changes are clearly unrelated to this step, stop and route to PM. "
+    echo "  ↻ dirty tree — continuation preamble added" | tee -a "$HUMANLOG"
+  fi
+
   # Stream the step's work through the formatter (live trail + logs). PIPESTATUS[0] is claude's
   # own exit code — the formatter/tee cannot change it, so cond-4 stays accurate (verified).
   MUSTER_ROLE=auto claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
         ${model:+--model} ${model:+"$model"} \
         --output-format stream-json --verbose \
-        "Execute the current Next Step in $QUEUE end-to-end: do the work, file your handoff, \
+        "${preamble}Execute the current Next Step in $QUEUE end-to-end: do the work, file your handoff, \
 run the Pre-Handoff Self-Review (muster/system-guide.md), and update the queue (move your step \
 to Done, promote the next Upcoming step to Next Step). PM is the sole party that calls the \
 founder: if you are a specialist and hit a blocker you cannot resolve (a decision you lack \

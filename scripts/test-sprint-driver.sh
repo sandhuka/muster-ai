@@ -95,8 +95,14 @@ echo "# Agent Requests" > "$PROJ/knowledge-base/agent-requests.md"; echo ".muste
 cat > "$TEST/bin/claude" <<EOF
 #!/usr/bin/env bash
 DIR="$TEST"
-n=\$(cat "\$DIR/count" 2>/dev/null || echo 0); n=\$((n+1)); echo \$n > "\$DIR/count"
 printf '%s\n' "\$*" >> "\$DIR/args.log"
+if [ -f "\$DIR/mode-fail" ]; then                         # one-shot: die mid-step, tree dirty,
+  rm -f "\$DIR/mode-fail"                                 # queue NOT advanced (interruption sim)
+  echo "partial work from interrupted attempt" >> "\$PWD/deliverable.md"
+  echo '{"type":"result","subtype":"error_during_execution","is_error":true,"num_turns":3,"total_cost_usd":0.10,"usage":{"output_tokens":10}}'
+  exit 1
+fi
+n=\$(cat "\$DIR/count" 2>/dev/null || echo 0); n=\$((n+1)); echo \$n > "\$DIR/count"
 echo "step \$n output" >> "\$PWD/deliverable.md"          # leave UNCOMMITTED work (floor must catch)
 cp "\$DIR/q\$((n+1)).md" "\$PWD/knowledge-base/orchestration-queue.md"
 if [ "\$n" = "2" ]; then
@@ -143,6 +149,20 @@ git -C "$PROJ" add -A && git -C "$PROJ" commit -qm "reset for config runs"
 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runC.out"
 MAX_STEPS=2 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runD.out"
 
+echo "=================== RUN E/F (interruption → continuation) ========"
+# Reset state again (queue → q1, counter → 0, clean tree; .muster/config MAX_STEPS=1 still
+# applies, keeping each run to one step). Run E: stub dies mid-step leaving a dirty tree and an
+# unadvanced queue — the driver must hard-halt (cond 4) WITHOUT a boundary commit (interruption
+# preserved). Run F: next run must detect the dirty tree at step start, print the ↻ line, and
+# hand the stub the continuation preamble in its prompt args. A/B/C/D ran on clean boundaries —
+# they must show no ↻.
+cp "$TEST/q1.md" "$PROJ/knowledge-base/orchestration-queue.md"
+echo 0 > "$TEST/count"
+git -C "$PROJ" add -A && git -C "$PROJ" commit -qm "reset for continuation runs"
+touch "$TEST/mode-fail"
+bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runE.out"
+bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runF.out"
+
 echo "=================== ASSERTIONS ==================="
 pass=0; fail=0
 ok(){ if eval "$2"; then echo "PASS: $1"; pass=$((pass+1)); else echo "FAIL: $1"; fail=$((fail+1)); fi; }
@@ -160,10 +180,10 @@ ok "B: step 1 got NO --model flag"        '! head -1 "$TEST/args.log" | grep -aq
 ok "B: halt block + wave-review guidance" 'grep -aq "HALT — Step 3 — GATE 1: fixture gate" "$TEST/runB.out" && grep -aq "wave-review.md" "$TEST/runB.out"'
 ok "B: summary has halt row"              'grep -aq "Step 3 — GATE 1: fixture gate.*halt" "$TEST/runB.out"'
 ok "B: summary totals line"               'grep -aq "1 steps · 7 turns · \$1.23 · out 4k · stopped: halt" "$TEST/runB.out"'
-ok "commit floor: 4 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "sprint step boundary")" = "4" ]'
+ok "commit floor: 5 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "sprint step boundary")" = "5" ]'
 ok "commit floor: messages carry labels"  '[ -n "$(git -C "$PROJ" log --format=%s | grep -a "boundary: Step 2")" ]'
 ok "clean tree at end"                    '[ -z "$(git -C "$PROJ" status --porcelain)" ]'
-ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "4" ]'
+ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "6" ]'
 ok "B: founder notice echoed loudly"      'grep -aq "📣 FOUNDER NOTICE" "$TEST/runB.out" && grep -aq "pod-build track" "$TEST/runB.out"'
 ok "B: notice counted in run summary"     'grep -aq "1 founder notice(s) this run" "$TEST/runB.out"'
 ok "B: Founder Decisions change alert"    'grep -aq "Founder Decisions. changed" "$TEST/runB.out"'
@@ -172,6 +192,10 @@ ok "driver exits 0"                       '[ "$DRIVER_RC" = "0" ]'
 ok "sleep-proof: caffeinate invoked"      '[ -f "$TEST/caffeinate.invoked" ]'
 ok "C: config MAX_STEPS=1 respected"      'grep -aq "Run cap reached (MAX_STEPS=1)" "$TEST/runC.out"'
 ok "D: env MAX_STEPS beats config"        'grep -aq "HALT — Step 3 — GATE 1: fixture gate" "$TEST/runD.out" && ! grep -aq "MAX_STEPS=1" "$TEST/runD.out"'
+ok "E: mid-step death → hard halt"        'grep -aq "claude exited non-zero" "$TEST/runE.out" && grep -aq "stopped: error (non-zero exit)" "$TEST/runE.out"'
+ok "F: ↻ continuation line"               'grep -aq "↻ dirty tree — continuation preamble added" "$TEST/runF.out"'
+ok "F: stub received preamble once"       '[ "$(grep -ac "Do NOT start over" "$TEST/args.log")" = "1" ]'
+ok "A–D: no ↻ on clean boundaries"        '! grep -aq "↻" "$TEST/runA.out" && ! grep -aq "↻" "$TEST/runB.out" && ! grep -aq "↻" "$TEST/runC.out" && ! grep -aq "↻" "$TEST/runD.out"'
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed   (fixture: $TEST)"
