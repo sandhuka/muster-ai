@@ -74,6 +74,7 @@ if [ -d "$FW/private/xo" ]; then
   grep -qi "cross-load" "$FW/private/xo/MUSTER-XO.md" \
     && ok "MUSTER-XO.md cross-load rule intact" || no "MUSTER-XO.md cross-load rule missing"
   [ -d "$FW/private/xo/retros" ] && ok "retros/ output dir exists" || no "retros/ dir missing"
+  have private/xo/scripts/xo-session-log.sh && ok "xo-session-log.sh present" || no "xo-session-log.sh missing"
 else
   echo "·  private/xo absent — XO-loadout asserts skipped (public CI is expected here)"
 fi
