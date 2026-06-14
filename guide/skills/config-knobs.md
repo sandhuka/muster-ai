@@ -40,8 +40,14 @@ window"):
 2. **Write the file** — add or update the line in `.muster/config` (create the file from the
    template shape if missing). You may write this file (the Guide's write boundary allows
    framework plumbing).
-3. **Confirm** — echo the new line and when it takes effect (next driver start; running steps
-   are unaffected). Remind them it's committed — the change rides into future worktrees.
+3. **Commit it** — `git add .muster/config && git commit -m "tune .muster/config"`. This is
+   load-bearing, not optional: sprint worktrees are created with `git worktree add`, which checks
+   out the **committed** tip — an uncommitted edit never reaches the autonomous run, so the knob
+   silently wouldn't apply and your "it rides into worktrees" promise would be false. (No git repo?
+   Then say so plainly: the edit applies to in-place runs but there are no worktree sprints to ride
+   into — git is what autonomous mode is built on.)
+4. **Confirm** — echo the new line and when it takes effect (next driver start; running steps
+   are unaffected). Now "it's committed — the change rides into future worktrees" is true.
 
-The whole exchange is two messages. If you've written a paragraph about what `MAX_STEPS` means,
-you're explaining, not resolving.
+The whole exchange is still two messages (the commit is silent plumbing). If you've written a
+paragraph about what `MAX_STEPS` means, you're explaining, not resolving.

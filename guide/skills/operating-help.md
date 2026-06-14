@@ -33,7 +33,13 @@ worktree to answer "where is the run?" is the anti-pattern this ladder exists to
 The driver stops for exactly these reasons (details: `muster/system-guide.md` → Autonomous
 Sprint Execution — read the section, don't recite this list from memory):
 
-- **sprint complete** — Next Step has no fenced block. Done; review the branch.
+- **sprint complete** — Next Step has no fenced block. Done; **review the sprint branch and merge
+  it deliberately**. The whole run lives in an isolated `git worktree` on its own branch — every
+  step-boundary commit lands there, never on the user's main line — so nothing counts until they
+  `git merge`, or they discard the branch wholesale (`git worktree remove`). That branch isolation
+  IS the review-before-it-counts gate; the per-step commit floor is a within-sandbox checkpoint, not
+  a write to their working branch. (A user who wants to gate per-step commits is usually missing
+  that this is already sandboxed — point them here, not at a knob.)
 - **halt (`Role: halt`)** — founder checkpoint. Wave gate → verdict in
   `knowledge-base/wave-review.md`, then `bash muster/scripts/muster-sprint-resume.sh` from the
   worktree. PM escalation → answer `## Founder Decisions` in the queue, re-run the driver.

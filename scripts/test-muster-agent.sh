@@ -57,6 +57,10 @@ echo "$sl" | grep -q "\[muster: xo\]" && ok "statusline.sh renders [muster: xo]"
 for s in setup-coach operating-help config-knobs field-report migration-coach; do
   have "guide/skills/$s.md" && ok "guide skill present: $s" || no "guide skill missing: $s"
 done
+# config-knobs MUST instruct committing the edit — worktree sprints check out the committed tip,
+# so an uncommitted .muster/config never reaches the run (regression guard for the worktree gap).
+grep -q "git commit" "$FW/guide/skills/config-knobs.md" \
+  && ok "config-knobs commits .muster/config (worktree-visible)" || no "config-knobs lost the commit step"
 have templates/.claude/skills/muster/SKILL.md \
   && ok "/muster skill present" || no "/muster skill missing"
 grep -q "MUSTER.md" "$FW/templates/.claude/skills/muster/SKILL.md" \

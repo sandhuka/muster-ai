@@ -138,6 +138,17 @@ display-only changes — the driver fixture grew to 35 assertions to cover it.
   submodule, so a pointer bump alone never delivered them — an upgraded project got the Guide's
   code but not its `/muster` skill, the one thing the CHANGELOG calls the single front door. The
   migration gate now asserts both seed and no-clobber-of-a-customized-skill.
+- **Fixed — the Guide now commits `.muster/config` edits** (`config-knobs.md`): the knob-resolution
+  flow wrote the file and *claimed* "it's committed, rides into worktrees" but never ran the commit.
+  Since sprint worktrees are created with `git worktree add` (committed tip), an uncommitted edit
+  silently never reached the run — the knob the user just set wouldn't apply. The skill now commits
+  between write and confirm; the contract gate asserts the commit step survives (regression guard).
+  Surfaced by the Guide acceptance test on a real project.
+- **New — founder-notices closeout sweep** (`sprint-planning.md`): `founder-notices.md` was the one
+  accumulating file without a deterministic growth backstop (siblings archive at closeout / cap /
+  rotate; it relied on the founder manually deleting). PM now clears pre-current-sprint notices at
+  closeout, so the live file and every gate packet stay lean; the founder still deletes acted-on
+  notices as they go.
 - **New — Muster-agent contract gate** (`scripts/test-muster-agent.sh`, wired into CI): asserts
   the deterministic Guide/XO scaffold — the carve-out, `MUSTER.md` bind commands, `muster-bind.sh`
   accepting `guide`/`xo`, the status-line chain rendering `[muster: xo]`, the guide skills, the
