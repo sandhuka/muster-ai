@@ -61,6 +61,10 @@ done
 # so an uncommitted .muster/config never reaches the run (regression guard for the worktree gap).
 grep -q "git commit" "$FW/guide/skills/config-knobs.md" \
   && ok "config-knobs commits .muster/config (worktree-visible)" || no "config-knobs lost the commit step"
+# Reciprocal routing: PM must send framework-process questions to /muster (mirror of the Guide
+# routing project questions to PM) — otherwise PM brute-forces system files to answer them.
+grep -qi "Scope boundary" "$FW/team/pm/CLAUDE.md" && grep -q "/muster" "$FW/team/pm/CLAUDE.md" \
+  && ok "PM routes framework-process questions to /muster" || no "PM lost the route-to-Muster rule"
 have templates/.claude/skills/muster/SKILL.md \
   && ok "/muster skill present" || no "/muster skill missing"
 grep -q "MUSTER.md" "$FW/templates/.claude/skills/muster/SKILL.md" \

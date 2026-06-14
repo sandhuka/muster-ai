@@ -149,6 +149,13 @@ display-only changes — the driver fixture grew to 35 assertions to cover it.
   rotate; it relied on the founder manually deleting). PM now clears pre-current-sprint notices at
   closeout, so the live file and every gate packet stay lean; the founder still deletes acted-on
   notices as they go.
+- **New — PM routes framework-process questions to `/muster`** (`team/pm/CLAUDE.md`): the Guide↔PM
+  boundary was one-directional — the Guide sent project questions to PM, but PM, asked a
+  framework-mechanics question ("how do I run an autonomous sprint?"), brute-forced `system-guide.md`
+  and the sprint scripts to answer it. PM now mirrors the rule: how-Muster-runs questions → run
+  `/muster` in the same tab (consult mode, keeps the PM role); project content stays PM's. Token
+  win — the Guide answers process questions off its thin cheap-read ladder, not a pile of files.
+  Contract gate asserts the reciprocal rule.
 - **New — Muster-agent contract gate** (`scripts/test-muster-agent.sh`, wired into CI): asserts
   the deterministic Guide/XO scaffold — the carve-out, `MUSTER.md` bind commands, `muster-bind.sh`
   accepting `guide`/`xo`, the status-line chain rendering `[muster: xo]`, the guide skills, the
