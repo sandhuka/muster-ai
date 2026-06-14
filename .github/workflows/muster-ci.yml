@@ -20,3 +20,6 @@ jobs:
 
       - name: Migration gate (v3→v4 upgrade path)
         run: bash scripts/test-migrate.sh
+
+      - name: Muster-agent contract (Guide/XO wiring)
+        run: bash scripts/test-muster-agent.sh

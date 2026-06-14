@@ -130,6 +130,13 @@ display-only changes — the driver fixture grew to 35 assertions to cover it.
   user's config. Scoped to **v3→v4 only** — the live upgrade path; v1→v2 and v2→v3 are finite
   historical populations and deliberately not gated (gating a run-once path is upkeep with no
   ongoing payoff).
+- **New — Muster-agent contract gate** (`scripts/test-muster-agent.sh`, wired into CI): asserts
+  the deterministic Guide/XO scaffold — the carve-out, `MUSTER.md` bind commands, `muster-bind.sh`
+  accepting `guide`/`xo`, the status-line chain rendering `[muster: xo]`, the guide skills, the
+  `/muster` front door — and the XO loadout conditionally (only when `private/xo/` is present, so
+  public CI skips it gracefully). Guards the **plumbing** the agent behaviors stand on; the
+  model-judgment layer is out of scope (needs a live run, regresses only when the driving prose
+  changes).
 - **Convention — build proposals** (`release-discipline.md`): a non-trivial build earns an HTML
   proposal at `private/builds/<version>/<name>-proposal.html` (ranking/what/why/stress-cases —
   including those that did NOT survive, carried as named open questions/regression/commit plan)
