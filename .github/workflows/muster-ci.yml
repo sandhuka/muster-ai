@@ -23,3 +23,6 @@ jobs:
 
       - name: Muster-agent contract (Guide/XO wiring)
         run: bash scripts/test-muster-agent.sh
+
+      - name: Resume guard (fail-closed safety)
+        run: bash scripts/test-sprint-resume.sh

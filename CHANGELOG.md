@@ -163,6 +163,12 @@ display-only changes — the driver fixture grew to 35 assertions to cover it.
   public CI skips it gracefully). Guards the **plumbing** the agent behaviors stand on; the
   model-judgment layer is out of scope (needs a live run, regresses only when the driving prose
   changes).
+- **New — resume guard fixture** (`scripts/test-sprint-resume.sh`, 5th CI gate): asserts
+  `muster-sprint-resume.sh` sources the Tier-1 worktree guard **before** its
+  `--dangerously-skip-permissions` PM call — on a primary checkout (and when the guard file is
+  missing) resume refuses and makes no `claude` call, proven by a PATH-injected stub. Closes the
+  one autonomous-path script with branching safety logic that the driver fixture didn't reach;
+  `muster-sprint-new`/`sandbox` stay untested (thin git-worktree glue, low payoff).
 - **Convention — build proposals** (`release-discipline.md`): a non-trivial build earns an HTML
   proposal at `private/builds/<version>/<name>-proposal.html` (ranking/what/why/stress-cases —
   including those that did NOT survive, carried as named open questions/regression/commit plan)
