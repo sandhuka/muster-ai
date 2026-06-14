@@ -4,8 +4,10 @@ Framework version lives in `VERSION`. This file tracks what changed at each bump
 trace behavior to a version. Newest first.
 
 Versioning: **major** = a workflow or routing model change that existing projects migrate to
-(ships with a `MIGRATING-*` guide); **minor** = additive capability or hardening that arrives on
-the next `muster/` submodule pointer bump with no project-side migration.
+(ships with a `MIGRATING-*` guide); **minor** = additive capability or hardening, non-breaking.
+Most of a minor arrives on the next `muster/` submodule pointer bump; any new project-level files
+it adds (knowledge-base templates, `.claude/skills/*`, `scripts/test.sh` — these live outside the
+submodule) are seeded copy-if-absent by re-running the live upgrade script. No breaking migration.
 
 ---
 
@@ -126,10 +128,16 @@ display-only changes — the driver fixture grew to 35 assertions to cover it.
   declaring a framework change shipped.
 - **New — migration regression gate** (`scripts/test-migrate.sh`, wired into CI): a throwaway
   v3-project sandbox exercises `migrate-v3-to-v4.sh` for dry-run safety, copy-if-absent seeding
-  (`founder-notices.md` + `.muster/config`), preservation, idempotency, and no-clobber of a
-  user's config. Scoped to **v3→v4 only** — the live upgrade path; v1→v2 and v2→v3 are finite
-  historical populations and deliberately not gated (gating a run-once path is upkeep with no
-  ongoing payoff).
+  (`founder-notices.md`, `.muster/config`, `.claude/skills/*`, `scripts/test.sh`), preservation,
+  idempotency, and no-clobber of a user's config or skill. Scoped to **v3→v4 only** — the live
+  upgrade path; v1→v2 and v2→v3 are finite historical populations and deliberately not gated
+  (gating a run-once path is upkeep with no ongoing payoff).
+- **Fixed — the upgrade path now delivers project-level files that live outside the submodule**:
+  the live "bring current" script (`migrate-v3-to-v4.sh`) also seeds `.claude/skills/*` (the
+  `/muster` front door, `/rebind`) and `scripts/test.sh`, copy-if-absent. These sit OUTSIDE the
+  submodule, so a pointer bump alone never delivered them — an upgraded project got the Guide's
+  code but not its `/muster` skill, the one thing the CHANGELOG calls the single front door. The
+  migration gate now asserts both seed and no-clobber-of-a-customized-skill.
 - **New — Muster-agent contract gate** (`scripts/test-muster-agent.sh`, wired into CI): asserts
   the deterministic Guide/XO scaffold — the carve-out, `MUSTER.md` bind commands, `muster-bind.sh`
   accepting `guide`/`xo`, the status-line chain rendering `[muster: xo]`, the guide skills, the

@@ -38,6 +38,14 @@ For a v1 project specifically: recommend rehearsing the whole chain on a **copy*
 first (`cp -r` the repo, run the chain there, inspect) — it's minutes of cost against their real
 fear.
 
+**Minor bumps (same major, e.g. 4.1 → 4.2): no hop script.** Most framework code arrives with
+the submodule pointer bump, but a minor can add project-level files that live OUTSIDE the
+submodule (knowledge-base templates, `.claude/skills/*` like the `/muster` front door,
+`scripts/test.sh`) — a bump alone never delivers those. After bumping, run the live upgrade
+script (`bash muster/scripts/migrate-v3-to-v4.sh`; it doubles as "bring project files current"):
+copy-if-absent, it seeds anything new and never clobbers existing files. Skipping it is why an
+upgraded project can have the new framework code but be missing its `/muster` skill.
+
 **5. Verify after EACH script, before the next.** Project data intact: `knowledge-base/` files
 present and readable, `product-spec.md` / `decision-log.md` content preserved, `.populated`
 parses, git status comprehensible. Don't run hop N+1 on an unverified hop N.

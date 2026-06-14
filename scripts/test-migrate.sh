@@ -8,8 +8,9 @@
 #
 # Builds a throwaway "v3 project" (the framework repo symlinked in as the submodule),
 # runs migrate-v3-to-v4.sh against it, and asserts: dry-run safety, copy-if-absent
-# seeding (founder-notices.md + .muster/config), preservation of existing content,
-# idempotency, and no-clobber of a user's customized config.
+# seeding (founder-notices.md, .muster/config, .claude/skills/* incl. the /muster
+# front door, scripts/test.sh), preservation of existing content, idempotency, and
+# no-clobber of a user's customized config or skill.
 #
 # Self-cleans on green; keeps the sandbox on failure for inspection.
 
@@ -28,7 +29,9 @@ ln -s "$FW" muster
 printf '# Test Project\n' > CLAUDE.md
 mkdir -p knowledge-base
 printf 'existing\n' > knowledge-base/product-spec.md   # must be PRESERVED
-# deliberately MISSING: founder-notices.md, and no .muster/config
+mkdir -p .claude/skills/custom
+printf 'custom\n' > .claude/skills/custom/SKILL.md     # customized skill — must be PRESERVED
+# deliberately MISSING: founder-notices.md, .muster/config, .claude/skills/muster, scripts/test.sh
 
 # --- 1. dry-run touches nothing but reports both new seeds ---
 out="$(bash muster/scripts/migrate-v3-to-v4.sh --dry-run 2>&1)"
@@ -36,6 +39,10 @@ out="$(bash muster/scripts/migrate-v3-to-v4.sh --dry-run 2>&1)"
 [ ! -e .muster/config ] && ok "dry-run did not create .muster/config" || no "dry-run created .muster/config"
 echo "$out" | grep -q "founder-notices.md" && ok "dry-run reports founder-notices.md" || no "dry-run silent on founder-notices.md"
 echo "$out" | grep -q ".muster/config" && ok "dry-run reports .muster/config" || no "dry-run silent on .muster/config"
+[ ! -e .claude/skills/muster/SKILL.md ] && ok "dry-run did not create /muster skill" || no "dry-run created /muster skill"
+[ ! -e scripts/test.sh ] && ok "dry-run did not create scripts/test.sh" || no "dry-run created scripts/test.sh"
+echo "$out" | grep -q ".claude/skills/muster" && ok "dry-run reports /muster skill" || no "dry-run silent on /muster skill"
+echo "$out" | grep -q "scripts/test.sh" && ok "dry-run reports scripts/test.sh" || no "dry-run silent on scripts/test.sh"
 
 # --- 2. real run seeds both, preserves existing ---
 bash muster/scripts/migrate-v3-to-v4.sh >/dev/null 2>&1
@@ -43,6 +50,9 @@ bash muster/scripts/migrate-v3-to-v4.sh >/dev/null 2>&1
 [ -f .muster/config ] && ok "real run seeded .muster/config" || no ".muster/config not seeded"
 [ "$(cat knowledge-base/product-spec.md)" = "existing" ] && ok "existing kb file preserved" || no "existing kb file clobbered"
 diff -q .muster/config muster/templates/.muster/config >/dev/null 2>&1 && ok ".muster/config matches template" || no ".muster/config differs from template"
+[ -f .claude/skills/muster/SKILL.md ] && ok "real run seeded /muster skill" || no "/muster skill not seeded"
+[ -x scripts/test.sh ] && ok "real run seeded scripts/test.sh (executable)" || no "scripts/test.sh not seeded or not executable"
+[ "$(cat .claude/skills/custom/SKILL.md)" = "custom" ] && ok "customized skill preserved" || no "customized skill clobbered"
 
 # --- 3. idempotency: second run copies nothing ---
 out2="$(bash muster/scripts/migrate-v3-to-v4.sh 2>&1)"
