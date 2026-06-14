@@ -107,6 +107,8 @@ The modes trade **token cost** against **your time** and **output quality**. Pic
 
 The honest one-liner: **Manual spends your time to save tokens; Autonomous spends tokens to save your time; Assisted sits in between.**
 
+**Unsure which to pick, or want to tune a run?** Type `/muster`. The Guide walks you through the tradeoffs for your situation, and sets the autonomous-run budgets for you — run length (`MAX_STEPS`), per-step model, and more — in `.muster/config`, no script editing. Precedence is explicit env > `.muster/config` > built-in default, so a value you commit there rides into every future worktree run.
+
 ---
 
 ## Mixing modes
@@ -128,6 +130,7 @@ The revision cap is the built-in "this isn't converging" signal: it surfaces as 
 
 ## See also
 
+- `/muster` (any tab) — the Guide: which mode to use, run status, knob tuning, upgrades
 - [getting-started.md](getting-started.md) — setup and your first sprint
 - [system-guide.md](system-guide.md) → Invocation Patterns and Autonomous Sprint Execution — the technical reference (stop conditions, wave gates, the scripts)
 - [architecture-and-design.md](architecture-and-design.md) — how the picker, worktree, and file-mediated coordination fit together

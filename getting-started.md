@@ -112,9 +112,14 @@ Think of yourself as the "runner" — PM is the brain, you're the hands.
 - `knowledge-base/` — Your project's source of truth (product spec, decisions, sprint tasks, research). PM manages this.
 - `.claude/agents/` — Bootloaders for all 8 roles (loaded by the picker on bind, or by `Agent({subagent_type: "<role>"})` for one-shot subagent calls).
 - `.claude/skills/rebind/` — `/rebind` slash command for swapping roles mid-session.
+- `.claude/skills/muster/` — `/muster` slash command for framework help (the Guide).
 - `.claude/statusline.sh` — Status-line script showing which role this session is bound to.
 
 ---
+
+## Framework help — the Guide
+
+Type `/muster` in any tab for how-Muster-works questions — which mode to use, why a run stopped, tuning `.muster/config` budgets, upgrading to a newer version. The Guide answers process questions and routes product questions (specs, decisions, sprint content) to PM. In a role-bound tab, `/muster` answers once without changing what that tab is bound to.
 
 ## What's Next
 
