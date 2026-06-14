@@ -1,5 +1,11 @@
 # Migrating from Muster v1 to v2
 
+> **Easiest path — let the Guide coach you.** Bump the submodule first
+> (`cd muster && git checkout main && git pull && cd ..`), then tell Claude: *"Read
+> `muster/MUSTER.md` and act as the Guide; coach me through upgrading this project to the latest
+> Muster."* The Guide handles backups, rehearses the chain on a copy first, and verifies each
+> step. The manual steps below are the fallback if you'd rather drive it yourself.
+
 ## What changed
 
 v2 introduces three things v1 didn't have:

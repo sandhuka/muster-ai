@@ -521,6 +521,12 @@ if ! state_has_step "scaffold_templates"; then
 
     cp -r muster/templates/knowledge-base .
 
+    # Project knob file (v4.2 — sourced by the sprint driver; committed so worktrees inherit it)
+    if [ -d "muster/templates/.muster" ] && [ ! -f ".muster/config" ]; then
+        mkdir -p .muster
+        cp muster/templates/.muster/config .muster/config
+    fi
+
     # Remove template .DS_Store files if any
     find . -name ".DS_Store" -delete 2>/dev/null || true
 

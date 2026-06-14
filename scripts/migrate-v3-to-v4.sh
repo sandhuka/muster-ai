@@ -14,8 +14,16 @@ set -euo pipefail
 #
 # What this does:
 #   - Seeds any NEW knowledge-base template files the project is missing
-#     (copy-if-absent) — currently wave-review.md (wave-gate I/O) and triage-log.md
-#     (observation-disposition audit log). Never overwrites existing content.
+#     (copy-if-absent) — wave-review.md (wave-gate I/O), triage-log.md
+#     (observation-disposition audit log), and founder-notices.md (autonomous-run
+#     surface). Never overwrites existing content.
+#   - Seeds the .muster/config tuning file (copy-if-absent) so a migrated project
+#     can set driver knobs (MAX_STEPS, MAX_TURNS, models, KEEP_RUNS) without
+#     editing the submodule.
+#   - Seeds NEW project-level files that live OUTSIDE the submodule and so do NOT
+#     arrive on a pointer bump: .claude/skills/* (the /muster front door, /rebind)
+#     and scripts/test.sh (the quiet test runner). Copy-if-absent per item; never
+#     clobbers a customized skill.
 #
 # What this does NOT do:
 #   - Bump the muster submodule pointer (do that FIRST:
@@ -23,8 +31,8 @@ set -euo pipefail
 #     ALL v4 framework code — the muster-sprint-*.sh scripts, the observation-triage
 #     skill, and the gatekeeping edits to system-guide.md / decision-making.md /
 #     sprint-planning.md / CLAUDE.md — lives in the submodule and arrives with the
-#     pointer bump. The only project-side delta is the knowledge-base files this
-#     script seeds.)
+#     pointer bump. The project-side deltas are the files this script seeds:
+#     knowledge-base templates, .muster/config, .claude/skills/*, scripts/test.sh.)
 #   - Touch or overwrite existing knowledge-base content (preserved as-is). Your
 #     orchestration-queue.md keeps its current format; it self-heals to the v4
 #     template at the next sprint planning.
@@ -122,8 +130,8 @@ MUSTER_VERSION="$(cat muster/VERSION 2>/dev/null || echo '?')"
 say ""
 say "muster framework version: ${BOLD}${MUSTER_VERSION}${RESET}"
 
-# ---------- migration step: seed missing knowledge-base templates ----------
-section_header "Step 1: Seed missing knowledge-base files (copy-if-absent)"
+# ---------- migration step: seed missing template files ----------
+section_header "Step 1: Seed missing template files (copy-if-absent)"
 
 copied=0
 gitignored=0
@@ -140,6 +148,62 @@ for src in muster/templates/knowledge-base/*; do
         copied=$((copied+1))
     fi
 done
+
+# .muster/config — the project-local driver tuning file (4.2). Lives at the project
+# root, not under knowledge-base/, so it's seeded separately. Copy-if-absent: never
+# clobber a project's own knob settings.
+config_src="muster/templates/.muster/config"
+if [ -f "$config_src" ]; then
+    if [ -e ".muster/config" ]; then
+        substep_skip "1" ".muster/config" "already present — preserved"
+    else
+        if [ "$DRY_RUN" -eq 0 ]; then
+            mkdir -p .muster
+            cp "$config_src" .muster/config
+        fi
+        substep_done "1" ".muster/config (seeded from template)"
+        copied=$((copied+1))
+    fi
+fi
+
+# .claude/skills/* — project-level slash-command skills (the /muster front door,
+# /rebind). These live OUTSIDE the submodule, so a pointer bump alone never delivers
+# them — they must be seeded. New in 4.2: /muster. Copy-if-absent per skill dir so a
+# project's customized skill is never clobbered.
+if [ -d "muster/templates/.claude/skills" ]; then
+    for src in muster/templates/.claude/skills/*; do
+        [ -d "$src" ] || continue
+        name="$(basename "$src")"
+        dest=".claude/skills/$name"
+        if [ -e "$dest" ]; then
+            substep_skip "1" ".claude/skills/$name" "already present — preserved"
+        else
+            if [ "$DRY_RUN" -eq 0 ]; then
+                mkdir -p .claude/skills
+                cp -r "$src" "$dest"
+            fi
+            substep_done "1" ".claude/skills/$name (seeded from template)"
+            copied=$((copied+1))
+        fi
+    done
+fi
+
+# scripts/test.sh — the quiet test runner template (4.2). Copy-if-absent + executable,
+# matching fresh setup.
+test_src="muster/templates/scripts/test.sh"
+if [ -f "$test_src" ]; then
+    if [ -e "scripts/test.sh" ]; then
+        substep_skip "1" "scripts/test.sh" "already present — preserved"
+    else
+        if [ "$DRY_RUN" -eq 0 ]; then
+            mkdir -p scripts
+            cp "$test_src" scripts/test.sh
+            chmod +x scripts/test.sh
+        fi
+        substep_done "1" "scripts/test.sh (seeded from template)"
+        copied=$((copied+1))
+    fi
+fi
 
 # ---------- migration step: gitignore the sprint logs ----------
 section_header "Step 2: Ignore autonomous sprint logs"

@@ -98,6 +98,10 @@ Muster runs the same team three ways — pick by how much you want to drive.
 
 Planning is always interactive; execution is where you choose — and you can switch mid-sprint. See [operating-modes.md](operating-modes.md) for the full guide, including the cost and quality tradeoffs.
 
+## Framework help — the Guide
+
+Stuck on *how Muster runs* — which mode to use, why a run stopped, tuning a budget, upgrading? Type `/muster` in any tab. The Guide is Muster's built-in concierge for the framework itself: it answers process questions — operating modes, run status, `.muster/config` knobs, version upgrades, friction reports — and routes product questions (specs, decisions, sprint content) to PM. It rides alongside your current role: in a role-bound tab, `/muster` answers once without changing what that tab is bound to.
+
 ## Agent roster
 
 | Agent | Role |
@@ -133,6 +137,7 @@ my-project/
 ├── .claude/
 │   ├── agents/            # Bootloaders for all 8 roles (invoke via picker or @<role>)
 │   ├── skills/rebind/     # /rebind slash command (mid-session role swap)
+│   ├── skills/muster/     # /muster slash command (the framework Guide)
 │   ├── statusline.sh      # Status-line script (shows [muster: <role>])
 │   └── settings.json      # Wires statusline + Claude Code config
 ├── CLAUDE.md              # Product info + project-specific rules + bootstrap routing
@@ -162,7 +167,9 @@ my-project/
 | [MIGRATING-V1-TO-V2.md](MIGRATING-V1-TO-V2.md) | One-shot migration for projects set up before v2 | A `muster/` update halted with "Pre-v2 Muster setup detected" |
 | [CHANGELOG.md](CHANGELOG.md) | Version history — what changed at each bump | Tracing behavior to a framework version |
 
-Current framework version: **4.1** (autonomous sprint execution + handoff boundary reconciliation; see [CHANGELOG.md](CHANGELOG.md)). Upgrading an existing v3 project to v4? Bump the `muster/` submodule and run `muster/scripts/migrate-v3-to-v4.sh` — see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md). The 4.0 → 4.1 bump is additive — it arrives with a pointer bump, no migration.
+Current framework version: **4.2** (the Guide/XO framework agent, `.muster/config` knobs, and autonomous-loop operability; see [CHANGELOG.md](CHANGELOG.md)). Upgrading an existing v3 project to v4? Bump the `muster/` submodule and run `muster/scripts/migrate-v3-to-v4.sh` — see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md). The 4.1 → 4.2 bump is additive: bump the submodule, then re-run `migrate-v3-to-v4.sh` to seed the new project-level files (the `/muster` front door, the test runner) — or let the Guide coach the upgrade for you (below).
+
+**Upgrading and want it done for you?** From any version, bump the `muster/` submodule, then tell Claude: *"Read `muster/MUSTER.md` and act as the Guide; coach me through upgrading this project to the latest Muster."* The Guide runs the migration with backups and per-step verification — see the callout atop each `MIGRATING-*.md`.
 
 ## Stay updated
 

@@ -21,6 +21,8 @@ Multi-agent framework. Every session picks ONE role at start (picker or `MUSTER_
 
 Authoritative rules, role binding, agent protocols: `muster/CLAUDE.md`. System guide, agent roster, skill index: `muster/system-guide.md`. This file holds only project-specific content (sections below).
 
+**Framework guide**: `/muster` — setup, modes, knobs, stuck runs, upgrades.
+
 ## Product Information
 
 **Product**: [Name] — "[Tagline]"

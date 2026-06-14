@@ -6,6 +6,12 @@ This guide covers what's new, how to migrate (one script), and what changes in y
 
 ---
 
+> **Easiest path — let the Guide coach you.** Bump the submodule first
+> (`cd muster && git checkout main && git pull && cd ..`), then tell Claude: *"Read
+> `muster/MUSTER.md` and act as the Guide; coach me through upgrading this project to the latest
+> Muster."* The Guide handles backups, rehearses the chain on a copy first, and verifies each
+> step. The manual steps below are the fallback if you'd rather drive it yourself.
+
 ## What's new in v3
 
 | Feature | What it does |
