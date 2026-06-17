@@ -219,6 +219,7 @@ ok "D: env MAX_STEPS beats config"        'grep -aq "HALT — Step 3 — GATE 1:
 ok "E: mid-step death → hard halt"        'grep -aq "claude exited non-zero" "$TEST/runE.out" && grep -aq "stopped: error (non-zero exit)" "$TEST/runE.out"'
 ok "F: ↻ continuation line"               'grep -aq "↻ dirty tree — continuation preamble added" "$TEST/runF.out"'
 ok "F+G: preamble exactly on dirty starts" '[ "$(grep -ac "Do NOT start over" "$TEST/args.log")" = "2" ]'
+ok "wrapper enforces foreground test-gating" 'grep -aq "FOREGROUND and BLOCKING" "$TEST/args.log"'
 ok "A–D: no ↻ on clean boundaries"        '! grep -aq "↻" "$TEST/runA.out" && ! grep -aq "↻" "$TEST/runB.out" && ! grep -aq "↻" "$TEST/runC.out" && ! grep -aq "↻" "$TEST/runD.out"'
 ok "G: ⏸ limit line with resume time"     'grep -aq "⏸ usage limit — sleeping until" "$TEST/runG.out"'
 ok "G: same step re-ran after resume"     '[ "$(grep -ac "▶ Step 2 — PM: fixture review" "$TEST/runG.out")" = "2" ]'

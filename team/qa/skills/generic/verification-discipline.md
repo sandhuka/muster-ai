@@ -24,6 +24,20 @@ Self-reports drift from reality, and the drift is invisible until you check.
    that's most of it. Only genuinely human checks (does the real app behave, does this *feel*
    right) go to a person. Don't escalate what a script could have answered.
 
+## Meaningful Coverage
+A test counts only if it can fail for the right reason — when it exercises the behavior and would
+break if the behavior broke. A green check is not the same as coverage. Treat as **uncovered**:
+- a test that is `.disabled()`/skipped or commented out;
+- an assertion weakened to keep a suite green (a toothless `count > 0` where the value matters, a
+  removed or loosened expectation);
+- **code-read or a manual tap-through standing in for an automated test on a load-bearing
+  contract** — an invariant a silent change can break (a `rawValue`↔index mapping, an enum
+  exhaustiveness assumption, a navigation contract) needs a test that re-checks it every run, not
+  a one-time human read.
+
+A false green over a vacuous or absent test is worse than a known gap: the gap is visible, the
+false green is not.
+
 ## By Role
 - **QA** — your defining discipline. Never accept "tests pass" without the counts and the failing
   lines; re-run the suite yourself; validate the deliverable against its acceptance criteria.

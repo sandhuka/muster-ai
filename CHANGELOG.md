@@ -11,6 +11,58 @@ submodule) are seeded copy-if-absent by re-running the live upgrade script. No b
 
 ---
 
+## 4.3 — 2026-06-16
+
+Arogh Sprint-5 retro findings, triaged (F1–F14) — the deeper batch behind 4.2's operability fixes:
+autonomous-run test capture, test rigor, design-for-evolution, planning discipline. No control-floor
+change — agent guidance, skills, and planning conventions, almost all read on-demand; exactly one
+always-run touch (Self-Review item 8). Web skills untouched (already the benchmark — the gaps were iOS).
+
+- **New — autonomous test-gating discipline** (`muster-sprint-run.sh` wrapper + `system-guide.md`): a
+  test-gated step runs its test FOREGROUND/blocking in one Bash call with a large timeout — never
+  `run_in_background` then yield, which orphans the test (the headless `-p` session has no inter-turn
+  channel) and trips the no-advance halt. The full rule (600s-timeout caveat, blocked-`sleep` trap,
+  run-early/reserve-the-tail) lives in system-guide; the wrapper carries the tight imperative. Driver
+  fixture +1 wiring assertion. **REJECTED:** a driver-side auto-resume of the orphaned test — once
+  `-p` exits you cannot distinguish "yielded with a pending test" from "genuinely stuck," and it would
+  weaken the load-bearing no-advance halt; the agent-guidance fix prevents the situation instead.
+- **Changed — sleep-proofing honesty** (`muster-sprint-run.sh`, `system-guide.md`, `operating-help.md`):
+  `caffeinate -i` covers IDLE sleep only — it never prevented lid-close or low-battery sleep. The
+  overclaiming comment is corrected; run guidance is lid-open + AC for long runs; a sleep that does
+  land is non-fatal (the step is resumable on re-run). Recovery already worked — only the claim was wrong.
+- **New — "Meaningful Coverage" + test rigor** (`verification-discipline.md` is the SSoT, referenced by
+  Self-Review item 8, `test-strategy.md`, `decision-making.md`): a test counts only if it can fail for
+  the right reason — no `.disabled()`, no weakened assertions, and code-read ≠ coverage for a
+  load-bearing contract. Self-Review item 8 broadened: every behavioral change incl. a composition/UI
+  change that carries a contract ships a test. `test-strategy.md` gains a zero-test-surface sweep and
+  combinatorial regression for decision surfaces (parametrize over input dimensions; a new value is a
+  matrix row, and the matrix ships with the engine change).
+- **New — design-for-evolution (iOS)** (`ios-best-practices.md`): exhaustive `switch` with no `default`
+  (the compiler becomes the extension checklist), data-tables over branches, one SSoT accessor,
+  orchestrator/delegate split, anti-pattern catalog. iOS-only — web already states this (exhaustive
+  `assertNever`, "the compiler is your first reviewer").
+- **New — inject-the-clock (iOS)** (`ios-mvvm.md` DI + `ios-modern-api.md`): "now" is an injected
+  dependency, never a direct `Date.now`/`Calendar.current` read in a view-model/repository/domain type.
+  iOS-only — web's `lib/time.ts` seam already does this. **No new generic skill** (it would have
+  duplicated existing web doctrine — the SSoT anti-pattern the change itself preaches).
+- **New — founder-time leverage** (`decision-making.md` principle + `sprint-planning.md` gate-packet):
+  founder time goes only to what the machine cannot verify; PM certifies the mechanical layer is real
+  and meaningful FIRST, then curates the wave-review packet to the human-judgment residue with evidence
+  attached — never "green = covered." Folded into existing PM skills; **no new file.**
+- **New — intra-wave dependency discipline** (`sprint-planning.md`, `ios-code-standards.md`): a step
+  whose scope/inputs depend on earlier wave work points at the design handoff as authoritative scope
+  (not a closed list that silently overrides it) and derives QA's charter from the same handoff; a step
+  consuming a `needs-component`/`needs-update` dependency inlines the halt. The standing iOS rule now
+  covers `needs-update` (stale-API), not just absent components. Gate changes-requested processing now
+  cascades reassigned work to agent-context (the manual picker-bind path was the exposed one).
+- **Fixed — operational-log gitignore** (`setup-project.sh`, `setup-existing-project.sh`):
+  `knowledge-base/.muster-bind-log` was the lone tracked operational log — now gitignored by both setup
+  paths. Also brought `setup-existing-project.sh` to parity (it was missing `.muster-sprint-logs/`).
+  Forward-fix only — no migration/untrack machinery for a capped, harmless log on a non-breaking bump.
+
+Already shipped in 4.2 (logged here as corroborated by the same retro, no new work): the per-step commit
+floor (F4) and the resume/continuation machinery that partially covered the test-capture cluster.
+
 ## 4.2 — 2026-06-11
 
 Autonomous-loop operability — everything the first real field sprint (Arogh Sprint 5) surfaced.

@@ -54,7 +54,7 @@ Scannable reference of deprecated vs modern SwiftUI and Swift APIs. Use when wri
 | Struct instances (`Circle()`) | Static member lookup (`.circle`) where possible |
 | `contains()` for user-input filtering | `localizedStandardContains()` |
 | `filter().count` | `count(where:)` |
-| `Date()` | `Date.now` |
+| `Date()` | `Date.now` — but inject it in app/domain code (`ios-mvvm.md` → DI) |
 | `"\(firstName) \(lastName)"` for names | `PersonNameComponents` with formatting |
 | `if let value = value {` | `if let value {` shorthand |
 | Manual date format strings | `Date(string, strategy: .iso8601)` or `Text(date, format:)` |

@@ -60,6 +60,9 @@ Sprint Execution — read the section, don't recite this list from memory):
 - **Interrupted mid-step** (power, kill, crash): just re-run — the driver detects leftover
   uncommitted work and instructs the next agent to continue, not restart (`↻` trail line).
   Discarding partial work instead is the user's manual call (`git checkout .`), never yours.
+- **Long / overnight runs**: keep the lid open and on AC. The idle-sleep guard (`caffeinate -i`)
+  holds off *idle* timeout only — not lid-close or low-battery sleep. If the machine does sleep,
+  nothing is lost: the step is resumable, just re-run on wake (same mid-step continuation).
 - **Hand-holding a stuck step**: drive it in a warm role tab inside the worktree — but only
   while the loop is stopped, and PM closes out before the loop resumes (`system-guide.md` →
   Mixing modes).

@@ -50,7 +50,7 @@ Define Swift naming conventions, file organization, error handling, and dependen
 ## Shared UI Library Convention
 - Every file that renders UI must import the shared UI library
 - Use library tokens, extensions, and view modifiers for all styling
-- Use library components when available; if missing, file a `needs-component` request via `knowledge-base/ui-component-requests.md` — do not create custom replacements
+- Use library components when available; if one is missing file a `needs-component` request, and if a present component's API is too stale for your need file a `needs-update` request (`knowledge-base/ui-component-requests.md`) — never create a custom replacement or compile against a stale signature; route to PM when a needed component is in either state
 - Feature module naming: use `Features/<FeatureName>/` directories matching the product spec's feature identifiers
 - Repository protocol pattern: each data domain has a protocol + local implementation + remote implementation
 

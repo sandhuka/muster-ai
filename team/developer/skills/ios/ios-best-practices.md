@@ -10,6 +10,15 @@ Define high-level architecture patterns, project structure, and Apple platform g
 - Protocol-oriented design for testability and dependency injection
 - Feature-based module structure, not layer-based
 
+## Design for Evolution
+Build so the axes the product will grow along are cheap to extend — and let the compiler, not a future code-read, catch a half-done extension.
+- **Exhaustive `switch`, no `default`.** Switch over an enum with every case spelled out and no `default`. Adding a case then *fails the build* at every unhandled site — the compiler becomes the extension checklist. A `default` (or `@unknown default` on your own enum) silences exactly that signal.
+- **Author behavior in data tables, not branches.** When behavior varies by a value, drive it from a parameter table keyed by that value, so a new value is a table row — not a new `case` threaded through the engine.
+- **One source-of-truth accessor.** A mapping like enum→label or enum→icon lives in a single accessor, never duplicated across files. Duplication is an SSoT violation and an N-site edit on every extension, and the compiler can't catch the copy you missed.
+- **Orchestrator/delegate split** so a genuinely new behavior is a new delegate, not a rewrite of the core.
+
+**Anti-patterns to flag in review:** a hardcoded literal where an enum or predicate belongs (silently wrong on extension, uncatchable by the compiler); the same enum mapping duplicated across N files.
+
 ## Code Organization
 ```
 ProjectName/
