@@ -132,6 +132,13 @@ struct FeedRepositoryCoordinator: FeedRepository {
 
 Start with feature assembly. Evolve to a composition root when dependency graphs become shared across features.
 
+**Inject the clock — never read `Date.now`/`Calendar.current` directly.** "Now" is a dependency, not an ambient fact. Reading the system clock inline in a ViewModel, repository, or domain type gives N independent answers to "what time is it" — an SSoT violation, and the seam where streak, cache-expiry, and week-boundary bugs breed — and makes time-dependent logic untestable. Inject a clock defaulted to the system, like any other dependency:
+```swift
+protocol DateProvider: Sendable { var now: Date { get } }
+struct SystemDateProvider: DateProvider { var now: Date { .now } }
+```
+The default reads the real clock; tests pass a fixed or scriptable provider to travel time deterministically. Calendar and time zone ride the same rule — inject them, don't reach for `Calendar.current`. The *only* allowed `Date.now`/`Calendar.current` read is inside the provider. (This is the qualifier on `ios-modern-api.md`'s `Date()` → `Date.now`: prefer `.now` at that one seam, not scattered through app code.)
+
 ## View Wiring
 
 ```swift
