@@ -14,6 +14,8 @@ Define testing levels, coverage targets, environment strategy, and the device te
 - Critical paths: 100% coverage (authentication, payments, [sensitive data handling])
 - Integration: All API endpoints tested with mock and staging servers
 - UI automation: All primary user journeys (onboarding, core loop, subscription)
+- **Zero-test-surface sweep**: periodically — and before any release gate — enumerate the production surfaces with *no* automated test at all, so an entire untested screen or module surfaces without a founder having to ask. A percentage target hides a surface that was never tested; this finds it.
+- **Code-read is not coverage** for a load-bearing contract (`team/qa/skills/generic/verification-discipline.md` → Meaningful Coverage): distinguish "validated by reading the diff" from "covered by a test that re-runs"; a silent-breakage invariant requires the latter.
 
 ## Two-Tier Test Design
 Every feature with a free/premium split needs test cases for both paths:
@@ -56,6 +58,7 @@ If your product serves rich media content:
 - Full regression before each App Store release
 - Smoke test suite for hotfix validation (15-minute critical path check)
 - Regression suite maintained by QA, execution automated in CI
+- **Combinatorial coverage for decision surfaces**: when the thing under test is a decision/algorithm engine, the regression layer is **parametrized over the product's input dimensions** (e.g. for a recommendation engine: profile × level × available-options × preference × history-state) and asserts the invariant for every combination. A new dimension *value* becomes a new matrix row, not a new bespoke test file; a regression in any existing combination fails loudly. The matrix ships **with** the engine change as one deliverable, never as a follow-up. (This is the extensible form of the golden-test-case principle below — see Testing Principles #2.)
 
 ## Suite-Run Discipline (all platforms)
 - **Quiet by default**: suites run through the project's `scripts/test.sh` — raw output to a
