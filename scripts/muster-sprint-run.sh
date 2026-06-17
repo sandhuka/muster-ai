@@ -37,9 +37,12 @@ LIMIT_BUFFER="${LIMIT_BUFFER:-300}"   # seconds past a stated usage-limit reset 
   exit 1
 }
 
-# Sleep-proof: hold macOS idle-sleep exactly while the driver lives (-w $$ ties the assertion
-# to this PID and auto-releases on exit — overnight runs survive lid-closed-adjacent idling).
-# The command -v guard makes non-mac a no-op (Linux analog for a future port: systemd-inhibit).
+# Sleep-proof (idle only): hold off macOS *idle* sleep while the driver lives (-w $$ ties the
+# assertion to this PID, auto-releasing on exit). -i covers the idle timeout ONLY — it does NOT
+# prevent lid-close (clamshell) or low-battery sleep, so long unattended runs want lid-open + AC.
+# A sleep that does land is non-fatal: the interrupted step is resumable (re-run on wake — the
+# mid-step continuation picks up the partial work). The command -v guard makes non-mac a no-op
+# (Linux analog for a future port: systemd-inhibit).
 command -v caffeinate >/dev/null && caffeinate -i -w $$ &
 
 # Path to the handoff-integrity lint (sits next to this driver).
@@ -317,7 +320,11 @@ re-point Next Step to a 'Role: pm' assessment step (see decision-making.md → A
 boundary). Only PM sets Role: halt. The founder does NOT read this session's output: anything \
 the founder must SEE goes in a file — append a dated one-line FYI to \
 knowledge-base/founder-notices.md (parallel-track kickoffs, heads-ups, deadlines); never \
-'surface' or 'tell' anything in chat. Do NOT guess and do NOT expand sprint scope (no new queue \
+'surface' or 'tell' anything in chat. If this step's acceptance depends on a build or test, run \
+it FOREGROUND and BLOCKING in one Bash call with a large explicit timeout — never run_in_background \
+then end your turn to await it (this headless session has no inter-turn channel: it exits and the \
+result, handoff, and queue-advance are all lost). Run the test early; reserve turn budget to await \
+it, file the handoff, and advance the queue. Do NOT guess and do NOT expand sprint scope (no new queue \
 steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   if [ "${PIPESTATUS[0]}" -ne 0 ]; then
     if resume_at="$(limit_resume_epoch)"; then
