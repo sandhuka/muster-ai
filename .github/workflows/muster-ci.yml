@@ -18,6 +18,9 @@ jobs:
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 
+      - name: Queue lint (planning-correctness contract)
+        run: bash scripts/test-queue-lint.sh
+
       - name: Migration gate (v3→v4 upgrade path)
         run: bash scripts/test-migrate.sh
 
