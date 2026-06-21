@@ -192,7 +192,7 @@ pass=0; fail=0
 ok(){ if eval "$2"; then echo "PASS: $1"; pass=$((pass+1)); else echo "FAIL: $1"; fail=$((fail+1)); fi; }
 
 ok "A: queue label on step header"        'grep -aq "▶ Step 1 — QA: fixture audit" "$TEST/runA.out"'
-ok "A: telemetry on ✓ line"               'grep -aq "peak ctx 150k/200k 75% · out 4k" "$TEST/runA.out"'
+ok "A: telemetry on ✓ line"               'grep -aq "peak ctx 150k/1M 15% · out 4k" "$TEST/runA.out"'
 ok "A: activity compression line"         'grep -aq "📖 ×1 · ✏️  ×1 · 🧪 ×1" "$TEST/runA.out"'
 ok "A: cap message self-explains"         'grep -aq "Run cap reached (MAX_STEPS=1) — cost circuit-breaker" "$TEST/runA.out"'
 ok "A: cap names next queue step"         'grep -aq "next: Step 2 — PM: fixture review" "$TEST/runA.out"'

@@ -19,8 +19,10 @@
 # biggest turn) — the "how full did the window get" step-sizing signal. Deliberately NOT total
 # input tokens: every turn re-sends the conversation (mostly cache reads), so total input is
 # inflated by turn count and measures cost, not size. out = total output tokens (result event).
-# Window for the %: model id containing "[1m]" -> 1M, else 200k. Unknown model / absent usage ->
-# the telemetry segment is omitted (graceful degradation, never an error).
+# Window for the %: the 4.6+ frontier generation (Opus 4.6/4.7/4.8, Sonnet 4.6, Fable 5) ships a
+# 1M window by default, so unknown/new model ids resolve to 1M; only Haiku and the legacy
+# 4.5-and-earlier families are 200k. Absent usage -> the telemetry segment is omitted entirely
+# (graceful degradation, never an error).
 
 RAWLOG="${1:-}"
 METRICS="${2:-}"
@@ -100,8 +102,11 @@ emit_done(){
   seg="${turns:-?} turns · \$${cost:-?}"
   pct="—"
   if [ "${PEAK:-0}" -gt 0 ]; then
-    win=200000; wl="200k"
-    case "$MODEL" in *"[1m]"*) win=1000000; wl="1M";; esac
+    win=1000000; wl="1M"
+    case "$MODEL" in
+      *haiku*|*opus-4-5*|*opus-4-1*|*opus-4-0*|*sonnet-4-5*|*sonnet-4-0*|*claude-3*|*claude-2*)
+        win=200000; wl="200k" ;;
+    esac
     pct="$(( PEAK * 100 / win ))%"
     seg="$seg · peak ctx $(fmt_k "$PEAK")/$wl $pct · out $(fmt_k "${outraw:-0}")"
   fi

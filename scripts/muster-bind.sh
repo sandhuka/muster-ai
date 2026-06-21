@@ -26,10 +26,15 @@ case "$ROLE" in
     *) echo "muster-bind: invalid role '$ROLE'. Valid: pm developer ui-ux qa content marketing legal research guide xo" >&2; exit 1 ;;
 esac
 
-# Validate invoker
+# Invoker — a low-stakes audit/status tag (the bind-log line + the interactive last-role gate).
+# An unrecognized value must NOT halt the bind: agents in autonomous mode sometimes pass a context
+# word (the step id, "sprint", the queue name) instead of the literal enum. Warn and coerce to
+# `auto` — correct for the autonomous path, where this misread happens — never exit 1. Hard-failing
+# here forced a wasted retry and a spurious "tool returned an error" on every autonomous bind,
+# which desensitizes the operator to genuine bind failures.
 case "$INVOKER" in
     interactive|env-var|auto|onboarding) ;;
-    *) echo "muster-bind: invalid invoker '$INVOKER'. Valid: interactive env-var auto onboarding" >&2; exit 1 ;;
+    *) echo "muster-bind: unrecognized invoker '$INVOKER' — defaulting to 'auto'." >&2; INVOKER="auto" ;;
 esac
 
 # Validate session ID
