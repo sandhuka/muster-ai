@@ -11,6 +11,57 @@ submodule) are seeded copy-if-absent by re-running the live upgrade script. No b
 
 ---
 
+## 4.4 — 2026-06-20
+
+Arogh Sprint-6 retro findings (F-S6-1/3/5/8) plus two operability fixes surfaced in founder review.
+Theme: make the autonomous run trustworthy (believable telemetry, errors that mean something, less
+friction) and the work safer (don't derail on a malformed queue, don't drop founder notices, don't
+ship "technically legal but wrong"). **Zero always-read surface change** — one new on-demand validator
+script, two scripts, and on-demand skill/convention edits; the token floor is untouched.
+
+- **New — deterministic queue/planning gate** (`scripts/muster-queue-lint.sh` + `test-queue-lint.sh`
+  in CI + `sprint-planning.md`): a fenceless `## Next Step` step is a latent run-killer — the driver
+  keys completion on the ABSENCE of a fence, so a fenceless step promoted to Next Step reads as "sprint
+  complete" and halts mid-run. The lint mirrors the driver's exact parse (Next Step bounding, fence-
+  toggle step counting, any-level-`Upcoming` stop) and asserts at planning closeout: Next Step = exactly
+  1 fenced step; every step has a heading + a valid `Role:`. PM runs it; planning isn't done until green.
+  Distinguishes the dangerous fenceless case (work queued under Upcoming) from the benign idle case
+  (sprint closed, nothing queued) — verified against a live closed queue so it never cries wolf.
+  **Convention tightened:** every step (PM included) carries an explicit `Role:` line — the "may omit
+  the marker" wording caused the field defect; the driver's Role-less→`pm` default stays as a tolerant
+  backstop. **REJECTED:** folding the F-S6-3 notices check and the F-S6-2 pre-flight steps into this
+  lint — different artifacts (gate packet / planning closeout) and partly judgment; the notices count-
+  check is parked (needs a last-gate anchor), pre-flight is covered by the lint-as-closeout-gate.
+- **Changed — gate-packet notices fold-in is mandatory** (`sprint-planning.md`): the "Notices since
+  last gate" heading convention existed but was judgment-dependent — a notice could be surfaced via a
+  topic section instead of the named heading, so a less-diligent gate-prep could silently drop a
+  between-gate FYI. Now the heading is required in every packet (even when empty → `none`), verbatim,
+  with the PM Pre-Handoff Self-Review confirming its presence. One canonical place the founder scans.
+- **Fixed — bind no longer errors on every autonomous step** (`scripts/muster-bind.sh`): each
+  autonomous bind passed a context word (step id, "sprint", queue name) as the invoker; the script
+  hard-failed (`exit 1`), printing a spurious "tool returned an error" and forcing a wasted retry every
+  step. The invoker is a low-stakes audit tag — warn and coerce unrecognized values to `auto`
+  (correct for the autonomous path), never halt. The first call now succeeds, killing both the false
+  error and the retry. The recurring false error was the real hazard: it desensitizes the operator to
+  genuine bind failures.
+- **Changed — test-philosophy hardening** (`decision-making.md`, `test-strategy.md`): a premium-quality
+  regression shipped past a green combinatorial suite (a floor-hugging result for a requested range),
+  caught on device, not by the net. Two field-proven lessons into the judgment skills: (1) tolerance/
+  assertion-loosening as a test-fix is a candidate product regression — PM flags/escalates, never
+  silently rules it (a lone edge-case failure is often the tip of a systematic drift); (2) invariants
+  prove the output *legal*, not *good* — felt-quality surfaces (duration, volume, difficulty, breadth)
+  require a quality-target assertion ("lands at intent"), not only invariants. Both on-demand, kept
+  generic/durable (no project specifics).
+- **Fixed — sprint telemetry context-window denominator** (`muster-sprint-format.sh`): the peak-ctx %
+  divided by a stale hardcoded 200k and gated 1M behind a `[1m]` marker the stream-json model id never
+  carries, so every Opus run divided by 200k (a 300k peak printed as 150%). The 4.6+ frontier
+  generation ships a 1M window by default — default to 1M, enumerate only the 200k exceptions (Haiku +
+  legacy 4.5-and-earlier); unknown/new models resolve to 1M.
+- **New — one-paste PM tab** (`scripts/muster-sprint-new.sh`): the printed PM-tab command was bare
+  `claude`, forcing a manual role-pick and manual permission grants every sprint. Now
+  `MUSTER_ROLE=pm claude --dangerously-skip-permissions` — one paste boots PM-bound with permissions
+  pre-granted, mirroring the loop tab's existing `MUSTER_ROLE=auto` pattern.
+
 ## 4.3 — 2026-06-16
 
 Arogh Sprint-5 retro findings, triaged (F1–F14) — the deeper batch behind 4.2's operability fixes:
