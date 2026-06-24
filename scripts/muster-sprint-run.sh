@@ -219,8 +219,18 @@ status_write(){ # $1 = state ("running step N" / "sleeping …" / "complete" / "
   } > "$LOGDIR/STATUS" 2>/dev/null || true
 }
 
+# Wall-clock formatter: seconds -> compact "Hh Mm" / "Mm Ss" / "Ss". Non-numeric -> "—".
+fmt_dur(){
+  local s="${1:-0}" h m sec
+  case "$s" in (*[!0-9]*|"") echo "—"; return;; esac
+  h=$((s/3600)); m=$(((s%3600)/60)); sec=$((s%60))
+  if   [ "$h" -gt 0 ]; then printf '%dh %dm' "$h" "$m"
+  elif [ "$m" -gt 0 ]; then printf '%dm %ds' "$m" "$sec"
+  else printf '%ds' "$sec"; fi
+}
+
 step=0; prev=""; last_done=""; step_started=""
-reason="interrupted"; reason_note=""; executed=0; ROWS=""
+reason="interrupted"; reason_note=""; executed=0; ROWS=""; run_secs=0
 status_write "starting"
 while :; do
   step=$((step+1))
@@ -286,6 +296,7 @@ while :; do
   [ -n "$model" ] && hdr="$hdr  [$model]"
   echo "$hdr" | tee -a "$HUMANLOG"
   step_started="$(date '+%Y-%m-%d %H:%M:%S')"
+  step_t0="$(date +%s)"   # epoch for wall-clock — paired with step_started above
   status_write "running step $step"
 
   # Mid-step continuation: the commit floor guarantees a clean tree at every successful step
@@ -349,12 +360,18 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   # degraded). tail -1, not an executed-index lookup: failed limit attempts also write metrics
   # lines (their cost is real), so line number ≠ success count once auto-resume exists.
   executed=$((executed+1))
+  step_secs=$(( $(date +%s) - step_t0 )); [ "$step_secs" -lt 0 ] && step_secs=0
+  run_secs=$(( run_secs + step_secs ))
   m="$(tail -1 "$METRICS" 2>/dev/null)"
   IFS='|' read -r mt mc mp mo _ <<< "${m:-—|—|—|—|0}"
   mc_disp="—"; [ "$mc" != "—" ] && mc_disp="\$$mc"
-  ROWS="${ROWS}$(printf '  %-36.36s %5s %8s %5s %6s' "${label:-step $step}" "$mt" "$mc_disp" "$mp" "$mo")"$'\n'
-  last_done="${label:-step $step} · ${mt} turns · ${mc_disp} · out ${mo}"
+  ROWS="${ROWS}$(printf '  %-36.36s %5s %8s %5s %6s %7s' "${label:-step $step}" "$mt" "$mc_disp" "$mp" "$mo" "$(fmt_dur "$step_secs")")"$'\n'
+  last_done="${label:-step $step} · ${mt} turns · ${mc_disp} · out ${mo} · $(fmt_dur "$step_secs")"
   status_write "between steps"
+  # Per-step footer: wall-clock for this step + cumulative burn so far (time/$ map to tokens —
+  # the founder's throughput signal). run_cost from METRICS so it survives a degraded metrics line.
+  run_cost="$(awk -F'|' '{c+=$2} END {printf "%.2f", c}' "$METRICS" 2>/dev/null)"
+  echo "  ⏱  $(fmt_dur "$step_secs") · run so far: $(fmt_dur "$run_secs") · \$${run_cost:-?} · $executed step(s)" | tee -a "$HUMANLOG"
 
   # Step-boundary commit floor: one commit per completed step, regardless of model or whether
   # the agent's closeout remembered to commit. Agents committing their own work stays the
@@ -362,12 +379,20 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   # a skipped closeout commit can't blur two steps' work into one diff. --ignore-submodules=dirty
   # keeps a content-dirty muster/ checkout (e.g. a hand-patched script) from firing this every
   # step — a moved submodule POINTER still commits. Logs dir excluded defensively (gitignored).
+  #
+  # When it fires, SHOW what was swept rather than accusing the agent of leaving work: the floor
+  # catches several non-agent cases (the most common: a moved submodule pointer the agent committed
+  # *inside* but didn't `git add` in the parent). The path list lets the founder tell a real missed
+  # commit from a benign pointer bump at a glance — diagnostic signal, not a false alarm.
   dirty="$(git status --porcelain --ignore-submodules=dirty -- . ":(exclude)$LOGDIR" 2>/dev/null \
            || git status --porcelain --ignore-submodules=dirty)"
   if [ -n "$dirty" ]; then
+    n_dirty="$(printf '%s\n' "$dirty" | grep -c .)"
     git add -A -- . ":(exclude)$LOGDIR" 2>/dev/null || git add -A
     if git commit -q -m "sprint step boundary: ${label:-step $step}"; then
-      echo "  📦 step-boundary commit (agent left uncommitted work)" | tee -a "$HUMANLOG"
+      echo "  📦 step-boundary commit · swept $n_dirty path(s) the closeout didn't commit:" | tee -a "$HUMANLOG"
+      printf '%s\n' "$dirty" | head -6 | sed 's/^/       /' | tee -a "$HUMANLOG"
+      [ "$n_dirty" -gt 6 ] && echo "       … and $((n_dirty-6)) more" | tee -a "$HUMANLOG"
     else
       echo "  ⚠️ step-boundary commit failed — tree left as-is for diagnosis" | tee -a "$HUMANLOG"
     fi
@@ -399,6 +424,7 @@ fi
   else
     printf '  %d steps' "$executed"
   fi
+  [ "$run_secs" -gt 0 ] && printf ' · %s wall' "$(fmt_dur "$run_secs")"
   echo " · stopped: $reason${reason_note:+ ($reason_note)}"
   if [ "$notices_run" -gt 0 ]; then
     echo "  📣 $notices_run founder notice(s) this run — read $NOTICES"

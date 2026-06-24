@@ -11,6 +11,44 @@ submodule) are seeded copy-if-absent by re-running the live upgrade script. No b
 
 ---
 
+## 4.5 — 2026-06-23
+
+Autonomous-run trust + telemetry, plus two operability fixes. Theme: the driver's per-step
+read-out should be believable and informative, and the release gates should measure what they
+claim to. **Zero always-read surface change** — all edits are in the driver/test scripts; the
+model-read token floor is untouched (the new driver lines are bash comments and human-facing trail
+echoes, never sent to the model).
+
+- **Fixed — step-boundary commit no longer cries "agent left uncommitted work"** (`muster-sprint-run.sh`):
+  the floor's echo asserted agent fault on every fire, but the floor catches several non-agent cases —
+  most commonly a moved submodule pointer the agent committed *inside* `muster/` but didn't `git add`
+  in the parent (`--ignore-submodules=dirty` suppresses dirty content, not a pointer move). The echo
+  now states it neutrally and **lists the swept paths** (first 6 + overflow count), turning a false
+  alarm into diagnostic signal: a lone `muster` line reads instantly as a benign pointer bump, a real
+  source file reads as a missed closeout commit. The commit itself is unchanged — floor behavior was
+  always correct; only the message lied.
+- **New — per-step wall-clock + cumulative burn** (`muster-sprint-run.sh`): each step prints
+  `⏱ <step time> · run so far: <total> · $<cost> · N step(s)`; the run-summary table gains a time
+  column and the totals line a `<dur> wall` figure. Wall-clock maps to tokens/throughput — the
+  founder's requested signal for sizing steps and tuning model routing. Driver-side only (epoch
+  bracketing the `claude` invocation); the formatter stays presentation-pure (never-fail contract
+  untouched). `.metrics` file format unchanged — time lives in the trail + summary, not the
+  machine-readable per-step line (a structured time field there is a parked follow-up if the founder
+  wants offline analysis).
+- **Fixed — wrapper-prompt budget gate was measuring the whole script tail** (`test-pillar-budgets.sh`):
+  the awk end-anchor `/no new queue steps/` never matched — the prompt's tail wraps `no new queue \`
+  / `steps)."` across a line-continuation — so the range silently ran to EOF, counting the prompt PLUS
+  every line below it. The 5800-char budget was tuned to that inflated number and meaningless; the real
+  prompt is 1517 chars. Anchored the range to the prompt's pipe-to-formatter line (`bash "$FMT"`, exists
+  exactly once, immune to growth below it) and re-tuned the budget to 1800 (~19% headroom over the true
+  prompt). This bug is why a ~1300-char bash addition below the prompt tripped a "token-floor regression"
+  that wasn't one.
+- **Fixed — PM tab now auto-binds** (`muster-sprint-new.sh`, commit 759758e): the v4.4 bare-interactive
+  `MUSTER_ROLE=pm claude` skipped perms but never fired the bootstrap (a bare interactive session idles
+  until the first message), so the founder had to manually say "bind to PM". Added an opening prompt that
+  triggers turn 1 → bootstrap runs → binds, then waits. Mirrors the documented `MUSTER_ROLE` + prompt
+  pattern. **Field-verify on the next sprint-new run before release.**
+
 ## 4.4 — 2026-06-20
 
 Arogh Sprint-6 retro findings (F-S6-1/3/5/8) plus two operability fixes surfaced in founder review.
