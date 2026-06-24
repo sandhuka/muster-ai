@@ -229,6 +229,38 @@ fmt_dur(){
   else printf '%ds' "$sec"; fi
 }
 
+# Step-progress confirmation (deterministic, end of each step): independently verify from the
+# QUEUE + agent-requests.md what the agent ACTUALLY did — not its self-report. Two facts, both
+# the same checks the loop already enforces, surfaced HERE attached to the step that produced them
+# so the founder sees protocol-followed (the sprint moved + the handoff is real), not just
+# tokens-spent. (1) advancement: did '## Next Step' change from the block that just ran? — the
+# same comparison cond-3 makes at the next loop top. (2) handoff: the new Done entry's HO refs are
+# verified FILED by calling the handoff lint (single source of truth — no second parser). A step
+# that files no handoff (PM/coordination) shows advancement only — no false warning. $1 = $blk.
+report_step_progress(){
+  local ran_blk="$1" new_blk next_lbl done_entry refs line
+  new_blk="$(next_block)"
+  if [ "$new_blk" = "$ran_blk" ]; then
+    echo "  ⚠ queue NOT advanced — Next Step unchanged (next loop stops: cond 3)" | tee -a "$HUMANLOG"
+    return 0
+  fi
+  next_lbl="$(next_label "$new_blk")"
+  if [ -n "$next_lbl" ]; then line="  ✓ advanced → next: $next_lbl"
+  else                        line="  ✓ advanced → queue clear (sprint may be complete)"; fi
+  # HO refs in the most-recent Done entry (what this step just wrote) — same parse the lint uses.
+  done_entry="$(awk '/^## Done/{d=1;next} d&&/^## /{exit} d&&/^[[:space:]]*-/{print;exit}' "$QUEUE")"
+  refs="$(printf '%s' "$done_entry" | grep -oiE 'HO-[0-9]+' | tr '[:lower:]' '[:upper:]' | sort -u | tr '\n' ' ')"
+  refs="${refs% }"
+  if [ -n "$refs" ]; then
+    if bash "$LINT" "$QUEUE" "knowledge-base/agent-requests.md" >/dev/null 2>&1; then
+      line="$line · handoff $refs filed ✓"
+    else
+      line="$line · ⚠ handoff $refs NOT filed (next loop stops)"
+    fi
+  fi
+  echo "$line" | tee -a "$HUMANLOG"
+}
+
 step=0; prev=""; last_done=""; step_started=""
 reason="interrupted"; reason_note=""; executed=0; ROWS=""; run_secs=0
 status_write "starting"
@@ -368,6 +400,7 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   ROWS="${ROWS}$(printf '  %-36.36s %5s %8s %5s %6s %7s' "${label:-step $step}" "$mt" "$mc_disp" "$mp" "$mo" "$(fmt_dur "$step_secs")")"$'\n'
   last_done="${label:-step $step} · ${mt} turns · ${mc_disp} · out ${mo} · $(fmt_dur "$step_secs")"
   status_write "between steps"
+  report_step_progress "$blk"   # protocol confirmation (advanced + handoff filed) — verified, not claimed
   # Per-step footer: wall-clock for this step + cumulative burn so far (time/$ map to tokens —
   # the founder's throughput signal). run_cost from METRICS so it survives a degraded metrics line.
   run_cost="$(awk -F'|' '{c+=$2} END {printf "%.2f", c}' "$METRICS" 2>/dev/null)"

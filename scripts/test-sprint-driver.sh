@@ -61,7 +61,7 @@ Task: fixture step two with a model override.
 
 ## Done
 
-_(empty)_
+- 2026-06-11 qa: Step 1 — fixture audit complete (HO-001)
 EOF
 
 cat > "$TEST/q3.md" <<'EOF'
@@ -113,6 +113,9 @@ cp "\$PWD/.muster-sprint-logs/STATUS" "\$DIR/status-during" 2>/dev/null   # mid-
 n=\$(cat "\$DIR/count" 2>/dev/null || echo 0); n=\$((n+1)); echo \$n > "\$DIR/count"
 echo "step \$n output" >> "\$PWD/deliverable.md"          # leave UNCOMMITTED work (floor must catch)
 cp "\$DIR/q\$((n+1)).md" "\$PWD/knowledge-base/orchestration-queue.md"
+if [ "\$n" = "1" ]; then                                  # file the HO that q2's Done references,
+  echo "### [2026-06-11] HO-001 — fixture handoff" >> "\$PWD/knowledge-base/agent-requests.md"  # so the lint verifies it filed
+fi
 if [ "\$n" = "2" ]; then
   echo "- 2026-06-11 pm: pod-build track kicked off — 4 component requests, needed by Step 30" >> "\$PWD/knowledge-base/founder-notices.md"
 fi
@@ -208,6 +211,8 @@ ok "commit floor: 6 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | g
 ok "commit floor: messages carry labels"  '[ -n "$(git -C "$PROJ" log --format=%s | grep -a "boundary: Step 2")" ]'
 ok "commit floor: shows swept paths"      'grep -aq "step-boundary commit · swept" "$TEST/runA.out" && grep -aq "deliverable.md" "$TEST/runA.out"'
 ok "per-step wall-clock footer"           'grep -aq "⏱" "$TEST/runA.out" && grep -aq "run so far:" "$TEST/runA.out"'
+ok "step-progress: advance + HO verified" 'grep -aq "✓ advanced → next: Step 2 — PM: fixture review · handoff HO-001 filed" "$TEST/runA.out"'
+ok "step-progress: no-handoff = advance only" 'grep -a "advanced → next: Step 3 — GATE 1" "$TEST/runB.out" | grep -avq "handoff"'
 ok "clean tree at end"                    '[ -z "$(git -C "$PROJ" status --porcelain)" ]'
 ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "8" ]'
 ok "B: founder notice echoed loudly"      'grep -aq "📣 FOUNDER NOTICE" "$TEST/runB.out" && grep -aq "pod-build track" "$TEST/runB.out"'

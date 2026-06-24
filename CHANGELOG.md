@@ -27,6 +27,14 @@ echoes, never sent to the model).
   alarm into diagnostic signal: a lone `muster` line reads instantly as a benign pointer bump, a real
   source file reads as a missed closeout commit. The commit itself is unchanged — floor behavior was
   always correct; only the message lied.
+- **New — per-step protocol confirmation** (`muster-sprint-run.sh`): each step prints
+  `✓ advanced → next: <step> · handoff HO-NNN filed ✓` — independently VERIFIED from the queue +
+  `agent-requests.md`, not the agent's self-report. Advancement is the same comparison cond-3 makes
+  at the next loop top; the handoff verdict reuses the handoff lint (single source of truth, no
+  second parser) to confirm the new Done entry's HO refs are actually filed. A step that files no
+  handoff (PM/coordination) shows advancement only — no false warning; a step that didn't advance or
+  left a dangling HO ref shows a `⚠` early, before the next loop's gate stops the run. This is the
+  trust signal for autonomy: proof the sprint moved correctly, not just that tokens were spent.
 - **New — per-step wall-clock + cumulative burn** (`muster-sprint-run.sh`): each step prints
   `⏱ <step time> · run so far: <total> · $<cost> · N step(s)`; the run-summary table gains a time
   column and the totals line a `<dur> wall` figure. Wall-clock maps to tokens/throughput — the
