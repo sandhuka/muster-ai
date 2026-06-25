@@ -25,6 +25,7 @@ is free:
 | `ANTHROPIC_MODEL` | account default | Session-default model (per-step `Model:` queue lines still win for their step) |
 | `KEEP_RUNS` | 20 | How many runs of logs the driver keeps |
 | `LIMIT_RESUME_AT` | unset | `HH:MM` fallback resume time when a usage-limit reset isn't parseable |
+| `CTX_WARN_PCT` | 80 | Peak-ctx % above which a step is flagged as running hot (a step-sizing signal); `0` disables the warning |
 
 **No speculative knobs.** New knobs arrive only through the knob-ify disposition — recurring
 field reports proving real demand for varying a behavior. Control without sprawl.

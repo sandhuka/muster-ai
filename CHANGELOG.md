@@ -27,6 +27,13 @@ echoes, never sent to the model).
   alarm into diagnostic signal: a lone `muster` line reads instantly as a benign pointer bump, a real
   source file reads as a missed closeout commit. The commit itself is unchanged — floor behavior was
   always correct; only the message lied.
+- **New — live ctx-outlier warning** (`muster-sprint-run.sh` + `CTX_WARN_PCT` knob, default 80):
+  the `✓` line shows peak-ctx % every step, but the founder shouldn't have to eyeball each one — a
+  step whose peak crosses the threshold now prints `⚠ ctx ran hot: peak N% (≥ T%) — consider
+  splitting this step at planning`. A near-full window risks truncation/degraded output and is the
+  step-sizing signal, surfaced live instead of buried in the post-run table. Tunable per project
+  (`CTX_WARN_PCT=0` disables); reuses the metrics pct the formatter already writes, no formatter
+  change. Documented in `guide/skills/config-knobs.md`.
 - **New — per-step protocol confirmation** (`muster-sprint-run.sh`): each step prints
   `✓ advanced → next: <step> · handoff HO-NNN filed ✓` — independently VERIFIED from the queue +
   `agent-requests.md`, not the agent's self-report. Advancement is the same comparison cond-3 makes

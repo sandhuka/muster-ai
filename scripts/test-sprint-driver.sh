@@ -162,7 +162,7 @@ echo "=================== RUN C/D (.muster/config knobs) ==============="
 # MAX_STEPS=2 must beat the config (run reaches the q3 gate and halts instead of capping at 1).
 cp "$TEST/q1.md" "$PROJ/knowledge-base/orchestration-queue.md"
 echo 0 > "$TEST/count"
-mkdir -p "$PROJ/.muster"; echo "MAX_STEPS=1" > "$PROJ/.muster/config"
+mkdir -p "$PROJ/.muster"; { echo "MAX_STEPS=1"; echo "CTX_WARN_PCT=10"; } > "$PROJ/.muster/config"  # low threshold: the 15% stub step trips the hot-ctx ⚠ from run C on
 git -C "$PROJ" add -A && git -C "$PROJ" commit -qm "reset for config runs"
 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runC.out"
 MAX_STEPS=2 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runD.out"
@@ -213,6 +213,8 @@ ok "commit floor: shows swept paths"      'grep -aq "step-boundary commit · swe
 ok "per-step wall-clock footer"           'grep -aq "⏱" "$TEST/runA.out" && grep -aq "run so far:" "$TEST/runA.out"'
 ok "step-progress: advance + HO verified" 'grep -aq "✓ advanced → next: Step 2 — PM: fixture review · handoff HO-001 filed" "$TEST/runA.out"'
 ok "step-progress: no-handoff = advance only" 'grep -a "advanced → next: Step 3 — GATE 1" "$TEST/runB.out" | grep -avq "handoff"'
+ok "ctx-warn: fires past threshold"       'grep -aq "⚠ ctx ran hot: peak 15% (≥ 10%)" "$TEST/runC.out"'
+ok "ctx-warn: silent under default"       '! grep -aq "ctx ran hot" "$TEST/runA.out" && ! grep -aq "ctx ran hot" "$TEST/runB.out"'
 ok "clean tree at end"                    '[ -z "$(git -C "$PROJ" status --porcelain)" ]'
 ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "8" ]'
 ok "B: founder notice echoed loudly"      'grep -aq "📣 FOUNDER NOTICE" "$TEST/runB.out" && grep -aq "pod-build track" "$TEST/runB.out"'

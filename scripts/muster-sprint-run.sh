@@ -15,7 +15,7 @@ source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard 
 # config > built-in default — invocation env is captured before the source and re-applied after,
 # so a config line can never override what the user typed on the command line.
 if [ -f ./.muster/config ]; then
-  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT 2>/dev/null)"
+  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT CTX_WARN_PCT 2>/dev/null)"
   . ./.muster/config
   eval "$_inv_env"
   export ANTHROPIC_MODEL 2>/dev/null || true   # claude reads it from env; config-set needs the export
@@ -25,6 +25,7 @@ QUEUE="knowledge-base/orchestration-queue.md"
 MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
 MAX_TURNS="${MAX_TURNS:-150}"         # per-step model-turn budget — raise for heavy steps
 LIMIT_BUFFER="${LIMIT_BUFFER:-300}"   # seconds past a stated usage-limit reset before resuming
+CTX_WARN_PCT="${CTX_WARN_PCT:-80}"    # peak-ctx % above which a step is flagged as running hot (0 = off)
 [ -f "$QUEUE" ] || { echo "No queue at $QUEUE — run from a project root."; exit 1; }
 
 # Fail fast on an unpopulated/partial muster checkout. `git worktree add` does not check out
@@ -405,6 +406,16 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   # the founder's throughput signal). run_cost from METRICS so it survives a degraded metrics line.
   run_cost="$(awk -F'|' '{c+=$2} END {printf "%.2f", c}' "$METRICS" 2>/dev/null)"
   echo "  ⏱  $(fmt_dur "$step_secs") · run so far: $(fmt_dur "$run_secs") · \$${run_cost:-?} · $executed step(s)" | tee -a "$HUMANLOG"
+  # Ctx-outlier warning: flag a hot step LIVE (the ✓ line shows the % every step, but the founder
+  # shouldn't have to eyeball each one — surface a ⚠ only past the threshold). A near-full window
+  # risks truncation/degraded output and is the step-sizing signal: split it at planning next time.
+  # mp is the metrics pct ("19%" / "—"); skip on degraded/non-numeric or when the knob is 0 (off).
+  pct_num="${mp%\%}"
+  case "$pct_num" in
+    ''|*[!0-9]*) ;;   # degraded ("—") or empty — nothing to compare
+    *) [ "$CTX_WARN_PCT" -gt 0 ] && [ "$pct_num" -ge "$CTX_WARN_PCT" ] && \
+         echo "  ⚠ ctx ran hot: peak ${pct_num}% (≥ ${CTX_WARN_PCT}%) — consider splitting this step at planning" | tee -a "$HUMANLOG" ;;
+  esac
 
   # Step-boundary commit floor: one commit per completed step, regardless of model or whether
   # the agent's closeout remembered to commit. Agents committing their own work stays the
