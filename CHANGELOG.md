@@ -27,6 +27,17 @@ echoes, never sent to the model).
   alarm into diagnostic signal: a lone `muster` line reads instantly as a benign pointer bump, a real
   source file reads as a missed closeout commit. The commit itself is unchanged — floor behavior was
   always correct; only the message lied.
+- **New — glanceable step read-out: role-first header + ruled sections + optional color**
+  (`muster-sprint-run.sh` + `MUSTER_COLOR` knob, default off): the step header led with the queue
+  label and buried the agent, so the founder had to dig to see *who* was working. Now every step
+  opens with a `─── step N` rule and a role-first header (`▶ DEVELOPER · Step 28a` / task on line
+  2 — the two-line start glance), and closes with a consolidated end-block (`✓ <ROLE> · <time> ·
+  advanced → <next> (<role>) · handoff HO-NNN filed ✓` + run totals) and a closing rule. The
+  protocol-confirmation, wall-clock, and ctx-warning lines from earlier in 4.5 are folded into this
+  block. `MUSTER_COLOR=1` colors the agent name (per-agent palette) and bolds key figures in a
+  terminal; it auto-disables when output isn't a TTY, so `.log` files stay plain by default. The
+  formatter's `✓ turns/cost/ctx` line is unchanged — all restyling is driver-side, keeping the
+  never-fail formatter untouched. Documented in `guide/skills/config-knobs.md`.
 - **New — live ctx-outlier warning** (`muster-sprint-run.sh` + `CTX_WARN_PCT` knob, default 80):
   the `✓` line shows peak-ctx % every step, but the founder shouldn't have to eyeball each one — a
   step whose peak crosses the threshold now prints `⚠ ctx ran hot: peak N% (≥ T%) — consider
