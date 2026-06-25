@@ -27,11 +27,15 @@ MAX_TURNS="${MAX_TURNS:-150}"         # per-step model-turn budget — raise for
 LIMIT_BUFFER="${LIMIT_BUFFER:-300}"   # seconds past a stated usage-limit reset before resuming
 CTX_WARN_PCT="${CTX_WARN_PCT:-80}"    # peak-ctx % above which a step is flagged as running hot (0 = off)
 
-# Glance-color (opt-in): MUSTER_COLOR=1 AND stdout is a terminal. Default off keeps .log files
-# clean (no ANSI bytes). When output is redirected / piped (not a TTY) color auto-disables even
-# with the knob set. Role is shown in its agent color; the driver's own key tokens are bolded.
-MUSTER_COLOR="${MUSTER_COLOR:-0}"
-if [ "$MUSTER_COLOR" = 1 ] && [ -t 1 ]; then C_ON=1; else C_ON=0; fi
+# Glance-color: ON by default in a terminal (the founder watches the live trail). Opt out with
+# MUSTER_COLOR=0 or the NO_COLOR convention; force on with MUSTER_COLOR=1. When output is NOT a
+# TTY and MUSTER_COLOR is unset, color stays off so redirected / piped .log files don't get ANSI.
+# Role is shown in its agent color; the driver's own key tokens are bolded.
+if   [ "${MUSTER_COLOR:-}" = 0 ] || [ -n "${NO_COLOR:-}" ]; then C_ON=0
+elif [ "${MUSTER_COLOR:-}" = 1 ];                            then C_ON=1
+elif [ -t 1 ];                                              then C_ON=1
+else                                                              C_ON=0
+fi
 role_ansi(){ case "$1" in   # per-agent console color (mirrors muster's agent palette)
     pm) printf '35';; developer) printf '34';; ui-ux) printf '36';; qa) printf '32';;
     content) printf '33';; marketing) printf '95';; legal) printf '31';; research) printf '94';;
@@ -355,6 +359,7 @@ while :; do
   } | tee -a "$HUMANLOG"
   step_started="$(date '+%Y-%m-%d %H:%M:%S')"
   step_t0="$(date +%s)"   # epoch for wall-clock — paired with step_started above
+  metrics_n0="$(wc -l < "$METRICS" 2>/dev/null || echo 0)"   # metrics-line count BEFORE this step
   status_write "running step $step"
 
   # Mid-step continuation: the commit floor guarantees a clean tree at every successful step
@@ -414,25 +419,33 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
 
   report_founder_channels
 
-  # Summary row for this step, paired with the formatter's newest metrics line (dashes if it
-  # degraded). tail -1, not an executed-index lookup: failed limit attempts also write metrics
-  # lines (their cost is real), so line number ≠ success count once auto-resume exists.
-  executed=$((executed+1))
   step_secs=$(( $(date +%s) - step_t0 )); [ "$step_secs" -lt 0 ] && step_secs=0
   run_secs=$(( run_secs + step_secs ))
-  m="$(tail -1 "$METRICS" 2>/dev/null)"
-  IFS='|' read -r mt mc mp mo _ <<< "${m:-—|—|—|—|0}"
-  mc_disp="—"; [ "$mc" != "—" ] && mc_disp="\$$mc"
+  # Did THIS step produce a result? The formatter appends a metrics line ONLY at a result event, so
+  # an UNCHANGED line count means the step was interrupted/aborted before completing (a manual
+  # Ctrl-C, or a crash before the result). Guard against it: a blind `tail -1` would attribute the
+  # PREVIOUS step's turns/cost/ctx to this one — a phantom row (the device-gate Ctrl-C symptom).
+  # A real failed step (MAX_TURNS, error result, usage-limit attempt) DOES emit a result line, so
+  # its real cost still counts. Only the no-result case shows dashes and is not tallied as executed.
+  metrics_n1="$(wc -l < "$METRICS" 2>/dev/null || echo 0)"
+  if [ "${metrics_n1:-0}" -gt "${metrics_n0:-0}" ]; then
+    executed=$((executed+1)); step_ok=1
+    IFS='|' read -r mt mc mp mo _ <<< "$(tail -1 "$METRICS" 2>/dev/null)"
+    mc_disp="—"; [ "$mc" != "—" ] && mc_disp="\$$mc"
+  else
+    step_ok=0; mt="—"; mc="—"; mc_disp="—"; mp="—"; mo="—"
+  fi
   ROWS="${ROWS}$(printf '  %-36.36s %5s %8s %5s %6s %7s' "${label:-step $step}" "$mt" "$mc_disp" "$mp" "$mo" "$(fmt_dur "$step_secs")")"$'\n'
   last_done="${label:-step $step} · ${mt} turns · ${mc_disp} · out ${mo} · $(fmt_dur "$step_secs")"
   status_write "between steps"
   # End-block glance: line 1 leads with the AGENT (its color) + this step's wall-clock + the
   # VERIFIED protocol outcome (advanced + handoff filed — not the agent's claim); line 2 is the
   # cumulative burn (time/$ map to tokens — the throughput signal). run_cost from METRICS so it
-  # survives a degraded metrics line.
+  # survives a degraded metrics line. An unmeasured (interrupted) step leads with ⚠, not ✓.
   run_cost="$(awk -F'|' '{c+=$2} END {printf "%.2f", c}' "$METRICS" 2>/dev/null)"
   prog="$(step_progress_fragment "$blk")"
-  echo "  ✓ $(paint "$(role_ansi "$role");1" "$role_up") · $(paint 1 "$(fmt_dur "$step_secs")") · $prog" | tee -a "$HUMANLOG"
+  mark="✓"; [ "$step_ok" = 0 ] && mark="⚠"
+  echo "  $mark $(paint "$(role_ansi "$role");1" "$role_up") · $(paint 1 "$(fmt_dur "$step_secs")") · $prog" | tee -a "$HUMANLOG"
   echo "    run so far: $(fmt_dur "$run_secs") · \$${run_cost:-?} · $executed steps" | tee -a "$HUMANLOG"
   # Ctx-outlier warning: flag a hot step LIVE (the ✓ line shows the % every step, but the founder
   # shouldn't have to eyeball each one — surface a ⚠ only past the threshold). A near-full window

@@ -28,16 +28,25 @@ echoes, never sent to the model).
   source file reads as a missed closeout commit. The commit itself is unchanged — floor behavior was
   always correct; only the message lied.
 - **New — glanceable step read-out: role-first header + ruled sections + optional color**
-  (`muster-sprint-run.sh` + `MUSTER_COLOR` knob, default off): the step header led with the queue
+  (`muster-sprint-run.sh` + `MUSTER_COLOR` knob, on by default in a terminal): the step header led with the queue
   label and buried the agent, so the founder had to dig to see *who* was working. Now every step
   opens with a `─── step N` rule and a role-first header (`▶ DEVELOPER · Step 28a` / task on line
   2 — the two-line start glance), and closes with a consolidated end-block (`✓ <ROLE> · <time> ·
   advanced → <next> (<role>) · handoff HO-NNN filed ✓` + run totals) and a closing rule. The
   protocol-confirmation, wall-clock, and ctx-warning lines from earlier in 4.5 are folded into this
-  block. `MUSTER_COLOR=1` colors the agent name (per-agent palette) and bolds key figures in a
-  terminal; it auto-disables when output isn't a TTY, so `.log` files stay plain by default. The
-  formatter's `✓ turns/cost/ctx` line is unchanged — all restyling is driver-side, keeping the
-  never-fail formatter untouched. Documented in `guide/skills/config-knobs.md`.
+  block. Color is **on by default in a terminal** (agent name in its per-agent palette, key figures
+  bold); `MUSTER_COLOR=0` or `NO_COLOR` opts out, `MUSTER_COLOR=1` forces on, and it auto-disables
+  when output isn't a TTY so redirected `.log` files stay plain. The formatter's `✓ turns/cost/ctx`
+  line is unchanged — all restyling is driver-side, keeping the never-fail formatter untouched.
+  Documented in `guide/skills/config-knobs.md`.
+- **Fixed — an interrupted step no longer borrows the previous step's metrics** (`muster-sprint-run.sh`):
+  the formatter appends a metrics line only at a `result` event, so a step aborted before completing
+  (a manual Ctrl-C, or a crash before the result) wrote none — and the driver's blind `tail -1 $METRICS`
+  then attributed the PRIOR step's turns/cost/ctx/out to it (a phantom summary row, seen when a
+  device-gate Ctrl-C made a freshly-started QA step show the developer step's 62 turns / $6.21 / 15%).
+  Now the driver compares the metrics line count before/after the step: a fresh line → real metrics (a
+  failed step with a result line still counts its real cost); no new line → the row shows dashes, the
+  step isn't tallied as executed, and the end-block leads with `⚠` instead of `✓`.
 - **New — live ctx-outlier warning** (`muster-sprint-run.sh` + `CTX_WARN_PCT` knob, default 80):
   the `✓` line shows peak-ctx % every step, but the founder shouldn't have to eyeball each one — a
   step whose peak crosses the threshold now prints `⚠ ctx ran hot: peak N% (≥ T%) — consider

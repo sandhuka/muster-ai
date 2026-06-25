@@ -109,6 +109,15 @@ if [ -f "\$DIR/mode-limit" ]; then                        # one-shot: usage-limi
   sed "s/RESET_TIME_PLACEHOLDER/\$RESET/" "\$DIR/limit-payload.jsonl"
   exit 1
 fi
+if [ -f "\$DIR/noresult-from" ]; then                     # step whose number >= threshold: emit the
+  cur=\$(cat "\$DIR/count" 2>/dev/null || echo 0); nxt=\$((cur+1))   # river but NO result event, exit 0,
+  if [ "\$nxt" -ge "\$(cat "\$DIR/noresult-from")" ]; then          # and DO NOT advance the queue —
+    echo \$nxt > "\$DIR/count"                                      # a manual Ctrl-C mid-step. The
+    echo '{"type":"system","subtype":"init"}'                      # formatter writes no metrics line,
+    echo '{"type":"assistant","message":{"model":"stub-model","usage":{"input_tokens":1000,"cache_read_input_tokens":50000,"cache_creation_input_tokens":0,"output_tokens":100},"content":[{"type":"tool_use","name":"Bash","input":{"command":"ls"}}]}}'
+    exit 0                                                          # so the driver must NOT borrow the
+  fi                                                               # prior step's metrics for the row.
+fi
 cp "\$PWD/.muster-sprint-logs/STATUS" "\$DIR/status-during" 2>/dev/null   # mid-step snapshot
 n=\$(cat "\$DIR/count" 2>/dev/null || echo 0); n=\$((n+1)); echo \$n > "\$DIR/count"
 echo "step \$n output" >> "\$PWD/deliverable.md"          # leave UNCOMMITTED work (floor must catch)
@@ -190,6 +199,17 @@ echo "=================== RUN G (usage limit → auto-resume) ============"
 touch "$TEST/mode-limit"
 LIMIT_BUFFER=1 MAX_STEPS=3 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runG.out"
 
+echo "=================== RUN H (interrupted step → no phantom metrics) ="
+# Reset and run TWO steps: step 1 completes normally (writes a metrics line, advances q1→q2); step 2
+# is interrupted (noresult-from=2 → emits its river but NO result event, exits 0, does not advance).
+# The driver must show DASHES for step 2's row — NOT borrow step 1's turns/cost/ctx — and lead its
+# end-block with ⚠. cond-3 then stops the run on step 3. This reproduces the device-gate Ctrl-C bug.
+cp "$TEST/q1.md" "$PROJ/knowledge-base/orchestration-queue.md"
+echo 0 > "$TEST/count"; echo 2 > "$TEST/noresult-from"
+git -C "$PROJ" add -A && git -C "$PROJ" commit -qm "reset for no-result run"
+MAX_STEPS=3 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runH.out"
+rm -f "$TEST/noresult-from"
+
 echo "=================== ASSERTIONS ==================="
 pass=0; fail=0
 ok(){ if eval "$2"; then echo "PASS: $1"; pass=$((pass+1)); else echo "FAIL: $1"; fail=$((fail+1)); fi; }
@@ -207,7 +227,7 @@ ok "B: step 1 got NO --model flag"        '! head -1 "$TEST/args.log" | grep -aq
 ok "B: halt block + wave-review guidance" 'grep -aq "HALT — Step 3 — GATE 1: fixture gate" "$TEST/runB.out" && grep -aq "wave-review.md" "$TEST/runB.out"'
 ok "B: summary has halt row"              'grep -aq "Step 3 — GATE 1: fixture gate.*halt" "$TEST/runB.out"'
 ok "B: summary totals line"               'grep -aq "1 steps · 7 turns · \$1.23 · out 4k.* stopped: halt" "$TEST/runB.out"'
-ok "commit floor: 6 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "sprint step boundary")" = "6" ]'
+ok "commit floor: 7 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "sprint step boundary")" = "7" ]'
 ok "commit floor: messages carry labels"  '[ -n "$(git -C "$PROJ" log --format=%s | grep -a "boundary: Step 2")" ]'
 ok "commit floor: shows swept paths"      'grep -aq "step-boundary commit · swept" "$TEST/runA.out" && grep -aq "deliverable.md" "$TEST/runA.out"'
 ok "per-step wall-clock in end-block"     'grep -aq "✓ QA · 0s ·" "$TEST/runA.out" && grep -aq "run so far:" "$TEST/runA.out"'
@@ -215,10 +235,12 @@ ok "step-progress: role + advance + HO"   'grep -aq "✓ QA · 0s · advanced �
 ok "step-progress: no-handoff = advance only" 'grep -a "advanced → Step 3 — GATE 1" "$TEST/runB.out" | grep -avq "handoff"'
 ok "step-progress: closing rule per step" 'grep -aq "^───" "$TEST/runA.out"'
 ok "color: no ANSI in non-TTY logs"       '! grep -aq "$(printf '"'"'\033'"'"')" "$TEST/runA.out"'
+ok "no-result step: ⚠ marker not ✓"       'grep -aq "⚠ PM · " "$TEST/runH.out"'
+ok "no-result step: dashes, not stale"    '! grep -aq "Step 2 — PM: fixture review.*1.23" "$TEST/runH.out"'
 ok "ctx-warn: fires past threshold"       'grep -aq "⚠ ctx ran hot: peak 15% (≥ 10%)" "$TEST/runC.out"'
 ok "ctx-warn: silent under default"       '! grep -aq "ctx ran hot" "$TEST/runA.out" && ! grep -aq "ctx ran hot" "$TEST/runB.out"'
 ok "clean tree at end"                    '[ -z "$(git -C "$PROJ" status --porcelain)" ]'
-ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "8" ]'
+ok "metrics files written"                '[ "$(cat "$PROJ"/.muster-sprint-logs/run-*.metrics | wc -l | tr -d " ")" = "9" ]'
 ok "B: founder notice echoed loudly"      'grep -aq "📣 FOUNDER NOTICE" "$TEST/runB.out" && grep -aq "pod-build track" "$TEST/runB.out"'
 ok "B: notice counted in run summary"     'grep -aq "1 founder notice(s) this run" "$TEST/runB.out"'
 ok "B: Founder Decisions change alert"    'grep -aq "Founder Decisions. changed" "$TEST/runB.out"'
@@ -236,8 +258,8 @@ ok "G: ⏸ limit line with resume time"     'grep -aq "⏸ usage limit — sleep
 ok "G: same step re-ran after resume"     '[ "$(grep -ac "▶ PM · Step 2" "$TEST/runG.out")" = "2" ]'
 ok "G: run bridged the limit to the gate" 'grep -aq "stopped: halt" "$TEST/runG.out"'
 ok "STATUS: running state mid-step"       'grep -aq "state: running step" "$TEST/status-during"'
-ok "STATUS: carries the queue label"      'grep -aq "step: Step 2 — PM: fixture review" "$TEST/status-during"'
-ok "STATUS: final state = summary reason" 'grep -aq "state: halted: halt (Step 3 — GATE 1: fixture gate)" "$PROJ/.muster-sprint-logs/STATUS"'
+ok "STATUS: carries the queue label"      'grep -aq "step: Step 1 — QA: fixture audit" "$TEST/status-during"'
+ok "STATUS: final state = summary reason" 'grep -aq "state: halted: step did not advance" "$PROJ/.muster-sprint-logs/STATUS"'
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed   (fixture: $TEST)"
