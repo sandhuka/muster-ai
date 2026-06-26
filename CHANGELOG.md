@@ -11,6 +11,115 @@ submodule) are seeded copy-if-absent by re-running the live upgrade script. No b
 
 ---
 
+## 4.5 — 2026-06-25
+
+Autonomous-run trust + telemetry, plus discipline and process hardening. Theme: the driver's
+per-step read-out should be believable and informative, the release gates should measure what they
+claim to, and the planning that feeds an autonomous run should be sound. **No token-floor regression**
+— the telemetry/driver work is zero always-read (bash comments + human-facing trail echoes, never
+sent to the model); the discipline additions add a few always-read lines to the developer/ui-ux/PM
+brain paths and a shared on-demand skill, all within the pillar budgets (20/20). Methodology that an
+agent loads per-task lives in skills, not always-read surface.
+
+- **New — autonomous-run planning hardening** (`team/pm/skills/generic/sprint-planning.md`): four
+  Sprint-7 field findings, all light planning-discipline additions (on-demand PM skill, no always-read
+  cost). (F-S7-D) the queue **Prompt Standard now requires concrete file/symbol anchors** in each
+  step's Inputs — a cold headless worktree can't resolve "per the Step-7 design" and will guess;
+  restate decisions or cite the file, never the step. (F-S7-A) a closeout **durability-promotion**
+  step — an autonomous worktree is merged then deleted, so any durable content in a gitignored or
+  worktree-local path vanishes; promote the next sprint's needed artifacts into tracked
+  `knowledge-base/` files first. (F-S7-C) a wave-gate rule to **confirm the artifact under test is
+  built from committed source before diagnosing** an observation — a stale build burns a
+  founder-attended gate pass on a non-bug. (F-S7-E) guidance that **high-context PM steps (closeout,
+  exit-prep) prefer a live tab** over cold-headless, or need complete durable inputs — a planning
+  choice, explicitly no driver flag. (F-S7-B, the wave-boundary handoff sweep, needed no new work —
+  the handoff-closure lint below already runs at every PM bind and as a closeout gate.)
+- **New — Apple-quality bar in the UI/UX brain file** (`team/ui-ux/CLAUDE.md`): a standing design
+  standard every project inherits with zero per-project setup — before signing off any deliverable
+  (design AND its rendered implementation), ask "Would Apple ship this?"; if no, redo with a better,
+  *simpler* approach (simplicity is part of the bar). Wired as a mandatory item in the UI/UX
+  Pre-Handoff Self-Review (state the question + honest answer in the handoff; a "no" blocks sign-off).
+  Apple is the named exemplar; a non-consumer-design-led project substitutes its category's quality
+  leader. The design-side analog of the developer "build for growth" principle, and the back bookend
+  to `plan-first-discipline.md`'s plan-stage Apple-ship check.
+- **New — handoff-closure lint + closeout gate** (`scripts/muster-requests-lint.sh` + `test-requests-lint.sh`
+  in CI, wired into PM bind, sprint closeout, and the review protocol): in autonomous runs the handoff
+  ledger (`agent-requests.md`) rotted — accepted handoffs never left Active because the "done → Resolved"
+  sweep keys on a `**Status:**` field that reviewers leave stale while ticking their own checkboxes, and
+  nothing blocked on it (one field run reached 1,382 lines / ~50 dead entries, burying the one genuinely-open
+  request). The new lint deterministically blocks on the four failure modes: (i) all reviewer boxes ticked
+  but `Status≠done`, (ii) `Status: done` still in Active, (iii) duplicate HO/REQ IDs, (iv) Active over a line
+  budget (default 300). It runs at PM bind (warn) and as a HARD closeout gate (PM pastes the green result),
+  and unlike the detection-only `muster-list-open-items.sh` worklist it never fires on a legitimately
+  in-review handoff with a pending reviewer — so it's safe to gate on. Paired with an **atomic-close**
+  protocol note (`deliverable-review.md`): flip `Status: done` in the same edit that ticks the last reviewer
+  box. **Not built:** structured append-only filing (the dedup assertion catches the duplicate symptom; the
+  deeper fix is parked).
+- **Fixed — step-boundary commit no longer cries "agent left uncommitted work"** (`muster-sprint-run.sh`):
+  the floor's echo asserted agent fault on every fire, but the floor catches several non-agent cases —
+  most commonly a moved submodule pointer the agent committed *inside* `muster/` but didn't `git add`
+  in the parent (`--ignore-submodules=dirty` suppresses dirty content, not a pointer move). The echo
+  now states it neutrally and **lists the swept paths** (first 6 + overflow count), turning a false
+  alarm into diagnostic signal: a lone `muster` line reads instantly as a benign pointer bump, a real
+  source file reads as a missed closeout commit. The commit itself is unchanged — floor behavior was
+  always correct; only the message lied.
+- **New — glanceable step read-out: role-first header + ruled sections + optional color**
+  (`muster-sprint-run.sh` + `MUSTER_COLOR` knob, on by default in a terminal): the step header led with the queue
+  label and buried the agent, so the founder had to dig to see *who* was working. Now every step
+  opens with a `─── step N` rule and a role-first header (`▶ DEVELOPER · Step 28a` / task on line
+  2 — the two-line start glance), and closes with a consolidated end-block (`✓ <ROLE> · <time> ·
+  advanced → <next> (<role>) · handoff HO-NNN filed ✓` + run totals) and a closing rule. The
+  protocol-confirmation, wall-clock, and ctx-warning lines from earlier in 4.5 are folded into this
+  block. Color is **on by default in a terminal** (agent name in its per-agent palette, key figures
+  bold); `MUSTER_COLOR=0` or `NO_COLOR` opts out, `MUSTER_COLOR=1` forces on, and it auto-disables
+  when output isn't a TTY so redirected `.log` files stay plain. The formatter's `✓ turns/cost/ctx`
+  line is unchanged — all restyling is driver-side, keeping the never-fail formatter untouched.
+  Documented in `guide/skills/config-knobs.md`.
+- **Fixed — an interrupted step no longer borrows the previous step's metrics** (`muster-sprint-run.sh`):
+  the formatter appends a metrics line only at a `result` event, so a step aborted before completing
+  (a manual Ctrl-C, or a crash before the result) wrote none — and the driver's blind `tail -1 $METRICS`
+  then attributed the PRIOR step's turns/cost/ctx/out to it (a phantom summary row, seen when a
+  device-gate Ctrl-C made a freshly-started QA step show the developer step's 62 turns / $6.21 / 15%).
+  Now the driver compares the metrics line count before/after the step: a fresh line → real metrics (a
+  failed step with a result line still counts its real cost); no new line → the row shows dashes, the
+  step isn't tallied as executed, and the end-block leads with `⚠` instead of `✓`.
+- **New — live ctx-outlier warning** (`muster-sprint-run.sh` + `CTX_WARN_PCT` knob, default 80):
+  the `✓` line shows peak-ctx % every step, but the founder shouldn't have to eyeball each one — a
+  step whose peak crosses the threshold now prints `⚠ ctx ran hot: peak N% (≥ T%) — consider
+  splitting this step at planning`. A near-full window risks truncation/degraded output and is the
+  step-sizing signal, surfaced live instead of buried in the post-run table. Tunable per project
+  (`CTX_WARN_PCT=0` disables); reuses the metrics pct the formatter already writes, no formatter
+  change. Documented in `guide/skills/config-knobs.md`.
+- **New — per-step protocol confirmation** (`muster-sprint-run.sh`): each step prints
+  `✓ advanced → next: <step> · handoff HO-NNN filed ✓` — independently VERIFIED from the queue +
+  `agent-requests.md`, not the agent's self-report. Advancement is the same comparison cond-3 makes
+  at the next loop top; the handoff verdict reuses the handoff lint (single source of truth, no
+  second parser) to confirm the new Done entry's HO refs are actually filed. A step that files no
+  handoff (PM/coordination) shows advancement only — no false warning; a step that didn't advance or
+  left a dangling HO ref shows a `⚠` early, before the next loop's gate stops the run. This is the
+  trust signal for autonomy: proof the sprint moved correctly, not just that tokens were spent.
+- **New — per-step wall-clock + cumulative burn** (`muster-sprint-run.sh`): each step prints
+  `⏱ <step time> · run so far: <total> · $<cost> · N step(s)`; the run-summary table gains a time
+  column and the totals line a `<dur> wall` figure. Wall-clock maps to tokens/throughput — the
+  founder's requested signal for sizing steps and tuning model routing. Driver-side only (epoch
+  bracketing the `claude` invocation); the formatter stays presentation-pure (never-fail contract
+  untouched). `.metrics` file format unchanged — time lives in the trail + summary, not the
+  machine-readable per-step line (a structured time field there is a parked follow-up if the founder
+  wants offline analysis).
+- **Fixed — wrapper-prompt budget gate was measuring the whole script tail** (`test-pillar-budgets.sh`):
+  the awk end-anchor `/no new queue steps/` never matched — the prompt's tail wraps `no new queue \`
+  / `steps)."` across a line-continuation — so the range silently ran to EOF, counting the prompt PLUS
+  every line below it. The 5800-char budget was tuned to that inflated number and meaningless; the real
+  prompt is 1517 chars. Anchored the range to the prompt's pipe-to-formatter line (`bash "$FMT"`, exists
+  exactly once, immune to growth below it) and re-tuned the budget to 1800 (~19% headroom over the true
+  prompt). This bug is why a ~1300-char bash addition below the prompt tripped a "token-floor regression"
+  that wasn't one.
+- **Fixed — PM tab now auto-binds** (`muster-sprint-new.sh`, commit 759758e): the v4.4 bare-interactive
+  `MUSTER_ROLE=pm claude` skipped perms but never fired the bootstrap (a bare interactive session idles
+  until the first message), so the founder had to manually say "bind to PM". Added an opening prompt that
+  triggers turn 1 → bootstrap runs → binds, then waits. Mirrors the documented `MUSTER_ROLE` + prompt
+  pattern. **Field-verify on the next sprint-new run before release.**
+
 ## 4.4 — 2026-06-20
 
 Arogh Sprint-6 retro findings (F-S6-1/3/5/8) plus two operability fixes surfaced in founder review.

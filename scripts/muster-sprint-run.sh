@@ -15,7 +15,7 @@ source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard 
 # config > built-in default — invocation env is captured before the source and re-applied after,
 # so a config line can never override what the user typed on the command line.
 if [ -f ./.muster/config ]; then
-  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT 2>/dev/null)"
+  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT CTX_WARN_PCT MUSTER_COLOR 2>/dev/null)"
   . ./.muster/config
   eval "$_inv_env"
   export ANTHROPIC_MODEL 2>/dev/null || true   # claude reads it from env; config-set needs the export
@@ -25,6 +25,23 @@ QUEUE="knowledge-base/orchestration-queue.md"
 MAX_STEPS="${MAX_STEPS:-30}"          # hard cap — cost circuit-breaker
 MAX_TURNS="${MAX_TURNS:-150}"         # per-step model-turn budget — raise for heavy steps
 LIMIT_BUFFER="${LIMIT_BUFFER:-300}"   # seconds past a stated usage-limit reset before resuming
+CTX_WARN_PCT="${CTX_WARN_PCT:-80}"    # peak-ctx % above which a step is flagged as running hot (0 = off)
+
+# Glance-color: ON by default in a terminal (the founder watches the live trail). Opt out with
+# MUSTER_COLOR=0 or the NO_COLOR convention; force on with MUSTER_COLOR=1. When output is NOT a
+# TTY and MUSTER_COLOR is unset, color stays off so redirected / piped .log files don't get ANSI.
+# Role is shown in its agent color; the driver's own key tokens are bolded.
+if   [ "${MUSTER_COLOR:-}" = 0 ] || [ -n "${NO_COLOR:-}" ]; then C_ON=0
+elif [ "${MUSTER_COLOR:-}" = 1 ];                            then C_ON=1
+elif [ -t 1 ];                                              then C_ON=1
+else                                                              C_ON=0
+fi
+role_ansi(){ case "$1" in   # per-agent console color (mirrors muster's agent palette)
+    pm) printf '35';; developer) printf '34';; ui-ux) printf '36';; qa) printf '32';;
+    content) printf '33';; marketing) printf '95';; legal) printf '31';; research) printf '94';;
+    halt) printf '91';; *) printf '37';; esac; }
+paint(){ # $1 = ansi code(s) e.g. "34;1"   $2 = text   — passthrough when color is off
+  if [ "$C_ON" = 1 ]; then printf '\033[%sm%s\033[0m' "$1" "$2"; else printf '%s' "$2"; fi; }
 [ -f "$QUEUE" ] || { echo "No queue at $QUEUE — run from a project root."; exit 1; }
 
 # Fail fast on an unpopulated/partial muster checkout. `git worktree add` does not check out
@@ -219,8 +236,55 @@ status_write(){ # $1 = state ("running step N" / "sleeping …" / "complete" / "
   } > "$LOGDIR/STATUS" 2>/dev/null || true
 }
 
+# Wall-clock formatter: seconds -> compact "Hh Mm" / "Mm Ss" / "Ss". Non-numeric -> "—".
+fmt_dur(){
+  local s="${1:-0}" h m sec
+  case "$s" in (*[!0-9]*|"") echo "—"; return;; esac
+  h=$((s/3600)); m=$(((s%3600)/60)); sec=$((s%60))
+  if   [ "$h" -gt 0 ]; then printf '%dh %dm' "$h" "$m"
+  elif [ "$m" -gt 0 ]; then printf '%dm %ds' "$m" "$sec"
+  else printf '%ds' "$sec"; fi
+}
+
+# Step-progress fragment (deterministic, end of each step): independently verify from the QUEUE +
+# agent-requests.md what the agent ACTUALLY did — not its self-report. Both facts are the same
+# checks the loop already enforces, surfaced HERE attached to the step that produced them so the
+# founder sees protocol-followed (the sprint moved + the handoff is real), not just tokens-spent.
+# (1) advancement: did '## Next Step' change from the block that just ran? — same comparison cond-3
+# makes next loop. (2) handoff: the new Done entry's HO refs verified FILED via the handoff lint
+# (single source of truth — no second parser). A step that files no handoff (PM/coordination) shows
+# advancement only — no false warning. ECHOES a one-line fragment (no icon/indent) for the end-block
+# to compose with role + time. $1 = $blk (the block that just ran).
+step_progress_fragment(){
+  local ran_blk="$1" new_blk next_lbl next_rl done_entry refs frag
+  new_blk="$(next_block)"
+  if [ "$new_blk" = "$ran_blk" ]; then
+    printf '⚠ queue NOT advanced — Next Step unchanged (next loop stops)'; return 0
+  fi
+  next_lbl="$(next_label "$new_blk")"; next_rl="$(next_role)"
+  if [ -n "$next_lbl" ]; then
+    frag="advanced → $next_lbl"
+    [ -n "$next_rl" ] && [ "$next_rl" != halt ] && \
+      frag="$frag ($(printf '%s' "$next_rl" | tr '[:lower:]' '[:upper:]'))"
+  else
+    frag="advanced → queue clear (sprint may be complete)"
+  fi
+  # HO refs in the most-recent Done entry (what this step just wrote) — same parse the lint uses.
+  done_entry="$(awk '/^## Done/{d=1;next} d&&/^## /{exit} d&&/^[[:space:]]*-/{print;exit}' "$QUEUE")"
+  refs="$(printf '%s' "$done_entry" | grep -oiE 'HO-[0-9]+' | tr '[:lower:]' '[:upper:]' | sort -u | tr '\n' ' ')"
+  refs="${refs% }"
+  if [ -n "$refs" ]; then
+    if bash "$LINT" "$QUEUE" "knowledge-base/agent-requests.md" >/dev/null 2>&1; then
+      frag="$frag · handoff $refs filed ✓"
+    else
+      frag="$frag · ⚠ handoff $refs NOT filed (next loop stops)"
+    fi
+  fi
+  printf '%s' "$frag"
+}
+
 step=0; prev=""; last_done=""; step_started=""
-reason="interrupted"; reason_note=""; executed=0; ROWS=""
+reason="interrupted"; reason_note=""; executed=0; ROWS=""; run_secs=0
 status_write "starting"
 while :; do
   step=$((step+1))
@@ -282,10 +346,20 @@ while :; do
   prev="$blk"
 
   model="$(next_model "$blk")"
-  hdr="▶ ${label:-step $step (role: $role)}"
-  [ -n "$model" ] && hdr="$hdr  [$model]"
-  echo "$hdr" | tee -a "$HUMANLOG"
+  role_up="$(printf '%s' "$role" | tr '[:lower:]' '[:upper:]')"
+  # Split "Step 28a — Wave 5.5 fix: …" into id + description on the ' — ' em-dash, so the header
+  # leads with AGENT and the task sits on its own line (the founder's two-line start glance).
+  step_id="$label"; step_desc=""
+  case "$label" in *" — "*) step_id="${label%% — *}"; step_desc="${label#* — }";; esac
+  { printf '%s step %s\n' "$RULE_L" "$step"
+    hdr="▶ $(paint "$(role_ansi "$role");1" "$role_up") · ${step_id:-step $step}"
+    [ -n "$model" ] && hdr="$hdr  $(paint 2 "[$model]")"
+    printf '%s\n' "$hdr"
+    [ -n "$step_desc" ] && printf '  %s\n' "$step_desc"
+  } | tee -a "$HUMANLOG"
   step_started="$(date '+%Y-%m-%d %H:%M:%S')"
+  step_t0="$(date +%s)"   # epoch for wall-clock — paired with step_started above
+  metrics_n0="$(wc -l < "$METRICS" 2>/dev/null || echo 0)"   # metrics-line count BEFORE this step
   status_write "running step $step"
 
   # Mid-step continuation: the commit floor guarantees a clean tree at every successful step
@@ -345,16 +419,44 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
 
   report_founder_channels
 
-  # Summary row for this step, paired with the formatter's newest metrics line (dashes if it
-  # degraded). tail -1, not an executed-index lookup: failed limit attempts also write metrics
-  # lines (their cost is real), so line number ≠ success count once auto-resume exists.
-  executed=$((executed+1))
-  m="$(tail -1 "$METRICS" 2>/dev/null)"
-  IFS='|' read -r mt mc mp mo _ <<< "${m:-—|—|—|—|0}"
-  mc_disp="—"; [ "$mc" != "—" ] && mc_disp="\$$mc"
-  ROWS="${ROWS}$(printf '  %-36.36s %5s %8s %5s %6s' "${label:-step $step}" "$mt" "$mc_disp" "$mp" "$mo")"$'\n'
-  last_done="${label:-step $step} · ${mt} turns · ${mc_disp} · out ${mo}"
+  step_secs=$(( $(date +%s) - step_t0 )); [ "$step_secs" -lt 0 ] && step_secs=0
+  run_secs=$(( run_secs + step_secs ))
+  # Did THIS step produce a result? The formatter appends a metrics line ONLY at a result event, so
+  # an UNCHANGED line count means the step was interrupted/aborted before completing (a manual
+  # Ctrl-C, or a crash before the result). Guard against it: a blind `tail -1` would attribute the
+  # PREVIOUS step's turns/cost/ctx to this one — a phantom row (the device-gate Ctrl-C symptom).
+  # A real failed step (MAX_TURNS, error result, usage-limit attempt) DOES emit a result line, so
+  # its real cost still counts. Only the no-result case shows dashes and is not tallied as executed.
+  metrics_n1="$(wc -l < "$METRICS" 2>/dev/null || echo 0)"
+  if [ "${metrics_n1:-0}" -gt "${metrics_n0:-0}" ]; then
+    executed=$((executed+1)); step_ok=1
+    IFS='|' read -r mt mc mp mo _ <<< "$(tail -1 "$METRICS" 2>/dev/null)"
+    mc_disp="—"; [ "$mc" != "—" ] && mc_disp="\$$mc"
+  else
+    step_ok=0; mt="—"; mc="—"; mc_disp="—"; mp="—"; mo="—"
+  fi
+  ROWS="${ROWS}$(printf '  %-36.36s %5s %8s %5s %6s %7s' "${label:-step $step}" "$mt" "$mc_disp" "$mp" "$mo" "$(fmt_dur "$step_secs")")"$'\n'
+  last_done="${label:-step $step} · ${mt} turns · ${mc_disp} · out ${mo} · $(fmt_dur "$step_secs")"
   status_write "between steps"
+  # End-block glance: line 1 leads with the AGENT (its color) + this step's wall-clock + the
+  # VERIFIED protocol outcome (advanced + handoff filed — not the agent's claim); line 2 is the
+  # cumulative burn (time/$ map to tokens — the throughput signal). run_cost from METRICS so it
+  # survives a degraded metrics line. An unmeasured (interrupted) step leads with ⚠, not ✓.
+  run_cost="$(awk -F'|' '{c+=$2} END {printf "%.2f", c}' "$METRICS" 2>/dev/null)"
+  prog="$(step_progress_fragment "$blk")"
+  mark="✓"; [ "$step_ok" = 0 ] && mark="⚠"
+  echo "  $mark $(paint "$(role_ansi "$role");1" "$role_up") · $(paint 1 "$(fmt_dur "$step_secs")") · $prog" | tee -a "$HUMANLOG"
+  echo "    run so far: $(fmt_dur "$run_secs") · \$${run_cost:-?} · $executed steps" | tee -a "$HUMANLOG"
+  # Ctx-outlier warning: flag a hot step LIVE (the ✓ line shows the % every step, but the founder
+  # shouldn't have to eyeball each one — surface a ⚠ only past the threshold). A near-full window
+  # risks truncation/degraded output and is the step-sizing signal: split it at planning next time.
+  # mp is the metrics pct ("19%" / "—"); skip on degraded/non-numeric or when the knob is 0 (off).
+  pct_num="${mp%\%}"
+  case "$pct_num" in
+    ''|*[!0-9]*) ;;   # degraded ("—") or empty — nothing to compare
+    *) [ "$CTX_WARN_PCT" -gt 0 ] && [ "$pct_num" -ge "$CTX_WARN_PCT" ] && \
+         echo "  ⚠ ctx ran hot: peak ${pct_num}% (≥ ${CTX_WARN_PCT}%) — consider splitting this step at planning" | tee -a "$HUMANLOG" ;;
+  esac
 
   # Step-boundary commit floor: one commit per completed step, regardless of model or whether
   # the agent's closeout remembered to commit. Agents committing their own work stays the
@@ -362,12 +464,20 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   # a skipped closeout commit can't blur two steps' work into one diff. --ignore-submodules=dirty
   # keeps a content-dirty muster/ checkout (e.g. a hand-patched script) from firing this every
   # step — a moved submodule POINTER still commits. Logs dir excluded defensively (gitignored).
+  #
+  # When it fires, SHOW what was swept rather than accusing the agent of leaving work: the floor
+  # catches several non-agent cases (the most common: a moved submodule pointer the agent committed
+  # *inside* but didn't `git add` in the parent). The path list lets the founder tell a real missed
+  # commit from a benign pointer bump at a glance — diagnostic signal, not a false alarm.
   dirty="$(git status --porcelain --ignore-submodules=dirty -- . ":(exclude)$LOGDIR" 2>/dev/null \
            || git status --porcelain --ignore-submodules=dirty)"
   if [ -n "$dirty" ]; then
+    n_dirty="$(printf '%s\n' "$dirty" | grep -c .)"
     git add -A -- . ":(exclude)$LOGDIR" 2>/dev/null || git add -A
     if git commit -q -m "sprint step boundary: ${label:-step $step}"; then
-      echo "  📦 step-boundary commit (agent left uncommitted work)" | tee -a "$HUMANLOG"
+      echo "  📦 step-boundary commit · swept $n_dirty path(s) the closeout didn't commit:" | tee -a "$HUMANLOG"
+      printf '%s\n' "$dirty" | head -6 | sed 's/^/       /' | tee -a "$HUMANLOG"
+      [ "$n_dirty" -gt 6 ] && echo "       … and $((n_dirty-6)) more" | tee -a "$HUMANLOG"
     else
       echo "  ⚠️ step-boundary commit failed — tree left as-is for diagnosis" | tee -a "$HUMANLOG"
     fi
@@ -377,7 +487,7 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   if [ "$MAX_STEPS" -ge 5 ] && [ "$step" -eq $(( MAX_STEPS * 8 / 10 )) ]; then
     echo "⚠️  run budget: $step of $MAX_STEPS steps used this run" | tee -a "$HUMANLOG"
   fi
-  echo | tee -a "$HUMANLOG"
+  echo "$RULE_L" | tee -a "$HUMANLOG"   # close the step's ruled section
 done
 
 # Final status: same stop reason the summary prints.
@@ -399,6 +509,7 @@ fi
   else
     printf '  %d steps' "$executed"
   fi
+  [ "$run_secs" -gt 0 ] && printf ' · %s wall' "$(fmt_dur "$run_secs")"
   echo " · stopped: $reason${reason_note:+ ($reason_note)}"
   if [ "$notices_run" -gt 0 ]; then
     echo "  📣 $notices_run founder notice(s) this run — read $NOTICES"

@@ -19,7 +19,7 @@ git -C "$WT" submodule update --init --recursive
 echo "Worktree ready: $WT (branch $BRANCH)"
 echo
 echo "Next — open two tabs, BOTH inside the worktree:"
-echo "  PM tab:   cd \"$WT\" && MUSTER_ROLE=pm claude --dangerously-skip-permissions   # auto-binds PM, skips perms; plan / resolve halts"
+echo "  PM tab:   cd \"$WT\" && MUSTER_ROLE=pm claude --dangerously-skip-permissions \"Bind to PM for this session and run your startup, then wait for my input.\"   # auto-binds PM, skips perms; plan / resolve halts"
 echo "  Loop tab: cd \"$WT\" && bash muster/scripts/muster-sprint-run.sh"
 echo
 echo "Review: git -C \"$WT\" diff main"

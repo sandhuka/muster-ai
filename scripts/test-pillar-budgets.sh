@@ -43,13 +43,18 @@ check_lines templates/knowledge-base/foundational-assumptions.md 18
 check_lines MUSTER.md 120                   # the build-time hard budget, kept as the gate
 
 # --- the driver's wrapper prompt (sent with EVERY autonomous step) ---
-wp_chars="$(awk '/Execute the current Next Step/,/no new queue steps/' scripts/muster-sprint-run.sh | wc -c | tr -d ' ')"
+# End anchor is the prompt's pipe-to-formatter line, NOT a phrase inside the prompt: the prompt's
+# tail wraps "no new queue \\ steps)." across a line-continuation, so the old /no new queue steps/
+# anchor never matched and the range silently ran to EOF — measuring prompt + the entire rest of
+# the script. Anchor on `bash "$FMT"` (the line where the prompt string closes and pipes out) so
+# the range is bounded to the prompt regardless of what's added below it.
+wp_chars="$(awk '/Execute the current Next Step/,/bash "\$FMT"/' scripts/muster-sprint-run.sh | wc -c | tr -d ' ')"
 if [ "${wp_chars:-0}" -eq 0 ]; then
   bad "wrapper prompt — extraction found nothing (driver text moved? update the awk range)"
-elif [ "$wp_chars" -le 5800 ]; then
-  ok "wrapper prompt — $wp_chars/5800 chars"
+elif [ "$wp_chars" -le 1800 ]; then
+  ok "wrapper prompt — $wp_chars/1800 chars"
 else
-  bad "wrapper prompt — $wp_chars chars exceeds budget 5800"
+  bad "wrapper prompt — $wp_chars chars exceeds budget 1800"
 fi
 
 # --- tier-1 bind-path total (CLAUDE.md Rule 14: PM bootstrap reads ≤ 600 lines) ---
