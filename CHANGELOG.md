@@ -19,6 +19,19 @@ claim to. **Zero always-read surface change** — all edits are in the driver/te
 model-read token floor is untouched (the new driver lines are bash comments and human-facing trail
 echoes, never sent to the model).
 
+- **New — autonomous-run planning hardening** (`team/pm/skills/generic/sprint-planning.md`): four
+  Sprint-7 field findings, all light planning-discipline additions (on-demand PM skill, no always-read
+  cost). (F-S7-D) the queue **Prompt Standard now requires concrete file/symbol anchors** in each
+  step's Inputs — a cold headless worktree can't resolve "per the Step-7 design" and will guess;
+  restate decisions or cite the file, never the step. (F-S7-A) a closeout **durability-promotion**
+  step — an autonomous worktree is merged then deleted, so any durable content in a gitignored or
+  worktree-local path vanishes; promote the next sprint's needed artifacts into tracked
+  `knowledge-base/` files first. (F-S7-C) a wave-gate rule to **confirm the artifact under test is
+  built from committed source before diagnosing** an observation — a stale build burns a
+  founder-attended gate pass on a non-bug. (F-S7-E) guidance that **high-context PM steps (closeout,
+  exit-prep) prefer a live tab** over cold-headless, or need complete durable inputs — a planning
+  choice, explicitly no driver flag. (F-S7-B, the wave-boundary handoff sweep, needed no new work —
+  the handoff-closure lint below already runs at every PM bind and as a closeout gate.)
 - **New — Apple-quality bar in the UI/UX brain file** (`team/ui-ux/CLAUDE.md`): a standing design
   standard every project inherits with zero per-project setup — before signing off any deliverable
   (design AND its rendered implementation), ask "Would Apple ship this?"; if no, redo with a better,
