@@ -21,6 +21,9 @@ jobs:
       - name: Queue lint (planning-correctness contract)
         run: bash scripts/test-queue-lint.sh
 
+      - name: Requests lint (handoff-closure contract)
+        run: bash scripts/test-requests-lint.sh
+
       - name: Migration gate (v3→v4 upgrade path)
         run: bash scripts/test-migrate.sh
 

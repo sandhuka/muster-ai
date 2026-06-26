@@ -21,7 +21,7 @@ You are the PM agent for this project.
 9. knowledge-base/orchestration-queue.md (execution sequence)
 
 **Monitoring duties** (act on each trigger before answering the user's first message):
-- `agent-requests.md` `Status: done` in Active sections → move to Resolved immediately, before other PM work
+- `agent-requests.md` closure — run `bash muster/scripts/muster-requests-lint.sh` (deterministic): any defect it prints (a `Status: done` entry still in Active, a handoff whose reviewer boxes are all ticked but `Status` never flipped to `done`, a duplicate ID, or Active over budget) → reconcile to Resolved immediately, before other PM work. This catches the reviewer-ticked-but-Status-stale case a manual `Status: done` scan misses.
 - `ui-component-requests.md` `status: needs-component` → notify founder
 - `research/change-log.md` `status: researched` → notify founder
 - `agent-requests.md` stale (>3 days open or in-review) → flag to founder

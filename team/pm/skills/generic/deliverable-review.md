@@ -64,6 +64,8 @@ Run every item against every deliverable, regardless of producing agent.
 
 ## Post-Accept Housekeeping
 
+**Atomic close (the checkbox and the Status field must never disagree).** When you tick the LAST required reviewer box on a handoff, flip its top-level `**Status:** done` in the SAME edit — never leave a fully-reviewed handoff at `in-review`. A reviewer-checkbox that says done while `Status` lags is invisible to the "done → Resolved" sweep (which keys on `Status`), so the accepted entry rots in Active; that is the root cause behind ledger bloat, and `muster-requests-lint.sh` is the deterministic backstop that catches it if it slips.
+
 After accepting a handoff (status → `done` or PM reviewer checked), PM must immediately:
 
 1. **Mark the producing agent's task `[x] DONE`** in their agent-context file (`knowledge-base/agent-context/<agent>.md`) Current Tasks section, with date and HO reference.

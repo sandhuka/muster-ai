@@ -19,6 +19,27 @@ claim to. **Zero always-read surface change** — all edits are in the driver/te
 model-read token floor is untouched (the new driver lines are bash comments and human-facing trail
 echoes, never sent to the model).
 
+- **New — Apple-quality bar in the UI/UX brain file** (`team/ui-ux/CLAUDE.md`): a standing design
+  standard every project inherits with zero per-project setup — before signing off any deliverable
+  (design AND its rendered implementation), ask "Would Apple ship this?"; if no, redo with a better,
+  *simpler* approach (simplicity is part of the bar). Wired as a mandatory item in the UI/UX
+  Pre-Handoff Self-Review (state the question + honest answer in the handoff; a "no" blocks sign-off).
+  Apple is the named exemplar; a non-consumer-design-led project substitutes its category's quality
+  leader. The design-side analog of the developer "build for growth" principle, and the back bookend
+  to `plan-first-discipline.md`'s plan-stage Apple-ship check.
+- **New — handoff-closure lint + closeout gate** (`scripts/muster-requests-lint.sh` + `test-requests-lint.sh`
+  in CI, wired into PM bind, sprint closeout, and the review protocol): in autonomous runs the handoff
+  ledger (`agent-requests.md`) rotted — accepted handoffs never left Active because the "done → Resolved"
+  sweep keys on a `**Status:**` field that reviewers leave stale while ticking their own checkboxes, and
+  nothing blocked on it (one field run reached 1,382 lines / ~50 dead entries, burying the one genuinely-open
+  request). The new lint deterministically blocks on the four failure modes: (i) all reviewer boxes ticked
+  but `Status≠done`, (ii) `Status: done` still in Active, (iii) duplicate HO/REQ IDs, (iv) Active over a line
+  budget (default 300). It runs at PM bind (warn) and as a HARD closeout gate (PM pastes the green result),
+  and unlike the detection-only `muster-list-open-items.sh` worklist it never fires on a legitimately
+  in-review handoff with a pending reviewer — so it's safe to gate on. Paired with an **atomic-close**
+  protocol note (`deliverable-review.md`): flip `Status: done` in the same edit that ticks the last reviewer
+  box. **Not built:** structured append-only filing (the dedup assertion catches the duplicate symptom; the
+  deeper fix is parked).
 - **Fixed — step-boundary commit no longer cries "agent left uncommitted work"** (`muster-sprint-run.sh`):
   the floor's echo asserted agent fault on every fire, but the floor catches several non-agent cases —
   most commonly a moved submodule pointer the agent committed *inside* `muster/` but didn't `git add`
