@@ -11,7 +11,7 @@ submodule) are seeded copy-if-absent by re-running the live upgrade script. No b
 
 ---
 
-## 4.5 — 2026-06-23
+## 4.5 — 2026-06-25
 
 Autonomous-run trust + telemetry, plus two operability fixes. Theme: the driver's per-step
 read-out should be believable and informative, and the release gates should measure what they
