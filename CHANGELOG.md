@@ -13,11 +13,13 @@ submodule) are seeded copy-if-absent by re-running the live upgrade script. No b
 
 ## 4.5 — 2026-06-25
 
-Autonomous-run trust + telemetry, plus two operability fixes. Theme: the driver's per-step
-read-out should be believable and informative, and the release gates should measure what they
-claim to. **Zero always-read surface change** — all edits are in the driver/test scripts; the
-model-read token floor is untouched (the new driver lines are bash comments and human-facing trail
-echoes, never sent to the model).
+Autonomous-run trust + telemetry, plus discipline and process hardening. Theme: the driver's
+per-step read-out should be believable and informative, the release gates should measure what they
+claim to, and the planning that feeds an autonomous run should be sound. **No token-floor regression**
+— the telemetry/driver work is zero always-read (bash comments + human-facing trail echoes, never
+sent to the model); the discipline additions add a few always-read lines to the developer/ui-ux/PM
+brain paths and a shared on-demand skill, all within the pillar budgets (20/20). Methodology that an
+agent loads per-task lives in skills, not always-read surface.
 
 - **New — autonomous-run planning hardening** (`team/pm/skills/generic/sprint-planning.md`): four
   Sprint-7 field findings, all light planning-discipline additions (on-demand PM skill, no always-read
