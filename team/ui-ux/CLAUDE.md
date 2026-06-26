@@ -18,6 +18,7 @@ Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/
 Skills are in `team/ui-ux/skills/`. Read the relevant one(s) for your current task:
 
 ### Generic (`generic/`)
+- **plan-first-discipline.md** (`team/developer/skills/generic/`) — **Non-trivial tasks only** (skip trivial ones): plan thoroughly, then stress-test the plan (gaps? simpler? Apple-ship quality?) BEFORE producing the design/spec; up to 3 refine rounds, then proceed with the best plan and flag residual concerns. Front bookend to verification-discipline.
 - **design-system.md** — Token source of truth reference, component standards, component spec handoff template, component request workflow
 - **accessibility.md** — WCAG 2.1 AA requirements, VoiceOver, Dynamic Type, platform accessibility features, testing checklist
 - **mobile-patterns.md** — Freemium UX patterns (upgrade banners, gated features, degraded vs hidden), screen type quick reference
