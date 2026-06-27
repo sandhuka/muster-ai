@@ -74,6 +74,20 @@ Each task assigned to an agent must include:
 - **Dependencies**: What must happen first, from which agent
 - **Acceptance criteria**: How we'll know it's done correctly (2-3 bullet points)
 
+**Board entry format** — the per-task layout PM writes under each `### [Agent]` heading in `current-sprint.md`:
+
+```
+- [ ] **[Task name]** — Priority: [HIGH/MED/LOW], Effort: [S/M/L/XL], Platform: [ios/android/web/backend/desktop/cli/cross-platform/n-a]
+  - **Deliverable**: [File path or description]
+  - **Dependencies**: [What must be done first]
+  - **Acceptance criteria**:
+    - [Criterion 1]
+    - [Criterion 2]
+  - **Key refs**: [Knowledge-base files to read]
+```
+
+Platform field: a specific value (`ios`/`android`/`web`/`backend`/`desktop`/`cli`) when the task touches that surface only; `cross-platform` when it intentionally spans surfaces (shared design tokens, cross-platform feature spec); `n-a` for tasks without a platform axis (most Legal, Marketing, Research). Do NOT include a per-task skill list — the agent's brain file (`team/<role>/CLAUDE.md`) holds the skill index and agents self-select; call out a specific skill in the task prose only when the methodology is unusual.
+
 ## Solo Founder Model
 This project is run by a solo founder working with AI agents sequentially — NOT in parallel.
 
