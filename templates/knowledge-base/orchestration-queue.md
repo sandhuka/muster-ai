@@ -4,46 +4,7 @@
 
 ## Prompt Standard
 
-<!-- Every Next Step / Upcoming entry wraps the prompt in a fenced code block so the founder can copy the whole block in one shot. The `Role: <agent>` line at the top is a role marker — informational text that tells the founder which role-bound tab to open (or which subagent to spawn from a PM tab) and is parsed by `MUSTER_ROLE=auto` to determine the bind target. **Do NOT use `@<agent>` as a role marker** — Claude Code's input parser auto-routes @-mentions to that subagent regardless of bound role, causing redundant spawns when pasted into a role-bound tab. -->
-
-<!-- Specialist-agent format:
-
-### [DATE] [Agent (platform)]: [Step title]
-
-```
-Role: <agent-name>
-
-**Task:** [1-line description]
-
-**Inputs:**
-- `path/to/file1.md`
-- `path/to/file2.md`
-
-**Deliverable:** `path/to/output` (or handoff ID)
-
-**Acceptance criteria:** See `knowledge-base/current-sprint.md` for full criteria. Summary: [2-3 bullets].
-
-**On completion:** File handoff in `agent-requests.md`. Run the Pre-Handoff Self-Review Checklist (`muster/system-guide.md`) before filing — item 10 enforces queue + decision-log update.
-```
-
-Platform tag in the heading: use the task's platform when it's single-surface
-(e.g., "Developer (ios): ...", "Developer (web): ..."), `cross-platform`
-when the task spans surfaces, or omit the parenthetical for platform-agnostic
-tasks (e.g., "Legal: ...", "Marketing: ..."). Keeps the queue scannable for
-multi-surface projects.
-
-Available `Role:` values: `developer`, `ui-ux`, `qa`, `content`, `marketing`,
-`legal`, `research`, `pm`. PM steps may omit the `Role:` marker since they're
-handled directly in the bound PM tab.
-
-PM-step format (Role: marker optional):
-
-### [DATE] PM: [Step title]
-
-```
-[Task description for the PM-bound tab. Handled directly in the PM tab.]
-```
--->
+<!-- Authoring or editing a step? The format templates + Role:-marker rules live in `muster/team/pm/skills/generic/sprint-planning.md` → "Queue Step Format". The live steps below already demonstrate the format, and `muster-queue-lint.sh` enforces the structure. -->
 
 ## Founder Decisions
 <!-- Agents add questions requiring founder input here. -->
