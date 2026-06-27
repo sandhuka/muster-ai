@@ -11,6 +11,41 @@ submodule) are seeded copy-if-absent by re-running the live upgrade script. No b
 
 ---
 
+## 4.6 — Unreleased
+
+Fixed-cost audit pass on the always-read surface, plus a planning-quality addition. Theme: tokens
+are spent at read time, so author-only guidance must not ride on files every agent reads every
+session. Net tier-1 bind-path: **384 → 302 lines** (−82, every session, every project, forever),
+zero behavior lost, all pillar budgets green (20/20).
+
+- **New — Cold-Start Sufficiency Test** (`team/pm/skills/generic/sprint-planning.md`, with pointers
+  in `context-cascading.md` + `decision-making.md`): a completeness gate PM runs whenever it authors
+  OR edits a queue step (not just at planning — also wave-gate fixes, blocker re-sequences, JIT
+  populate). The existing anchor rules make each *reference* resolvable; this asks whether the *set*
+  is complete — list the decisions the cold headless agent must make to satisfy the
+  Deliverable/Acceptance, verify each is specified or cited. Catches the unstated-assumption a cold
+  agent fills by guessing and ships. On-demand skill, zero always-read cost.
+- **Token — author-only templates moved off the always-read surface.** Three seeded KB templates
+  carried entry/format templates that only the *author* needs, but every agent reads the files at
+  session start: queue step-authoring schema → `sprint-planning.md` "Queue Step Format"
+  (`orchestration-queue.md` 66→27); inter-agent entry templates (a duplicate of the canonical
+  `system-guide.md` block) → pointer (`agent-requests.md` 40→12); task-board format →
+  `sprint-planning.md` "Task Definition Standard" (`current-sprint.md` 40→25). Single-source in each
+  case; structure stays backstopped by the lints + the files' own live entries. Fixed a now-stale
+  `system-guide.md` claim that the entry templates "also live as HTML comments in the file itself."
+
+> **Existing-project propagation note (read before bumping the submodule pointer to 4.6):** the
+> *skill* changes above (sprint-planning, context-cascading, decision-making, system-guide) live in
+> the submodule and arrive automatically on pointer bump — so an existing project gets every
+> behavioral improvement for free. The three trimmed files are **seeded `knowledge-base/` templates
+> copied into each project's own repo at setup**; a pointer bump does NOT touch them (and migration
+> scripts deliberately never edit KB content). An un-migrated project keeps ~82 lines of inert
+> comment blocks (harmless redundancy, recurring token cost — not a break). To realize the token
+> saving in an existing project, manually delete those comment blocks from its
+> `orchestration-queue.md` / `agent-requests.md` / `current-sprint.md` and paste the same pointer
+> lines the templates now use. No migration script — over-engineering for a comment cleanup, and it
+> would break the "migration never edits KB files" safety invariant.
+
 ## 4.5 — 2026-06-25
 
 Autonomous-run trust + telemetry, plus discipline and process hardening. Theme: the driver's
