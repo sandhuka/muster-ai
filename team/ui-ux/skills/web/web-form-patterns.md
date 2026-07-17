@@ -263,6 +263,28 @@ Decision rules:
 
 The most common mistake: using a switch for a form field. The user toggles the switch expecting an immediate effect; nothing visible happens; they assume it didn't work; they toggle again. Reserve switches for immediate-effect settings.
 
+## Numeric Input: Match the Control to Entry Frequency
+
+The data type does not select the control. Weight, age, calorie count, and cart quantity are all numbers, and each wants a different control. The selecting variable is **how often the value is entered and how much precision it needs** — not that it happens to be numeric.
+
+| Control | Entry profile | Cost |
+|---------|--------------|------|
+| **Slider** (`<input type="range">`) | Entered once or rarely, approximate is fine, range is known and bounded | No exact value without a paired readout; imprecise; drag is the only affordance |
+| **Stepper** (− / + buttons) | Frequent small adjustments from a sensible default; values cluster in a narrow band | Slow past ~10 increments |
+| **Number input** (`<input type="number" inputmode="decimal">`) | Frequent, precise, arbitrary values the user already knows before arriving | Requires typing; needs `inputmode` for a usable mobile keypad |
+| **Select** | Small fixed enumerable set (rating 1–5, month) | Breaks past ~10 options |
+
+Decision rules:
+
+- **One-time setup, known range, precision not critical** (height at signup, a budget ceiling) → **Slider**, with the current value always rendered as text beside it.
+- **Frequent, precise, repeated entry** (logging 350 g of an ingredient, an invoice amount) → **Number input**. A slider here is a tax paid on every entry.
+- **Small adjustments around a default the user rarely overrides** (cart quantity, guest count) → **Stepper**.
+- **A slider whose value the user must be able to state exactly** → pair it with a number input. The slider becomes the coarse affordance, the field the exact one. Never make the slider the only path to the value.
+
+The most common mistake: picking the control from the data type — "it's a number, so it's a slider" — then shipping it into a flow where the value is entered forty times a day. Ask the frequency question first. A control that delights once is punishing on the fortieth repetition.
+
+Sliders are also the weakest numeric control for motor-impaired and screen-reader users: they demand a sustained drag, and the keyboard path (arrow keys stepping through the range) is only usable if `step` is set sensibly. When a slider is genuinely right, it still needs a keyboard-reachable equivalent — see `team/ui-ux/skills/web-accessibility.md`.
+
 ## Password Fields
 
 If the product uses passwords (last-resort auth — see `team/ui-ux/skills/web-onboarding-flows.md`):
