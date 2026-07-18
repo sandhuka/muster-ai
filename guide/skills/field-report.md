@@ -44,7 +44,7 @@ reject.
 ## 3. Send
 
 ```bash
-gh issue create --repo sandhuka/muster-ai --label field-report \
+gh issue create --repo thinkArhant/muster-ai --label field-report \
   --title "<one-line friction summary>" --body "<the approved payload, verbatim>"
 ```
 
@@ -52,7 +52,7 @@ Confirm with the issue URL — that's their notification subscription.
 
 ## 4. Fallback (no `gh`, or unauthenticated)
 
-Print the report for manual filing at `github.com/sandhuka/muster-ai/issues/new` (label:
+Print the report for manual filing at `github.com/thinkArhant/muster-ai/issues/new` (label:
 `field-report`) and offer a `mailto:` draft as a second option. Never embed or request
 credentials — the framework ships without any (public repo; shipped credentials are stolen
 credentials).

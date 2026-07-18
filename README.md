@@ -58,7 +58,7 @@ During sprint planning, the PM scans for methodology gaps. New skills are classi
 ### New project
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s my-project
+curl -fsSL https://raw.githubusercontent.com/thinkArhant/muster-ai/main/scripts/setup-project.sh | bash -s my-project
 cd ~/Desktop/my-project
 claude
 ```
@@ -73,7 +73,7 @@ If you already have code — a mobile app you've been building for months, a web
 
 ```bash
 cd ~/path/to/your-existing-project
-curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-existing-project.sh | bash
+curl -fsSL https://raw.githubusercontent.com/thinkArhant/muster-ai/main/scripts/setup-existing-project.sh | bash
 ```
 
 See [adopting-existing-project.md](adopting-existing-project.md) for the full walkthrough.
