@@ -32,3 +32,6 @@ jobs:
 
       - name: Resume guard (fail-closed safety)
         run: bash scripts/test-sprint-resume.sh
+
+      - name: Clean-tree guard (dirty-worktree footgun)
+        run: bash scripts/test-sprint-new.sh

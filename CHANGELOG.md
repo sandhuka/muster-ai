@@ -33,6 +33,13 @@ zero behavior lost, all pillar budgets green (20/20).
   `sprint-planning.md` "Task Definition Standard" (`current-sprint.md` 40→25). Single-source in each
   case; structure stays backstopped by the lints + the files' own live entries. Fixed a now-stale
   `system-guide.md` claim that the entry templates "also live as HTML comments in the file itself."
+- **Fix — refuse to spawn a sprint worktree from a dirty tree** (`scripts/muster-guard-clean-tree.sh`,
+  sourced by `muster-sprint-new.sh` + `muster-sprint-sandbox.sh`). `git worktree add` checks out from
+  HEAD, so any uncommitted work — modified/staged/untracked files, or an uncommitted `muster/` pointer
+  bump (which silently runs the *old* submodule version) — was absent from the run. The top
+  autonomous-launch footgun, from a field report. Deterministic guard, one shared file (no drift, same
+  pattern as `muster-guard-worktree.sh`); `MUSTER_ALLOW_DIRTY=1` overrides for deliberate scratch.
+  Fixture: `scripts/test-sprint-new.sh` (11 cases), wired into CI.
 
 > **Existing-project propagation note (read before bumping the submodule pointer to 4.6):** the
 > *skill* changes above (sprint-planning, context-cascading, decision-making, system-guide) live in

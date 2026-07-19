@@ -7,6 +7,7 @@
 # For the all-in-one "create worktree + run loop" path (no interactive PM tab), use
 # muster-sprint-sandbox.sh instead.
 set -euo pipefail
+source "$(dirname "$0")/muster-guard-clean-tree.sh" || { echo "⛔ clean-tree guard missing — refusing to run."; exit 1; }
 BRANCH="sprint/auto-$(date +%Y%m%d-%H%M%S)"
 WT="../$(basename "$PWD")-${BRANCH//\//-}"
 git worktree add "$WT" -b "$BRANCH"
