@@ -31,6 +31,9 @@ Skills are in `team/qa/skills/`. Read the relevant one(s) for your current task:
 ### Backend (`backend/`)
 - **supabase-testing.md** — Backend testing: Auth, RLS policies, Edge Functions, database schema, Storage, data migration, offline sync
 
+### Web (`web/`)
+- **web-testing.md** — Responsive/no-h-scroll, code-level a11y tree audit, PWA/service-worker + offline, zero-network/tracker assertions, cross-engine rendering, link validation, timezone matrices, evidence discipline
+
 ## Project Skills
 Your project may define product-specific skills that supplement the methodology above. Check your agent-context file for a "Project Skills" section listing additional skill files to read alongside your methodology skills.
 
