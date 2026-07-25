@@ -11,7 +11,7 @@
 # Merge commits and the scaffold 'init' commit are exempt (not agent work-commits).
 set -uo pipefail
 
-ROLES='pm|developer|ui-ux|qa|content|marketing|legal|research|guide|xo'
+ROLES='pm|developer|ui-ux|qa|content|marketing|legal|research|guide|xo|founder'
 target="${1:-HEAD}"
 
 if [[ "$target" == *".."* ]]; then

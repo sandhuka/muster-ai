@@ -26,6 +26,7 @@ c "pm: $(printf 'x%.0s' {1..80})";                            check "over-72-cha
 first="$(git rev-list --max-parents=0 HEAD)"
 check "range with violations" 1 "$first..HEAD"
 c "xo: framework roles lint too";                             check "xo role accepted"            0
+c "founder: human operator commits count too";                check "founder role accepted"       0
 git checkout -qb side HEAD~1 && echo s > g && git add g && git commit -qm "content: side work" \
   && git checkout -q - && git merge -q --no-ff -m "merge branch side" side
 check "merge commit exempt (range)" 1 "$first..HEAD"          # still 1: earlier violations in range
