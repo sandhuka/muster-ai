@@ -35,3 +35,5 @@ jobs:
 
       - name: Clean-tree guard (dirty-worktree footgun)
         run: bash scripts/test-sprint-new.sh
+      - name: Commit-subject convention (Rule 16)
+        run: bash scripts/test-commit-lint.sh
