@@ -360,6 +360,7 @@ while :; do
   step_started="$(date '+%Y-%m-%d %H:%M:%S')"
   step_t0="$(date +%s)"   # epoch for wall-clock — paired with step_started above
   metrics_n0="$(wc -l < "$METRICS" 2>/dev/null || echo 0)"   # metrics-line count BEFORE this step
+  head_before="$(git rev-parse HEAD 2>/dev/null || true)"    # for the Rule-16 commit-subject lint
   status_write "running step $step"
 
   # Mid-step continuation: the commit floor guarantees a clean tree at every successful step
@@ -386,7 +387,8 @@ If the changes are clearly unrelated to this step, stop and route to PM. "
         --output-format stream-json --verbose \
         "${preamble}Execute the current Next Step in $QUEUE end-to-end: do the work, file your handoff, \
 run the Pre-Handoff Self-Review (muster/system-guide.md), and update the queue (move your step \
-to Done, promote the next Upcoming step to Next Step). PM is the sole party that calls the \
+to Done, promote the next Upcoming step to Next Step). Commit subjects: '<role>: <outcome>' \
+(lowercase role, ≤60-char outcome-first line — what got better, not mechanics; why goes in the body). PM is the sole party that calls the \
 founder: if you are a specialist and hit a blocker you cannot resolve (a decision you lack \
 authority for, a missing input, a bug you cannot crack, a red build), do NOT set Role: halt and \
 do NOT write to '## Founder Decisions' — instead file the blocker as a PM-addressed request and \
@@ -474,12 +476,22 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   if [ -n "$dirty" ]; then
     n_dirty="$(printf '%s\n' "$dirty" | grep -c .)"
     git add -A -- . ":(exclude)$LOGDIR" 2>/dev/null || git add -A
-    if git commit -q -m "sprint step boundary: ${label:-step $step}"; then
+    lbl="${label:-step $step}"
+    role_lc="$(printf '%s' "${role:-pm}" | tr '[:upper:]' '[:lower:]')"
+    if git commit -q -m "${role_lc}: step-boundary sweep — ${lbl:0:40}"; then
       echo "  📦 step-boundary commit · swept $n_dirty path(s) the closeout didn't commit:" | tee -a "$HUMANLOG"
       printf '%s\n' "$dirty" | head -6 | sed 's/^/       /' | tee -a "$HUMANLOG"
       [ "$n_dirty" -gt 6 ] && echo "       … and $((n_dirty-6)) more" | tee -a "$HUMANLOG"
     else
       echo "  ⚠️ step-boundary commit failed — tree left as-is for diagnosis" | tee -a "$HUMANLOG"
+    fi
+  fi
+
+  # Rule-16 commit-subject lint (warn-only — style never stops a run). Covers every commit the
+  # step produced, incl. the sweep above. Skipped when the step made no commits.
+  if [ -n "$head_before" ] && [ "$(git rev-parse HEAD 2>/dev/null)" != "$head_before" ]; then
+    if ! lint_out="$(bash "$(dirname "$0")/muster-commit-lint.sh" "$head_before..HEAD" 2>&1)"; then
+      echo "  ⚠ commit subject off-convention (Rule 16): $(printf '%s' "$lint_out" | head -2 | tr '\n' ' ')" | tee -a "$HUMANLOG"
     fi
   fi
 

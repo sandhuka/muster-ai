@@ -393,7 +393,7 @@ A Next Step block that has a fenced code block but no `Role:` line defaults to `
 
 ### Agent Communication Protocol
 
-Agents communicate via `knowledge-base/agent-requests.md` using two entry types. Format templates also live as HTML comments in the file itself.
+Agents communicate via `knowledge-base/agent-requests.md` using two entry types. The format templates below are canonical — `agent-requests.md` points here, and its live entries also demonstrate the format.
 
 #### Request Entry
 ```markdown

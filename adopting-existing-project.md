@@ -26,7 +26,7 @@ From inside your project directory:
 
 ```bash
 cd ~/path/to/your-existing-project
-curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-existing-project.sh | bash
+curl -fsSL https://raw.githubusercontent.com/thinkArhant/muster-ai/main/scripts/setup-existing-project.sh | bash
 ```
 
 The script asks one question: **what's your repo shape?**

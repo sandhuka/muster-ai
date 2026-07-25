@@ -6,12 +6,12 @@ set -euo pipefail
 # Adds Muster to an existing project. Runs in the current directory.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-existing-project.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/thinkArhant/muster-ai/main/scripts/setup-existing-project.sh | bash
 #   ./setup-existing-project.sh
 #   ./setup-existing-project.sh --resume        # continue an interrupted run
 #   ./setup-existing-project.sh --muster-url <url>
 
-DEFAULT_MUSTER_URL="https://github.com/sandhuka/muster-ai.git"
+DEFAULT_MUSTER_URL="https://github.com/thinkArhant/muster-ai.git"
 STATE_FILE=".muster-setup-state.json"
 ARCHIVE_DIR=".muster-archive"
 
@@ -35,7 +35,7 @@ Muster — Existing Project Setup Script
 Adopts Muster into an existing codebase. Operates in the current directory.
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-existing-project.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/thinkArhant/muster-ai/main/scripts/setup-existing-project.sh | bash
   ./setup-existing-project.sh
   ./setup-existing-project.sh --resume               Continue an interrupted run
   ./setup-existing-project.sh --muster-url <url>     Override the Muster repo URL

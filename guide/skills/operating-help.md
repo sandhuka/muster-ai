@@ -28,6 +28,20 @@ Stop at the first rung that answers. All paths relative to the **worktree** the 
 A typical status question costs under ~50 lines. Reading the raw jsonl or spelunking the
 worktree to answer "where is the run?" is the anti-pattern this ladder exists to kill.
 
+## "What has this build cost?"
+
+Per-run cost is in the trail/`.metrics` (rung 3). For the **whole project** — active build time,
+operator attention, tokens by model, list-price cost across ALL sessions (interactive + autonomous,
+main checkout + sprint worktrees) — run the meter and read its one-screen report:
+
+```bash
+python3 muster/scripts/muster-meter.py <project-path> '<project-path>-sprint-auto-*' --repo <project-path>
+```
+
+`--json` for a snapshot worth committing (session logs are pruned after `cleanupPeriodDays`; a
+periodic committed snapshot is the durable record). The script's docstring carries the
+honest-reporting rules (exact values, "active build" labeling, list-price framing).
+
 ## Reading a Stop
 
 The driver stops for exactly these reasons (details: `muster/system-guide.md` → Autonomous

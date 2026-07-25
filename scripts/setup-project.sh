@@ -7,12 +7,12 @@ set -euo pipefail
 # agent bootloaders, knowledge-base templates, and project CLAUDE.md.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s <project-name>
+#   curl -fsSL https://raw.githubusercontent.com/thinkArhant/muster-ai/main/scripts/setup-project.sh | bash -s <project-name>
 #   ./setup-project.sh <project-name>
 #   ./setup-project.sh --resume                  # continue an interrupted run (run from inside the partial project dir)
 #   ./setup-project.sh <project-name> --muster-url <url>
 
-DEFAULT_MUSTER_URL="https://github.com/sandhuka/muster-ai.git"
+DEFAULT_MUSTER_URL="https://github.com/thinkArhant/muster-ai.git"
 STATE_FILE=".muster-setup-state.json"
 
 # ---------- argument parsing ----------
@@ -34,7 +34,7 @@ Creates a new project with Muster scaffolded — git repo, submodule,
 agent bootloaders, knowledge-base templates, and project CLAUDE.md.
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s <project-name>
+  curl -fsSL https://raw.githubusercontent.com/thinkArhant/muster-ai/main/scripts/setup-project.sh | bash -s <project-name>
   ./setup-project.sh <project-name>
   ./setup-project.sh --resume                       Continue an interrupted run
                                                     (run from inside the partial project dir)

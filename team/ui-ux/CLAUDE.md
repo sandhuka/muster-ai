@@ -30,7 +30,7 @@ Skills are in `team/ui-ux/skills/`. Read the relevant one(s) for your current ta
 
 ### iOS (`ios/`)
 - **ios-content-hierarchy.md** — Content prioritization, attention budgeting, information density calibration, progressive disclosure rules, scannability checks
-- **ios-hig-reference.md** — Apple Human Interface Guidelines deep reference: navigation, typography, SF Symbols, color/dark mode, materials, layout, lists, sheets
+- **ios-hig-reference.md** — Apple Human Interface Guidelines deep reference: navigation, typography, SF Symbols, color/dark mode, materials, layout, lists, numeric input controls, sheets
 - **ios-wireframe-methodology.md** — Text-based wireframes (ASCII layout format, annotation tables, completeness checklist, content-first process)
 - **ios-screen-specification.md** — Full screen spec template for Developer handoff (layout, data, states, interactions, accessibility, responsive adaptations)
 - **ios-animation-interaction.md** — Animation specs (spring curves, durations, transitions), haptic patterns, gesture specifications
@@ -51,7 +51,7 @@ Cross-references use flat paths (`team/ui-ux/skills/web-X.md`, no `/web/` segmen
 - **web-content-hierarchy.md** — Hierarchy precedes wireframing. Four levers (scale/space/position/restraint) + weight; fold, F/Z-pattern, heading semantics; ladders for 7 screen types; scannability checks
 - **web-data-display.md** — Tables/grids/dense lists; surface picker; density modes; tabular figures; sticky headers + frozen column; selection; bulk actions; URL-encoded filters; pagination over infinite-scroll; mobile reflow
 - **web-information-architecture.md** — Navigation as system; URL as UX; per-surface roles; command palette (cmd-K); modal-as-URL via intercepting routes; back-button as contract; IA audit
-- **web-form-patterns.md** — Label-above; blur + submit validation; multi-step as routes; autosave; signed-URL upload; native pickers; toggle vs switch vs checkbox; password discipline; autocomplete attributes
+- **web-form-patterns.md** — Label-above; blur + submit validation; multi-step as routes; autosave; signed-URL upload; native pickers; toggle vs switch vs checkbox; numeric control by entry frequency; password discipline; autocomplete attributes
 - **web-empty-error-and-edge-states.md** — Empty taxonomy (5 origins); 7 error categories; 404/500/maintenance as brand moments; recovery patterns; error voice; skeleton matches content after 200ms
 - **web-interaction-patterns.md** — Overlays: modals/sheets/popovers/tooltips/toasts (mobile sheet vs desktop dialog; modal `inert`; modal-as-route); dropdowns; Undo over Confirm; optimistic UI; drag-drop with keyboard alternative
 - **web-accessibility.md** — Design-side a11y. WCAG 2.2 AA floor; token-layer contrast; focus rings; 44×44 touch floor (source of truth); forced colors; pointer cancellation; `<search>` landmark; reduced motion

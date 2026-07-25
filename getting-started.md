@@ -20,7 +20,7 @@ Total founder-attended time: about **1-2 hours** spread across ~3 Claude session
 
 ```bash
 cd ~/Desktop
-curl -fsSL https://raw.githubusercontent.com/sandhuka/muster-ai/main/scripts/setup-project.sh | bash -s your-app-name
+curl -fsSL https://raw.githubusercontent.com/thinkArhant/muster-ai/main/scripts/setup-project.sh | bash -s your-app-name
 ```
 
 This creates `~/Desktop/your-app-name/` with everything scaffolded — knowledge-base templates, agent configs, project CLAUDE.md, and an initial git commit. The script adds Muster as a git submodule automatically.

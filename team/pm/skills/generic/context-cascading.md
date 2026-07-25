@@ -97,7 +97,7 @@ After updating all agent-context files, run this check before closing the cascad
 - [ ] Each agent's Product Context reflects the current state of `product-spec.md` — no references to deprecated features or old priorities
 - [ ] Every cross-agent dependency appears in BOTH the providing and receiving agent's file
 - [ ] No agent's file contains information that belongs exclusively to another agent's domain (e.g., Developer doesn't have marketing strategy in their context)
-- [ ] Each agent has enough context to begin their assigned tasks without needing to ask the PM a clarifying question
+- [ ] Each agent has enough context to complete their tasks without guessing at an unstated requirement — in autonomous mode the agent cannot ask a clarifying question; it fills the gap with a guess and ships it (the Cold-Start Sufficiency Test, `sprint-planning.md`). Close gaps by citing the source doc, not inlining it
 - [ ] `knowledge-base/current-sprint.md` reflects the same task list as each agent's agent-context file (`knowledge-base/agent-context/<agent>.md`) Current Tasks section
 - [ ] `decision-log.md` has an entry for any context change driven by a product decision
 
@@ -139,7 +139,7 @@ Activated when a specialist returns `HALT: agent-context null (first invocation)
 
 2. **Read sources and filter**. Read the knowledge-base files this agent's role needs (per the per-agent guide above — each role has different key references). Also read `current-sprint.md` for this agent's tasks and `knowledge-base/agent-skills/<agent>/` if any product-specific skills exist.
 
-3. **Write the agent-context file**. Populate `knowledge-base/agent-context/<agent>.md` using the per-agent filter at the top of this skill. Keep Product Context to 10-20 lines. Reference docs, don't duplicate.
+3. **Write the agent-context file**. Populate `knowledge-base/agent-context/<agent>.md` using the per-agent filter at the top of this skill. Keep Product Context to 10-20 lines. Reference docs, don't duplicate. JIT-populated context feeds a cold agent re-invoked headless in the same turn — apply the Cold-Start Sufficiency Test (`sprint-planning.md`) to the Current Tasks before releasing the lock.
 
 4. **Apply stub-accrued decisions** (Rule 11). Read `decision-log.md` (and `decision-log-archive.md` if it exists) for entries dated at or after `.populated.onboarded_at`. Filter entries whose Impact field names this agent. Apply each applicable decision's effects as part of the populate. This closes out the "stub accrues; applied at first populate" guarantee.
 

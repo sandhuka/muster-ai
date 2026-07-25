@@ -147,6 +147,28 @@ Always use design system tokens in specs, never raw system colors. The tokens al
 - Swipe actions: `.swipeActions()` — primary action on trailing edge, secondary on leading
 - Use section headers for grouping. Headers should be sticky (`.headerProminence(.increased)`)
 
+## Numeric Input Controls
+
+The data type does not select the control. Weight, age, rep count, and calories are all numbers, and each wants a different control. The selecting variable is **entry frequency and required precision** — not that the value is numeric.
+
+| Control | Entry profile | Cost |
+|---------|--------------|------|
+| `Slider` | Entered once or rarely, approximate is fine, bounded known range | No exact value without a paired readout; drag-only |
+| `Stepper` | Frequent small adjustments from a sensible default; narrow band | Slow past ~10 increments |
+| `Picker` (`.wheel`) | One-time selection from a bounded range where scanning nearby values helps (height, birth year) | Slow to traverse a wide range; hides all but a few values |
+| `TextField` + `.keyboardType(.decimalPad)` | Frequent, precise, arbitrary values the user knows before arriving | Requires typing and keyboard dismissal |
+
+Rules:
+
+- **One-time setup, known range, precision not critical** (height, age at signup) → `Slider` or `.wheel` `Picker`. Low effort, no typing, no keyboard.
+- **Frequent, precise, repeated entry** (logging 350 g of food, entering a weight lifted) → `TextField` with `.decimalPad`. Wheels and sliders break down here: too slow, too fiddly, and they fight the user for an exact value.
+- **Small adjustments around a default** (set count, servings) → `Stepper`.
+- **Any `Slider` whose value must be stated exactly** → render the live value as text beside it and provide a tap-to-type path. The slider is the coarse affordance, never the only one.
+
+The most common mistake: choosing by data type, then shipping into a flow where the value is entered dozens of times a day. Ask the frequency question first — a wheel that feels delightful during onboarding is punishing at the fortieth entry.
+
+Accessibility: `Slider` is the weakest numeric control for motor and VoiceOver users. It needs `.accessibilityValue()` and a sensible `step` so the VoiceOver adjustable action increments usefully — see `team/ui-ux/skills/generic/accessibility.md`.
+
 ## Sheets & Popovers
 
 ### Sheet Sizing (iOS 16+)
