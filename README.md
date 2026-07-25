@@ -167,7 +167,7 @@ my-project/
 | [MIGRATING-V1-TO-V2.md](MIGRATING-V1-TO-V2.md) | One-shot migration for projects set up before v2 | A `muster/` update halted with "Pre-v2 Muster setup detected" |
 | [CHANGELOG.md](CHANGELOG.md) | Version history — what changed at each bump | Tracing behavior to a framework version |
 
-Current framework version: **4.2** (the Guide/XO framework agent, `.muster/config` knobs, and autonomous-loop operability; see [CHANGELOG.md](CHANGELOG.md)). Upgrading an existing v3 project to v4? Bump the `muster/` submodule and run `muster/scripts/migrate-v3-to-v4.sh` — see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md). The 4.1 → 4.2 bump is additive: bump the submodule, then re-run `migrate-v3-to-v4.sh` to seed the new project-level files (the `/muster` front door, the test runner) — or let the Guide coach the upgrade for you (below).
+Current framework version: **4.6** (commit convention — the git history reads as the product's story; `muster-meter` build telemetry — measure what a build actually cost; QA web-testing methodology; see [CHANGELOG.md](CHANGELOG.md)). Upgrading an existing v3 project to v4? Bump the `muster/` submodule and run `muster/scripts/migrate-v3-to-v4.sh` — see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md). Bumps from 4.1 onward are additive: bump the submodule pointer, then re-run `migrate-v3-to-v4.sh` to seed any new project-level files — or let the Guide coach the upgrade for you (below).
 
 **Upgrading and want it done for you?** From any version, bump the `muster/` submodule, then tell Claude: *"Read `muster/MUSTER.md` and act as the Guide; coach me through upgrading this project to the latest Muster."* The Guide runs the migration with backups and per-step verification — see the callout atop each `MIGRATING-*.md`.
 

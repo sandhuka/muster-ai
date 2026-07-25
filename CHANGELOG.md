@@ -11,12 +11,44 @@ submodule) are seeded copy-if-absent by re-running the live upgrade script. No b
 
 ---
 
-## 4.6 — Unreleased
+## 4.6 — 2026-07-24
 
-Fixed-cost audit pass on the always-read surface, plus a planning-quality addition. Theme: tokens
-are spent at read time, so author-only guidance must not ride on files every agent reads every
-session. Net tier-1 bind-path: **384 → 302 lines** (−82, every session, every project, forever),
+Fixed-cost audit pass on the always-read surface, a planning-quality addition, and three
+build-observability/quality features: the commit convention (the git history reads as the product's
+story), muster-meter (any project can measure what its build actually cost), and QA web-testing
+methodology. Net tier-1 bind-path: **384 → 302 lines** (−82, every session, every project, forever),
 zero behavior lost, all pillar budgets green (20/20).
+
+- **New — commit convention (Rule 16): the history tells the story.** Every agent commit subject is
+  `<role>: <outcome>` (lowercase bound role; ≤72 chars; outcome-first — what the product can now do,
+  not the mechanics; the why in an optional 1–2-line body; HO-/DEC- refs in the body, never the
+  subject). Reaches interactive sessions via `CLAUDE.md` Rule 16 and autonomous steps via the driver's
+  wrapper prompt; the driver's own step-boundary sweep commit conforms (`<role>: step-boundary sweep —
+  <label>`). Deterministic backstop: `scripts/muster-commit-lint.sh [commit|range]` (merge + scaffold
+  `init` commits exempt), run by the driver after any step that committed — **warn-only: style never
+  stops a run** (hard-block rejected — disproportionate for message style). Format alternatives
+  rejected at founder review: bracketed `[role]` tags (less standard) and `role · step-ID · outcome`
+  subjects (IDs belong in the body; may not exist at commit time). Fixtures:
+  `scripts/test-commit-lint.sh` (11 cases) + 2 driver-fixture cases; both in CI.
+- **New — `scripts/muster-meter.py`: what did this build actually cost?** Whole-project telemetry
+  rollup from Claude Code session logs (interactive + autonomous + sprint worktrees): active build
+  time (inter-event gaps capped at 5 min — reported as *active build*, never elapsed), operator
+  attention (same math over human-typed prompts only), tokens by model, API-list-price cost, distinct
+  commit-days via `--repo`; `--json` for durable snapshots (session logs are pruned after
+  `cleanupPeriodDays`). Assistant calls are **deduped by API message id** — resumed sessions replay
+  history into new log files; naive per-session summing overcounts ~13%+ (validated against a real
+  project: ccusage cross-check landed 13% high for exactly this reason; per-model totals matched to
+  the cent where no resumes occurred). Complements (not replaces) the driver's per-run
+  `.muster-sprint-logs/*.metrics`. Guide answers "what has this build cost?" from
+  `guide/skills/operating-help.md`. Docstring carries the honest-reporting rules (exact values,
+  "active build" labeling, list-price cost-to-replicate framing).
+- **New — `team/qa/skills/web/web-testing.md`** (closes field report #36 — QA was the only role
+  without `skills/web/`; every web-facing sprint re-inlined ~15 lines of methodology). Sandbox-honest
+  web validation: what a headless environment can and cannot prove (and saying so in the handoff),
+  responsive/no-h-scroll assertions, code-level a11y tree audit, PWA/service-worker/offline lifecycle,
+  zero-network + tracker-absence checks at the shipped-bundle level, cross-engine rendering (the
+  WebKit-only SVG failure class), link/asset validation with placeholder awareness, timezone/DST
+  matrices, evidence discipline (own screenshots, named commands, no absorbed skips).
 
 - **New — Cold-Start Sufficiency Test** (`team/pm/skills/generic/sprint-planning.md`, with pointers
   in `context-cascading.md` + `decision-making.md`): a completeness gate PM runs whenever it authors
