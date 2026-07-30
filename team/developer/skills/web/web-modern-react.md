@@ -1,7 +1,7 @@
 # Modern React (React 19+)
 
 ## Purpose
-Define modern React patterns: Server/Client component discipline, effects rules, Server Actions integration, Suspense, `useTransition`, `useOptimistic`, the `use` hook, refs as props, custom hooks, and composition. See `team/developer/skills/web-architecture.md` for layer-level server/client boundary rules. See `team/developer/skills/web-state-management.md` for state libraries (Zustand, TanStack Query). See `team/developer/skills/web-nextjs-app-router.md` for routing-level concerns. Target: **React 19+, Next.js 15+, TypeScript 5.5+**.
+Define modern React patterns: Server/Client component discipline, effects rules, Server Actions integration, Suspense, `useTransition`, `useOptimistic`, the `use` hook, refs as props, custom hooks, and composition. See the `web-architecture` skill for layer-level server/client boundary rules. See the `web-state-management` skill for state libraries (Zustand, TanStack Query). See the `web-nextjs-app-router` skill for routing-level concerns. Target: **React 19+, Next.js 15+, TypeScript 5.5+**.
 
 ## Component Types
 

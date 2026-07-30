@@ -1,7 +1,7 @@
 # iOS SwiftUI Patterns
 
 ## Purpose
-Define SwiftUI view composition, state management, navigation, presentation, and performance patterns for iOS development. See `team/developer/skills/ios-mvvm.md` for the MVVM pattern (ViewModel structure, DI, navigation ownership). See `team/developer/skills/ios-best-practices.md` for project-level architecture (feature modules, hybrid local/cloud). See `team/developer/skills/ios-modern-api.md` for deprecated vs modern API replacements. See `team/developer/skills/ios-accessibility.md` for accessibility requirements.
+Define SwiftUI view composition, state management, navigation, presentation, and performance patterns for iOS development. See the `ios-mvvm` skill for the MVVM pattern (ViewModel structure, DI, navigation ownership). See the `ios-best-practices` skill for project-level architecture (feature modules, hybrid local/cloud). See the `ios-modern-api` skill for deprecated vs modern API replacements. See the `ios-accessibility` skill for accessibility requirements.
 
 ## State Management
 **Primary pattern — `@Observable`:**

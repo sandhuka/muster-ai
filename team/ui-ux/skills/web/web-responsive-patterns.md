@@ -1,7 +1,7 @@
 # Web Responsive Patterns
 
 ## Purpose
-Define how layouts adapt across viewports on the modern web: mobile-first methodology, container queries as the default (media queries as the exception), fluid type and spacing scales, intrinsic layout primitives, and the small set of patterns that cover 90% of responsive needs. This skill consumes the spacing and type tokens defined in `team/ui-ux/skills/web-design-system.md` — it never redefines them. See `team/ui-ux/skills/web-design-system.md` for the token system. See `team/ui-ux/skills/web-screen-specification.md` for how responsive behavior is documented in a spec. See `team/ui-ux/skills/web-accessibility.md` for tap-target sizing rules and reduced-motion fallbacks. See `team/developer/skills/web-modern-react.md` for component composition patterns the layouts use. Target: **modern evergreen browsers (2024+), Tailwind CSS 4+, CSS Grid + Subgrid, Container Queries (`@container`), `clamp()` and `min/max/clamp` for fluid sizing**.
+Define how layouts adapt across viewports on the modern web: mobile-first methodology, container queries as the default (media queries as the exception), fluid type and spacing scales, intrinsic layout primitives, and the small set of patterns that cover 90% of responsive needs. This skill consumes the spacing and type tokens defined in the `web-design-system` skill — it never redefines them. See the `web-design-system` skill for the token system. See the `web-screen-specification` skill for how responsive behavior is documented in a spec. See UI/UX's `web-accessibility` skill for tap-target sizing rules and reduced-motion fallbacks. See the `web-modern-react` skill for component composition patterns the layouts use. Target: **modern evergreen browsers (2024+), Tailwind CSS 4+, CSS Grid + Subgrid, Container Queries (`@container`), `clamp()` and `min/max/clamp` for fluid sizing**.
 
 ## The Two Rules That Anchor Everything
 
@@ -257,7 +257,7 @@ This is page chrome — media queries are correct here. Two patterns dominate:
 Both are appropriate uses of media queries because the navigation *is* the shell.
 
 ### The Responsive Modal / Sheet
-Modals on phones should be bottom sheets (full-width, slide up from the bottom); on tablets and desktops they should be centered dialogs. The pattern uses a media query (this is page chrome) and is detailed in `team/ui-ux/skills/web-interaction-patterns.md`.
+Modals on phones should be bottom sheets (full-width, slide up from the bottom); on tablets and desktops they should be centered dialogs. The pattern uses a media query (this is page chrome) and is detailed in the `web-interaction-patterns` skill.
 
 ### The Responsive Image
 ```tsx
@@ -284,7 +284,7 @@ Don't try to make every column reflow at every breakpoint — the result is unre
 
 ## Touch and Pointer Targets
 
-Touch targets have a physical floor regardless of viewport: **44×44 CSS pixels minimum** on any touch-capable device. The full target-sizing rules — hit-area extension when the visual is smaller, the `(pointer: fine)` exception for mouse-only contexts, and the WCAG 2.5.5 framing — live in `team/ui-ux/skills/web-accessibility.md` → Touch and Target Sizing as the source of truth. The responsive-layout implication is the one worth restating: **the floor doesn't change with viewport.** A button is 44×44 on a 1280px desktop with touch input (iPad, touch-screen laptop) just as it is on a 375px phone. Layout decisions don't override the floor; the design-system control sizing enforces it.
+Touch targets have a physical floor regardless of viewport: **44×44 CSS pixels minimum** on any touch-capable device. The full target-sizing rules — hit-area extension when the visual is smaller, the `(pointer: fine)` exception for mouse-only contexts, and the WCAG 2.5.5 framing — live in UI/UX's `web-accessibility` skill → Touch and Target Sizing as the source of truth. The responsive-layout implication is the one worth restating: **the floor doesn't change with viewport.** A button is 44×44 on a 1280px desktop with touch input (iPad, touch-screen laptop) just as it is on a 375px phone. Layout decisions don't override the floor; the design-system control sizing enforces it.
 
 ## Orientation & Tablet Adaptation
 
@@ -343,7 +343,7 @@ Lock orientation only when the design genuinely demands it — fullscreen video,
 
 ## Designing the Spec
 
-When specifying a screen for the Developer (see `team/ui-ux/skills/web-screen-specification.md`), describe responsive behavior in terms of *layout intent*, not viewport pixels:
+When specifying a screen for the Developer (see the `web-screen-specification` skill), describe responsive behavior in terms of *layout intent*, not viewport pixels:
 
 - **Wrong**: "At 768px, the sidebar appears. At 1024px, the grid becomes 3 columns."
 - **Right**: "The sidebar is shown at the `md` breakpoint. The card grid uses auto-fit at minimum 16rem; let it find its column count organically."

@@ -1,7 +1,7 @@
 # Backend Deployment & Environments
 
 ## Purpose
-Operational workflows for managing Supabase environments, migrations, and deployments. This covers the how of deploying — see `team/developer/skills/backend-supabase-database.md` for migration SQL patterns and `team/developer/skills/backend-supabase-edge-functions.md` for function deployment details. See `team/developer/skills/code-standards.md` for git workflow conventions. See `knowledge-base/architecture.md` for the production schema as target state.
+Operational workflows for managing Supabase environments, migrations, and deployments. This covers the how of deploying — see the `backend-supabase-database` skill for migration SQL patterns and the `backend-supabase-edge-functions` skill for function deployment details. See the `code-standards` skill for git workflow conventions. See `knowledge-base/architecture.md` for the production schema as target state.
 
 ## Environment Strategy
 - **Local development**: `supabase start` spins up a full local Supabase stack (PostgreSQL, Auth, Storage, Edge Functions) via Docker. Develop and test entirely offline

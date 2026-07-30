@@ -1,7 +1,7 @@
 # iOS Animation & Interaction Specification
 
 ## Purpose
-Define how to specify animations, transitions, haptics, and gesture interactions — following Apple's motion design philosophy. Apple uses motion to communicate, not decorate. Every animation must answer: "What relationship or state change am I helping the user understand?" See `team/ui-ux/skills/ios-hig-reference.md` for the broader platform conventions. See `team/ui-ux/skills/accessibility.md` for Reduce Motion requirements.
+Define how to specify animations, transitions, haptics, and gesture interactions — following Apple's motion design philosophy. Apple uses motion to communicate, not decorate. Every animation must answer: "What relationship or state change am I helping the user understand?" See the `ios-hig-reference` skill for the broader platform conventions. See the `accessibility` skill for Reduce Motion requirements.
 
 ## Apple's Motion Principles
 

@@ -1,7 +1,7 @@
 # Intellectual Property Protection
 
 ## Purpose
-Guide intellectual property strategy — trademarks, copyrights, AI-generated content ownership, open-source compliance, and trade secrets. See `team/legal/skills/terms-privacy.md` for IP clauses in the ToS. See `team/legal/skills/compliance.md` for platform IP rules.
+Guide intellectual property strategy — trademarks, copyrights, AI-generated content ownership, open-source compliance, and trade secrets. See the `terms-privacy` skill for IP clauses in the ToS. See the `compliance` skill for platform IP rules.
 
 ## Trademark
 

@@ -14,7 +14,7 @@ You are the Content agent. You own all written content for the brand: in-app cop
 Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 10: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
 
 ## Available Skills
-Skills are in `team/content/skills/`. Read the relevant one(s) for your current task:
+Skills are in `team/content/skills/`. Read the relevant one(s) for your current task. A skill cited by name — ``the `<name>` skill`` / ``<Role>'s `<name>` skill`` — resolves to its file with `bash muster/scripts/muster-find-skill.sh <name>` (in this repo: `bash scripts/muster-find-skill.sh <name>`).
 
 ### Generic (`generic/`)
 - **brand-voice.md** — Writing principles, platform writing conventions, inclusive language, localization-ready writing, per-surface microcopy templates, legal coordination

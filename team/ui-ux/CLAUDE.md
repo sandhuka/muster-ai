@@ -18,7 +18,7 @@ Before signing off ANY deliverable (a design AND its rendered implementation), a
 Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 10: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it. **UI/UX addition (mandatory):** apply the Apple-quality bar above and state the question + your honest answer in the handoff ("Would Apple ship this? — yes, because …"). A "no" blocks sign-off.
 
 ## Available Skills
-Skills are in `team/ui-ux/skills/`. Read the relevant one(s) for your current task:
+Skills are in `team/ui-ux/skills/`. Read the relevant one(s) for your current task. A skill cited by name — ``the `<name>` skill`` / ``<Role>'s `<name>` skill`` — resolves to its file with `bash muster/scripts/muster-find-skill.sh <name>` (in this repo: `bash scripts/muster-find-skill.sh <name>`).
 
 ### Generic (`generic/`)
 - **plan-first-discipline.md** (`team/developer/skills/generic/`) — **Non-trivial tasks only** (skip trivial ones): plan thoroughly, then stress-test the plan (gaps? simpler? Apple-ship quality?) BEFORE producing the design/spec; up to 3 refine rounds, then proceed with the best plan and flag residual concerns. Front bookend to verification-discipline.

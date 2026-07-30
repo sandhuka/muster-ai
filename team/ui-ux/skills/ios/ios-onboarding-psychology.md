@@ -1,7 +1,7 @@
 # iOS Onboarding Psychology
 
 ## Purpose
-Define the behavioral design principles behind the product's onboarding — not the layout or flow mechanics (those are in `mobile-patterns.md` and `user-flow-mapping.md`), but the *why* behind every question's placement, the psychology of commitment, and the transition from setup to first value. Onboarding is confidence-building and momentum-building, not data collection. Read this skill when designing onboarding screens (F-ONB-0 through F-ONB-6) and the first-routine handoff. See `team/ui-ux/skills/ios-content-hierarchy.md` for how to prioritize content within each onboarding screen.
+Define the behavioral design principles behind the product's onboarding — not the layout or flow mechanics (those are in `mobile-patterns.md` and `user-flow-mapping.md`), but the *why* behind every question's placement, the psychology of commitment, and the transition from setup to first value. Onboarding is confidence-building and momentum-building, not data collection. Read this skill when designing onboarding screens (F-ONB-0 through F-ONB-6) and the first-routine handoff. See the `ios-content-hierarchy` skill for how to prioritize content within each onboarding screen.
 
 ## Onboarding's Job
 Onboarding must accomplish four things — in this order of importance:

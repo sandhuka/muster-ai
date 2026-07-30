@@ -59,7 +59,17 @@ awk -v budget="$BUDGET" '
   }
 
   # --- inside an Active entry: capture Status + reviewer checkbox state ---
+  # (v) status-enum check: the raw token must be one of the documented values. Without this,
+  # `Status: Done` truncates to "" at the capital D and `Status: in review` becomes "in" — both
+  # sail past every check below while looking closed to a human (the truly silent hole: a
+  # non-canonical finished-spelling with unticked reviewers reported the file as clean).
   section=="active" && /^\*\*Status:\*\*/ {
+    raw=$0; sub(/^\*\*Status:\*\*[[:space:]]*/,"",raw); sub(/[[:space:]]+$/,"",raw)
+    if (raw !~ /^\[/) {                                  # skip template placeholders like [open | done]
+      valid = cur_is_ho ? "^(open|in-review|needs-revision|done)$" : "^(open|done)$"
+      if (raw !~ valid)
+        fail("entry " (entry_id!="" ? entry_id : "@" NR) " has invalid Status \"" raw "\" (line " NR ") — valid: " (cur_is_ho ? "open|in-review|needs-revision|done" : "open|done"))
+    }
     s=$0; sub(/^\*\*Status:\*\*[[:space:]]*/,"",s); sub(/[^a-z-].*$/,"",s); entry_status=s; next
   }
   section=="active" && /^-[[:space:]]*\[[[:space:]]\]/ { rev_unchecked++; rev_total++; next }

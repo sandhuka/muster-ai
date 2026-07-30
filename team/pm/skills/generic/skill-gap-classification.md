@@ -37,7 +37,7 @@ This runs during the dedicated "PM: Create missing skills" orchestration queue s
 2. Run the generic draft against ALL 5 generic criteria. If any fails, classify as product-specific. No exceptions.
 3. If all 5 pass, classify as generic and follow the Skill Contribution Protocol in `system-guide.md`
 4. If hybrid, create the generic version first, then a product skill that references it
-5. **Follow existing skill protocols.** Use the skill file template, quality checklist, and registration steps from `system-guide.md` → "Adding a New Skill." For platform-specific skills, use the established prefix convention (`ios-`, `backend-`, `web-`) and place in the matching subdirectory (`skills/ios/`, `skills/backend/`, `skills/web/`). If the target platform subdirectory doesn't exist, create it before writing the skill file.
+5. **Follow existing skill protocols.** Use the skill file template, quality checklist, and registration steps from `system-guide.md` → "Adding a New Skill." For platform-specific skills, use the established prefix convention (`ios-`, `backend-`, `web-`) and place in the matching subdirectory (`skills/ios/`, `skills/backend/`, `skills/web/`). If the target platform subdirectory doesn't exist, create it before writing the skill file. In the skill's body, cite other skills **by name, never by path** (``the `<name>` skill``, or ``<Role>'s `<name>` skill`` when the name exists under multiple roles) — `muster-lint-refs.sh` enforces this at registration.
 
 ## Anti-Patterns (Do NOT add to Muster)
 

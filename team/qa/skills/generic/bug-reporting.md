@@ -1,7 +1,7 @@
 # Bug Reporting Standards
 
 ## Purpose
-Define the bug report template, severity definitions, triage process, and bug lifecycle. See `team/qa/skills/test-strategy.md` for the testing methodology that generates bug findings.
+Define the bug report template, severity definitions, triage process, and bug lifecycle. See the `test-strategy` skill for the testing methodology that generates bug findings.
 
 ## Output
 Bug reports are filed in `knowledge-base/agent-requests.md` (for cross-agent visibility) or tracked in `knowledge-base/current-sprint.md` during active sprints.

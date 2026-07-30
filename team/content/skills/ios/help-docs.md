@@ -1,7 +1,7 @@
 # Help Documentation
 
 ## Purpose
-Define the methodology for writing help center content — FAQs, how-to articles, troubleshooting guides, and support reply templates. Required for App Store review (Apple expects a support URL) and user self-service. See `team/content/skills/brand-voice.md` for voice consistency. See `team/legal/skills/terms-privacy.md` for legal language that must appear in help content.
+Define the methodology for writing help center content — FAQs, how-to articles, troubleshooting guides, and support reply templates. Required for App Store review (Apple expects a support URL) and user self-service. See the `brand-voice` skill for voice consistency. See the `terms-privacy` skill for legal language that must appear in help content.
 
 ## Help Content Types
 

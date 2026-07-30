@@ -1,7 +1,7 @@
 # iOS Accessibility
 
 ## Purpose
-Define accessibility requirements for iOS apps: Dynamic Type, VoiceOver, Reduce Motion, color differentiation, and interaction patterns. See `team/developer/skills/ios-best-practices.md` for broader Apple HIG compliance. See `team/developer/skills/ios-modern-api.md` for modern API replacements relevant to accessibility.
+Define accessibility requirements for iOS apps: Dynamic Type, VoiceOver, Reduce Motion, color differentiation, and interaction patterns. See the `ios-best-practices` skill for broader Apple HIG compliance. See the `ios-modern-api` skill for modern API replacements relevant to accessibility.
 
 ## Dynamic Type
 - Never force specific font sizes — use semantic fonts (`.font(.body)`, `.font(.headline)`, etc.)

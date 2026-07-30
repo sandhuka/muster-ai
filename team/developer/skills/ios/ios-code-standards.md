@@ -1,7 +1,7 @@
 # iOS Code Standards
 
 ## Purpose
-Define Swift naming conventions, file organization, error handling, and dependency management for iOS development. See `team/developer/skills/code-standards.md` for git workflow and PR standards. See `team/developer/skills/ios-best-practices.md` for architecture patterns. See `team/developer/skills/ios-modern-api.md` for deprecated vs modern API replacements. See `team/developer/skills/ios-security.md` for Keychain patterns and credential storage.
+Define Swift naming conventions, file organization, error handling, and dependency management for iOS development. See the `code-standards` skill for git workflow and PR standards. See the `ios-best-practices` skill for architecture patterns. See the `ios-modern-api` skill for deprecated vs modern API replacements. See the `ios-security` skill for Keychain patterns and credential storage.
 
 ## Version Targeting
 - Minimum deployment target: **iOS 26**
@@ -30,7 +30,7 @@ Define Swift naming conventions, file organization, error handling, and dependen
 - No force unwrapping in production code — ever
 - No force casts — use conditional casts (`as?`) with proper handling
 - Provide meaningful error messages for user-facing errors
-- Log errors with structured logging — see `team/developer/skills/ios-observability.md` for the logging protocol and vendor isolation pattern
+- Log errors with structured logging — see the `ios-observability` skill for the logging protocol and vendor isolation pattern
 - Network errors: map to user-friendly messages, include retry logic
 - Flag silently swallowed errors — `print(error)` instead of surfacing to user is a bug for user-triggered actions
 - `@AppStorage` must never store sensitive data (usernames, passwords, tokens) — use the Keychain

@@ -1,7 +1,7 @@
 # TypeScript & Deno Runtime
 
 ## Purpose
-TypeScript language patterns and Deno runtime essentials for Supabase Edge Functions. This is the language mastery skill — read it when writing any server-side TypeScript. See `team/developer/skills/backend-supabase-edge-functions.md` for Edge Function project structure and deployment. See `knowledge-base/architecture.md` for the Edge Function contract (Section 7).
+TypeScript language patterns and Deno runtime essentials for Supabase Edge Functions. This is the language mastery skill — read it when writing any server-side TypeScript. See the `backend-supabase-edge-functions` skill for Edge Function project structure and deployment. See `knowledge-base/architecture.md` for the Edge Function contract (Section 7).
 
 ## Deno Runtime Essentials
 - Deno is the runtime for Supabase Edge Functions (not Node.js)

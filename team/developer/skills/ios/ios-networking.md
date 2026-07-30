@@ -1,11 +1,11 @@
 # iOS Networking & Backend Integration
 
 ## Purpose
-Define patterns for Supabase client integration, authentication flows, Edge Functions, and offline sync on iOS. This file covers Supabase as the backend — adapt or replace if using a different backend provider. See `team/developer/skills/ios-best-practices.md` for the hybrid local/cloud architecture overview. See `team/developer/skills/ios-swiftdata.md` for the local-to-cloud data migration pattern.
+Define patterns for Supabase client integration, authentication flows, Edge Functions, and offline sync on iOS. This file covers Supabase as the backend — adapt or replace if using a different backend provider. See the `ios-best-practices` skill for the hybrid local/cloud architecture overview. See the `ios-swiftdata` skill for the local-to-cloud data migration pattern.
 
 ## Supabase Client Setup
 - Use the official `supabase-swift` SDK
-- Initialize `SupabaseClient` once at app launch with project URL and anon key from `EnvironmentConfig` (see `team/developer/skills/ios-best-practices.md` Build Environments)
+- Initialize `SupabaseClient` once at app launch with project URL and anon key from `EnvironmentConfig` (see the `ios-best-practices` skill Build Environments)
 - Store the client as a singleton or inject via environment
 - Never expose the service role key in the client app — anon key + Row Level Security only
 

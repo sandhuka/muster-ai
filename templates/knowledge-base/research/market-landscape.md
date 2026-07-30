@@ -1,6 +1,6 @@
 # Market Landscape — [Product Name]
 <!-- Market sizing, trends, and opportunity analysis. -->
-<!-- Skill reference: team/research/skills/generic/market-analysis.md -->
+<!-- Skill reference: the `market-analysis` skill -->
 
 ## Current State
 <!-- Executive summary of market findings. Update as research evolves. -->

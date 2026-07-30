@@ -1,7 +1,7 @@
 # iOS Data Visualization
 
 ## Purpose
-Define how to design charts, trends, streaks, and progress views for the product — following Apple Health's philosophy of calm, insight-led data presentation. Data visualization in a fitness app serves reflection and motivation, not dashboard vanity. Every chart must answer a question the user actually has, not just display data because it exists. Read this skill when designing Progress (F-TRK-1/2), streak displays, history views, weekly volume trends, Plan tab rationale, or any screen where health/fitness data needs to be understood at a glance. See `team/ui-ux/skills/ios-content-hierarchy.md` for deciding which data gets emphasis. See `team/ui-ux/skills/accessibility.md` for VoiceOver requirements on data elements.
+Define how to design charts, trends, streaks, and progress views for the product — following Apple Health's philosophy of calm, insight-led data presentation. Data visualization in a fitness app serves reflection and motivation, not dashboard vanity. Every chart must answer a question the user actually has, not just display data because it exists. Read this skill when designing Progress (F-TRK-1/2), streak displays, history views, weekly volume trends, Plan tab rationale, or any screen where health/fitness data needs to be understood at a glance. See the `ios-content-hierarchy` skill for deciding which data gets emphasis. See the `accessibility` skill for VoiceOver requirements on data elements.
 
 ## Apple Health-Style Chart Philosophy
 Apple Health is the gold standard for fitness data visualization. Study what it does:

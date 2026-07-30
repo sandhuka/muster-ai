@@ -1,6 +1,6 @@
 # Product Brief — [Product Name]
 <!-- Research agent's primary deliverable. PM reads this to decide go/no-go. -->
-<!-- Skill reference: team/research/skills/generic/product-validation.md -->
+<!-- Skill reference: the `product-validation` skill -->
 
 ## Founder's Idea
 <!-- PM-SEEDED: PM captures the founder's raw idea here before handing off to the Research agent.

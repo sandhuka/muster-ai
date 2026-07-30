@@ -109,6 +109,6 @@ During founder review of audit-notes, every `[inferred]` row requires an explici
 "Approve all" is NOT offered for `[inferred]` rows. `[verified]` rows don't require action (founder may still override).
 
 ### Where the mechanics live
-- Audit procedure + tag assignment: `team/developer/skills/generic/codebase-audit.md`
-- Review flow in onboarding context + architecture finalize: `team/pm/skills/generic/reverse-discovery.md` → Phase 6
+- Audit procedure + tag assignment: the `codebase-audit` skill
+- Review flow in onboarding context + architecture finalize: the `reverse-discovery` skill → Phase 6
 - Rule 15 discipline on destinations: `reverse-discovery.md` → Phases 2.1 (triage), 6.3 (architecture), 8.3 (foundational-assumptions)

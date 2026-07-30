@@ -1,7 +1,7 @@
 # App Store Review Compliance
 
 ## Purpose
-Ensure the product passes Apple App Store review on first submission and maintains compliance through updates. Focused on apps with auto-renewing subscriptions, with additional guidance for health/fitness apps. See `team/legal/skills/compliance.md` for broader regulatory context. See `team/legal/skills/terms-privacy.md` for privacy policy and ToS requirements that Apple mandates.
+Ensure the product passes Apple App Store review on first submission and maintains compliance through updates. Focused on apps with auto-renewing subscriptions, with additional guidance for health/fitness apps. See the `compliance` skill for broader regulatory context. See the `terms-privacy` skill for privacy policy and ToS requirements that Apple mandates.
 
 ## Health & Fitness App Review (Guideline 5.1.3)
 

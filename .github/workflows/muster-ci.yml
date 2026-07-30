@@ -37,3 +37,12 @@ jobs:
         run: bash scripts/test-sprint-new.sh
       - name: Commit-subject convention (Rule 16)
         run: bash scripts/test-commit-lint.sh
+
+      - name: Skill resolver (name→path contract)
+        run: bash scripts/test-find-skill.sh
+
+      - name: Skill citations + index parity (fixtures)
+        run: bash scripts/test-lint-refs.sh
+
+      - name: Skill citations + index parity (live corpus)
+        run: bash scripts/muster-lint-refs.sh

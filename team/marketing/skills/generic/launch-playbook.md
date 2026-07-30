@@ -1,7 +1,7 @@
 # Launch Playbook
 
 ## Purpose
-8-week pre-launch through 30-day post-launch execution plan. A strong launch generates press, App Store featuring, social proof, and the initial cohort that seeds word-of-mouth. See `team/marketing/skills/aso-playbook.md` for listing optimization, `team/marketing/skills/pr-earned-media.md` for press outreach, `team/marketing/skills/app-review-ratings.md` for review seeding.
+8-week pre-launch through 30-day post-launch execution plan. A strong launch generates press, App Store featuring, social proof, and the initial cohort that seeds word-of-mouth. See the `aso-playbook` skill for listing optimization, the `pr-earned-media` skill for press outreach, the `app-review-ratings` skill for review seeding.
 
 ## Pre-Launch Timeline
 

@@ -1,6 +1,6 @@
 # User Insights — [Product Name]
 <!-- Personas, jobs-to-be-done, pain points, and user journey. -->
-<!-- Skill reference: team/research/skills/generic/user-insights.md -->
+<!-- Skill reference: the `user-insights` skill -->
 
 ## Current State
 <!-- Executive summary of user research findings. Update as research evolves. -->

@@ -1,7 +1,7 @@
 # Retention & Lifecycle Marketing
 
 ## Purpose
-Post-install retention strategy: trigger architecture for push/email/in-app messaging, gamification design, churn prevention, and win-back. Marketing owns WHEN and WHY to message users; Content agent owns the COPY (`team/content/skills/notification-copy.md`, `team/content/skills/email-sequences.md`, `team/content/skills/subscription-copy.md`). See `team/marketing/skills/analytics.md` for retention metrics and cohort analysis.
+Post-install retention strategy: trigger architecture for push/email/in-app messaging, gamification design, churn prevention, and win-back. Marketing owns WHEN and WHY to message users; Content agent owns the COPY (the `notification-copy` skill, the `email-sequences` skill, the `subscription-copy` skill). See the `analytics` skill for retention metrics and cohort analysis.
 
 ## The Habit Loop
 The product's retention depends on building a daily habit:
@@ -68,7 +68,7 @@ Surface premium value at natural moments. Never interrupt the core experience.
 | After 1 week of use | "[Your accumulated data] unlocks [premium insight]" |
 | Hitting [free usage limit] | At the natural ceiling of your free tier |
 
-For upgrade prompt copy, see Content agent's `team/content/skills/subscription-copy.md`. Feature discovery should be progressive — introduce premium features gradually at moments where the user would benefit.
+For upgrade prompt copy, see Content agent's the `subscription-copy` skill. Feature discovery should be progressive — introduce premium features gradually at moments where the user would benefit.
 
 ## Streak & Gamification Design
 
@@ -89,7 +89,7 @@ For upgrade prompt copy, see Content agent's `team/content/skills/subscription-c
 | 100 | Special achievement + shareable card |
 | 365 | Personalized year-in-review |
 
-See `team/marketing/skills/referral-virality.md` for how milestones integrate with sharing.
+See the `referral-virality` skill for how milestones integrate with sharing.
 
 ## Churn Prevention
 

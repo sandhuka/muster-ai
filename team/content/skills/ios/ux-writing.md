@@ -1,7 +1,7 @@
 # UX Writing
 
 ## Purpose
-Define the methodology for writing interface copy — every text element the user sees inside the app that isn't marketing or long-form content. Primary collaboration surface with the UI/UX agent. See `team/content/skills/brand-voice.md` for voice application and error state patterns. See `team/content/skills/subscription-copy.md` for subscription state copy and paywall screen methodology. See `knowledge-base/product-spec.md` Section 5I for error and empty state specs.
+Define the methodology for writing interface copy — every text element the user sees inside the app that isn't marketing or long-form content. Primary collaboration surface with the UI/UX agent. See the `brand-voice` skill for voice application and error state patterns. See the `subscription-copy` skill for subscription state copy and paywall screen methodology. See `knowledge-base/product-spec.md` Section 5I for error and empty state specs.
 
 ## UX Copy Hierarchy
 
@@ -98,7 +98,7 @@ When a screen has no data yet. Most critical UX writing — this is the user's f
 - Use present participle ("Building...") not passive ("Your routine is being built...")
 
 ### Error States
-See `team/content/skills/brand-voice.md` for error patterns. Additional rules:
+See the `brand-voice` skill for error patterns. Additional rules:
 
 | Error Type | Pattern | Example |
 |------------|---------|---------|

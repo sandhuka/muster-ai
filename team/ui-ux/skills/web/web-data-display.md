@@ -1,7 +1,7 @@
 # Web Data Display
 
 ## Purpose
-Define how to design data-dense surfaces on the web — tables, grids, dense record lists, sortable / filterable views, row selection, inline editing, density modes, virtualization, sticky headers, frozen columns, bulk actions, summary rows. The web's most common product surface that iOS rarely encounters: admin tools, dashboards, mail clients, finance products, App Store Connect-style management UIs, audit logs, billing histories. The Stack Overflow median for this surface is "drop in react-table and call it done"; the Apple-quality answer is a small set of token-driven patterns that compose, scan well, and degrade gracefully across viewports. See `team/ui-ux/skills/web-design-system.md` for the tokens these patterns consume. See `team/ui-ux/skills/web-content-hierarchy.md` for the broader hierarchy rules; this skill applies them within data-dense surfaces. See `team/ui-ux/skills/web-empty-error-and-edge-states.md` for the empty / loading / error states data tables produce. See `team/ui-ux/skills/web-interaction-patterns.md` for overlay patterns (popover filters, action menus). See `team/ui-ux/skills/web-accessibility.md` for the design-side a11y rules these patterns enforce; see `team/developer/skills/web-accessibility.md` for the implementation-side semantics (real `<table>` markup, `aria-rowcount`, screen-reader narration). Target: **product UI on web — tables, grids, and list-style data display in React 19+ / Next.js 15+ / Tailwind v4**.
+Define how to design data-dense surfaces on the web — tables, grids, dense record lists, sortable / filterable views, row selection, inline editing, density modes, virtualization, sticky headers, frozen columns, bulk actions, summary rows. The web's most common product surface that iOS rarely encounters: admin tools, dashboards, mail clients, finance products, App Store Connect-style management UIs, audit logs, billing histories. The Stack Overflow median for this surface is "drop in react-table and call it done"; the Apple-quality answer is a small set of token-driven patterns that compose, scan well, and degrade gracefully across viewports. See the `web-design-system` skill for the tokens these patterns consume. See the `web-content-hierarchy` skill for the broader hierarchy rules; this skill applies them within data-dense surfaces. See the `web-empty-error-and-edge-states` skill for the empty / loading / error states data tables produce. See the `web-interaction-patterns` skill for overlay patterns (popover filters, action menus). See UI/UX's `web-accessibility` skill for the design-side a11y rules these patterns enforce; see Developer's `web-accessibility` skill for the implementation-side semantics (real `<table>` markup, `aria-rowcount`, screen-reader narration). Target: **product UI on web — tables, grids, and list-style data display in React 19+ / Next.js 15+ / Tailwind v4**.
 
 ## The Anchor: Table, Grid, or List?
 
@@ -80,7 +80,7 @@ When the product genuinely needs resize/reorder:
 - Persist per-user state (cookie or server preference).
 - Provide a "Reset columns" affordance.
 - Resize handles must be 8px wide minimum and have a visible cursor change.
-- Reorder uses drag-and-drop with a keyboard alternative (Space to grab, arrow keys, Space to drop) — see `team/ui-ux/skills/web-interaction-patterns.md` → Drag and Drop.
+- Reorder uses drag-and-drop with a keyboard alternative (Space to grab, arrow keys, Space to drop) — see the `web-interaction-patterns` skill → Drag and Drop.
 
 ## Sticky Headers, Frozen Columns
 
@@ -121,7 +121,7 @@ When rows are selected, a bulk-action surface appears. Two patterns:
 
 Toolbar contents: count of selected items, primary actions (max 3 visible: e.g., "Archive," "Export," "Delete"), overflow menu for the rest, "Clear selection" or `×` button on the right.
 
-Destructive bulk actions follow `team/ui-ux/skills/web-interaction-patterns.md` → Confirmations and Undo:
+Destructive bulk actions follow the `web-interaction-patterns` skill → Confirmations and Undo:
 - Recoverable (archive, hide): proceed immediately, show toast with "Undo."
 - Irrecoverable (permanently delete): confirmation dialog with the count ("Permanently delete 12 invoices? This cannot be undone.").
 
@@ -130,10 +130,10 @@ Destructive bulk actions follow `team/ui-ux/skills/web-interaction-patterns.md` 
 For tables where users frequently update field values (settings rows, spreadsheet-style tools), inline editing beats opening a modal. Discipline:
 
 - **Click-to-edit, not double-click-to-edit.** Double-click is desktop-spreadsheet vocabulary that doesn't translate to web; users won't discover it.
-- **Cell shows edit affordance on row hover** (subtle pencil icon or border change). Hover affordance is always backed by a static signal — see `team/ui-ux/skills/web-accessibility.md` on hover-only patterns.
+- **Cell shows edit affordance on row hover** (subtle pencil icon or border change). Hover affordance is always backed by a static signal — see UI/UX's `web-accessibility` skill on hover-only patterns.
 - **Enter or blur saves; Escape cancels.** Esc reverts to original value.
 - **Validation appears inline below the cell.** If the value is invalid, the cell stays in edit mode until corrected or cancelled.
-- **Save state is announced.** Brief "Saved" indicator (caption-sized, fades in 200ms, fades out 1.5s). For autosave-on-every-edit, see `team/ui-ux/skills/web-form-patterns.md` → Autosave.
+- **Save state is announced.** Brief "Saved" indicator (caption-sized, fades in 200ms, fades out 1.5s). For autosave-on-every-edit, see the `web-form-patterns` skill → Autosave.
 
 Inline editing has a real keyboard-navigation requirement: Tab moves to the next editable cell (not the next focusable element on the page). Specify the keyboard model in the screen spec.
 
@@ -159,7 +159,7 @@ Active filters are visible. A user who set a filter five minutes ago and forgot 
 
 ### Filter State in URL
 
-Filters and sort belong in the URL (`?status=active&sort=created_desc`). This makes views shareable, back-button-restorable, and analytics-trackable. See `team/ui-ux/skills/web-information-architecture.md` → URL as UX.
+Filters and sort belong in the URL (`?status=active&sort=created_desc`). This makes views shareable, back-button-restorable, and analytics-trackable. See the `web-information-architecture` skill → URL as UX.
 
 ## Pagination Patterns
 
@@ -200,7 +200,7 @@ The reflow pattern needs a designed row-card component, not just CSS that hides 
 
 ## Empty, Loading, and Error States
 
-These belong to `team/ui-ux/skills/web-empty-error-and-edge-states.md`. Tables produce several distinct empty shapes:
+These belong to the `web-empty-error-and-edge-states` skill. Tables produce several distinct empty shapes:
 
 - **Never-had-content**: "No invoices yet" + CTA to create the first.
 - **Filter-emptied-it**: "No invoices match these filters" + clear-filter CTA. Distinct from never-had-content.
@@ -212,7 +212,7 @@ Loading: skeleton rows that match the column structure. Show after 200ms (avoid 
 
 ## Accessibility
 
-Design-side specifications (implementation in `team/developer/skills/web-accessibility.md`):
+Design-side specifications (implementation in Developer's `web-accessibility` skill):
 
 - **Use real `<table>` semantics.** `<thead>`, `<tbody>`, `<th scope="col">`, `<th scope="row">` for any row-identifier column. Never `<div role="table">` unless absolutely no other choice.
 - **Headers describe their column.** Sort buttons are `<button>` inside `<th>`; current sort state communicated via `aria-sort`.
@@ -239,7 +239,7 @@ Design-side specifications (implementation in `team/developer/skills/web-accessi
 | **Density mode that breaks touch targets.** Compact mode shipping on touch with 28px row height. | Fails WCAG 2.5.5; users miss taps. | Clamp compact to default on `(pointer: coarse)`. |
 | **"Select all" actually selecting all on the server.** Selecting all visible silently selects 50,000 records. | Unintended bulk operations on data the user can't see. | "Select all" = visible. Offer "Select all matching" as a separate, explicit choice with the count. |
 | **Resize and reorder columns shipped before they're needed.** Drag handles on every header, persistence half-built. | High maintenance, low user adoption, frequent bugs. | Default to fixed columns with good widths. Add resize/reorder when the product is a genuine power-user data tool. |
-| **Empty state that just says "No data."** Same empty-state UI for every cause (never-had / filter-emptied / search-no-results). | Users can't tell *why* the table is empty or what to do. | Distinct empty states per origin. See `team/ui-ux/skills/web-empty-error-and-edge-states.md`. |
+| **Empty state that just says "No data."** Same empty-state UI for every cause (never-had / filter-emptied / search-no-results). | Users can't tell *why* the table is empty or what to do. | Distinct empty states per origin. See the `web-empty-error-and-edge-states` skill. |
 
 ## Principles
 

@@ -4,7 +4,7 @@
 
 ## Prompt Standard
 
-<!-- Authoring or editing a step? The format templates + Role:-marker rules live in `muster/team/pm/skills/generic/sprint-planning.md` → "Queue Step Format". The live steps below already demonstrate the format, and `muster-queue-lint.sh` enforces the structure. -->
+<!-- Authoring or editing a step? The format templates + Role:-marker rules live in the `sprint-planning` skill → "Queue Step Format". The live steps below already demonstrate the format, and `muster-queue-lint.sh` enforces the structure. -->
 
 ## Founder Decisions
 <!-- Agents add questions requiring founder input here. -->

@@ -132,6 +132,21 @@ If the agent needs to own a directory (like Research owns `knowledge-base/resear
 
 ---
 
+## Script Naming Convention
+
+Every script in `scripts/` self-sorts by name into one of three families, and its header comment
+declares the family's contract:
+
+- **`muster-lint-<thing>.sh`** — checks and reports (`OK`/`FAIL: <file>:<line> — <fix>`), exit code
+  is the verdict, never mutates anything.
+- **`muster-guard-<thing>.sh`** — blocks an unsafe action; fails closed (a missing guard refuses,
+  never bypasses).
+- **`muster-<verb>-<thing>.sh`** — performs an action or answers a question (`muster-bind`,
+  `muster-find-skill`, `muster-list-open-items`).
+
+Legacy pre-convention names (`muster-commit-lint`, `muster-queue-lint`, `muster-requests-lint`)
+keep working; new scripts follow the grammar.
+
 ## Adding a New Skill
 
 ### When to Create a New Skill
@@ -156,7 +171,7 @@ If the agent needs to own a directory (like Research owns `knowledge-base/resear
 # [Skill Name]
 
 ## Purpose
-[One-liner describing what this skill covers and when to use it.] See `team/<agent>/skills/<sibling>.md` for [related methodology]. See `knowledge-base/<doc>.md` for [related product context].
+[One-liner describing what this skill covers and when to use it.] See the `<sibling>` skill for [related methodology]. See `knowledge-base/<doc>.md` for [related product context].
 
 ## [Core Sections]
 [The methodology, standards, templates, or workflows this skill defines.]
@@ -171,7 +186,7 @@ If the agent needs to own a directory (like Research owns `knowledge-base/resear
 
 ### Quality Checklist
 - [ ] **Purpose section** immediately after the H1 title
-- [ ] **At least one cross-reference** to a sibling skill or knowledge-base doc
+- [ ] **At least one cross-reference** to a sibling skill or knowledge-base doc. Skills are cited **by name, never by path**, in exactly one of two canonical forms: ``the `<name>` skill`` or, when the name exists under more than one role, ``<Role>'s `<name>` skill``. (`bash scripts/muster-find-skill.sh <name>` resolves a name to its file; `muster-lint-refs.sh` enforces that every citation resolves.)
 - [ ] **Principles section** at the end if the skill involves judgment
 - [ ] **Output section** if the skill produces a deliverable with a specific destination
 - [ ] **No duplicated content** from knowledge-base — reference, don't copy
@@ -180,7 +195,7 @@ If the agent needs to own a directory (like Research owns `knowledge-base/resear
 ### Registration
 1. Create the skill file in `muster/team/<agent>/skills/{generic,platform}/<skill-name>.md`
 2. Add entry to the agent's brain file under "Available Skills"
-3. Verify cross-referenced files exist
+3. Run `bash scripts/muster-lint-refs.sh` — every skill citation must resolve and the brain-file index must match disk (green result, not a manual scan)
 
 ---
 
@@ -207,7 +222,7 @@ Muster methodology skills are product-agnostic frameworks. Product-specific stra
 ```markdown
 # [Product Name] [Topic] — Product Specifics
 
-Supplements `muster/team/<agent>/skills/generic/<methodology-skill>.md` methodology.
+Supplements the `<methodology-skill>` skill's methodology.
 
 ## [Sections matching the methodology skill's structure]
 [Filled-in content with strategic reasoning — not just values, but WHY these values]
@@ -451,7 +466,7 @@ Before filing a handoff, the producing agent MUST run this self-review:
 
 1. **Internal consistency**: Grep the deliverable for contradictions. Pay attention to assumptions that appear in multiple sections.
 2. **Acceptance criteria**: Re-read criteria from `current-sprint.md`. Verify each is met. Document ambiguous interpretations in the revision log.
-3. **Cross-references**: Spot-check at least 3 references to other knowledge-base files (file exists, section exists, content matches). For skill paths specifically: any `team/<role>/skills/...` path cited in this handoff (in prose, agent-context updates, or cascade docs) must resolve on disk — skills live under platform subfolders (`skills/{generic,ios,backend,android,web}/`), so a flat `skills/<name>.md` path is stale.
+3. **Cross-references**: Spot-check at least 3 references to other knowledge-base files (file exists, section exists, content matches). Skills are cited by NAME (``the `<name>` skill`` / ``<Role>'s `<name>` skill``), never by path — `bash muster/scripts/muster-find-skill.sh <name>` resolves a name; `muster-lint-refs.sh` is the deterministic check for citation validity, so this item's manual scan covers only knowledge-base refs the lint can't classify.
 4. **Feature ID validation**: Grep `product-spec.md` for every feature ID referenced. Every ID must exist — fix or remove phantoms.
 5. **Foundational assumptions**: Read `foundational-assumptions.md`. Verify consistency with active assumptions. Use EXACT terminology — flag any new terms not in assumptions or product spec.
 6. **Open questions**: List unresolved questions explicitly in the revision log.

@@ -1,7 +1,7 @@
 # Web Empty, Error, and Edge States
 
 ## Purpose
-Define the design of the states that aren't the happy path: empty states (with their distinct origins), errors (recoverable, irrecoverable, permission, maintenance, offline), 404 / 500 / 403 / maintenance pages as brand moments, recovery patterns, retry semantics, and the message voice that distinguishes a calm product from a frustrating one. This is the surface where vibes-coded LLM output is most consistently bad — generic "No data found 🤷" with stock illustrations, "Something went wrong" with no recovery path, 404s that send the user back to the homepage with no context. Apple-quality empty and error states are designed deliberately, treated as brand moments, and follow distinct shapes per origin. See `team/ui-ux/skills/web-design-system.md` for the tokens these states consume. See `team/ui-ux/skills/web-content-hierarchy.md` for the content discipline applied to these states (one CTA, one sentence, restraint). See `team/ui-ux/skills/web-interaction-patterns.md` for the toast / banner / inline-message patterns that surface transient errors. See `team/ui-ux/skills/web-data-display.md` for table-specific empty states (a major use site). See `team/ui-ux/skills/web-onboarding-flows.md` for empty states that overlap with first-run experience. See `team/developer/skills/web-observability.md` for the implementation-side error-envelope and `error.tsx` mechanics. Target: **product UI on web — every screen has these states, and the design owes them as much care as the content state**.
+Define the design of the states that aren't the happy path: empty states (with their distinct origins), errors (recoverable, irrecoverable, permission, maintenance, offline), 404 / 500 / 403 / maintenance pages as brand moments, recovery patterns, retry semantics, and the message voice that distinguishes a calm product from a frustrating one. This is the surface where vibes-coded LLM output is most consistently bad — generic "No data found 🤷" with stock illustrations, "Something went wrong" with no recovery path, 404s that send the user back to the homepage with no context. Apple-quality empty and error states are designed deliberately, treated as brand moments, and follow distinct shapes per origin. See the `web-design-system` skill for the tokens these states consume. See the `web-content-hierarchy` skill for the content discipline applied to these states (one CTA, one sentence, restraint). See the `web-interaction-patterns` skill for the toast / banner / inline-message patterns that surface transient errors. See the `web-data-display` skill for table-specific empty states (a major use site). See the `web-onboarding-flows` skill for empty states that overlap with first-run experience. See the `web-observability` skill for the implementation-side error-envelope and `error.tsx` mechanics. Target: **product UI on web — every screen has these states, and the design owes them as much care as the content state**.
 
 ## The Anchor: Empty Is Not "Wrong"
 
@@ -93,7 +93,7 @@ Errors break into categories by recoverability and severity. Each maps to a spec
 
 ### Recovery Pattern Per Category
 
-**Validation errors** live in the form. See `team/ui-ux/skills/web-form-patterns.md`. The summary: error message below the field, in `text-caption text-danger`, specific and actionable, never "Invalid input."
+**Validation errors** live in the form. See the `web-form-patterns` skill. The summary: error message below the field, in `text-caption text-danger`, specific and actionable, never "Invalid input."
 
 **Recoverable transient errors** (the user just clicked something and it briefly failed):
 - Inline within the failing component if the rest of the screen is fine.
@@ -114,7 +114,7 @@ Errors break into categories by recoverability and severity. Each maps to a spec
 
 **Offline**: `navigator.onLine` is a coarse hint — it reports network-interface state, not internet reachability. It returns `true` on captive-portal hotel WiFi, on local-network-but-no-internet, and during intermittent connectivity. Designing a banner that flips on `navigator.onLine` alone produces a banner that flickers on captive portals and stays "online" when the user can't actually reach the server.
 
-The Apple-bar pattern: pair `navigator.onLine` (instant signal) with **a periodic fetch heartbeat to a known endpoint** (truth signal) and a Service Worker that intercepts requests and surfaces network failures. Show the offline banner only when the heartbeat fails *or* `navigator.onLine` is false — and only after a brief debounce (1–2s) so a single packet drop doesn't trigger the UI. Restore: hide the banner when the heartbeat recovers (not just when `navigator.onLine` flips). Implementation lives in `team/developer/skills/web-observability.md`; the design intent (banner reflects *real* connectivity, not interface state) is set here.
+The Apple-bar pattern: pair `navigator.onLine` (instant signal) with **a periodic fetch heartbeat to a known endpoint** (truth signal) and a Service Worker that intercepts requests and surfaces network failures. Show the offline banner only when the heartbeat fails *or* `navigator.onLine` is false — and only after a brief debounce (1–2s) so a single packet drop doesn't trigger the UI. Restore: hide the banner when the heartbeat recovers (not just when `navigator.onLine` flips). Implementation lives in the `web-observability` skill; the design intent (banner reflects *real* connectivity, not interface state) is set here.
 
 ### Error Message Voice
 
@@ -231,7 +231,7 @@ Don't use a spinner on an empty state. A spinner says "we're working on it"; an 
 
 An empty/error state design produces:
 
-1. **Per-screen empty/error coverage** in the screen spec (`team/ui-ux/skills/web-screen-specification.md` → States section): which empty states apply, copy or copy placeholder, CTA, illustration treatment.
+1. **Per-screen empty/error coverage** in the screen spec (the `web-screen-specification` skill → States section): which empty states apply, copy or copy placeholder, CTA, illustration treatment.
 2. **App-shell error pages** at `/app/not-found.tsx`, `/app/error.tsx`, `/app/maintenance/page.tsx`, `/app/offline/page.tsx` (or equivalent) — each gets its own short spec covering layout, copy, primary CTA, and (where relevant) error-reference display.
 3. **Voice rules for error messages** in `knowledge-base/brand-voice-guide.md` if not already present (Content agent owns; UI/UX provides the structural rules).
 

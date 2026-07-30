@@ -1,7 +1,7 @@
 # SEO Guidelines
 
 ## Purpose
-Define SEO standards for web content. See `team/content/skills/app-store-listing.md` for App Store Optimization (ASO). See `team/content/skills/content-calendar.md` for content strategy and publishing cadence. See `knowledge-base/brand-guidelines.md` for voice consistency across SEO content.
+Define SEO standards for web content. See the `app-store-listing` skill for App Store Optimization (ASO). See the `content-calendar` skill for content strategy and publishing cadence. See `knowledge-base/brand-guidelines.md` for voice consistency across SEO content.
 
 ## SEO Strategy
 

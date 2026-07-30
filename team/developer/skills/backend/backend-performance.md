@@ -1,7 +1,7 @@
 # Backend Performance
 
 ## Purpose
-Performance measurement and optimization patterns for the Supabase backend. See `team/developer/skills/backend-supabase-database.md` for index syntax and query patterns. See `team/developer/skills/backend-supabase-edge-functions.md` for cold start context. See `team/developer/skills/backend-supabase-storage.md` for CDN caching configuration. See `knowledge-base/architecture.md` Section 7 for the 5-second Edge Function budget and 50KB payload limit.
+Performance measurement and optimization patterns for the Supabase backend. See the `backend-supabase-database` skill for index syntax and query patterns. See the `backend-supabase-edge-functions` skill for cold start context. See the `backend-supabase-storage` skill for CDN caching configuration. See `knowledge-base/architecture.md` Section 7 for the 5-second Edge Function budget and 50KB payload limit.
 
 ## Query Optimization
 - **EXPLAIN ANALYZE**: Run `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)` on every new query during development. Look for: sequential scans on large tables (add index), nested loop joins on large result sets (consider hash join), high buffer reads (cache miss).
@@ -26,7 +26,7 @@ Performance measurement and optimization patterns for the Supabase backend. See 
 
 ## Caching Strategies
 - **Edge Function responses**: No built-in server-side caching for Edge Functions. The iOS client caches the latest routine response locally -- this is the primary cache layer.
-- **Storage CDN**: Supabase Storage serves assets through a CDN with automatic edge caching. Set appropriate `Cache-Control` headers (see `team/developer/skills/backend-supabase-storage.md`).
+- **Storage CDN**: Supabase Storage serves assets through a CDN with automatic edge caching. Set appropriate `Cache-Control` headers (see the `backend-supabase-storage` skill).
 - **Database-level caching**: PostgreSQL has a built-in buffer cache. Frequently-accessed rows are cached in memory automatically. No manual configuration needed for MVP scale.
 - **Materialized views**: For expensive read-heavy aggregations (e.g., weekly workout summary), consider PostgreSQL materialized views that refresh on schedule. Defer until query performance becomes an issue -- premature optimization for MVP.
 

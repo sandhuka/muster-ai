@@ -1,7 +1,7 @@
 # Web Wireframe Methodology
 
 ## Purpose
-Define the wireframe format and production process for web screens: text-based ASCII layouts (version-controllable, reviewable, diffable), the two-viewport rule (mobile + one desktop), page-chrome notation, scroll-behavior annotation, state coverage, and the discipline that separates a wireframe from a finished spec. A wireframe is the spatial expression of a hierarchy decision — it is *never* the first artifact for a screen. See `team/ui-ux/skills/web-content-hierarchy.md` for the hierarchy exercise that must precede wireframing. See `team/ui-ux/skills/web-screen-specification.md` for the full screen spec that wraps a wireframe with annotations, data sources, states, and accessibility. See `team/ui-ux/skills/web-design-system.md` for the tokens wireframe annotations reference. See `team/ui-ux/skills/web-responsive-patterns.md` for the responsive primitives the layouts assume. Target: **product screens for web (Next.js App Router, React 19+), reviewable in pull requests, handed off to the Developer agent**.
+Define the wireframe format and production process for web screens: text-based ASCII layouts (version-controllable, reviewable, diffable), the two-viewport rule (mobile + one desktop), page-chrome notation, scroll-behavior annotation, state coverage, and the discipline that separates a wireframe from a finished spec. A wireframe is the spatial expression of a hierarchy decision — it is *never* the first artifact for a screen. See the `web-content-hierarchy` skill for the hierarchy exercise that must precede wireframing. See the `web-screen-specification` skill for the full screen spec that wraps a wireframe with annotations, data sources, states, and accessibility. See the `web-design-system` skill for the tokens wireframe annotations reference. See the `web-responsive-patterns` skill for the responsive primitives the layouts assume. Target: **product screens for web (Next.js App Router, React 19+), reviewable in pull requests, handed off to the Developer agent**.
 
 ## The Anchor: Monospace Forces Hierarchy Clarity
 
@@ -68,7 +68,7 @@ A flat hierarchy looks like:
 └────────────────────────────────┘
 ```
 
-The flat-hierarchy wireframe is the visible failure: nothing is primary, eight cards compete equally, two banners compete with the cards, no element answers "what should the user do?" The fix is upstream — the hierarchy exercise (`team/ui-ux/skills/web-content-hierarchy.md`) wasn't done. Demote six cards, kill one banner, promote one card to a hero.
+The flat-hierarchy wireframe is the visible failure: nothing is primary, eight cards compete equally, two banners compete with the cards, no element answers "what should the user do?" The fix is upstream — the hierarchy exercise (the `web-content-hierarchy` skill) wasn't done. Demote six cards, kill one banner, promote one card to a hero.
 
 A decorated wireframe looks like:
 
@@ -91,7 +91,7 @@ Two heroes is no hero. Decoration (`✨`, `★`, `💎`, double-line borders) co
 
 Three preconditions, in order. Skipping any of them produces a wireframe that has to be redone.
 
-1. **Hierarchy decided.** The output of `team/ui-ux/skills/web-content-hierarchy.md` — primary, secondary, tertiary, hidden — exists for the screen. The wireframe expresses this ranking spatially.
+1. **Hierarchy decided.** The output of the `web-content-hierarchy` skill — primary, secondary, tertiary, hidden — exists for the screen. The wireframe expresses this ranking spatially.
 2. **Page-chrome decided.** Whether the screen has a top nav, sidebar, footer, or none. This is page-shell territory, decided once per app surface (marketing pages, app pages, onboarding) — not per screen.
 3. **Critical-viewport set decided.** For most product screens, this is two viewports: 375px (smallest target — iPhone SE / 11) and 1280px (standard desktop). Onboarding-only or marketing-only screens may differ. Document the set; don't wireframe four sizes by default.
 
@@ -230,7 +230,7 @@ Page chrome — the parts of the screen that aren't the screen-specific content 
 | **Sidebar** | Fixed or scrolling with content? Collapsible? At which breakpoint does it appear? Width? |
 | **Footer** | Always present or only on marketing pages? Sticky-to-bottom on short pages? Multi-column on desktop? |
 | **Bottom nav (mobile)** | Mutually exclusive with top nav for primary navigation? Visible on which routes (often hidden during onboarding and active sessions)? |
-| **Modals / sheets** | Phone treatment is bottom sheet; desktop is centered dialog. See `team/ui-ux/skills/web-interaction-patterns.md`. |
+| **Modals / sheets** | Phone treatment is bottom sheet; desktop is centered dialog. See the `web-interaction-patterns` skill. |
 
 Document the chrome decisions in the spec's Navigation Context section (template in `web-screen-specification.md`), not redrawn in every wireframe. The wireframe just shows the chrome's spatial relationship to the content for orientation.
 

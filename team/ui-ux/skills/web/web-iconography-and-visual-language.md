@@ -1,7 +1,7 @@
 # Web Iconography and Visual Language
 
 ## Purpose
-Define how to design the product's visual language: icon library choice (one library, owned), icon size and stroke-weight scale, optical alignment with type, icon-only button rules, illustration system (when to commission, when to avoid entirely), photography treatment, OG / social card design, favicon system, and the installable-PWA app icon. iOS gets a coherent visual language for free via SF Symbols + the HIG; web has to author the system. The vibes-coded default is to mix three icon libraries, sprinkle stock illustrations from undraw.co, slap a generic favicon together, and call it design — and the result is a product that looks like every other vibes-coded SaaS. Apple-quality web visual language is an authored system, with the same restraint and discipline as the design-system tokens. See `team/ui-ux/skills/web-design-system.md` for the tokens (color, type, spacing) the visual language consumes; iconography is parallel — its own system, its own tokens (size scale, stroke weight). See `team/ui-ux/skills/web-content-hierarchy.md` for the four-lever framing iconography supports (icons should never be load-bearing for hierarchy). See `team/ui-ux/skills/web-accessibility.md` for the icon-as-text-replacement a11y rules (`aria-label`, `aria-hidden`, decorative-vs-meaningful distinction). See `team/ui-ux/skills/web-marketing-and-conversion-pages.md` for OG card design as part of marketing-page craft. See `team/ui-ux/skills/web-localization-and-i18n.md` for icon mirroring in RTL (paired directional siblings, not CSS-flip) and cultural icon meaning. See `team/ui-ux/skills/web-empty-error-and-edge-states.md` for the illustration policy in empty states (which references this skill's "no stock illustrations" rule). See `team/ui-ux/skills/web-onboarding-flows.md` for onboarding's illustration policy (same source-of-truth — this skill). See `team/ui-ux/skills/web-interaction-patterns.md` for the View Transitions API mechanism that signature transitions are built on. Target: **product UI on web — the icons, illustrations, photography, OG cards, favicons, and PWA app icons that constitute the visual language**.
+Define how to design the product's visual language: icon library choice (one library, owned), icon size and stroke-weight scale, optical alignment with type, icon-only button rules, illustration system (when to commission, when to avoid entirely), photography treatment, OG / social card design, favicon system, and the installable-PWA app icon. iOS gets a coherent visual language for free via SF Symbols + the HIG; web has to author the system. The vibes-coded default is to mix three icon libraries, sprinkle stock illustrations from undraw.co, slap a generic favicon together, and call it design — and the result is a product that looks like every other vibes-coded SaaS. Apple-quality web visual language is an authored system, with the same restraint and discipline as the design-system tokens. See the `web-design-system` skill for the tokens (color, type, spacing) the visual language consumes; iconography is parallel — its own system, its own tokens (size scale, stroke weight). See the `web-content-hierarchy` skill for the four-lever framing iconography supports (icons should never be load-bearing for hierarchy). See UI/UX's `web-accessibility` skill for the icon-as-text-replacement a11y rules (`aria-label`, `aria-hidden`, decorative-vs-meaningful distinction). See the `web-marketing-and-conversion-pages` skill for OG card design as part of marketing-page craft. See the `web-localization-and-i18n` skill for icon mirroring in RTL (paired directional siblings, not CSS-flip) and cultural icon meaning. See the `web-empty-error-and-edge-states` skill for the illustration policy in empty states (which references this skill's "no stock illustrations" rule). See the `web-onboarding-flows` skill for onboarding's illustration policy (same source-of-truth — this skill). See the `web-interaction-patterns` skill for the View Transitions API mechanism that signature transitions are built on. Target: **product UI on web — the icons, illustrations, photography, OG cards, favicons, and PWA app icons that constitute the visual language**.
 
 ## Brand Mark vs. Functional Icon: A Distinction That Matters
 
@@ -14,7 +14,7 @@ Two categories of visual element are easy to conflate but follow different rules
 | Color | Brand color, often non-token (the brand color is the brand) | `currentColor` from surrounding text |
 | Dark mode | Designed twice — light variant + dark variant; never tinted | Token-driven; works in both themes via inheritance |
 | Motion | Signature; carries brand personality (logo reveal, app-icon tap bounce) | Functional only (hover state, loading spinner) |
-| Mirroring (RTL) | Never mirrored (logos are not directional) | Swap to directional sibling per `team/ui-ux/skills/web-localization-and-i18n.md` |
+| Mirroring (RTL) | Never mirrored (logos are not directional) | Swap to directional sibling per the `web-localization-and-i18n` skill |
 | Optical alignment | Sits on its own canvas, doesn't align to type baseline | Aligns to type baseline (see Optical Alignment below) |
 
 The rest of this skill addresses both — sections on functional iconography (size scale, optical alignment, icon-only buttons, library choice), then sections on brand mark expression (logo in dark mode, brand expression in motion, signature transitions, app icon, PWA splash). Don't apply functional-icon rules to brand marks or vice versa.
@@ -59,7 +59,7 @@ The choice is mostly stylistic; the discipline is in committing. Pick one. Don't
 | **24px** | Standalone icon buttons, primary nav, prominent actions |
 | **32px** | Empty-state visuals, marketing-section accents, large action targets |
 
-These are the *visual* sizes; the touch-target hit area is always 44×44 minimum on touch (see `team/ui-ux/skills/web-accessibility.md`).
+These are the *visual* sizes; the touch-target hit area is always 44×44 minimum on touch (see UI/UX's `web-accessibility` skill).
 
 ### Optical Alignment
 
@@ -93,7 +93,7 @@ Every icon-only button has an `aria-label` describing the action. The label is t
 </button>
 ```
 
-Decorative icons (next to a text label) are `aria-hidden="true"` — the surrounding text already announces the action; the icon adds no information for SR users. See `team/ui-ux/skills/web-accessibility.md` → aria-label-bombing for what *not* to do.
+Decorative icons (next to a text label) are `aria-hidden="true"` — the surrounding text already announces the action; the icon adds no information for SR users. See UI/UX's `web-accessibility` skill → aria-label-bombing for what *not* to do.
 
 ## The Illustration System (or the Decision Not to Have One)
 
@@ -129,7 +129,7 @@ Most product UI doesn't use photography. When it does (marketing pages, content 
 - **Authentic over staged.** Real customers in real spaces beat stock photography by every measure.
 - **Diverse representation as a default**, not an afterthought. The set of photos in a product communicates who the product is for.
 - **No "diverse team shaking hands" stock.** This category of stock is so ubiquitous that it signals "we needed photos and didn't think about it."
-- **Avoid hand-gesture imagery for cross-cultural products** (see `team/ui-ux/skills/web-localization-and-i18n.md` → Cultural Meaning).
+- **Avoid hand-gesture imagery for cross-cultural products** (see the `web-localization-and-i18n` skill → Cultural Meaning).
 
 ### Image Sourcing Discipline
 
@@ -142,7 +142,7 @@ For products with content imagery (e.g., blog posts, product cards, marketing la
 
 ## OG / Social Card Design
 
-Every shareable URL has a designed OG image. See `team/ui-ux/skills/web-marketing-and-conversion-pages.md` → OG / Social Card Design for the marketing-side craft. The visual-language angle:
+Every shareable URL has a designed OG image. See the `web-marketing-and-conversion-pages` skill → OG / Social Card Design for the marketing-side craft. The visual-language angle:
 
 - **Templated per route type** (landing-page template, blog-post template, product-page template). Custom per-page only for marquee pages.
 - **Brand-consistent**: same typography as the product, same colors, same restraint.
@@ -195,7 +195,7 @@ Apple's brand has signature motion that you can identify without seeing the logo
 Web brands have analogues: Linear's command palette has a specific feel; Vercel's logo wordmark has a signature reveal animation; Stripe's gradient hero has its own pacing; Notion's page-load fade is recognizable. The discipline:
 
 - **Define one or two signature motion moments** that are unmistakably brand-tied. The logo-reveal animation. The hero-section enter. The primary CTA's hover/active treatment. Don't sprinkle "branded motion" across the product; pick the moments and treat them with care.
-- **Use the design-system motion tokens** (`--spring-snappy`, `--spring-gentle`, `--ease-emphasized` from `team/ui-ux/skills/web-design-system.md`) — but the *choice* of which token to use where is brand-language work, not just pattern-matching to the closest token.
+- **Use the design-system motion tokens** (`--spring-snappy`, `--spring-gentle`, `--ease-emphasized` from the `web-design-system` skill) — but the *choice* of which token to use where is brand-language work, not just pattern-matching to the closest token.
 - **Reduced-motion alternatives are mandatory**, and the alternative still reads as on-brand (a static composition that captures the same mood as the motion). Disabling the motion shouldn't make the brand surface feel broken.
 - **Restraint is the brand**. A brand that reaches for motion at every opportunity reads as eager; one that reserves motion for the right moments reads as confident. Apple's UI has very little motion most of the time; the motion that exists is conspicuous.
 - **Motion-on-load is high-stakes territory.** First impression. A wordmark that animates in subtly on first paint, then sits still for the rest of the session, is a brand signature. A wordmark that animates on every navigation is a distraction.
@@ -204,7 +204,7 @@ The motion tokens live in design-system; the *brand decision* about which moment
 
 ## Signature Transitions
 
-Adjacent to brand expression in motion, signature transitions are the cross-surface continuity moments that make the product feel coherent. The View Transitions API (see `team/ui-ux/skills/web-interaction-patterns.md`) is the mechanism; the *brand-language layer above it* is what this section covers.
+Adjacent to brand expression in motion, signature transitions are the cross-surface continuity moments that make the product feel coherent. The View Transitions API (see the `web-interaction-patterns` skill) is the mechanism; the *brand-language layer above it* is what this section covers.
 
 - **Identify the transitions that matter**: a list-item expanding into a detail view; a hero image persisting across page navigation; a tab switch that morphs the active indicator. Pick a small set; don't sprinkle.
 - **Each signature transition has its own timing curve and feel**, anchored on the brand's motion vocabulary. Apple's "zoom in to detail" is distinct from Notion's "fade-and-slide to drawer" — both are correct for their respective brands.
@@ -237,7 +237,7 @@ Specify `background_color` and `theme_color` in the manifest in light and dark v
 
 ## Color Application in Visual Language
 
-Iconography and illustrations consume the design-system color tokens (see `team/ui-ux/skills/web-design-system.md`). Discipline:
+Iconography and illustrations consume the design-system color tokens (see the `web-design-system` skill). Discipline:
 
 - **Icons inherit `currentColor`**, taking their color from the surrounding text. Don't pre-color icons except for status indicators (success / warning / danger have their own tokens).
 - **Illustrations use the brand palette only**, not their own custom palette. An illustration with off-brand colors looks like a sticker pasted onto the product.
@@ -262,7 +262,7 @@ The product's typography (`text-display`, `text-h1`, etc., from the design syste
 | **Stock illustrations from undraw.co and clones.** People-shaped blobs with brand color recolor. | Instantly recognizable; signals "didn't invest in design"; off-brand by construction. | Either commission custom illustration (rare, expensive) or ship none. Strong typography is enough. |
 | **Stock people photography** ("diverse team shaking hands"). | Indistinguishable from a thousand other SaaS products; reads as inauthentic. | Real customer photos with permission, or no photos. |
 | **Icon-only buttons without `aria-label`.** Just an SVG inside a button. | SR users hear "button" with no description. The action is invisible. | Every icon-only button has `aria-label` describing the action; decorative icons inside labeled buttons are `aria-hidden="true"`. |
-| **`aria-label` on every element ("aria-label-bombing").** Decorative icons given elaborate labels; redundant labels on already-labeled elements. | Overrides visible text; SR users hear different words than sighted users; decorative icons announced as content. | See `team/ui-ux/skills/web-accessibility.md` → aria-label-bombing. Don't use `aria-label` when a visible label exists. |
+| **`aria-label` on every element ("aria-label-bombing").** Decorative icons given elaborate labels; redundant labels on already-labeled elements. | Overrides visible text; SR users hear different words than sighted users; decorative icons announced as content. | See UI/UX's `web-accessibility` skill → aria-label-bombing. Don't use `aria-label` when a visible label exists. |
 | **Color-only icon variation.** Info / warning / error distinguished only by color. | Color-blind users miss the distinction; forced-colors mode strips the color. | Pair color with shape: ⓘ for info, ⚠ for warning, ⊗ for error. |
 | **Custom icon for every screen.** Designer draws a new icon "because the closest one isn't quite right." | Library bloats; the product visual language fragments; new contributors don't know which icon to use. | Use the closest existing icon. Custom only when no existing icon fits and the concept recurs across the product. |
 | **Cute icons that sacrifice clarity.** A coffee-cup icon for "settings" because it's "fun." | Users don't recognize the action; discoverability suffers; localization is harder (the metaphor may not translate). | Familiar icons for actions; reserve playfulness for hero / marketing surfaces, not for functional UI. |
@@ -276,7 +276,7 @@ The product's typography (`text-display`, `text-h1`, etc., from the design syste
 | **AI-generated imagery on user-facing brand or marketing surfaces.** | Signals "vibes-coded"; Apple-quality bar rejects. Tells the audience the team didn't invest in the brand. | Commission real work, or ship none. Internal-only / data-viz placeholder is the only acceptable use. |
 | **Icon font (legacy `FontAwesome` `<i class="fa fa-...">` import).** | Slow to load (web font on critical path), inconsistent rendering, no inline color control, accessibility-hostile (icon font glyphs read aloud as control characters in some SR setups). | Inline SVG via icon-component library (Phosphor / Lucide / Heroicons). |
 | **Logo color drift across surfaces.** Brand uses `oklch(64% 0.18 250)` in product, `#1A73E8` in marketing email, slightly different on the favicon. | Coherence failure visible to anyone who sees more than one surface; signals lack of system. | Logo color is a token (or referenced from the design-system accent token). Ship the same value across product / marketing / email / favicon / OG card. |
-| **Flag emoji as language indicator** in the language switcher. 🇩🇪 Deutsch. | A flag is a country, not a language. See `team/ui-ux/skills/web-localization-and-i18n.md` → Language Switcher. | Language name in own script, no flag. |
+| **Flag emoji as language indicator** in the language switcher. 🇩🇪 Deutsch. | A flag is a country, not a language. See the `web-localization-and-i18n` skill → Language Switcher. | Language name in own script, no flag. |
 | **Mismatched PWA splash and first-paint backgrounds.** Manifest `background_color: white`; app shell renders with a dark theme on first paint. | Visible flash on launch; product feels broken in the first 200ms. | Match `background_color` in the manifest to the app's first-paint background; ship light + dark variants where supported. |
 | **Auto-inverting the logo for dark mode** (`filter: invert(1)`). | A navy logo becomes orange; a green logo becomes magenta. The brand's color is the brand. | Design dark-mode and light-mode logo variants explicitly; switch via `prefers-color-scheme` media. |
 

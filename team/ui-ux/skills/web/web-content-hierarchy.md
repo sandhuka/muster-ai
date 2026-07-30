@@ -1,7 +1,7 @@
 # Web Content Hierarchy
 
 ## Purpose
-Define how to decide what deserves emphasis on any web screen — *before* wireframing begins. Apple-quality UI is won or lost at the hierarchy level, not the component level. A screen with a beautiful component library and a flat hierarchy is mediocre; a screen with rough components and a clear hierarchy is strong. This skill produces a *hierarchy map* that becomes the input to the wireframe (`team/ui-ux/skills/web-wireframe-methodology.md`) and the spec (`team/ui-ux/skills/web-screen-specification.md`). See `team/ui-ux/skills/web-design-system.md` for the type, color, and spacing tokens hierarchy is expressed through. See `team/ui-ux/skills/web-responsive-patterns.md` for the layout primitives that preserve hierarchy across viewports. See `team/ui-ux/skills/web-accessibility.md` for the heading-semantics rules that make hierarchy machine-readable. Target: **product screens for web — dashboards, lists, detail views, settings, forms, and marketing pages**.
+Define how to decide what deserves emphasis on any web screen — *before* wireframing begins. Apple-quality UI is won or lost at the hierarchy level, not the component level. A screen with a beautiful component library and a flat hierarchy is mediocre; a screen with rough components and a clear hierarchy is strong. This skill produces a *hierarchy map* that becomes the input to the wireframe (the `web-wireframe-methodology` skill) and the spec (the `web-screen-specification` skill). See the `web-design-system` skill for the type, color, and spacing tokens hierarchy is expressed through. See the `web-responsive-patterns` skill for the layout primitives that preserve hierarchy across viewports. See UI/UX's `web-accessibility` skill for the heading-semantics rules that make hierarchy machine-readable. Target: **product screens for web — dashboards, lists, detail views, settings, forms, and marketing pages**.
 
 ## Decision Rule
 Before laying out any web screen, complete the hierarchy exercise below. **If you can't name in one sentence the single most important thing the user should see, the screen isn't ready to wireframe.** Skipping this step produces visually competent screens with no answer to "where do I look?" — which is the most common failure mode in product UI.
@@ -47,7 +47,7 @@ Eye-tracking research repeatedly shows web users scan content-heavy pages in an 
 ### 3. Hover and Focus as Interactive Hierarchy
 Web has a state iOS doesn't: hover. Hover is a hint that a thing is interactive — but it's only available on pointer devices and is invisible until the user investigates. The hierarchy implication: **the static state of an interactive element must already communicate "this is interactive."** Hover is a refinement, never a reveal — a card that looks like a static container until hovered hides primary-or-secondary status from the eye scanning the screen, breaking the hierarchy intent.
 
-The full rule (the touch-discovery and accessibility framings, the per-element treatment, the design-side enforcement) lives in `team/ui-ux/skills/web-accessibility.md` → Anti-Patterns → "Hover-only interactivity" and is cited in `team/ui-ux/skills/web-interaction-patterns.md`. This skill cares about the hierarchy consequence: the static state is the hierarchy signal. Hover is decoration on top of it.
+The full rule (the touch-discovery and accessibility framings, the per-element treatment, the design-side enforcement) lives in UI/UX's `web-accessibility` skill → Anti-Patterns → "Hover-only interactivity" and is cited in the `web-interaction-patterns` skill. This skill cares about the hierarchy consequence: the static state is the hierarchy signal. Hover is decoration on top of it.
 
 ### 4. Heading Semantics (`<h1>` through `<h6>`)
 Hierarchy is *also* machine-readable. Screen readers and search engines walk the heading tree. The discipline:
@@ -134,7 +134,7 @@ Rule: A landing page makes *one* promise and asks for *one* action. Sub-CTAs ("W
 | Tertiary | Progress indicator, back button | Edges of screen, low weight |
 | Hidden | Help text, "what is this?" links | Available but not pushed |
 
-Rule: Each onboarding screen does *one* thing. No sidebars, no related content, no "learn more" boxes. See `team/ui-ux/skills/web-onboarding-flows.md` for full onboarding methodology.
+Rule: Each onboarding screen does *one* thing. No sidebars, no related content, no "learn more" boxes. See the `web-onboarding-flows` skill for full onboarding methodology.
 
 ## Attention Budgeting
 

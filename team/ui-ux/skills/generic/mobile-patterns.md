@@ -1,7 +1,7 @@
 # Mobile Design Patterns
 
 ## Purpose
-Define generic mobile screen patterns and freemium UX conventions applicable to any product. This file covers reusable patterns only — for platform conventions (navigation, typography, layout), see `team/ui-ux/skills/ios-hig-reference.md`. For screen hierarchy decisions, see `team/ui-ux/skills/ios-content-hierarchy.md`. For onboarding flow design, see `team/ui-ux/skills/ios-onboarding-psychology.md`.
+Define generic mobile screen patterns and freemium UX conventions applicable to any product. This file covers reusable patterns only — for platform conventions (navigation, typography, layout), see the `ios-hig-reference` skill. For screen hierarchy decisions, see the `ios-content-hierarchy` skill. For onboarding flow design, see the `ios-onboarding-psychology` skill.
 
 ## Screen Types & Templates
 Quick reference for which layout pattern fits each screen category:

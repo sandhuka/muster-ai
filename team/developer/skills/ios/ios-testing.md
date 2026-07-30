@@ -1,7 +1,7 @@
 # iOS Testing
 
 ## Purpose
-Define testing standards using Swift Testing (primary) and XCTest (UI tests only) for iOS codebases. See `team/developer/skills/ios-code-standards.md` for naming conventions. See `team/developer/skills/ios-swiftdata.md` for in-memory persistence testing patterns. See `team/developer/skills/ios-modern-api.md` for concurrency rules relevant to async tests.
+Define testing standards using Swift Testing (primary) and XCTest (UI tests only) for iOS codebases. See the `ios-code-standards` skill for naming conventions. See the `ios-swiftdata` skill for in-memory persistence testing patterns. See the `ios-modern-api` skill for concurrency rules relevant to async tests.
 
 ## Running Tests — Quiet by Default, Targeted Then Full
 

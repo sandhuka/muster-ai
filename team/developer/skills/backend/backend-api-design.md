@@ -1,7 +1,7 @@
 # Backend API Design
 
 ## Purpose
-API contract design methodology between the iOS client and Supabase Edge Functions. This covers the contract patterns -- see `team/developer/skills/backend-supabase-edge-functions.md` for Edge Function implementation. See `team/developer/skills/ios-networking.md` for client-side contract consumption (Swift Codable structs). See `team/developer/skills/backend-typescript.md` for TypeScript type definitions. See `knowledge-base/architecture.md` Section 7 for the Edge Function contract specification (AlgorithmInput/RoutineResponse).
+API contract design methodology between the iOS client and Supabase Edge Functions. This covers the contract patterns -- see the `backend-supabase-edge-functions` skill for Edge Function implementation. See the `ios-networking` skill for client-side contract consumption (Swift Codable structs). See the `backend-typescript` skill for TypeScript type definitions. See `knowledge-base/architecture.md` Section 7 for the Edge Function contract specification (AlgorithmInput/RoutineResponse).
 
 ## Request/Response Contracts
 - **JSON everywhere**: All Edge Function communication uses JSON. No form data, no multipart, no query params for complex inputs.

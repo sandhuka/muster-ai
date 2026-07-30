@@ -1,7 +1,7 @@
 # Web Form Patterns
 
 ## Purpose
-Define how forms are designed on the web — layout, label position, validation strategy, submission, multi-step flow, autosave, conditional fields, file upload, date / time / range pickers, and the toggle / switch / checkbox decision that the Stack Overflow median routinely gets wrong. Forms are where the product asks the user to give it something; the friction the form imposes is the friction the user pays for the product. Apple-quality forms are rare on the web because most products treat forms as a UI dumping ground rather than a craft. See `team/ui-ux/skills/web-design-system.md` for the tokens forms consume (control padding, radius, focus ring, type scale). See `team/ui-ux/skills/web-interaction-patterns.md` for adjacent patterns (dropdowns, modals, popovers used by form controls). See `team/ui-ux/skills/web-accessibility.md` for the design-side a11y rules forms must enforce (label semantics, error association, autocomplete intent, contrast). See `team/ui-ux/skills/web-empty-error-and-edge-states.md` for validation-error voice and recovery patterns. See `team/ui-ux/skills/web-onboarding-flows.md` for the sign-up form rules (1–2 fields max, progressive profiling) — those override generic form rules during onboarding. See `team/developer/skills/web-modern-react.md` for the React 19+ mechanics (`useActionState`, `useFormStatus`, Server Actions); see `team/developer/skills/web-accessibility.md` for the implementation-side a11y mechanics (`useId`, `aria-invalid`, `aria-describedby`, `autoComplete`). Target: **product UI on web — any screen that collects input from the user (sign-up, settings, billing, content creation, search, multi-step flows)**.
+Define how forms are designed on the web — layout, label position, validation strategy, submission, multi-step flow, autosave, conditional fields, file upload, date / time / range pickers, and the toggle / switch / checkbox decision that the Stack Overflow median routinely gets wrong. Forms are where the product asks the user to give it something; the friction the form imposes is the friction the user pays for the product. Apple-quality forms are rare on the web because most products treat forms as a UI dumping ground rather than a craft. See the `web-design-system` skill for the tokens forms consume (control padding, radius, focus ring, type scale). See the `web-interaction-patterns` skill for adjacent patterns (dropdowns, modals, popovers used by form controls). See UI/UX's `web-accessibility` skill for the design-side a11y rules forms must enforce (label semantics, error association, autocomplete intent, contrast). See the `web-empty-error-and-edge-states` skill for validation-error voice and recovery patterns. See the `web-onboarding-flows` skill for the sign-up form rules (1–2 fields max, progressive profiling) — those override generic form rules during onboarding. See the `web-modern-react` skill for the React 19+ mechanics (`useActionState`, `useFormStatus`, Server Actions); see Developer's `web-accessibility` skill for the implementation-side a11y mechanics (`useId`, `aria-invalid`, `aria-describedby`, `autoComplete`). Target: **product UI on web — any screen that collects input from the user (sign-up, settings, billing, content creation, search, multi-step flows)**.
 
 ## The Anchor: One Field Per Decision
 
@@ -10,7 +10,7 @@ Every field is a question the product asks the user. Every question has a cost (
 Two implications:
 
 1. **Cut fields ruthlessly.** Every field that isn't load-bearing for the next product step is friction the user pays for nothing. Ask later, ask conditionally, or don't ask. Marketing wants this data; the user doesn't owe it.
-2. **The form's structure is a hierarchy decision.** Field order, grouping, conditional reveals — all are hierarchy choices. See `team/ui-ux/skills/web-content-hierarchy.md` for the parent discipline; this skill applies it inside forms.
+2. **The form's structure is a hierarchy decision.** Field order, grouping, conditional reveals — all are hierarchy choices. See the `web-content-hierarchy` skill for the parent discipline; this skill applies it inside forms.
 
 ## Layout
 
@@ -27,7 +27,7 @@ Default to single-column. Multi-column only when fields are *intrinsically group
 
 The test: would a user filling out the form linearly expect to land on these fields together? If yes, multi-column. If no, stack.
 
-Multi-column drops to single-column at small viewports — use container queries (`@container`) so the form adapts to its container, not the viewport. See `team/ui-ux/skills/web-responsive-patterns.md`.
+Multi-column drops to single-column at small viewports — use container queries (`@container`) so the form adapts to its container, not the viewport. See the `web-responsive-patterns` skill.
 
 ### Labels Above Fields, Always
 
@@ -84,7 +84,7 @@ The default for inline validation: **on blur.** Not on every keystroke, not only
 
 ### Error Message Discipline
 
-Apple-quality error messages are specific and actionable. See `team/ui-ux/skills/web-empty-error-and-edge-states.md` → Error Message Voice for the full discipline. Form-specific summary:
+Apple-quality error messages are specific and actionable. See the `web-empty-error-and-edge-states` skill → Error Message Voice for the full discipline. Form-specific summary:
 
 - **Specific**: name what's wrong. "Email must include an @." not "Invalid email."
 - **Actionable**: tell the user what to do. "Use 8 or more characters" not "Password too weak."
@@ -140,7 +140,7 @@ Routes give back-button support, deep-linking to a specific step (for resume / s
 - **Persist state across steps** server-side or in a session cookie. A user who refreshes mid-flow shouldn't lose what they've filled in.
 - **Final step's "Submit" creates the resource.** Earlier steps just collect; nothing is created until the final commit.
 
-See `team/ui-ux/skills/web-onboarding-flows.md` for sign-up-specific multi-step rules (which override these generic form rules during onboarding).
+See the `web-onboarding-flows` skill for sign-up-specific multi-step rules (which override these generic form rules during onboarding).
 
 ## Autosave
 
@@ -152,7 +152,7 @@ For settings, drafts, and long-form content where the user is incrementally edit
 - **On failure**: persistent indicator that save failed, with retry. Don't drop the user's edits silently.
 - **Conflict handling**: if another session updated the same data, show a clear warning and let the user decide which version wins. Don't silently overwrite.
 
-For autosave + recovery, see `team/ui-ux/skills/web-empty-error-and-edge-states.md` → Recovery Patterns → Autosave + Restore.
+For autosave + recovery, see the `web-empty-error-and-edge-states` skill → Recovery Patterns → Autosave + Restore.
 
 ## Conditional Fields
 
@@ -200,7 +200,7 @@ A combined drop-zone + click-to-browse + paste-to-upload component. All three tr
 
 ### Implementation Note
 
-Files should upload **directly to object storage via signed URLs**, not through the form action. The form submits with the resulting object key. See `team/developer/skills/web-security.md` → file-upload hardening. The design implication: the upload progresses *before* form submission, which is why per-file progress and the "uploads in flight" submit-disable matter.
+Files should upload **directly to object storage via signed URLs**, not through the form action. The form submits with the resulting object key. See the `web-security` skill → file-upload hardening. The design implication: the upload progresses *before* form submission, which is why per-file progress and the "uploads in flight" submit-disable matter.
 
 ## Date, Time, and Range Pickers
 
@@ -283,11 +283,11 @@ Decision rules:
 
 The most common mistake: picking the control from the data type — "it's a number, so it's a slider" — then shipping it into a flow where the value is entered forty times a day. Ask the frequency question first. A control that delights once is punishing on the fortieth repetition.
 
-Sliders are also the weakest numeric control for motor-impaired and screen-reader users: they demand a sustained drag, and the keyboard path (arrow keys stepping through the range) is only usable if `step` is set sensibly. When a slider is genuinely right, it still needs a keyboard-reachable equivalent — see `team/ui-ux/skills/web-accessibility.md`.
+Sliders are also the weakest numeric control for motor-impaired and screen-reader users: they demand a sustained drag, and the keyboard path (arrow keys stepping through the range) is only usable if `step` is set sensibly. When a slider is genuinely right, it still needs a keyboard-reachable equivalent — see UI/UX's `web-accessibility` skill.
 
 ## Password Fields
 
-If the product uses passwords (last-resort auth — see `team/ui-ux/skills/web-onboarding-flows.md`):
+If the product uses passwords (last-resort auth — see the `web-onboarding-flows` skill):
 
 - **Single password field, no "confirm password."** Confirm fields don't prevent typos; they prevent users. Allow show/hide instead so the user can verify.
 - **Show/hide button** (eye icon inside the field). Toggle accessible label ("Show password" / "Hide password"). Default to hidden.

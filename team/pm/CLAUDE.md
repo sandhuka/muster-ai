@@ -38,7 +38,7 @@ When a specialist returns a Task result starting with `HALT: agent-context null`
 Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 10: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
 
 ## Available Skills
-Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your current task:
+Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your current task. A skill cited by name — ``the `<name>` skill`` / ``<Role>'s `<name>` skill`` — resolves to its file with `bash muster/scripts/muster-find-skill.sh <name>` (in this repo: `bash scripts/muster-find-skill.sh <name>`).
 - **agent-management.md** — Protocol for updating agents' context files, dependency mirroring, batch updates
 - **context-cascading.md** — What each specialist agent needs to know, key references per agent, cascading principles
 - **decision-making.md** — Decision categorization (strategic/feature/tactical/operational), ICE prioritization, risk flags

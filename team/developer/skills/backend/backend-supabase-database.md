@@ -1,7 +1,7 @@
 # Supabase Database (PostgreSQL)
 
 ## Purpose
-SQL patterns and Supabase CLI mechanics for PostgreSQL schema work. This covers the syntax and tooling — see `team/developer/skills/backend-security.md` for RLS design decisions and `team/developer/skills/backend-data-modeling.md` for relational modeling methodology. See `knowledge-base/architecture.md` Section 5 for the target schema.
+SQL patterns and Supabase CLI mechanics for PostgreSQL schema work. This covers the syntax and tooling — see the `backend-security` skill for RLS design decisions and the `backend-data-modeling` skill for relational modeling methodology. See `knowledge-base/architecture.md` Section 5 for the target schema.
 
 ## Schema Design Rules
 - All tables use `uuid` primary keys (Supabase default: `gen_random_uuid()`)

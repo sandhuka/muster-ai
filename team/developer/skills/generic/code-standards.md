@@ -1,7 +1,7 @@
 # Code Standards
 
 ## Purpose
-Define platform-agnostic development standards: git workflow, PR process, and commit conventions. See platform-prefixed skill files (e.g., `team/developer/skills/ios-code-standards.md`) for language-specific naming, file organization, and tooling conventions.
+Define platform-agnostic development standards: git workflow, PR process, and commit conventions. See platform-prefixed skill files (e.g., the `ios-code-standards` skill) for language-specific naming, file organization, and tooling conventions.
 
 ## Git Workflow
 - Branch naming: `feature/short-description`, `fix/short-description`, `refactor/short-description`

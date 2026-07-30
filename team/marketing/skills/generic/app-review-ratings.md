@@ -1,7 +1,7 @@
 # App Review & Rating Strategy
 
 ## Purpose
-Systematic strategy for generating, managing, and leveraging App Store reviews. Rating is the single most important conversion factor on the listing — the difference between 4.3 and 4.7 stars means 20-30% higher conversion. Review volume feeds the ranking algorithm. Content agent owns review response copy (`team/content/skills/app-store-listing.md`). See `team/marketing/skills/aso-playbook.md` for how ratings feed ASO.
+Systematic strategy for generating, managing, and leveraging App Store reviews. Rating is the single most important conversion factor on the listing — the difference between 4.3 and 4.7 stars means 20-30% higher conversion. Review volume feeds the ranking algorithm. Content agent owns review response copy (the `app-store-listing` skill). See the `aso-playbook` skill for how ratings feed ASO.
 
 ## Targets
 
@@ -36,7 +36,7 @@ This protects rating while collecting all feedback.
 Crash, error, failed purchase, [skipped/abandoned session], immediately after upgrade prompt, within 24 hrs of a push notification.
 
 ## Review Response Strategy
-Content agent owns response copy and templates — see `team/content/skills/app-store-listing.md`. Marketing owns the operational framework:
+Content agent owns response copy and templates — see the `app-store-listing` skill. Marketing owns the operational framework:
 
 | Rating | Response Time | Marketing Action |
 |--------|-------------|-----------------|

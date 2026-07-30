@@ -142,6 +142,7 @@ say "${BOLD}Step 2:${RESET} .claude/settings.json pre-approvals"
 NEW_ENTRIES='[
   "Bash(bash muster/scripts/muster-housekeeping.sh)",
   "Bash(bash muster/scripts/muster-bind.sh:*)",
+  "Bash(bash muster/scripts/muster-find-skill.sh:*)",
   "Bash(echo \"${MUSTER_ROLE:-UNSET}\")"
 ]'
 
@@ -201,6 +202,7 @@ elif [ "$USER_KEYS" -gt 0 ]; then
         say ""
         say '  "Bash(bash muster/scripts/muster-housekeeping.sh)",'
         say '  "Bash(bash muster/scripts/muster-bind.sh:*)",'
+        say '  "Bash(bash muster/scripts/muster-find-skill.sh:*)",'
         say '  "Bash(echo \"${MUSTER_ROLE:-UNSET}\")"'
         say ""
         say "Paths are project-relative — these only match when CWD is inside a"

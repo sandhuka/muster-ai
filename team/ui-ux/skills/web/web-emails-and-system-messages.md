@@ -1,7 +1,7 @@
 # Web Emails and System Messages
 
 ## Purpose
-Define the design discipline for the messaging surfaces that live *outside* the product but inside the user's relationship with it: transactional emails (welcome / magic link / receipts / password reset / invitations / weekly digest), the rendering constraints email actually has (Outlook tables, dark-mode email rendering, image-blocked fallback, mobile-first email layout), and the cross-channel coordination between email, push notifications, and in-app messaging that prevents notification fatigue. Email is the most-overlooked product surface — vibes-coded LLM output produces emails that look broken in Outlook, fail in dark mode, stack three CTAs in a transactional notification, and contradict in-app messaging — and yet email is often the user's *most-frequent* product touchpoint outside the app itself. See `team/ui-ux/skills/web-design-system.md` for the tokens emails consume (with the constraint that most aren't usable directly — emails need inline values). See `team/ui-ux/skills/web-onboarding-flows.md` for the welcome-email + magic-link flows that sit at the edge of onboarding. See `team/ui-ux/skills/web-empty-error-and-edge-states.md` for the error-message voice that extends to email error notifications. See `team/ui-ux/skills/web-interaction-patterns.md` for the in-app toast / banner patterns email coordinates with. See `team/ui-ux/skills/web-marketing-and-conversion-pages.md` for marketing emails (which follow marketing voice and conversion discipline distinct from transactional). See `team/ui-ux/skills/web-localization-and-i18n.md` for locale-aware email rendering (date / number / currency formatting per recipient locale; subject-line plurals via ICU; sender name in the recipient's language). See `team/developer/skills/web-security.md` for the deliverability discipline (SPF, DKIM, DMARC, BIMI verification) that the design depends on. Target: **product transactional emails (sent in response to user action or system event) + cross-channel messaging coordination**.
+Define the design discipline for the messaging surfaces that live *outside* the product but inside the user's relationship with it: transactional emails (welcome / magic link / receipts / password reset / invitations / weekly digest), the rendering constraints email actually has (Outlook tables, dark-mode email rendering, image-blocked fallback, mobile-first email layout), and the cross-channel coordination between email, push notifications, and in-app messaging that prevents notification fatigue. Email is the most-overlooked product surface — vibes-coded LLM output produces emails that look broken in Outlook, fail in dark mode, stack three CTAs in a transactional notification, and contradict in-app messaging — and yet email is often the user's *most-frequent* product touchpoint outside the app itself. See the `web-design-system` skill for the tokens emails consume (with the constraint that most aren't usable directly — emails need inline values). See the `web-onboarding-flows` skill for the welcome-email + magic-link flows that sit at the edge of onboarding. See the `web-empty-error-and-edge-states` skill for the error-message voice that extends to email error notifications. See the `web-interaction-patterns` skill for the in-app toast / banner patterns email coordinates with. See the `web-marketing-and-conversion-pages` skill for marketing emails (which follow marketing voice and conversion discipline distinct from transactional). See the `web-localization-and-i18n` skill for locale-aware email rendering (date / number / currency formatting per recipient locale; subject-line plurals via ICU; sender name in the recipient's language). See the `web-security` skill for the deliverability discipline (SPF, DKIM, DMARC, BIMI verification) that the design depends on. Target: **product transactional emails (sent in response to user action or system event) + cross-channel messaging coordination**.
 
 ## The Anchor: Email Is a Product Surface, With Real Constraints
 
@@ -107,7 +107,7 @@ Sent in response to a sign-in attempt.
 - **Expiration noted**: "This link expires in 15 minutes."
 - **Security note**: "If you didn't request this, you can ignore this email."
 - **Plain text version is critical** — many security-conscious users disable HTML; the link must work in plain text.
-- **Send fast.** Magic-link emails delayed > 30 seconds produce abandoned sign-ins. Coordinate with Developer for transactional-email reliability (`team/developer/skills/web-observability.md`).
+- **Send fast.** Magic-link emails delayed > 30 seconds produce abandoned sign-ins. Coordinate with Developer for transactional-email reliability (the `web-observability` skill).
 
 ### Password Reset
 
@@ -156,7 +156,7 @@ Sent in response to product events the user opted into (mention, comment reply, 
 - **Subject line names the event**: "Sarah commented on Q2 Planning" not "New activity in your workspace."
 - **Body shows the content**: the comment text, the status that changed, the document edited. The user shouldn't have to click through just to see what happened.
 - **Single CTA back to context**: "Open in product."
-- **Reply-by-email** for messages: when supported, makes the email transactional in both directions. (Implementation in `team/developer/skills/web-security.md` → webhook signature verification.)
+- **Reply-by-email** for messages: when supported, makes the email transactional in both directions. (Implementation in the `web-security` skill → webhook signature verification.)
 
 ## Image-Blocked Fallback
 
@@ -210,7 +210,7 @@ Rules:
 
 - **The same event is one notification per channel, not one per channel simultaneously.** A mention sends a push *or* an email (typically push if the user is mobile-app-active, email if not). A digest collects the day's mentions if push wasn't sent.
 - **User controls per type.** Users can disable email digests independently of transactional emails; disable push for one event type and not another. Granular controls beat all-or-nothing.
-- **Pre-prompt for permissions.** Push permission asked only after the user has done something the push relates to (see `team/ui-ux/skills/web-onboarding-flows.md` → Permission Asks).
+- **Pre-prompt for permissions.** Push permission asked only after the user has done something the push relates to (see the `web-onboarding-flows` skill → Permission Asks).
 - **Quiet hours.** Don't push at 3 AM in the user's timezone. Most products respect a 9pm–8am quiet window; some compress to even narrower.
 - **Snooze and mute.** A user who's overwhelmed should be able to mute everything for a day or a week without losing the underlying notifications (catch up on return).
 
@@ -292,7 +292,7 @@ Both `mailto:` and `https:` variants are now table stakes (Gmail / Yahoo / Apple
 
 BIMI (Brand Indicators for Message Identification) shows your verified brand logo next to messages in the Gmail / Apple Mail / Yahoo Mail inbox list. Real estate that's invisible without setup; a brand impression on every send when configured. Requires:
 
-- **DMARC enforcement** (`p=quarantine` or `p=reject`) — Developer-side; coordinate with `team/developer/skills/web-security.md`.
+- **DMARC enforcement** (`p=quarantine` or `p=reject`) — Developer-side; coordinate with the `web-security` skill.
 - **A VMC (Verified Mark Certificate)** for Gmail / Apple Mail; SVG variant for Yahoo. Vendor: DigiCert / Entrust; cost ~$1–2k/year.
 - **An SVG logo file that meets the BIMI spec**: SVG Tiny PS profile, square (1:1 aspect), centered subject within safe area, no transparency. **The design contribution is producing this asset**; deliverability is Developer.
 
@@ -332,7 +332,7 @@ Worth doing for any product with a brand investment and meaningful inbox volume 
 
 An email + system-messaging design produces:
 
-1. **Per-email-type spec** in `knowledge-base/design-specs/emails/<type>.md` — one spec per transactional email type (welcome, magic-link, receipt, password-reset, invite, digest, etc.), following an email-adapted version of `team/ui-ux/skills/web-screen-specification.md` (subject + preheader instead of route context; HTML + plain-text versions; image-blocked fallback noted).
+1. **Per-email-type spec** in `knowledge-base/design-specs/emails/<type>.md` — one spec per transactional email type (welcome, magic-link, receipt, password-reset, invite, digest, etc.), following an email-adapted version of the `web-screen-specification` skill (subject + preheader instead of route context; HTML + plain-text versions; image-blocked fallback noted).
 2. **Cross-channel notification matrix** in `knowledge-base/design-specs/notifications.md` — table of event types × channels (email / push / in-app), with severity, default state (opt-in / opt-out), quiet-hours treatment, digest behavior.
 3. **Voice rules per channel** referenced from `knowledge-base/brand-voice-guide.md` (Content owns; UI/UX provides structural framing).
 4. **Email-template assets** committed to the repo (HTML files or react-email components).

@@ -1,7 +1,7 @@
 # iOS Testing Methodology
 
 ## Purpose
-Define iOS-specific testing patterns for reviewing developer test code and writing test plans. Covers the Swift Testing framework (primary), XCUITest (UI automation), SwiftData persistence testing, StoreKit 2 subscription testing, SwiftUI validation, performance profiling, and network mocking. See `team/qa/skills/test-strategy.md` for testing levels, coverage targets, and device matrix. See `team/developer/skills/ios-testing.md` for the developer's testing standards that QA validates against.
+Define iOS-specific testing patterns for reviewing developer test code and writing test plans. Covers the Swift Testing framework (primary), XCUITest (UI automation), SwiftData persistence testing, StoreKit 2 subscription testing, SwiftUI validation, performance profiling, and network mocking. See the `test-strategy` skill for testing levels, coverage targets, and device matrix. See Developer's `ios-testing` skill for the developer's testing standards that QA validates against.
 
 ## Framework Selection
 
@@ -141,7 +141,7 @@ Require screenshots at each step of critical flows (onboarding, subscription pur
 
 ## 3. SwiftData Testing
 
-Reference: `knowledge-base/architecture.md` Section 5 (data model), `team/developer/skills/ios-swiftdata.md`.
+Reference: `knowledge-base/architecture.md` Section 5 (data model), the `ios-swiftdata` skill.
 
 ### In-Memory ModelContainer
 All persistence tests must use in-memory containers -- no disk I/O, no cleanup, full isolation:
@@ -185,7 +185,7 @@ The `UserProfile.smartRoutineCountThisWeek` and `smartCounterWeekStart` fields a
 - Multiple sessions on the same day each increment the counter independently
 
 ### Schema Migration Testing
-Reference: `team/developer/skills/ios-swiftdata.md` (Schema Strategy).
+Reference: the `ios-swiftdata` skill (Schema Strategy).
 
 The initial versioned schema (e.g., `AppSchemaV1`) is the current schema. Test migration paths:
 - Create data with V1 schema, apply V(N) migration, verify all fields preserved
@@ -211,7 +211,7 @@ QA must flag any test accessing a `@MainActor` ViewModel without the `@MainActor
 
 ## 4. StoreKit 2 Testing
 
-Reference: `team/developer/skills/ios-app-store.md`, `knowledge-base/architecture.md` Section 9.
+Reference: the `ios-app-store` skill, `knowledge-base/architecture.md` Section 9.
 
 ### Xcode StoreKit Configuration Files
 Verify the project includes a `.storekit` configuration file in the test plan for local testing without Apple sandbox:
@@ -350,7 +350,7 @@ Test against the pre-fetch strategy defined in `architecture.md` Section 13:
 ## 7. Network Testing
 
 ### Protocol Mocking for Supabase Calls
-The developer's architecture uses `URLSessionProtocol` injection (`team/developer/skills/ios-testing.md`). QA verifies:
+The developer's architecture uses `URLSessionProtocol` injection (Developer's `ios-testing` skill). QA verifies:
 - All network-dependent tests use `URLSessionMock` -- never live network calls in unit tests
 - Mock responses use fixture JSON files stored in `TestFixtures/`
 - Fixture files match the actual Supabase response format (snake_case keys, ISO 8601 dates)
@@ -369,7 +369,7 @@ Verify tests cover these Supabase response patterns:
 | Rate limit | HTTP 429 with `Retry-After` header |
 
 ### Offline/Online Transition Testing
-Reference: `team/developer/skills/ios-networking.md` (Offline Handling), `architecture.md` Section 11.
+Reference: the `ios-networking` skill (Offline Handling), `architecture.md` Section 11.
 
 Test the `NWPathMonitor`-based network detection:
 - App transitions from online to offline mid-session: workout continues, mutations queue to `OfflineMutation` model
@@ -387,7 +387,7 @@ Reference: `architecture.md` Section 13 (exercise asset pipeline).
 - Animation pre-fetch: verify pre-fetch fires on routine generation, not on user tap
 
 ### Timeout and Retry Testing
-Verify timeout budgets from `team/developer/skills/ios-networking.md`:
+Verify timeout budgets from the `ios-networking` skill:
 - Edge Function calls: 15s timeout for algorithm, 30s for data migration
 - Asset loading: 10s timeout for thumbnails (per `architecture.md` Section 13)
 - Retry behavior: verify retry count limits, exponential backoff if implemented

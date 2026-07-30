@@ -1,7 +1,7 @@
 # Supabase Auth Configuration
 
 ## Purpose
-Server-side authentication configuration and patterns for Supabase Auth. See `team/developer/skills/ios-networking.md` for client-side auth integration (Swift SDK). See `team/developer/skills/backend-security.md` for auth-related security design. See `knowledge-base/architecture.md` Section 9 for the full authentication and subscription flow.
+Server-side authentication configuration and patterns for Supabase Auth. See the `ios-networking` skill for client-side auth integration (Swift SDK). See the `backend-security` skill for auth-related security design. See `knowledge-base/architecture.md` Section 9 for the full authentication and subscription flow.
 
 ## Auth Setup & Configuration
 - Provider: Email/password (only provider for MVP)

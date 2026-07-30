@@ -1,7 +1,7 @@
 # Web Best Practices (Modern React + Next.js)
 
 ## Purpose
-Define the foundational philosophy, stack defaults, environment management, modern API defaults, performance budgets, and quality gates for web development. This is the "if in doubt, this is the right call" file. See `team/developer/skills/web-architecture.md` for layered architecture and folder structure (the foundation this skill builds on). See `team/developer/skills/web-typescript-conventions.md` for TypeScript-specific rules. See `team/developer/skills/web-modern-react.md` for RSC and Server Action API patterns. See `team/developer/skills/web-state-management.md` for state discipline. See `team/developer/skills/web-accessibility.md` for accessibility implementation. Target: **Next.js 15+, React 19+, TypeScript 5.5+, Node.js 20+**.
+Define the foundational philosophy, stack defaults, environment management, modern API defaults, performance budgets, and quality gates for web development. This is the "if in doubt, this is the right call" file. See the `web-architecture` skill for layered architecture and folder structure (the foundation this skill builds on). See the `web-typescript-conventions` skill for TypeScript-specific rules. See the `web-modern-react` skill for RSC and Server Action API patterns. See the `web-state-management` skill for state discipline. See Developer's `web-accessibility` skill for accessibility implementation. Target: **Next.js 15+, React 19+, TypeScript 5.5+, Node.js 20+**.
 
 ## What "World-class Web" Means
 

@@ -1,7 +1,7 @@
 # Notification & Triggered Copy
 
 ## Purpose
-Define the methodology for writing short-form copy triggered by user actions or system events — in-app messages, algorithm rationale strings, paywall prompts, streak/insight messages, and push notifications (v1.1). See `team/content/skills/brand-voice.md` for rationale string templates and upgrade prompt patterns. See `team/content/skills/sensitive-health-copy.md` for missed-session and streak tone rules. See `knowledge-base/product-spec.md` Sections 5B and 5D for algorithm and session specs.
+Define the methodology for writing short-form copy triggered by user actions or system events — in-app messages, algorithm rationale strings, paywall prompts, streak/insight messages, and push notifications (v1.1). See the `brand-voice` skill for rationale string templates and upgrade prompt patterns. See the `sensitive-health-copy` skill for missed-session and streak tone rules. See `knowledge-base/product-spec.md` Sections 5B and 5D for algorithm and session specs.
 
 ## Copy Categories
 

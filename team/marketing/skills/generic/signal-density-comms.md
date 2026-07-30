@@ -1,12 +1,12 @@
 # Signal Density — External Communication Quality
 
 ## Purpose
-Quality bar for any external-facing artifact: pitch decks, cold emails, DMs, social posts, landing pages, READMEs, demo scripts, press pitches. Every word and pixel earns its place or gets cut. See `team/content/skills/generic/brand-voice.md` for in-product voice methodology (sister skill — different surface, same lineage). See `team/marketing/skills/generic/campaign-playbook.md` for campaign orchestration; this skill is the quality bar each campaign artifact must pass before launch. Authoritative voice and visual definitions live in `knowledge-base/brand-guidelines.md`.
+Quality bar for any external-facing artifact: pitch decks, cold emails, DMs, social posts, landing pages, READMEs, demo scripts, press pitches. Every word and pixel earns its place or gets cut. See the `brand-voice` skill for in-product voice methodology (sister skill — different surface, same lineage). See the `campaign-playbook` skill for campaign orchestration; this skill is the quality bar each campaign artifact must pass before launch. Authoritative voice and visual definitions live in `knowledge-base/brand-guidelines.md`.
 
 ## Scope
 External communication where the audience is *deciding* whether to lean in: a stranger reading a cold email, an attendee glancing at a slide, a senior engineer scanning a README. They give 5–10 seconds before deciding to keep reading. Density and clarity in that window determine whether the artifact lands or dies.
 
-This skill does NOT cover in-product UI copy (see `brand-voice.md`) or long-form editorial content (see `team/content/skills/generic/content-calendar.md`).
+This skill does NOT cover in-product UI copy (see `brand-voice.md`) or long-form editorial content (see the `content-calendar` skill).
 
 ## The Bar (Hard Rules)
 

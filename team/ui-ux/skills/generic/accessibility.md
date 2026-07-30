@@ -1,7 +1,7 @@
 # Accessibility Standards
 
 ## Purpose
-Ensure every screen meets WCAG 2.1 AA and iOS accessibility requirements. See `team/ui-ux/skills/design-system.md` for touch target and contrast standards in component specs. See `team/ui-ux/skills/mobile-patterns.md` for interaction patterns that need accessible alternatives.
+Ensure every screen meets WCAG 2.1 AA and iOS accessibility requirements. See the `design-system` skill for touch target and contrast standards in component specs. See the `mobile-patterns` skill for interaction patterns that need accessible alternatives.
 
 ## Minimum Requirements (WCAG 2.1 AA)
 - Color contrast: 4.5:1 for normal text, 3:1 for large text (18pt+) and UI components

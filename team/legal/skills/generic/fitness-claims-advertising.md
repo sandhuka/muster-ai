@@ -1,7 +1,7 @@
 # Fitness Claims & Advertising Compliance
 
 ## Purpose
-Provide a structured methodology for reviewing health and fitness claims in product copy, marketing, and App Store metadata. Primary consumers: Content agent (in-app copy, blog, help docs) and Marketing agent (ads, social, App Store listing). See `team/legal/skills/compliance.md` for FTC regulatory context. See `team/legal/skills/app-store-review.md` for Apple metadata claim rules.
+Provide a structured methodology for reviewing health and fitness claims in product copy, marketing, and App Store metadata. Primary consumers: Content agent (in-app copy, blog, help docs) and Marketing agent (ads, social, App Store listing). See the `compliance` skill for FTC regulatory context. See the `app-store-review` skill for Apple metadata claim rules.
 
 ## FTC Fitness Advertising Rules
 

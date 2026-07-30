@@ -1,7 +1,7 @@
 # Supabase Storage
 
 ## Purpose
-Storage bucket configuration, file organization, and CDN patterns for Supabase Storage. This covers the server-side setup — see `team/developer/skills/ios-best-practices.md` for client-side asset loading and cache patterns. See `team/developer/skills/backend-security.md` for storage access policy decisions. See `knowledge-base/architecture.md` Section 13 for the exercise asset pipeline specification.
+Storage bucket configuration, file organization, and CDN patterns for Supabase Storage. This covers the server-side setup — see the `ios-best-practices` skill for client-side asset loading and cache patterns. See the `backend-security` skill for storage access policy decisions. See `knowledge-base/architecture.md` Section 13 for the exercise asset pipeline specification.
 
 ## Bucket Configuration
 - **Public bucket** (`exercise-assets`): World-readable, no authentication required. Used for exercise thumbnails and animation loops. Both free and premium users access this bucket
@@ -46,7 +46,7 @@ Storage bucket configuration, file organization, and CDN patterns for Supabase S
   - `Cache-Control: public, max-age=86400` for assets that may be updated (safe default for MVP)
 - Supabase sets default cache headers — override via Storage API if needed post-MVP
 - Cache invalidation: re-uploading a file at the same path may not immediately purge CDN cache. For instant updates, use a new path (append version suffix or hash)
-- Client-side: iOS app caches downloaded assets locally (URLCache for thumbnails, Caches directory for animations). See `team/developer/skills/ios-best-practices.md`
+- Client-side: iOS app caches downloaded assets locally (URLCache for thumbnails, Caches directory for animations). See the `ios-best-practices` skill
 
 ## Principles
 1. **Public for content, private for user data**: Exercise assets are non-sensitive content — public bucket is correct. Never put user-generated data in a public bucket. If user uploads are added later, use a private bucket with RLS.

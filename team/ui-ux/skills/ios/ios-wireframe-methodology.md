@@ -1,7 +1,7 @@
 # iOS Wireframe Methodology
 
 ## Purpose
-Define how to produce high-fidelity text-based wireframes as an LLM — matching the clarity and intentionality of Apple's own design process. Every wireframe must communicate layout hierarchy, content priority, interaction behavior, and state variations so that a Developer agent can implement it without ambiguity. See `team/ui-ux/skills/ios-content-hierarchy.md` for the hierarchy exercise that must precede wireframing. See `team/ui-ux/skills/ios-screen-specification.md` for the full screen spec that wraps around wireframes. See `team/ui-ux/skills/ios-hig-reference.md` for platform conventions that wireframes must follow.
+Define how to produce high-fidelity text-based wireframes as an LLM — matching the clarity and intentionality of Apple's own design process. Every wireframe must communicate layout hierarchy, content priority, interaction behavior, and state variations so that a Developer agent can implement it without ambiguity. See the `ios-content-hierarchy` skill for the hierarchy exercise that must precede wireframing. See the `ios-screen-specification` skill for the full screen spec that wraps around wireframes. See the `ios-hig-reference` skill for platform conventions that wireframes must follow.
 
 ## Apple's Design Philosophy Applied to Wireframes
 Apple designs with three principles that every wireframe must reflect:
@@ -83,7 +83,7 @@ Every wireframe delivery must include:
 - [ ] **Media recognizability** — For any image, thumbnail, or media element: can the user identify what's depicted at the specified size? Consider the actual content (3D character poses, exercise previews, profile photos) — not just abstract placeholders. Compare against Apple's sizing for similar elements (Apple Music ~80pt album art, App Store ~80pt app icons, Fitness+ ~120pt workout previews). If the element is content-forward (the user needs to understand what's in the image, not just see that an image exists), err toward larger sizes. Calculate how many items remain visible in scroll containers at the larger size and verify the parent layout still fits on iPhone SE without pushing the primary CTA below the fold.
 
 ## Content-First Wireframing Process
-Before producing a wireframe, complete the hierarchy exercise in `team/ui-ux/skills/ios-content-hierarchy.md`. That skill defines how to rank content, assign hierarchy levels, and produce a hierarchy map. The hierarchy map is the input to wireframing — the wireframe is its spatial expression. Do not skip this step.
+Before producing a wireframe, complete the hierarchy exercise in the `ios-content-hierarchy` skill. That skill defines how to rank content, assign hierarchy levels, and produce a hierarchy map. The hierarchy map is the input to wireframing — the wireframe is its spatial expression. Do not skip this step.
 
 ## Sample Data Guidelines
 - Use realistic product content in wireframes: real item names, real entity names, realistic metrics (e.g., "Day 12 streak", "3 of 5 completed")

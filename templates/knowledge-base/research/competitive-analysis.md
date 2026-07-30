@@ -1,6 +1,6 @@
 # Competitive Analysis — [Product Name]
 <!-- Competitor teardowns, feature gaps, and positioning. -->
-<!-- Skill reference: team/research/skills/generic/competitive-analysis.md -->
+<!-- Skill reference: the `competitive-analysis` skill -->
 
 ## Current State
 <!-- Executive summary of competitive landscape. Update as research evolves. -->

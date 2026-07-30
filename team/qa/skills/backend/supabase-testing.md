@@ -1,7 +1,7 @@
 # Supabase Testing
 
 ## Purpose
-Define backend/Supabase-specific testing methodology for the product. Covers Auth, RLS, Edge Functions, database schema, Storage, data migration, and offline sync. See `team/qa/skills/test-strategy.md` for general testing levels and the two-tier test design that frames these backend tests.
+Define backend/Supabase-specific testing methodology for the product. Covers Auth, RLS, Edge Functions, database schema, Storage, data migration, and offline sync. See the `test-strategy` skill for general testing levels and the two-tier test design that frames these backend tests.
 
 ## Test Environment Setup
 

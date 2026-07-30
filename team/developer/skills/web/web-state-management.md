@@ -1,7 +1,7 @@
 # Web State Management
 
 ## Purpose
-Define the discipline for state in a modern web app: which kind of state goes where, the libraries that own each, the patterns that work, the patterns that break codebases. See `team/developer/skills/web-architecture.md` for layer boundaries (server state crosses through Server Actions and queries). See `team/developer/skills/web-modern-react.md` for `useState`/`useReducer`/`useEffect` rules. See `team/developer/skills/web-best-practices.md` for stack defaults. Target: **React 19+, Next.js 15+, TanStack Query 5+, Zustand 5+, react-hook-form 7+ with Zod resolver**.
+Define the discipline for state in a modern web app: which kind of state goes where, the libraries that own each, the patterns that work, the patterns that break codebases. See the `web-architecture` skill for layer boundaries (server state crosses through Server Actions and queries). See the `web-modern-react` skill for `useState`/`useReducer`/`useEffect` rules. See the `web-best-practices` skill for stack defaults. Target: **React 19+, Next.js 15+, TanStack Query 5+, Zustand 5+, react-hook-form 7+ with Zod resolver**.
 
 ## The Five Kinds of State
 

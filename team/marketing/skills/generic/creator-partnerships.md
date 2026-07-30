@@ -1,7 +1,7 @@
 # Creator & Influencer Partnerships
 
 ## Purpose
-Strategy for identifying, partnering with, and measuring creators in your category. Micro-influencers deliver 3-5x ROAS — one well-matched creator can drive 500-2K installs per post. See `team/marketing/skills/paid-acquisition.md` for repurposing creator content as Spark/Partnership Ads. Coordinate with Legal agent for FTC compliance and Content agent (`team/content/skills/brand-voice.md`) for brand consistency.
+Strategy for identifying, partnering with, and measuring creators in your category. Micro-influencers deliver 3-5x ROAS — one well-matched creator can drive 500-2K installs per post. See the `paid-acquisition` skill for repurposing creator content as Spark/Partnership Ads. Coordinate with Legal agent for FTC compliance and Content agent (the `brand-voice` skill) for brand consistency.
 
 ## Creator Tiers
 

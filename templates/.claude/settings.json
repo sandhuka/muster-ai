@@ -8,6 +8,7 @@
     "allow": [
       "Bash(bash muster/scripts/muster-housekeeping.sh)",
       "Bash(bash muster/scripts/muster-bind.sh:*)",
+      "Bash(bash muster/scripts/muster-find-skill.sh:*)",
       "Bash(echo \"${MUSTER_ROLE:-UNSET}\")"
     ]
   }

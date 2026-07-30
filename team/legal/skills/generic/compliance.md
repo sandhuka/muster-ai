@@ -1,7 +1,7 @@
 # Compliance Guidelines
 
 ## Purpose
-Identify regulatory requirements that apply to the product and provide compliance checklists for new features. See `team/legal/skills/terms-privacy.md` for how compliance requirements flow into legal documents. See `team/legal/skills/app-store-review.md` for Apple-specific review compliance. See `team/legal/skills/fitness-claims-advertising.md` for FTC claim review methodology.
+Identify regulatory requirements that apply to the product and provide compliance checklists for new features. See the `terms-privacy` skill for how compliance requirements flow into legal documents. See the `app-store-review` skill for Apple-specific review compliance. See the `fitness-claims-advertising` skill for FTC claim review methodology.
 
 ## Data Privacy Regulations
 
@@ -42,7 +42,7 @@ Identify regulatory requirements that apply to the product and provide complianc
 ### FTC — Truthful Advertising
 - All product claims must be truthful, substantiated, and not misleading
 - Endorsements must reflect honest opinions with material connection disclosures
-- Specific rules for fitness claims covered in `team/legal/skills/fitness-claims-advertising.md`
+- Specific rules for fitness claims covered in the `fitness-claims-advertising` skill
 
 ### HIPAA
 - Applies only if handling Protected Health Information (PHI) from covered entities

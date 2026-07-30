@@ -1,7 +1,7 @@
 # iOS Architecture & Platform Guidelines
 
 ## Purpose
-Define high-level architecture patterns, project structure, and Apple platform guidelines for iOS development. See `team/developer/skills/ios-mvvm.md` for the detailed MVVM pattern (ViewModel structure, state modeling, DI, navigation ownership). See `team/developer/skills/ios-code-standards.md` for Swift conventions, `team/developer/skills/ios-swiftui.md` for view patterns, and `team/developer/skills/ios-swiftdata.md` for persistence.
+Define high-level architecture patterns, project structure, and Apple platform guidelines for iOS development. See the `ios-mvvm` skill for the detailed MVVM pattern (ViewModel structure, state modeling, DI, navigation ownership). See the `ios-code-standards` skill for Swift conventions, the `ios-swiftui` skill for view patterns, and the `ios-swiftdata` skill for persistence.
 
 ## Architecture
 - SwiftUI-first for all new views
@@ -43,16 +43,16 @@ ProjectName/
 ## Hybrid Local/Cloud Architecture
 Patterns for apps that run fully local for free users and connect to a backend for premium:
 
-- **Deferred authentication**: Auth is a premium feature, not a prerequisite. The app must work completely without an account. See `team/developer/skills/ios-networking.md` for auth implementation
+- **Deferred authentication**: Auth is a premium feature, not a prerequisite. The app must work completely without an account. See the `ios-networking` skill for auth implementation
 - **Repository pattern with dual backends**: Define a protocol for each data domain. Provide a local implementation and a remote implementation. A coordinator switches between them based on subscription state. Free users never hit the network for repository, auth, or algorithm calls — but both tiers make network calls to Supabase Storage for exercise asset loading (public bucket, no auth required, cached locally after first load)
-- **One-shot data migration**: When a free user subscribes, migrate all local data to the backend in a single transaction. Keep local data as fallback. Mark migration as complete to prevent re-migration. Handle partial failure gracefully — retry or roll back, never leave data inconsistent. See `team/developer/skills/ios-swiftdata.md` for migration implementation
-- **Offline caching (premium)**: Cache latest data locally. Queue mutations when offline and sync on reconnect. Conflict resolution: server wins for plan data, client wins for user-generated data (user's device is source of truth for what they actually did). See `team/developer/skills/ios-networking.md` for sync patterns
+- **One-shot data migration**: When a free user subscribes, migrate all local data to the backend in a single transaction. Keep local data as fallback. Mark migration as complete to prevent re-migration. Handle partial failure gracefully — retry or roll back, never leave data inconsistent. See the `ios-swiftdata` skill for migration implementation
+- **Offline caching (premium)**: Cache latest data locally. Queue mutations when offline and sync on reconnect. Conflict resolution: server wins for plan data, client wins for user-generated data (user's device is source of truth for what they actually did). See the `ios-networking` skill for sync patterns
 - **Two-track algorithm**: Free algorithm runs on-device (subset of rules). Premium algorithm runs server-side. Both take the same input shape and return the same output shape — the difference is rule complexity, not API contract
 
 ## Asset Loading
 Patterns for exercise asset loading from Supabase Storage:
 
-- **Bundled metadata only**: Ship `exercises.json` (exercise catalog metadata) in the app bundle. Thumbnails and animations are served from Supabase Storage (public bucket, no auth required for any tier). See `team/developer/skills/backend-supabase-storage.md` for bucket configuration and URL construction
+- **Bundled metadata only**: Ship `exercises.json` (exercise catalog metadata) in the app bundle. Thumbnails and animations are served from Supabase Storage (public bucket, no auth required for any tier). See the `backend-supabase-storage` skill for bucket configuration and URL construction
 - **URL resolution**: `exercises.json` stores relative paths (e.g., `exercises/str-pushup-001/thumbnail.webp`). At initialization, resolve against `EnvironmentConfig` base URL to construct full Supabase Storage URLs
 - **Thumbnail loading**: Load thumbnails from Supabase Storage on demand. Cache via `URLCache`. Show placeholder silhouette while loading (10s timeout)
 - **Animation loading**: Animated WebP loops are larger — load on demand from Supabase Storage. Show static thumbnail immediately, crossfade to animation when loaded
@@ -139,9 +139,9 @@ enum AppEnvironment {
 }
 ```
 
-- **Debug** (Xcode run): Points to dev backend. Console logging, console analytics. See `team/developer/skills/ios-observability.md`
+- **Debug** (Xcode run): Points to dev backend. Console logging, console analytics. See the `ios-observability` skill
 - **Production** (Release build, TestFlight, App Store): Points to production backend. Vendor logging, vendor analytics
-- Feed `EnvironmentConfig.current` and `AppEnvironment.current` into the composition root (`AppContainer` in `team/developer/skills/ios-mvvm.md`) — they drive networking, observability, and any environment-specific behavior
+- Feed `EnvironmentConfig.current` and `AppEnvironment.current` into the composition root (`AppContainer` in the `ios-mvvm` skill) — they drive networking, observability, and any environment-specific behavior
 - `.xcconfig` files must be in `.gitignore` — commit only the `.xcconfig.template` with placeholder values
 - Never add a staging/QA environment "just in case" — add it when there's a real need
 
@@ -149,8 +149,8 @@ enum AppEnvironment {
 - Follow platform navigation patterns (NavigationStack, TabView)
 - Respect system dark mode / light mode via semantic colors
 - Use SF Symbols for iconography where possible
-- Avoid fixed frames — prefer flexible sizing for device and Dynamic Type compatibility. See `team/developer/skills/ios-modern-api.md` for `UIScreen.main.bounds` alternatives
-- See `team/developer/skills/ios-accessibility.md` for accessibility requirements (Dynamic Type, VoiceOver, Reduce Motion, color differentiation, tap targets)
+- Avoid fixed frames — prefer flexible sizing for device and Dynamic Type compatibility. See the `ios-modern-api` skill for `UIScreen.main.bounds` alternatives
+- See the `ios-accessibility` skill for accessibility requirements (Dynamic Type, VoiceOver, Reduce Motion, color differentiation, tap targets)
 
 ## Platform Integrations
 - Request only the specific data types and permissions you need

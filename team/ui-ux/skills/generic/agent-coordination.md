@@ -1,7 +1,7 @@
 # Agent Coordination Protocol
 
 ## Purpose
-Define how the UI/UX agent requests input from other agents, delivers specs to downstream agents, and tracks cross-agent dependencies. This ensures no design work is blocked by missing copy, unclear requirements, or ambiguous handoffs. See `team/ui-ux/skills/ios-screen-specification.md` for the full spec format used in Developer handoffs.
+Define how the UI/UX agent requests input from other agents, delivers specs to downstream agents, and tracks cross-agent dependencies. This ensures no design work is blocked by missing copy, unclear requirements, or ambiguous handoffs. See the `ios-screen-specification` skill for the full spec format used in Developer handoffs.
 
 ## Communication Channels
 All inter-agent communication happens through files in `knowledge-base/`:
@@ -42,7 +42,7 @@ Use the standard request format in `knowledge-base/agent-requests.md` (see the c
 ## How to Deliver Specs to Other Agents
 
 ### Developer Handoff Checklist
-Use the Spec Quality Checklist in `team/ui-ux/skills/ios-screen-specification.md` — it is the authoritative handoff checklist (10 items covering tokens, states, copy, components, accessibility, responsive, and open questions). Complete every item before creating a handoff entry.
+Use the Spec Quality Checklist in the `ios-screen-specification` skill — it is the authoritative handoff checklist (10 items covering tokens, states, copy, components, accessibility, responsive, and open questions). Complete every item before creating a handoff entry.
 
 ### Delivery File Location
 Place completed specs in `knowledge-base/design-specs/` with naming convention:
