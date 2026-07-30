@@ -25,7 +25,7 @@ Re-execute the role-picker mechanism from `muster/CLAUDE.md` "Role Binding" sect
      - Communicate → Content | Marketing
      - Validate → Research | Legal
 
-3. **JIT populate check** per step 3: if `.populated.agents.<picked-role>` is null, force-bind PM, run JIT populate per `team/pm/skills/generic/context-cascading.md`, then re-fire picker.
+3. **JIT populate check** per step 3: if `.populated.agents.<picked-role>` is null, force-bind PM, run JIT populate per `muster/team/pm/skills/generic/context-cascading.md`, then re-fire picker.
 
 4. **Bind step** per step 4:
    - Declare visibly: *"Re-binding to <Role> for this session."*

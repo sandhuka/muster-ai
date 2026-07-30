@@ -7,6 +7,10 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 T="$(mktemp -d)"; trap 'rm -rf "$T"' EXIT
 pass=0; fail=0
 
+sub(){ # portable in-place sed: BSD/GNU -i syntaxes differ; tmp-file form works on both
+  sed -e "$1" "$2" > "$2.tmp" && mv "$2.tmp" "$2"
+}
+
 check(){ # name expected_exit grep_substr
   local nm="$1" want="$2" sub="${3:-}"
   local out rc; out="$(cd "$T/m" && bash scripts/muster-lint-refs.sh 2>&1)"; rc=$?
@@ -51,46 +55,46 @@ check "ambiguous unqualified caught" 1 "is ambiguous"
 
 # --- 1. clean tree passes (qualify the citation) ---
 scaffold
-sed -i '' 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+sub 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
 check "clean tree passes" 0 "OK: skill citations"
 
 # --- 2. citation to nonexistent skill ---
 scaffold
-sed -i '' 's/the `shared-name` skill/the `ghost` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+sub 's/the `shared-name` skill/the `ghost` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
 check "dangling name-citation caught" 1 "no skill named 'ghost'"
 
 # --- 3. qualified citation naming a role that lacks the skill ---
 scaffold
-sed -i '' 's/the `shared-name` skill/QA'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+sub 's/the `shared-name` skill/QA'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
 check "wrong-role qualifier caught" 1 "has no skill named"
 
 # --- 4. path-style citation in a skill body ---
 scaffold
-sed -i '' 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+sub 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
 echo 'See `team/developer/skills/web/shared-name.md` for details.' >> "$T/m/team/ui-ux/skills/web/shared-name.md"
 check "path-style citation caught" 1 "path-style skill citation"
 
 # --- 5. skill on disk missing from index ---
 scaffold
-sed -i '' 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+sub 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
 touch "$T/m/team/developer/skills/ios/unlisted.md"
 check "unindexed skill caught" 1 "not listed in"
 
 # --- 6. index entry with no file on disk ---
 scaffold
-sed -i '' 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+sub 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
 echo '- **deleted-skill.md** — gone' >> "$T/m/team/developer/CLAUDE.md"
 check "dangling index entry caught" 1 "no such skill on disk"
 
 # --- 7. fenced code blocks don't self-trip ---
 scaffold
-sed -i '' 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+sub 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
 printf '```\nSee the `not-a-real-skill` skill inside a fence.\n```\n' >> "$T/m/team/developer/skills/ios/ios-mvvm.md"
 check "fenced examples skipped" 0 ""
 
 # --- 8. placeholder tokens skipped ---
 scaffold
-sed -i '' 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+sub 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
 echo 'Template: See the `<sibling>` skill for [related].' >> "$T/m/team/developer/skills/ios/ios-mvvm.md"
 check "placeholders skipped" 0 ""
 

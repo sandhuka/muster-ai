@@ -50,7 +50,10 @@ while IFS= read -r f; do
   awk '/^```/{inf=!inf; next} !inf' "$f" > "$TMP/body"
 
   # unqualified: the `<name>` skill   (skip placeholder tokens containing < > { } [ ])
-  grep -oE 'the \`[A-Za-z0-9._-]+\` skill' "$TMP/body" | sort -u | while IFS= read -r c; do
+  # NB: backtick is UNESCAPED in these patterns — GNU grep treats \` as its start-of-buffer
+  # anchor (never matches mid-line), while BSD grep treats it as a literal. Plain ` is literal
+  # on both. This exact divergence shipped once: green on macOS, dead check on Linux CI.
+  grep -oE 'the `[A-Za-z0-9._-]+` skill' "$TMP/body" | sort -u | while IFS= read -r c; do
     name="${c#the \`}"; name="${name%\` skill}"
     case "$name" in *'<'*|*'{'*|*'['*) continue ;; esac
     n="$(owners_of "$name" | grep -c . || true)"
@@ -111,10 +114,13 @@ for r in team/*/; do
   while IFS= read -r base; do
     if ! grep -qxF "$base" "$TMP/role_disk"; then
       # cross-role entries carry an explicit (`team/<other>/skills/...`) location — verify that instead
-      loc="$(grep -F "$base" "$brain" | grep -oE '\(\`(muster/)?team/[a-z-]+/skills/[a-z-]+/?\`\)' | head -1 | tr -d '()\`')"
+      loc="$(grep -F "$base" "$brain" | grep -oE '\(`(muster/)?team/[a-z-]+/skills/[a-z-]+/?`\)' | head -1 | tr -d '()`')"
       if [ -n "$loc" ]; then
         loc="${loc#muster/}"; loc="${loc%/}"
-        [ -f "$loc/$base" ] || fail "index parity: $brain lists $base at $loc/ but it is not there"
+        # case-exact listing comparison, never [ -e/-f ] (false-passes on case-insensitive macOS).
+        # grep -c, not -q: -q's early exit SIGPIPEs the upstream under pipefail.
+        [ "$(ls "$loc" 2>/dev/null | grep -cxF "$base")" -ge 1 ] \
+          || fail "index parity: $brain lists $base at $loc/ but it is not there"
       else
         fail "index parity: $brain lists $base but $role has no such skill on disk"
       fi

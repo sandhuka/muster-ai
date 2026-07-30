@@ -124,7 +124,7 @@ Research delivered: product-brief, market-landscape, competitive-analysis, user-
 
 ### 3.3 Run product evaluation
 
-Use the `product-evaluation` skill 6-dimension scoring rubric. Read all Research outputs. Produce GO / CONDITIONAL / NO-GO recommendation with explicit reasoning per dimension.
+Use the `product-evaluation` skill's 6-dimension scoring rubric. Read all Research outputs. Produce GO / CONDITIONAL / NO-GO recommendation with explicit reasoning per dimension.
 
 Present to founder. Founder decides — accept, push back on a dimension, or reject. Log the decision in `decision-log.md`.
 

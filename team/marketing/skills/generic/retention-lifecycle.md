@@ -68,7 +68,7 @@ Surface premium value at natural moments. Never interrupt the core experience.
 | After 1 week of use | "[Your accumulated data] unlocks [premium insight]" |
 | Hitting [free usage limit] | At the natural ceiling of your free tier |
 
-For upgrade prompt copy, see Content agent's the `subscription-copy` skill. Feature discovery should be progressive — introduce premium features gradually at moments where the user would benefit.
+For upgrade prompt copy, see Content's `subscription-copy` skill. Feature discovery should be progressive — introduce premium features gradually at moments where the user would benefit.
 
 ## Streak & Gamification Design
 
