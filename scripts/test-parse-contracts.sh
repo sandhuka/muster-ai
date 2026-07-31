@@ -59,6 +59,11 @@ for f in product-spec.md architecture.md foundational-assumptions.md brand-guide
   needfile "templates/knowledge-base/$f" "muster-lint-durability.sh durable-set scope"
 done
 
+D=templates/knowledge-base/decision-log.md
+need "$D" '**Impact**'          "muster-lint-decisions.sh field + role extraction"
+need "$D" '**Touched**'         "muster-lint-decisions.sh field + path checks"
+need "$D" '## Active Decisions' "decision-log structure (PM closeout archive boundary)"
+
 C=templates/CLAUDE.md
 need "$C" '<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->' "add-bootstrap-permissions.sh block replacement"
 need "$C" '<!-- END BOOTSTRAP -->'                    "add-bootstrap-permissions.sh block replacement"

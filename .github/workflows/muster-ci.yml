@@ -30,6 +30,9 @@ jobs:
       - name: Durability lint (Rule 15 — current truth only)
         run: bash scripts/test-lint-durability.sh
 
+      - name: Decision reconciliation (Rule 11 — Impact vs Touched)
+        run: bash scripts/test-lint-decisions.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 
