@@ -70,3 +70,9 @@ jobs:
 
       - name: Skill citations + index parity (live corpus)
         run: bash scripts/muster-lint-refs.sh
+
+      - name: Dependency mirroring (fixtures)
+        run: bash scripts/test-lint-deps.sh
+
+      - name: Dependency mirroring (live brain files)
+        run: bash scripts/muster-lint-deps.sh

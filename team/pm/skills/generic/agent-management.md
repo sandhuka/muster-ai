@@ -126,6 +126,6 @@ Done section: max 10 entries. The completing agent trims, but PM catches any tha
 ## Agent Management Principles
 - **Read before writing.** Always read the full target agent-context file before making changes. Agents may have added context to non-PM-managed sections (e.g., Agent-Specific Context) that creates dependencies you need to know about.
 - **Filter, don't dump.** The PM's job is to be a context translator, not a forwarder. If you find yourself copying entire sections from the knowledge base into an agent's file, stop — link to the source doc instead.
-- **Both sides of every dependency.** A dependency that only appears in one agent's file will cause coordination failures. Mirror every dependency on both sides, every time, without exception.
+- **Both sides of every dependency.** A dependency that only appears in one agent's file will cause coordination failures. After editing brain-file dependencies, run `bash muster/scripts/muster-lint-deps.sh` (in the framework repo: `bash scripts/muster-lint-deps.sh`) — it FAILs any missing mirror and prints the exact line to add.
 - **Cascade in dependency order.** Update upstream agents first so their outputs are available when downstream agents start work. A Developer who starts before UI/UX has delivered design specs will guess or block.
 - **Treat the Research agent differently.** The PM does not write to `knowledge-base/research/`. All Research interactions go through `change-log.md`. This boundary exists to prevent the PM from overwriting validated research with PM assumptions.
