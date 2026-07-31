@@ -489,7 +489,7 @@ Full procedure lives in `team/pm/skills/generic/greenfield-discovery.md` (5 user
 
 **User-facing nomenclature**: Stage 1: Idea share, Stage 2: Market research, Stage 3: Go/no-go decision, Stage 4: Draft review, Stage 5: Sprint 1 plan.
 
-**Entry detection**: priority-zero check reads `.populated` at session start. If `onboarded_at` is null AND `agents.pm` is null → first greenfield session, force-bind PM (skip picker), fire welcome via `greenfield-discovery.md`. After Stage 1.3 (idea captured), PM sets `agents.pm` timestamp; subsequent sessions hit the role picker normally.
+**Entry detection**: `muster-boot.sh` reads `.populated` at session start. If `onboarded_at` is null AND `agents.pm` is null → first greenfield session, force-bind PM (skip picker), fire welcome via `greenfield-discovery.md`. After Stage 1.3 (idea captured), PM sets `agents.pm` timestamp; subsequent sessions hit the role picker normally.
 
 **High-level flow**:
 1. Stage 1: Founder shares idea → PM seeds `knowledge-base/research/product-brief.md` Founder's Idea section, writes change-log entry (`status: needs-research`), queues Research step. Sets `agents.pm` timestamp.
@@ -519,7 +519,7 @@ Location: `knowledge-base/agent-context/.populated`. Tracks specialist populate 
 - `agents.pm` (greenfield-only signal): null at script init for greenfield. PM sets its own timestamp at Stage 1.3 of greenfield-discovery (after capturing the founder's idea). The transition `null → timestamp` flips routing from "greenfield first session, fire welcome" to "greenfield ongoing, skip welcome". For existing-project, the setup script sets `agents.pm` at init (PM is auto-engaged when adopting an existing codebase).
 - `lock`: held during in-flight populate; 15-min stale threshold.
 - Tracked in git (not gitignored — teammates pulling the repo need the state).
-- Priority-zero check reads at session start — see CLAUDE.md "Role Binding" → Priority-zero routing for the four routing paths.
+- `muster-boot.sh` reads it at session start and routes deterministically — route semantics documented in `architecture-and-design.md` (State & Config Files table); the model-facing contract is CLAUDE.md "Role Binding".
 
 #### `.muster-onboarding/` transient-file protocol
 Location: `knowledge-base/.muster-onboarding/`. Gitignored by default (brain-dump may contain sensitive content).

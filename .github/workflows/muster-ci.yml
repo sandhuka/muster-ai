@@ -15,6 +15,9 @@ jobs:
       - name: Driver fixture (autonomous loop end-to-end)
         run: bash scripts/test-sprint-driver.sh
 
+      - name: Session boot (routing + bind contract)
+        run: bash scripts/test-boot.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 

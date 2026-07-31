@@ -592,6 +592,7 @@ if ! state_has_step "gitignore_updated"; then
         ".claude/.muster-last-role"
         ".muster-sprint-logs/"
         "knowledge-base/.muster-bind-log"
+        "knowledge-base/.muster-boot-log"
     )
 
     touch .gitignore

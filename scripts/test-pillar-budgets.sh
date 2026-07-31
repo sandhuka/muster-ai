@@ -24,7 +24,7 @@ check_lines(){ # $1=file $2=line-budget — missing file is a hard fail (fail-cl
 }
 
 # --- always-read project surface (shipped templates) ---
-check_lines templates/CLAUDE.md 52
+check_lines templates/CLAUDE.md 40
 for f in templates/.claude/agents/*.md; do
   check_lines "$f" 51                       # largest bootloader (pm, 46) + 10%
 done

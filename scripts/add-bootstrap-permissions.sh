@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Muster — Enable scripted bootstrap (replaces inline bash commands with script calls)
 #
-# For existing v3 muster projects: updates CLAUDE.md bootstrap block to call
-# muster/scripts/muster-housekeeping.sh + muster/scripts/muster-bind.sh instead
-# of inlining those commands, and adds the matching pre-approval entries to
-# .claude/settings.json so they fire without permission prompts.
+# For existing muster projects: updates the CLAUDE.md bootstrap block to the current
+# template (one `muster/scripts/muster-boot.sh` call — the single routing authority),
+# and adds the matching pre-approval entries to .claude/settings.json so session
+# start fires without permission prompts.
 #
 # Settings.json handling (three cases):
 #   1. Project-level .claude/settings.json exists      → merge permissions in place
@@ -24,7 +24,7 @@
 #
 # Prerequisites:
 #   - Run from project root (where .claude/, knowledge-base/, muster/ live)
-#   - muster submodule updated (must contain muster-housekeeping.sh + muster-bind.sh)
+#   - muster submodule updated (must contain muster-boot.sh + muster-bind.sh)
 #   - jq installed (used for clean settings.json merge)
 
 set -euo pipefail
@@ -60,8 +60,8 @@ if [ ! -d ".claude" ] || [ ! -d "muster" ]; then
     exit 1
 fi
 
-if [ ! -f "muster/scripts/muster-housekeeping.sh" ] || [ ! -f "muster/scripts/muster-bind.sh" ]; then
-    err "muster/scripts/muster-housekeeping.sh or muster-bind.sh missing."
+if [ ! -f "muster/scripts/muster-boot.sh" ] || [ ! -f "muster/scripts/muster-bind.sh" ]; then
+    err "muster/scripts/muster-boot.sh or muster-bind.sh missing."
     err "Update the muster submodule first: cd muster && git pull && cd .."
     exit 1
 fi
@@ -140,10 +140,10 @@ say ""
 say "${BOLD}Step 2:${RESET} .claude/settings.json pre-approvals"
 
 NEW_ENTRIES='[
-  "Bash(bash muster/scripts/muster-housekeeping.sh)",
+  "Bash(bash muster/scripts/muster-boot.sh)",
+  "Bash(bash muster/scripts/muster-boot.sh:*)",
   "Bash(bash muster/scripts/muster-bind.sh:*)",
-  "Bash(bash muster/scripts/muster-find-skill.sh:*)",
-  "Bash(echo \"${MUSTER_ROLE:-UNSET}\")"
+  "Bash(bash muster/scripts/muster-find-skill.sh:*)"
 ]'
 
 USER_SETTINGS="$HOME/.claude/settings.json"
@@ -164,7 +164,7 @@ if [ "$PROJECT_EXISTS" -eq 1 ]; then
     ' .claude/settings.json)
 
     if [ "$MISSING" = "0" ]; then
-        skip ".claude/settings.json permissions" "all 3 entries already present"
+        skip ".claude/settings.json permissions" "all 4 entries already present"
     else
         if [ "$DRY_RUN" -eq 1 ]; then
             ok "Would add $MISSING permission entry/entries to .claude/settings.json (project-level)"
@@ -187,7 +187,7 @@ elif [ "$USER_KEYS" -gt 0 ]; then
     ' "$USER_SETTINGS")
 
     if [ "$USER_MISSING" = "0" ]; then
-        skip "project-level skipped" "user-level $USER_SETTINGS already has all 3 entries"
+        skip "project-level skipped" "user-level $USER_SETTINGS already has all 4 entries"
     else
         STEP2_DEFERRED=1
         say ""
@@ -200,10 +200,10 @@ elif [ "$USER_KEYS" -gt 0 ]; then
         say "user-level settings file ($USER_SETTINGS) inside the permissions.allow"
         say "array (create the permissions section if it doesn't exist):"
         say ""
-        say '  "Bash(bash muster/scripts/muster-housekeeping.sh)",'
+        say '  "Bash(bash muster/scripts/muster-boot.sh)",'
+        say '  "Bash(bash muster/scripts/muster-boot.sh:*)",'
         say '  "Bash(bash muster/scripts/muster-bind.sh:*)",'
-        say '  "Bash(bash muster/scripts/muster-find-skill.sh:*)",'
-        say '  "Bash(echo \"${MUSTER_ROLE:-UNSET}\")"'
+        say '  "Bash(bash muster/scripts/muster-find-skill.sh:*)"'
         say ""
         say "Paths are project-relative — these only match when CWD is inside a"
         say "muster project. Adding at user level means every muster project you"
@@ -225,13 +225,27 @@ else
     fi
 fi
 
+# ---------- step 3: gitignore the boot telemetry log ----------
+say ""
+say "${BOLD}Step 3:${RESET} .gitignore boot-log entry"
+BOOT_LOG_ENTRY="knowledge-base/.muster-boot-log"
+if grep -qxF "$BOOT_LOG_ENTRY" .gitignore 2>/dev/null; then
+    skip ".gitignore" "already has $BOOT_LOG_ENTRY"
+elif [ "$DRY_RUN" -eq 1 ]; then
+    ok "Would append $BOOT_LOG_ENTRY to .gitignore"
+else
+    touch .gitignore
+    printf '%s\n' "$BOOT_LOG_ENTRY" >> .gitignore
+    ok "Appended $BOOT_LOG_ENTRY to .gitignore"
+fi
+
 # ---------- done ----------
 say ""
 if [ "$DRY_RUN" -eq 1 ]; then
     say "${BOLD}Dry run complete.${RESET} Re-run without --dry-run to apply."
 elif [ "${STEP2_DEFERRED:-0}" -eq 1 ]; then
     say "${YELLOW}${BOLD}Partial:${RESET} CLAUDE.md updated, but settings.json step needs your manual edit (above)."
-    say "Permission prompts will continue to fire until you add the 3 entries to your user-level settings."
+    say "Permission prompts will continue to fire until you add the 4 entries to your user-level settings."
     say ""
     say "Commit the CLAUDE.md change when ready:"
     say "  git add CLAUDE.md"
@@ -242,6 +256,6 @@ else
     say "${GREEN}${BOLD}Done.${RESET} Bootstrap permission prompts will no longer fire on session start."
     say ""
     say "Commit when ready:"
-    say "  git add CLAUDE.md .claude/settings.json"
+    say "  git add CLAUDE.md .claude/settings.json .gitignore"
     say "  git commit -m \"enable scripted bootstrap (suppress permission prompts)\""
 fi

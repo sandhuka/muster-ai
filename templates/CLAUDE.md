@@ -1,16 +1,5 @@
 <!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->
-**First tool call this session: Read `knowledge-base/agent-context/.populated`.** Do not LS/Grep/Glob first — the file is the routing signal.
-
-Then run session-start housekeeping: `bash muster/scripts/muster-housekeeping.sh` (idempotent — prunes stale bind files >1 day old, rotates bind log if >500 lines). Skip if the script is missing (uninitialized project — routing below will halt).
-
-**Each bootstrap Bash call must be a separate tool call** — do not chain with `&&` or `;` (housekeeping, env-var check, and bind script each match their own pre-approval pattern; chains don't match).
-
-Route on `.populated` (JSON: `onboarded_at`, `onboarding_complete_at`, `agents.<name>` — each timestamp-or-null):
-- `onboarded_at` is a timestamp AND `onboarding_complete_at` is null → **existing-project onboarding active**. Bind PM via Bash: `bash muster/scripts/muster-bind.sh pm onboarding` (writes bind file, appends bind log). Then read `muster/team/pm/skills/generic/reverse-discovery.md` and run it (Phase 1 first). No picker. Do NOT load `.claude/agents/pm.md` — onboarding is self-contained in the discovery skill.
-- `onboarded_at` is null AND `agents.pm` is null → **greenfield first session**. Bind PM via Bash: `bash muster/scripts/muster-bind.sh pm onboarding` (writes bind file, appends bind log). Then read `muster/team/pm/skills/generic/greenfield-discovery.md` and fire Stage 1 welcome. No picker. Do NOT load `.claude/agents/pm.md` — the discovery skill drives PM behavior through Stage 1.3.
-- `onboarded_at` is null AND `agents.pm` is a timestamp → **greenfield ongoing**. Read `muster/CLAUDE.md` and follow Role Binding. **CRITICAL**: before firing the picker, run Bash `echo "${MUSTER_ROLE:-UNSET}"` to check the env var per Role Binding step 1 — if set to a valid role, skip picker entirely. Do NOT re-read `greenfield-discovery.md`.
-- `onboarded_at` AND `onboarding_complete_at` both timestamps → **steady-state** (null `agents.*` entries trigger JIT populate, NOT re-onboarding). Read `muster/CLAUDE.md` and follow Role Binding. **CRITICAL**: before firing the picker, run Bash `echo "${MUSTER_ROLE:-UNSET}"` to check the env var per Role Binding step 1 — if set to a valid role, skip picker entirely. Do NOT read `reverse-discovery.md`.
-- File missing/invalid → halt: *"Muster setup incomplete. Run `scripts/setup-existing-project.sh --resume` or `scripts/setup-project.sh <name>` at repo root."*
+**First tool call this session: `bash muster/scripts/muster-boot.sh`.** No reads, LS, Grep, or Glob first — the script routes, binds, and prints exactly one `ROUTE=` directive. Obey it literally: read only the file its `READ=` names, relay any `MSG=` halt verbatim, and on `ROUTE=pick` run the two-step role picker from the printed `GROUP=` lines then run the `AFTER_PICK=` command. Full route contract: `muster/CLAUDE.md` → Role Binding.
 <!-- END BOOTSTRAP -->
 
 # [Project Name]

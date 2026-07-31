@@ -94,33 +94,10 @@ RULE_L="────────────────────────
   echo
 } | tee -a "$HUMANLOG"
 
-# Text of the Next Step block: everything between '## Next Step' and the boundary that ends it.
-# The boundary is the next top-level '## ' heading OR an 'Upcoming' heading at ANY level. Older
-# projects nest the upcoming list as '### Upcoming' / '#### Step N' under Next Step; without the
-# any-level Upcoming stop the block would over-capture the whole list and completion would be
-# unreachable. The '$'-anchored Upcoming match means only a bare 'Upcoming' heading ends the block,
-# so a step whose title merely contains the word "Upcoming" does not falsely terminate it.
-next_block(){
-  awk '
-    /^## Next Step/ {f=1; next}
-    f && (/^## / || /^#+[[:space:]]+Upcoming[[:space:]]*$/) {f=0}
-    f
-  ' "$QUEUE"
-}
-
-# Bind role for the current Next Step, mirroring the MUSTER_ROLE=auto contract in CLAUDE.md:
-#   block has a fenced code block, with a 'Role:' line -> that role
-#   block has a fenced code block, no 'Role:' line     -> 'pm'  (PM steps may omit the marker)
-#   block has NO fenced code block                     -> ''    (queue complete)
-# Completion keys on the ABSENCE of a ``` fence, NOT on whitespace: at sprint end agents write a
-# human-readable placeholder (e.g. "_(empty — sprint complete)_") that is non-whitespace but
-# fenceless. A real step (specialist or PM) always wraps its prompt in a ``` fence.
-next_role(){
-  local blk; blk="$(next_block)"
-  printf '%s\n' "$blk" | grep -q '^```' || return 0   # col-0 fence, symmetric with the ^Role: grep below
-  local r; r="$(printf '%s' "$blk" | grep -m1 -i '^Role:' | sed 's/^[Rr]ole:[[:space:]]*//')"
-  [ -n "$r" ] && printf '%s' "$r" || printf 'pm'
-}
+# next_block/next_role live in the shared parser (muster-boot.sh executes the same file), so the
+# driver and the session bootstrap can never disagree on what the queue's Next Step says.
+# Fail CLOSED like the worktree guard: a missing parser refuses to run.
+source "$(dirname "$0")/muster-read-queue.sh" || { echo "⛔ queue parser missing — refusing to run."; exit 1; }
 
 # Count the STEPS in the Next Step section = the number of fenced blocks (each step wraps its prompt
 # in one ``` fence). Count fence OPENINGS via a toggle, NOT '###' headings: a step's prompt BODY may
