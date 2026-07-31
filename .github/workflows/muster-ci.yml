@@ -27,6 +27,9 @@ jobs:
       - name: Context gate (Next Step role has real inlined tasks)
         run: bash scripts/test-lint-context.sh
 
+      - name: Durability lint (Rule 15 — current truth only)
+        run: bash scripts/test-lint-durability.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 

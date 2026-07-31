@@ -47,6 +47,18 @@ for role in pm developer ui-ux qa content marketing legal research; do
 done
 need templates/knowledge-base/agent-context/developer.md 'current-sprint.md` for current sprint tasks' "muster-lint-context.sh pointer-ish classification (representative seed wording)"
 
+# File-level contracts: muster-lint-durability.sh scans a NAMED durable set — if a template is
+# renamed, new projects silently leave the lint's scope. Pin the seeded names that exist as
+# templates (migration-path.md and design-specs/ are project-created, not seeded — not pinned).
+needfile(){
+  if [ -f "$1" ]; then pass=$((pass+1)); echo "PASS: $1 exists  ($2)"
+  else fail=$((fail+1)); echo "FAIL: $1 missing/renamed — breaks: $2"; fi
+}
+for f in product-spec.md architecture.md foundational-assumptions.md brand-guidelines.md \
+         brand-voice-guide.md test-strategy.md design-patterns.md; do
+  needfile "templates/knowledge-base/$f" "muster-lint-durability.sh durable-set scope"
+done
+
 C=templates/CLAUDE.md
 need "$C" '<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->' "add-bootstrap-permissions.sh block replacement"
 need "$C" '<!-- END BOOTSTRAP -->'                    "add-bootstrap-permissions.sh block replacement"
