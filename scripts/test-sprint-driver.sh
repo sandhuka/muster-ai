@@ -209,6 +209,22 @@ echo 0 > "$TEST/count"; echo 2 > "$TEST/noresult-from"
 git -C "$PROJ" add -A && git -C "$PROJ" commit -qm "reset for no-result run"
 MAX_STEPS=3 bash "$MUSTER/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runH.out"
 rm -f "$TEST/noresult-from"
+cp "$PROJ/.muster-sprint-logs/STATUS" "$TEST/runH-status"   # run I overwrites STATUS; snapshot H's final state first
+git -C "$PROJ" rev-parse HEAD > "$TEST/runH-sha"            # run I adds a reset commit; commit-floor asserts against this snapshot
+
+echo "=================== RUN I (context gate → stop) ================="
+# Embedded-muster layout: the context lint only ARMS when the driver runs from a muster/ tree
+# (any other location exits 3 = wiring-warn, which is what runs A–H exercise). Copy the scripts
+# into $PROJ/muster/scripts and reset the queue to q1 (Role: qa) with NO agent-context for qa —
+# the promoted gate must stop the run before the step is ever invoked.
+mkdir -p "$PROJ/muster/scripts"
+cp "$MUSTER"/scripts/*.sh "$PROJ/muster/scripts/"
+cp "$MUSTER"/scripts/*.py "$PROJ/muster/scripts/" 2>/dev/null || true
+touch "$PROJ/muster/system-guide.md"
+cp "$TEST/q1.md" "$PROJ/knowledge-base/orchestration-queue.md"
+echo 0 > "$TEST/count"
+git -C "$PROJ" add -A && git -C "$PROJ" commit -qm "reset for context-gate run"
+MAX_STEPS=1 bash "$PROJ/muster/scripts/muster-sprint-run.sh" 2>&1 | tee "$TEST/runI.out"
 
 echo "=================== ASSERTIONS ==================="
 pass=0; fail=0
@@ -230,7 +246,7 @@ ok "B: summary totals line"               'grep -aq "1 steps · 7 turns · \$1.2
 ok "commit floor: 7 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "step-boundary sweep")" = "7" ]'
 ok "commit floor: messages carry labels"  '[ -n "$(git -C "$PROJ" log --format=%s | grep -a "sweep — Step 2")" ]'
 ok "commit floor: Rule-16 subjects (role prefix)" '[ "$(git -C "$PROJ" log --format=%s | grep -ac "^[a-z-]*: step-boundary sweep")" = "7" ]'
-ok "commit floor: sweep passes commit lint" 'git -C "$PROJ" log --format=%s -1 | grep -aq "step-boundary sweep" && (cd "$PROJ" && bash "$MUSTER/scripts/muster-commit-lint.sh" HEAD)'
+ok "commit floor: sweep passes commit lint" 'git -C "$PROJ" log --format=%s -1 "$(cat "$TEST/runH-sha")" | grep -aq "step-boundary sweep" && (cd "$PROJ" && bash "$MUSTER/scripts/muster-commit-lint.sh" "$(cat "$TEST/runH-sha")")'
 ok "commit floor: shows swept paths"      'grep -aq "step-boundary commit · swept" "$TEST/runA.out" && grep -aq "deliverable.md" "$TEST/runA.out"'
 ok "per-step wall-clock in end-block"     'grep -aq "✓ QA · [0-9]" "$TEST/runA.out" && grep -aq "run so far:" "$TEST/runA.out"'
 ok "step-progress: role + advance + HO"   'grep -aq "✓ QA · .* advanced → Step 2 — PM: fixture review (PM) · handoff HO-001 filed ✓" "$TEST/runA.out"'
@@ -261,7 +277,10 @@ ok "G: same step re-ran after resume"     '[ "$(grep -ac "▶ PM · Step 2" "$TE
 ok "G: run bridged the limit to the gate" 'grep -aq "stopped: halt" "$TEST/runG.out"'
 ok "STATUS: running state mid-step"       'grep -aq "state: running step" "$TEST/status-during"'
 ok "STATUS: carries the queue label"      'grep -aq "step: Step 1 — QA: fixture audit" "$TEST/status-during"'
-ok "STATUS: final state = summary reason" 'grep -aq "state: halted: step did not advance" "$PROJ/.muster-sprint-logs/STATUS"'
+ok "STATUS: final state = summary reason" 'grep -aq "state: halted: step did not advance" "$TEST/runH-status"'
+ok "I: context gate stops the run"        'grep -aq "⛔ Context gate" "$TEST/runI.out"'
+ok "I: STATUS carries the gate reason"    'grep -aq "halted: context gate" "$PROJ/.muster-sprint-logs/STATUS"'
+ok "I: A–H stayed warn-only (wiring)"     '! grep -aq "⛔ Context gate" "$TEST/runA.out"'
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed   (fixture: $TEST)"

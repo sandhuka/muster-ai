@@ -281,11 +281,18 @@ while :; do
     reason="handoff lint"; break
   fi
 
-  # Context gate (WARN-ONLY ramp): a cold agent with a pointer-only context file improvises
-  # scope. Non-fatal while the lint proves itself in the field; promote to a stop condition
-  # once field-green (the ramp rule — never wire a new lint fail-stop against a live corpus).
-  ctx_out="$(bash "$(dirname "$0")/muster-lint-context.sh" 2>&1)" || \
-    echo "⚠ context gate: ${ctx_out}" | tee -a "$HUMANLOG"
+  # Context gate (PROMOTED per the ramp rule — corpus went green): a cold agent with a
+  # pointer-only context file improvises scope; that is now a stop condition, not a warning.
+  # Exit 1 = the real defect → stop. Any other non-zero (exit 3 = not running from an embedded
+  # muster tree, e.g. framework fixtures) stays a warning — fail-closed for the defect,
+  # fail-open only for wiring.
+  ctx_out="$(bash "$(dirname "$0")/muster-lint-context.sh" 2>&1)"; ctx_rc=$?
+  if [ "$ctx_rc" -eq 1 ]; then
+    echo "⛔ Context gate: ${ctx_out}" | tee -a "$HUMANLOG" # cond: context-gate
+    reason="context gate"; break
+  elif [ "$ctx_rc" -ne 0 ]; then
+    echo "⚠ context gate (wiring): ${ctx_out}" | tee -a "$HUMANLOG"
+  fi
 
   blk="$(next_block)"
   role="$(next_role)"
