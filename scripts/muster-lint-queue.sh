@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# muster-lint-queue.sh — deterministic structure check for orchestration-queue.md, run at sprint /
+# muster-lint-queue.sh — lint: orchestration-queue structure (family: lint — reports OK/FAIL, never mutates).
+# Deterministic structure check for orchestration-queue.md, run at sprint /
 # wave planning closeout. Planning isn't "done" until the queue PARSES the way the autonomous
 # driver (muster-sprint-run.sh) reads it. PM runs this and pastes the green result into the
 # planning closeout (the structural analog of the test-suite gate for planning).

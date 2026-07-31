@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# muster-sprint-resume.sh — action: process the wave gate, then continue the sprint (family: sprint verb — acts).
 # Run AFTER writing your verdict to knowledge-base/wave-review.md, FROM INSIDE the sprint
 # worktree (this operates on the CWD's queue + wave-review.md — the wrong tree processes the
 # wrong files). Processes the gate (applies your verdict), then continues the sprint.

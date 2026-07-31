@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""muster-meter — what did this build actually cost? Project-lifetime telemetry from
-Claude Code session logs.
+"""muster-meter.py — what did this build actually cost? (family: verb — answers, never mutates).
+Project-lifetime telemetry from Claude Code session logs.
 
 Tokens are the currency; this measures them. The sprint driver already meters autonomous
 runs per-step (`.muster-sprint-logs/*.metrics`); muster-meter is the whole-project rollup —

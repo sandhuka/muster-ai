@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# muster-lint-requests.sh — deterministic closure check for agent-requests.md. Run at every PM bind
+# muster-lint-requests.sh — lint: agent-requests closure (family: lint — reports OK/FAIL, never mutates).
+# Deterministic closure check for agent-requests.md. Run at every PM bind
 # (warn) and as a HARD sprint-closeout gate (PM pastes the green result into closeout). The ledger
 # is only a useful "what's actually open" signal if closed work leaves Active; this catches the four
 # ways it failed to in autonomous mode (Arogh Sprint-7 F-S7-1, where Active reached 1,382 lines

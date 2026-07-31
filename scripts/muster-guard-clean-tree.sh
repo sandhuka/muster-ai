@@ -1,4 +1,5 @@
 # muster-guard-clean-tree.sh — Tier-1 deterministic guard, meant to be SOURCED.
+# muster-guard-clean-tree.sh — guard: refuse worktree creation from a dirty tree (family: guard — blocks, fail-closed; sourced).
 # Refuse to create a sprint worktree from a dirty tree. `git worktree add` checks out from HEAD,
 # so uncommitted work (modified / staged / untracked files, and an uncommitted submodule-pointer
 # bump) is SILENTLY ABSENT from the run — the top autonomous-launch footgun. Commit or stash first

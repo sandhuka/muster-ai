@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# muster-sprint-run.sh — drive the orchestration queue to completion autonomously.
+# muster-sprint-run.sh — action: drive the orchestration queue to completion autonomously (family: sprint verb — acts).
 # RUN INSIDE A GIT WORKTREE. Never on your main checkout with --dangerously-skip-permissions.
 # Reuses MUSTER_ROLE=auto: each step binds the role named in the queue's Next Step, executes,
 # files its handoff, and advances the queue itself. The loop only reads + honors stop signals.

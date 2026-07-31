@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Muster — session-start housekeeping
+# muster-housekeeping.sh — action: session-start housekeeping (family: verb — acts; prunes stale bind files, rotates logs).
 #
 # Runs at every session start (called from CLAUDE.md bootstrap).
 # Two jobs:

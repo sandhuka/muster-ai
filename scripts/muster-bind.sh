@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Muster — bind a role to the current Claude Code session
+# muster-bind.sh — action: bind a role to the current session (family: verb — acts; writes bind file + log).
 #
 # Called from CLAUDE.md bootstrap after picker/env-var routing resolves a role.
 # Three jobs:

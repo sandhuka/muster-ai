@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# muster-list-open-items.sh — sprint-boundary open-item enumerator (deterministic, detection-only).
+# muster-list-open-items.sh — action: sprint-boundary open-item enumerator (family: verb — answers, never mutates).
 #
 # The problem it counters: handoffs/requests accumulate unresolved in agent-requests.md and
 # research/change-log.md and leak across sprint boundaries. Collective validation (one regression

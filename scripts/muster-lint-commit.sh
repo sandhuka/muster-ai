@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# muster-lint-commit.sh — commit-subject convention check (CLAUDE.md Rule 16).
+# muster-lint-commit.sh — lint: commit-subject convention, CLAUDE.md Rule 16 (family: lint — reports OK/FAIL, never mutates).
 #
 # Convention: subject = '<role>: <outcome>' — the committing role, lowercase, then an
 # outcome-first line (what the repo can now do, not the mechanics). ≤72 chars total.

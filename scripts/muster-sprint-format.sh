@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# muster-sprint-format.sh — render Claude Code stream-json (stdin) as a human-readable trail.
+# muster-sprint-format.sh — action: render the step event stream as a human trail (family: shared renderer — presentation only, never exits non-zero).
 #
 # Usage:  claude ... --output-format stream-json | muster-sprint-format.sh [RAW_LOG] [METRICS]
 #   stdin — the stream-json event stream

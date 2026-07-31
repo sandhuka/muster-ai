@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# muster-lint-refs.sh — lint family: checks skill citations + brain-file skill indexes; reports
-# OK/FAIL; exit code is the verdict; never mutates. The deterministic replacement for the manual
+# muster-lint-refs.sh — lint: skill citations + brain-file skill indexes (family: lint — reports OK/FAIL, never mutates).
+# Exit code is the verdict. The deterministic replacement for the manual
 # "verify cross-referenced files exist" self-review step, which caught 0 of 237 broken paths.
 #
 # What it asserts (framework repo — run from repo root, as CI does):

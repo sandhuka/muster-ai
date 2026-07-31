@@ -1,5 +1,5 @@
 #!/bin/bash
-# Muster bound-role helper — outputs just the role name for status-line integration.
+# muster-bound-role.sh — action: print the session's bound role for the status line (family: verb — answers, never mutates).
 #
 # Designed for users who have their own custom .claude/statusline.sh and want
 # to add the muster bound-role indicator alongside their existing output.
