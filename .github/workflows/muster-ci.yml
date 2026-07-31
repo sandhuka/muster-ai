@@ -18,6 +18,9 @@ jobs:
       - name: Formatter fixture (telemetry + window-table contract)
         run: bash scripts/test-sprint-format.sh
 
+      - name: Agent-CLI adapter (argv shape + exit-code transparency)
+        run: bash scripts/test-agent-cli.sh
+
       - name: Session boot (routing + bind contract)
         run: bash scripts/test-boot.sh
 

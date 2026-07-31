@@ -27,6 +27,7 @@ is free:
 | `LIMIT_RESUME_AT` | unset | `HH:MM` fallback resume time when a usage-limit reset isn't parseable |
 | `CTX_WARN_PCT` | 80 | Peak-ctx % above which a step is flagged as running hot (a step-sizing signal); `0` disables the warning |
 | `MUSTER_COLOR` | auto | Colors the agent name + bolds key figures in the live trail. ON by default in a terminal; `0` (or `NO_COLOR`) opts out, `1` forces on. Auto-off when output isn't a TTY, so redirected `.log` files stay plain |
+| `MUSTER_AGENT_CLI` | `claude` | The agent binary autonomous steps shell out to (`muster-agent-cli.sh` is the seam). Point it at a wrapper honoring the adapter contract to run steps on a different harness |
 
 **No speculative knobs.** New knobs arrive only through the knob-ify disposition — recurring
 field reports proving real demand for varying a behavior. Control without sprawl.

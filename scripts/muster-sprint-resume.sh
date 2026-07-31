@@ -9,8 +9,12 @@ set -uo pipefail
 # Fail CLOSED: a missing/unreadable guard file must refuse to run, not bypass the guard.
 source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard missing — refusing to run."; exit 1; }
 
+# The agent-CLI adapter (same seam as the driver — harness flags live only there).
+# Fail CLOSED: without it there is no way to make the PM call.
+source "$(dirname "$0")/muster-agent-cli.sh" || { echo "⛔ agent-cli adapter missing — refusing to run."; exit 1; }
+
 MAX_TURNS="${MAX_TURNS:-150}"   # per-step model-turn budget (mirrors muster-sprint-run.sh); raise for heavy steps
-MUSTER_ROLE=pm claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
+agent_plain pm "$MAX_TURNS" \
   "Process the wave gate per knowledge-base/wave-review.md: read the founder's latest verdict. \
 If there is no verdict yet, do nothing and leave the gate in place (the loop will halt again). \
 For each bug, insert a fix step. Put EXACTLY ONE step in '## Next Step' (the first fix) — never two \

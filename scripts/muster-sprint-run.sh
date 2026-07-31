@@ -10,12 +10,16 @@ set -uo pipefail
 # Fail CLOSED: a missing/unreadable guard file must refuse to run, not bypass the guard.
 source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard missing — refusing to run."; exit 1; }
 
+# The agent-CLI adapter — the only place harness flags live (MUSTER_AGENT_CLI picks the binary).
+# Fail CLOSED: without it there is no way to invoke a step.
+source "$(dirname "$0")/muster-agent-cli.sh" || { echo "⛔ agent-cli adapter missing — refusing to run."; exit 1; }
+
 # Project knobs: ./.muster/config (plain KNOB=value lines, committed so worktrees inherit it)
 # supplies project defaults for the driver's env knobs. Precedence: explicit env at invocation >
 # config > built-in default — invocation env is captured before the source and re-applied after,
 # so a config line can never override what the user typed on the command line.
 if [ -f ./.muster/config ]; then
-  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT CTX_WARN_PCT MUSTER_COLOR 2>/dev/null)"
+  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT CTX_WARN_PCT MUSTER_COLOR MUSTER_AGENT_CLI 2>/dev/null)"
   . ./.muster/config
   eval "$_inv_env"
   export ANTHROPIC_MODEL 2>/dev/null || true   # claude reads it from env; config-set needs the export
@@ -370,11 +374,10 @@ If the changes are clearly unrelated to this step, stop and route to PM. "
     echo "  ↻ dirty tree — continuation preamble added" | tee -a "$HUMANLOG"
   fi
 
-  # Stream the step's work through the formatter (live trail + logs). PIPESTATUS[0] is claude's
-  # own exit code — the formatter/tee cannot change it, so cond-4 stays accurate (verified).
-  MUSTER_ROLE=auto claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
-        ${model:+--model} ${model:+"$model"} \
-        --output-format stream-json --verbose \
+  # Stream the step's work through the formatter (live trail + logs). agent_stream's return IS
+  # the CLI's own exit code (adapter contract), so PIPESTATUS[0] keeps cond-4 accurate — the
+  # formatter/tee cannot change it (verified).
+  agent_stream auto "$MAX_TURNS" "${model:-}" \
         "${preamble}Execute the current Next Step in $QUEUE end-to-end: do the work, file your handoff, \
 run the Pre-Handoff Self-Review (muster/system-guide.md), and advance the queue with \
 'bash muster/scripts/muster-advance-queue.sh <your-role> \"<one-line summary (HO-ref)>\"' — never \
@@ -403,7 +406,7 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
       prev=""   # the same Next Step re-runs on purpose — don't trip cond 3 on re-entry
       continue
     fi
-    { echo "⛔ claude exited non-zero on step $step — stopping for founder"                         # cond 4
+    { echo "⛔ ${MUSTER_AGENT_CLI:-claude} exited non-zero on step $step — stopping for founder"    # cond 4
       echo "   (if this was a heavy step, it may have hit MAX_TURNS=$MAX_TURNS — raise MAX_TURNS and"
       echo "    re-run to continue, or split the step at planning. Safe to resume: state was not advanced.)"
     } | tee -a "$HUMANLOG"
