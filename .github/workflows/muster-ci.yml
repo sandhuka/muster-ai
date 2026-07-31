@@ -36,6 +36,9 @@ jobs:
       - name: KB budgets (Rule 14 runtime — live bootstrap surface)
         run: bash scripts/test-lint-kb-budgets.sh
 
+      - name: Entry bodies (fields + Deliverable exists on disk)
+        run: bash scripts/test-lint-entry.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 

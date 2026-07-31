@@ -444,6 +444,8 @@ Agents communicate via `knowledge-base/agent-requests.md` using two entry types.
 
 Observations let an agent flag something it noticed that isn't part of whether this deliverable passes — tech debt, a hygiene issue, a scope idea. They are **non-blocking by definition**: filing one never holds up the handoff or (in autonomous runs) stops the loop. PM triages them per `team/pm/skills/generic/observation-triage.md`. IDs are HO-scoped (`OBS-001`, `OBS-002` within a handoff); reference across handoffs as `OBS-001 (HO-NNN)`. Soft cap ~3 per handoff — more than that usually means a deliverable problem that belongs in the revision log instead.
 
+**After filing any entry**, run `bash muster/scripts/muster-lint-entry.sh` — it FAILs a missing canonical field or a `Deliverable:` path that doesn't exist on disk (a phantom path is silent to you and breaks the REVIEWER's session), and WARNs on prose-only deliverables.
+
 #### Status Lifecycles
 - Requests: `open` -> `done`
 - Handoffs: `open` -> `in-review` -> `needs-revision` (if flagged) -> `done` (all reviewers complete)
