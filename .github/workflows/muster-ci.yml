@@ -27,6 +27,9 @@ jobs:
       - name: Script naming + header + mode floor (fleet convention)
         run: bash scripts/test-script-naming.sh
 
+      - name: Housekeeping (bind-file prune + log rotation)
+        run: bash scripts/test-housekeeping.sh
+
       - name: Session boot (routing + bind contract)
         run: bash scripts/test-boot.sh
 
