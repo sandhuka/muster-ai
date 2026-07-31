@@ -9,8 +9,11 @@
 # every project seeded afterward.
 #
 # EXTENSION RULE (add here whenever a script gains a new anchor): one `need` line per anchor,
-# consumer script(s) named in the comment. A fleet-wide audit of pre-existing scripts' anchors
-# is planned as its own wave — this file is where its findings land.
+# consumer script(s) named in the comment. Enforced mechanically at the bottom of this file:
+# every fleet script must appear here — as a consumer of pinned anchors, or in the NO_ANCHOR
+# roster (scripts whose contracts are vendor schemas, git state, or the filesystem — those are
+# pinned by their FIXTURES, not by template anchors). A new script registers or consciously
+# exempts itself in the same commit; there is no third option.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
@@ -37,7 +40,7 @@ need "$R" '## Resolved'          "muster-lint-handoff.sh resolved-bullet scan, m
 P=templates/knowledge-base/agent-context/.populated
 need "$P" '"onboarded_at"'            "muster-boot.sh routing (muster-read-populated.sh)"
 need "$P" '"onboarding_complete_at"'  "muster-boot.sh routing (muster-read-populated.sh)"
-need "$P" '"agents"'                  "muster-boot.sh JIT gate, muster-check-context.sh"
+need "$P" '"agents"'                  "muster-boot.sh JIT gate, muster-check-context.sh, muster-doctor-populated.sh"
 for role in pm developer ui-ux qa content marketing legal research; do
   need "$P" "\"$role\"" "muster-check-context.sh $role, muster-boot.sh JIT gate"
 done
@@ -74,6 +77,66 @@ C=templates/CLAUDE.md
 need "$C" '<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->' "add-bootstrap-permissions.sh block replacement"
 need "$C" '<!-- END BOOTSTRAP -->'                    "add-bootstrap-permissions.sh block replacement"
 need "$C" 'muster-boot.sh'                            "the bootstrap itself — seeded first tool call"
+
+# ---- Wave-8 fleet audit: pre-existing scripts' anchors, pinned ----
+
+# boot's bind route requires each role's seeded bootloader to exist by exact name
+for role in pm developer ui-ux qa content marketing legal research; do
+  needfile "templates/.claude/agents/$role.md" "muster-boot.sh bind route (READ= target)"
+done
+
+# status-line chain: the bind-file NAME is the writer<->reader contract — muster-bind.sh writes
+# it, the seeded statusline and muster-bound-role.sh read it, housekeeping prunes it by glob
+need templates/.claude/statusline.sh '.muster-bound-role.' "muster-bind.sh writer <-> statusline/muster-bound-role.sh readers, muster-housekeeping.sh prune glob"
+
+# lint-deps: brain-file dependency bullets are the parse anchor (live corpus, developer declares both)
+need team/developer/CLAUDE.md '- Depends on:'  "muster-lint-deps.sh symmetry scan"
+need team/developer/CLAUDE.md '- Provides to:' "muster-lint-deps.sh symmetry scan"
+
+# lint-refs: the index-bullet form (^- **name.md**) is the parity anchor, both directions
+need team/pm/CLAUDE.md '- **sprint-planning.md**' "muster-lint-refs.sh index parity (bullet form)"
+
+# lint-entry: the entry field format's source of truth is system-guide's protocol templates
+# (the seeded board ships empty — deliberately no example entries to pin there)
+need system-guide.md '**Type:**'        "muster-lint-entry.sh field regexes (colon-inside-bold)"
+need system-guide.md '**Deliverable:**' "muster-lint-entry.sh deliverable-path check"
+need system-guide.md '**Reviewers:**'   "muster-lint-entry.sh reviewer checklist check"
+
+# lint-kb-budgets: the PM-bootstrap file set it measures must exist under these exact names
+needfile templates/knowledge-base/current-sprint.md "muster-lint-kb-budgets.sh watched set, one-active-sprint check"
+
+# doctor-populated: boot writes the telemetry lines doctor's detectors parse (phase=/session=)
+need scripts/muster-boot.sh 'phase=' "muster-doctor-populated.sh boot-log detectors"
+
+# gate wrappers: each sub-script they invoke must exist by exact name (a rename that misses a
+# wrapper must break CI here, not at a founder's closeout)
+for s in muster-lint-queue.sh muster-lint-context.sh muster-lint-kb-budgets.sh; do
+  needfile "scripts/$s" "muster-plan-gate.sh call chain"
+done
+for s in muster-lint-requests.sh muster-lint-entry.sh muster-lint-decisions.sh \
+         muster-lint-durability.sh muster-lint-gate-packet.sh muster-list-open-items.sh; do
+  needfile "scripts/$s" "muster-closeout.sh call chain"
+done
+
+# ---- extension-rule floor: every fleet script is consciously registered ----
+# NO_ANCHOR roster: contracts are vendor schemas, git state, or the filesystem — pinned by
+# fixtures (test-agent-cli, test-sprint-format, test-meter-prices, test-housekeeping,
+# test-lint-commit, test-muster-agent), not by template anchors. Shims are deprecated wrappers.
+NO_ANCHOR="muster-bind.sh muster-bound-role.sh muster-housekeeping.sh muster-guard-clean-tree.sh
+muster-guard-worktree.sh muster-agent-cli.sh muster-sprint-format.sh muster-sprint-new.sh
+muster-sprint-sandbox.sh muster-find-skill.sh muster-meter.py
+muster-commit-lint.sh muster-lint-commit.sh muster-queue-lint.sh muster-requests-lint.sh"
+SELF="scripts/test-parse-contracts.sh"
+unregistered=0
+for f in scripts/muster-*.sh scripts/muster-*.py; do
+  b="$(basename "$f")"
+  case " $(echo $NO_ANCHOR) " in *" $b "*) continue ;; esac
+  if ! grep -qF "$b" "$SELF"; then
+    fail=$((fail+1)); unregistered=1
+    echo "FAIL: extension rule — $b is neither a registered consumer nor NO_ANCHOR-rostered here"
+  fi
+done
+[ "$unregistered" -eq 0 ] && { pass=$((pass+1)); echo "PASS: every fleet script is registered or consciously exempt"; }
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed"
