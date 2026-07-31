@@ -43,7 +43,15 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 0
 fi
 
-# @@U / @@R are internal sentinels (usage sample / result), consumed below — never printed.
+# ══════════════════ EVENT PARSER — the harness boundary (Claude Code stream-json) ═════════════
+# Everything between these rules is the ONLY schema-specific code in this file: the jq program
+# translates raw harness events into the NORMALIZED RECORD the renderer below consumes. Porting
+# to a different harness = replacing parse_event() (and the no-jq fallback above) so it emits:
+#   @@U <prompt-tokens> <model-id>   — one sample per turn: total tokens the prompt sent
+#   @@R <turns>|<cost-usd>|<is_error 0/1>|<subtype>|<output-tokens>   — exactly one, at step end
+#   any other line                   — a ready-to-print display line (two-space indent)
+# The renderer never sees a raw event; nothing below the closing rule may parse harness JSON.
+# @@U / @@R are internal sentinels, consumed by the renderer — never printed.
 # Display text lines can't collide: they are always emitted with a leading two-space indent.
 JQ_PROG='
 if .type=="system" and (.subtype=="init") then
@@ -79,6 +87,11 @@ elif .type=="result" then
   "@@R \(.num_turns // 0)|\(((.total_cost_usd // 0)*100|round/100))|\(if .is_error==true then 1 else 0 end)|\(.subtype // "?")|\(.usage.output_tokens // 0)"
 else empty end
 '
+
+# parse_event <raw-line> — one raw harness event in, zero-or-more normalized lines out.
+# A malformed/partial line yields nothing (2>/dev/null) — skipped, never fatal.
+parse_event(){ printf '%s\n' "$1" | jq -r "$JQ_PROG" 2>/dev/null; }
+# ══════════════════ RENDERER — harness-neutral from here down ═════════════════════════════════
 
 PEAK=0; MODEL=""
 c_read=0; c_edit=0; c_write=0; c_bash=0; c_search=0; c_agent=0; c_err=0
@@ -125,11 +138,11 @@ emit_done(){
   return 0
 }
 
-# Per-line so one malformed/partial line is skipped, not fatal; per-line jq keeps it real-time.
+# Per-line so one malformed/partial line is skipped, not fatal; per-line parse keeps it real-time.
 while IFS= read -r line; do
   [ -n "$RAWLOG" ] && printf '%s\n' "$line" >> "$RAWLOG"
   [ -z "$line" ] && continue
-  out="$(printf '%s\n' "$line" | jq -r "$JQ_PROG" 2>/dev/null)" || true
+  out="$(parse_event "$line")" || true
   [ -z "$out" ] && continue
   while IFS= read -r o; do
     [ -z "$o" ] && continue
