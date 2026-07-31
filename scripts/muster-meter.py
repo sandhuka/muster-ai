@@ -56,10 +56,12 @@ def encode(path):
     return path.rstrip("/").replace("/", "-").replace(".", "-")
 
 def load_prices(path):
+    # Any model in the prices file is loadable — no vendor filter. Foreign models priced via
+    # --prices is the port path; entries missing the required cost keys are skipped below.
     rates = []
     d = json.load(open(path))
     for k, v in d.items():
-        if not k.startswith("claude-"):
+        if k == "sample_spec":  # LiteLLM's schema-documentation entry, not a model
             continue
         try:
             rates.append((k, (v["input_cost_per_token"] * 1e6,

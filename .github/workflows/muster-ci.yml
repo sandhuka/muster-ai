@@ -21,6 +21,9 @@ jobs:
       - name: Agent-CLI adapter (argv shape + exit-code transparency)
         run: bash scripts/test-agent-cli.sh
 
+      - name: Meter pricing (--prices loads any vendor)
+        run: bash scripts/test-meter-prices.sh
+
       - name: Session boot (routing + bind contract)
         run: bash scripts/test-boot.sh
 
