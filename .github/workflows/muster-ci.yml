@@ -45,6 +45,9 @@ jobs:
       - name: State-file doctor (.populated + boot-telemetry patterns)
         run: bash scripts/test-doctor-populated.sh
 
+      - name: Gate wrappers (plan + closeout, refuse-green-on-red)
+        run: bash scripts/test-gate-wrappers.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 
