@@ -49,13 +49,13 @@ while IFS= read -r f; do
   # strip fenced code blocks so format examples never self-trip
   awk '/^```/{inf=!inf; next} !inf' "$f" > "$TMP/body"
 
-  # unqualified: the `<name>` skill   (skip placeholder tokens containing < > { } [ ])
+  # unqualified: the `<name>` skill   (placeholder tokens containing < > { } [ ] can never
+  # match — the capture class is [A-Za-z0-9._-], so no skip step is needed)
   # NB: backtick is UNESCAPED in these patterns — GNU grep treats \` as its start-of-buffer
   # anchor (never matches mid-line), while BSD grep treats it as a literal. Plain ` is literal
   # on both. This exact divergence shipped once: green on macOS, dead check on Linux CI.
   grep -oE 'the `[A-Za-z0-9._-]+` skill' "$TMP/body" | sort -u | while IFS= read -r c; do
     name="${c#the \`}"; name="${name%\` skill}"
-    case "$name" in *'<'*|*'{'*|*'['*) continue ;; esac
     n="$(owners_of "$name" | grep -c . || true)"
     if [ "$n" -eq 0 ]; then echo "U0|$f|$name"
     elif [ "$n" -gt 1 ]; then echo "U2|$f|$name"
@@ -65,7 +65,6 @@ while IFS= read -r f; do
   # qualified: <Role>'s `<name>` skill
   grep -oE "[A-Za-z/]+'s \`[A-Za-z0-9._-]+\` skill" "$TMP/body" | sort -u | while IFS= read -r c; do
     disp="${c%%\'s*}"; name="${c#*\`}"; name="${name%\` skill}"
-    case "$name" in *'<'*|*'{'*|*'['*) continue ;; esac
     dir="$(role_dir "$disp")"
     [ -z "$dir" ] && { echo "QR|$f|$disp|$name"; continue; }
     owners_of "$name" | grep -qx "$dir" || echo "QO|$f|$disp|$name"
@@ -108,7 +107,10 @@ for r in team/*/; do
   [ -f "$brain" ] || { fail "$role has skills/ but no brain file $brain"; continue; }
   find "$r/skills" -type f -name '*.md' -exec basename {} \; | sort > "$TMP/role_disk"
   while IFS= read -r base; do
-    grep -qF "$base" "$brain" || fail "index parity: $role/skills/**/$base not listed in $brain \"Available Skills\""
+    # anchored to the index-bullet form (^- **name.md**) — a bare -F substring match let a
+    # prose mention anywhere in the brain file pass, and x.md matched inside prefix-x.md
+    esc="$(printf '%s' "$base" | sed 's/[.[\*^$]/\\&/g')"
+    grep -qE "^- \*\*${esc}\*\*" "$brain" || fail "index parity: $role/skills/**/$base not listed as an index bullet in $brain \"Available Skills\""
   done < "$TMP/role_disk"
   # reverse: every **name.md** bullet in the index exists on disk (case-exact)
   while IFS= read -r base; do

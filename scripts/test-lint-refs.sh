@@ -78,7 +78,22 @@ check "path-style citation caught" 1 "path-style skill citation"
 scaffold
 sub 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
 touch "$T/m/team/developer/skills/ios/unlisted.md"
-check "unindexed skill caught" 1 "not listed in"
+check "unindexed skill caught" 1 "not listed as an index bullet in"
+
+# --- 5b. a prose mention is NOT an index bullet — parity still red ---
+scaffold
+sub 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+touch "$T/m/team/developer/skills/ios/unlisted.md"
+echo 'We should document unlisted.md here someday.' >> "$T/m/team/developer/CLAUDE.md"
+check "prose mention does not satisfy parity" 1 "not listed as an index bullet in"
+
+# --- 5c. a longer name containing the base is NOT a match — parity still red ---
+scaffold
+sub 's/the `shared-name` skill/Developer'"'"'s `shared-name` skill/' "$T/m/team/developer/skills/ios/ios-mvvm.md"
+touch "$T/m/team/developer/skills/ios/x.md"
+echo '- **prefix-x.md** — a different skill entirely' >> "$T/m/team/developer/CLAUDE.md"
+touch "$T/m/team/developer/skills/ios/prefix-x.md"
+check "substring inside longer name rejected" 1 "x.md not listed as an index bullet"
 
 # --- 6. index entry with no file on disk ---
 scaffold
