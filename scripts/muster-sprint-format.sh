@@ -19,10 +19,14 @@
 # biggest turn) — the "how full did the window get" step-sizing signal. Deliberately NOT total
 # input tokens: every turn re-sends the conversation (mostly cache reads), so total input is
 # inflated by turn count and measures cost, not size. out = total output tokens (result event).
-# Window for the %: the 4.6+ frontier generation (Opus 4.6/4.7/4.8, Sonnet 4.6, Fable 5) ships a
-# 1M window by default, so unknown/new model ids resolve to 1M; only Haiku and the legacy
-# 4.5-and-earlier families are 200k. Absent usage -> the telemetry segment is omitted entirely
-# (graceful degradation, never an error).
+# Window for the %: known Claude families resolve from a table — the 4.6+ frontier generation
+# (Opus 4.6/4.7/4.8, Sonnet 4.6, Fable 5) ships 1M, so unknown/new claude ids assume 1M; Haiku
+# and the legacy 4.5-and-earlier families are 200k. A NON-claude model id claims NO window:
+# peak prints bare (no /win, no %) and the metrics pct is "—", which the driver's hot-ctx check
+# already skips. Deliberate: a guessed window on a foreign model yields a falsely-low % that
+# silently disables the hot-step warning — worse than no % at all. A foreign-model adapter
+# supplies the real window when one exists. Absent usage -> the telemetry segment is omitted
+# entirely (graceful degradation, never an error).
 
 RAWLOG="${1:-}"
 METRICS="${2:-}"
@@ -102,13 +106,18 @@ emit_done(){
   seg="${turns:-?} turns · \$${cost:-?}"
   pct="—"
   if [ "${PEAK:-0}" -gt 0 ]; then
-    win=1000000; wl="1M"
     case "$MODEL" in
       *haiku*|*opus-4-5*|*opus-4-1*|*opus-4-0*|*sonnet-4-5*|*sonnet-4-0*|*claude-3*|*claude-2*)
         win=200000; wl="200k" ;;
+      *claude*) win=1000000; wl="1M" ;;
+      *)        win=0 ;;   # foreign/unknown vendor — claim no window (see header)
     esac
-    pct="$(( PEAK * 100 / win ))%"
-    seg="$seg · peak ctx $(fmt_k "$PEAK")/$wl $pct · out $(fmt_k "${outraw:-0}")"
+    if [ "$win" -gt 0 ]; then
+      pct="$(( PEAK * 100 / win ))%"
+      seg="$seg · peak ctx $(fmt_k "$PEAK")/$wl $pct · out $(fmt_k "${outraw:-0}")"
+    else
+      seg="$seg · peak ctx $(fmt_k "$PEAK") · out $(fmt_k "${outraw:-0}")"
+    fi
   fi
   printf '  %s %s  (%s)\n' "$mark" "$seg" "${subtype:-?}"
   [ -n "$METRICS" ] && printf '%s|%s|%s|%s|%s\n' "${turns:-0}" "${cost:-0}" "$pct" \

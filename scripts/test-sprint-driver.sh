@@ -114,7 +114,7 @@ if [ -f "\$DIR/noresult-from" ]; then                     # step whose number >=
   if [ "\$nxt" -ge "\$(cat "\$DIR/noresult-from")" ]; then          # and DO NOT advance the queue —
     echo \$nxt > "\$DIR/count"                                      # a manual Ctrl-C mid-step. The
     echo '{"type":"system","subtype":"init"}'                      # formatter writes no metrics line,
-    echo '{"type":"assistant","message":{"model":"stub-model","usage":{"input_tokens":1000,"cache_read_input_tokens":50000,"cache_creation_input_tokens":0,"output_tokens":100},"content":[{"type":"tool_use","name":"Bash","input":{"command":"ls"}}]}}'
+    echo '{"type":"assistant","message":{"model":"claude-stub","usage":{"input_tokens":1000,"cache_read_input_tokens":50000,"cache_creation_input_tokens":0,"output_tokens":100},"content":[{"type":"tool_use","name":"Bash","input":{"command":"ls"}}]}}'
     exit 0                                                          # so the driver must NOT borrow the
   fi                                                               # prior step's metrics for the row.
 fi
@@ -130,8 +130,8 @@ if [ "\$n" = "2" ]; then
 fi
 cat <<'JSON'
 {"type":"system","subtype":"init"}
-{"type":"assistant","message":{"model":"stub-model","usage":{"input_tokens":1000,"cache_read_input_tokens":50000,"cache_creation_input_tokens":0,"output_tokens":100},"content":[{"type":"tool_use","name":"Read","input":{"file_path":"a.md"}},{"type":"tool_use","name":"Bash","input":{"command":"ls"}}]}}
-{"type":"assistant","message":{"model":"stub-model","usage":{"input_tokens":1000,"cache_read_input_tokens":149000,"cache_creation_input_tokens":0,"output_tokens":300},"content":[{"type":"text","text":"working on it"},{"type":"tool_use","name":"Edit","input":{"file_path":"b.md"}}]}}
+{"type":"assistant","message":{"model":"claude-stub","usage":{"input_tokens":1000,"cache_read_input_tokens":50000,"cache_creation_input_tokens":0,"output_tokens":100},"content":[{"type":"tool_use","name":"Read","input":{"file_path":"a.md"}},{"type":"tool_use","name":"Bash","input":{"command":"ls"}}]}}
+{"type":"assistant","message":{"model":"claude-stub","usage":{"input_tokens":1000,"cache_read_input_tokens":149000,"cache_creation_input_tokens":0,"output_tokens":300},"content":[{"type":"text","text":"working on it"},{"type":"tool_use","name":"Edit","input":{"file_path":"b.md"}}]}}
 {"type":"result","subtype":"success","is_error":false,"num_turns":7,"total_cost_usd":1.23,"usage":{"output_tokens":4321}}
 JSON
 exit 0
