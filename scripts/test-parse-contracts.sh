@@ -42,6 +42,11 @@ for role in pm developer ui-ux qa content marketing legal research; do
   need "$P" "\"$role\"" "muster-check-context.sh $role, muster-boot.sh JIT gate"
 done
 
+for role in pm developer ui-ux qa content marketing legal research; do
+  need "templates/knowledge-base/agent-context/$role.md" '## Current Tasks' "muster-lint-context.sh section scan"
+done
+need templates/knowledge-base/agent-context/developer.md 'current-sprint.md` for current sprint tasks' "muster-lint-context.sh pointer-ish classification (representative seed wording)"
+
 C=templates/CLAUDE.md
 need "$C" '<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->' "add-bootstrap-permissions.sh block replacement"
 need "$C" '<!-- END BOOTSTRAP -->'                    "add-bootstrap-permissions.sh block replacement"

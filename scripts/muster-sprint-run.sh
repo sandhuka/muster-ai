@@ -281,6 +281,12 @@ while :; do
     reason="handoff lint"; break
   fi
 
+  # Context gate (WARN-ONLY ramp): a cold agent with a pointer-only context file improvises
+  # scope. Non-fatal while the lint proves itself in the field; promote to a stop condition
+  # once field-green (the ramp rule — never wire a new lint fail-stop against a live corpus).
+  ctx_out="$(bash "$(dirname "$0")/muster-lint-context.sh" 2>&1)" || \
+    echo "⚠ context gate: ${ctx_out}" | tee -a "$HUMANLOG"
+
   blk="$(next_block)"
   role="$(next_role)"
   label="$(next_label "$blk")"

@@ -24,6 +24,9 @@ jobs:
       - name: Parse contracts (script anchors exist in templates)
         run: bash scripts/test-parse-contracts.sh
 
+      - name: Context gate (Next Step role has real inlined tasks)
+        run: bash scripts/test-lint-context.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 

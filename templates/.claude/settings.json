@@ -12,7 +12,8 @@
       "Bash(bash muster/scripts/muster-find-skill.sh:*)",
       "Bash(bash muster/scripts/muster-check-context.sh:*)",
       "Bash(bash muster/scripts/muster-list-open-items.sh:*)",
-      "Bash(bash muster/scripts/muster-advance-queue.sh:*)"
+      "Bash(bash muster/scripts/muster-advance-queue.sh:*)",
+      "Bash(bash muster/scripts/muster-lint-context.sh:*)"
     ]
   }
 }
