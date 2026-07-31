@@ -45,7 +45,7 @@ REPAIR="Repair knowledge-base/agent-context/.populated against muster/templates/
 PHASE=1
 log_route(){
   [ -d knowledge-base ] || return 0
-  printf '%s session=%s phase=%s %s\n' "$(date -Iseconds)" "${CLAUDE_CODE_SESSION_ID:-unknown}" "$PHASE" "$*" \
+  printf '%s session=%s phase=%s %s\n' "$(date -Iseconds)" "${MUSTER_SESSION_ID:-${CLAUDE_CODE_SESSION_ID:-unknown}}" "$PHASE" "$*" \
     >> knowledge-base/.muster-boot-log 2>/dev/null || true
 }
 
@@ -76,7 +76,7 @@ case "$ONBOARDED" in ""|*'{'*|*'}'*) halt "Invalid .populated (unreadable onboar
 
 bind(){
   bash "$SCRIPT_DIR/muster-bind.sh" "$1" "$2" || {
-    printf 'ROUTE=halt MSG="bind failed for role %s — see error above (is CLAUDE_CODE_SESSION_ID set?)"\n' "$1"; exit 1; }
+    printf 'ROUTE=halt MSG="bind failed for role %s — see error above"\n' "$1"; exit 1; }
 }
 
 notice_line(){ # deterministic non-PM side-scan: open board items + pending founder decisions

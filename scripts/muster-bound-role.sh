@@ -37,9 +37,9 @@ if [ -z "$SESSION_ID" ] && [ ! -t 0 ]; then
     fi
 fi
 
-# Then try env var
+# Then try env vars (MUSTER_SESSION_ID = the harness-neutral override muster-bind.sh honors)
 if [ -z "$SESSION_ID" ]; then
-    SESSION_ID="${CLAUDE_CODE_SESSION_ID:-}"
+    SESSION_ID="${MUSTER_SESSION_ID:-${CLAUDE_CODE_SESSION_ID:-}}"
 fi
 
 if [ -z "$SESSION_ID" ]; then
