@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# muster-find-skill.sh — action: resolve a skill NAME to its file path (naming grammar: verb family).
+# muster-find-skill.sh — action: resolve a skill NAME to its file path (family: verb — answers, never mutates).
 # Skills cite each other by name ("the `ios-mvvm` skill"); this is the name→path map, so no agent
 # ever composes a path. Root- and cwd-agnostic: the muster tree is derived from THIS SCRIPT's
 # location (scripts/ sits inside it in both homes — framework repo root, or muster/ in a project),

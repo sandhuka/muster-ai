@@ -24,6 +24,9 @@ jobs:
       - name: Meter pricing (--prices loads any vendor)
         run: bash scripts/test-meter-prices.sh
 
+      - name: Script naming + header + mode floor (fleet convention)
+        run: bash scripts/test-script-naming.sh
+
       - name: Session boot (routing + bind contract)
         run: bash scripts/test-boot.sh
 
