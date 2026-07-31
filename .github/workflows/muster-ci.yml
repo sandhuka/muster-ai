@@ -42,6 +42,9 @@ jobs:
       - name: Gate packet (founder notices folded, never luck)
         run: bash scripts/test-lint-gate-packet.sh
 
+      - name: State-file doctor (.populated + boot-telemetry patterns)
+        run: bash scripts/test-doctor-populated.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 

@@ -18,7 +18,8 @@
       "Bash(bash muster/scripts/muster-lint-decisions.sh:*)",
       "Bash(bash muster/scripts/muster-lint-kb-budgets.sh)",
       "Bash(bash muster/scripts/muster-lint-entry.sh)",
-      "Bash(bash muster/scripts/muster-lint-gate-packet.sh)"
+      "Bash(bash muster/scripts/muster-lint-gate-packet.sh)",
+      "Bash(bash muster/scripts/muster-doctor-populated.sh)"
     ]
   }
 }

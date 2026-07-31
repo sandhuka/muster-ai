@@ -25,6 +25,11 @@ Stop at the first rung that answers. All paths relative to the **worktree** the 
 4. **`knowledge-base/founder-notices.md`** — anything the agents flagged for the human.
 5. **Raw `.jsonl`** — ONLY for deep debugging of a specific identified failure.
 
+**Routing/bind weirdness** (session misrouted, picker fired wrong, bind state confused): run
+`bash muster/scripts/muster-doctor-populated.sh` — it validates the state file that routes every
+session (schema, roster, timestamps, stale locks, gitignore traps) and reads the boot telemetry
+log for dropped picker handshakes and abandoned JIT populates. One command, exact diagnosis.
+
 A typical status question costs under ~50 lines. Reading the raw jsonl or spelunking the
 worktree to answer "where is the run?" is the anti-pattern this ladder exists to kill.
 
