@@ -484,7 +484,7 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   # Rule-16 commit-subject lint (warn-only — style never stops a run). Covers every commit the
   # step produced, incl. the sweep above. Skipped when the step made no commits.
   if [ -n "$head_before" ] && [ "$(git rev-parse HEAD 2>/dev/null)" != "$head_before" ]; then
-    if ! lint_out="$(bash "$(dirname "$0")/muster-commit-lint.sh" "$head_before..HEAD" 2>&1)"; then
+    if ! lint_out="$(bash "$(dirname "$0")/muster-lint-commit.sh" "$head_before..HEAD" 2>&1)"; then
       echo "  ⚠ commit subject off-convention (Rule 16): $(printf '%s' "$lint_out" | head -2 | tr '\n' ' ')" | tee -a "$HUMANLOG"
     fi
   fi

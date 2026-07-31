@@ -24,15 +24,15 @@ need(){ # $1=file $2=literal anchor $3=consumers
 }
 
 Q=templates/knowledge-base/orchestration-queue.md
-need "$Q" '## Next Step'         "muster-read-queue.sh (driver+boot+advance), muster-queue-lint.sh"
+need "$Q" '## Next Step'         "muster-read-queue.sh (driver+boot+advance), muster-lint-queue.sh"
 need "$Q" '## Upcoming'          "muster-read-queue.sh section boundary, muster-advance-queue.sh promotion"
 need "$Q" '## Done'              "muster-advance-queue.sh insertion+cap, muster-lint-handoff.sh recent-entry"
 need "$Q" '## Founder Decisions' "muster-boot.sh notice_line, muster-sprint-run.sh mid-run alert"
 
 R=templates/knowledge-base/agent-requests.md
 need "$R" '## Active Requests'   "muster-list-open-items.sh (both modes)"
-need "$R" '## Active Handoffs'   "muster-list-open-items.sh (both modes), muster-requests-lint.sh"
-need "$R" '## Resolved'          "muster-lint-handoff.sh resolved-bullet scan, muster-requests-lint.sh"
+need "$R" '## Active Handoffs'   "muster-list-open-items.sh (both modes), muster-lint-requests.sh"
+need "$R" '## Resolved'          "muster-lint-handoff.sh resolved-bullet scan, muster-lint-requests.sh"
 
 P=templates/knowledge-base/agent-context/.populated
 need "$P" '"onboarded_at"'            "muster-boot.sh routing (muster-read-populated.sh)"

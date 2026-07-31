@@ -11,7 +11,7 @@ trap 'rm -rf "$SBX"' EXIT
 PROJ="$SBX/proj"
 mkdir -p "$PROJ/muster/scripts" "$PROJ/knowledge-base/agent-context" "$PROJ/knowledge-base/.muster-onboarding"
 for s in muster-check-context.sh muster-read-populated.sh muster-advance-queue.sh \
-         muster-read-queue.sh muster-queue-lint.sh muster-list-open-items.sh; do
+         muster-read-queue.sh muster-lint-queue.sh muster-list-open-items.sh; do
   cp "$SRC/scripts/$s" "$PROJ/muster/scripts/"
 done
 touch "$PROJ/muster/system-guide.md"
@@ -185,7 +185,7 @@ role_now="$(cd "$PROJ" && bash muster/scripts/muster-read-queue.sh role)"
 assert_eq  "aq-next-role-now-qa" "$role_now" "qa"
 assert_has "aq-upcoming-keeps-rest" "Step 6 — PM: closeout" "$q"
 assert_has "aq-ns-comment-kept" "The single next agent invocation" "$q"
-(cd "$PROJ" && bash muster/scripts/muster-queue-lint.sh >/dev/null 2>&1); assert_eq "aq-lint-green-after" "$?" "0"
+(cd "$PROJ" && bash muster/scripts/muster-lint-queue.sh >/dev/null 2>&1); assert_eq "aq-lint-green-after" "$?" "0"
 
 # refusal: wrong role — queue must be byte-identical after
 cp "$QF" "$SBX/before"
@@ -199,7 +199,7 @@ out="$(cd "$PROJ" && bash $AQ pm "sprint closed")"
 assert_has "aq-complete-msg" "sprint complete" "$out"
 role_now="$(cd "$PROJ" && bash muster/scripts/muster-read-queue.sh role)"
 assert_eq "aq-driver-sees-complete" "$role_now" ""
-(cd "$PROJ" && bash muster/scripts/muster-queue-lint.sh >/dev/null 2>&1); assert_eq "aq-lint-green-idle" "$?" "0"
+(cd "$PROJ" && bash muster/scripts/muster-lint-queue.sh >/dev/null 2>&1); assert_eq "aq-lint-green-idle" "$?" "0"
 
 # empty Next Step -> refuse
 out="$(cd "$PROJ" && bash $AQ pm "again" || true)"
@@ -242,7 +242,7 @@ q="$(cat "$QF")"
 assert_has "aq-preamble-note-kept" "Gate note from the founder — keep me." "$q"
 assert_has "aq-preamble-hr-kept" "---" "$q"
 assert_not "aq-preamble-step-gone" "Build it." "$q"
-(cd "$PROJ" && bash muster/scripts/muster-queue-lint.sh >/dev/null 2>&1); assert_eq "aq-preamble-lint-green" "$?" "0"
+(cd "$PROJ" && bash muster/scripts/muster-lint-queue.sh >/dev/null 2>&1); assert_eq "aq-preamble-lint-green" "$?" "0"
 
 # cwd-independence + usage
 seed_queue

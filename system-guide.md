@@ -144,7 +144,7 @@ declares the family's contract:
 - **`muster-<verb>-<thing>.sh`** — performs an action or answers a question (`muster-bind`,
   `muster-find-skill`, `muster-list-open-items`).
 
-Legacy pre-convention names (`muster-commit-lint`, `muster-queue-lint`, `muster-requests-lint`)
+Legacy pre-convention names (`muster-lint-commit`, `muster-lint-queue`, `muster-lint-requests`)
 keep working; new scripts follow the grammar.
 
 ## Adding a New Skill
@@ -449,7 +449,7 @@ Observations let an agent flag something it noticed that isn't part of whether t
 #### Status Lifecycles
 - Requests: `open` -> `done`
 - Handoffs: `open` -> `in-review` -> `needs-revision` (if flagged) -> `done` (all reviewers complete)
-- A handoff also reaches `done` via **boundary reconciliation**: when its deliverable was validated collectively by a later regression/validation handoff rather than by its own reviewer ticks, PM closes it at sprint closeout citing the covering HO. See `team/pm/skills/generic/sprint-planning.md` Sprint Closeout (worklist via `muster/scripts/muster-list-open-items.sh`). Closure is enforced deterministically by `muster/scripts/muster-requests-lint.sh` — run at every PM bind and as a hard closeout gate, it blocks on a reviewed-but-`Status`-stale handoff, a `done` entry still in Active, a duplicate ID, or Active over its line budget (the four ways the ledger silently rots in autonomous runs).
+- A handoff also reaches `done` via **boundary reconciliation**: when its deliverable was validated collectively by a later regression/validation handoff rather than by its own reviewer ticks, PM closes it at sprint closeout citing the covering HO. See `team/pm/skills/generic/sprint-planning.md` Sprint Closeout (worklist via `muster/scripts/muster-list-open-items.sh`). Closure is enforced deterministically by `muster/scripts/muster-lint-requests.sh` — run at every PM bind and as a hard closeout gate, it blocks on a reviewed-but-`Status`-stale handoff, a `done` entry still in Active, a duplicate ID, or Active over its line budget (the four ways the ledger silently rots in autonomous runs).
 
 #### Self-Cleaning Rules
 - The agent that flips status to `done` moves the entry to Resolved as a one-liner. If completing a request also creates a handoff (REQ -> HO), move the request to Resolved first.

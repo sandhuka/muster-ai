@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# test-requests-lint.sh — regression fixtures for muster-requests-lint.sh (Arogh Sprint-7 F-S7-1).
+# test-lint-requests.sh — regression fixtures for muster-lint-requests.sh (Arogh Sprint-7 F-S7-1).
 # Each fixture asserts an exit code + a substring of the verdict. Exit 0 = all green.
 set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-LINT="$HERE/muster-requests-lint.sh"
+LINT="$HERE/muster-lint-requests.sh"
 T="$(mktemp -d)"; trap 'rm -rf "$T"' EXIT
 pass=0; fail=0
 check(){ # name  expected_exit  expected_substr  fixture_file  [budget]
@@ -135,6 +135,12 @@ check "(v) request with handoff-only status caught" 1 'invalid Status "in-review
 
 # --- file/usage errors ---
 check "missing file → exit 2" 2 "file not found" "$T/nope.md"
+
+# --- deprecation shim: the old name forwards + warns (kept one release cycle) ---
+so="$(bash "$HERE/muster-requests-lint.sh" "$T/nope.md" 2>&1)"; src=$?
+if [ "$src" = 2 ] && printf '%s' "$so" | grep -q "deprecated" && printf '%s' "$so" | grep -q "file not found"; then
+  echo "PASS: shim muster-requests-lint.sh forwards + warns"; pass=$((pass+1))
+else echo "FAIL: shim muster-requests-lint.sh (rc=$src out=<<$so>>)"; fail=$((fail+1)); fi
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed"

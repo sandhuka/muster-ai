@@ -246,7 +246,7 @@ ok "B: summary totals line"               'grep -aq "1 steps · 7 turns · \$1.2
 ok "commit floor: 7 boundary commits"     '[ "$(git -C "$PROJ" log --oneline | grep -ac "step-boundary sweep")" = "7" ]'
 ok "commit floor: messages carry labels"  '[ -n "$(git -C "$PROJ" log --format=%s | grep -a "sweep — Step 2")" ]'
 ok "commit floor: Rule-16 subjects (role prefix)" '[ "$(git -C "$PROJ" log --format=%s | grep -ac "^[a-z-]*: step-boundary sweep")" = "7" ]'
-ok "commit floor: sweep passes commit lint" 'git -C "$PROJ" log --format=%s -1 "$(cat "$TEST/runH-sha")" | grep -aq "step-boundary sweep" && (cd "$PROJ" && bash "$MUSTER/scripts/muster-commit-lint.sh" "$(cat "$TEST/runH-sha")")'
+ok "commit floor: sweep passes commit lint" 'git -C "$PROJ" log --format=%s -1 "$(cat "$TEST/runH-sha")" | grep -aq "step-boundary sweep" && (cd "$PROJ" && bash "$MUSTER/scripts/muster-lint-commit.sh" "$(cat "$TEST/runH-sha")")'
 ok "commit floor: shows swept paths"      'grep -aq "step-boundary commit · swept" "$TEST/runA.out" && grep -aq "deliverable.md" "$TEST/runA.out"'
 ok "per-step wall-clock in end-block"     'grep -aq "✓ QA · [0-9]" "$TEST/runA.out" && grep -aq "run so far:" "$TEST/runA.out"'
 ok "step-progress: role + advance + HO"   'grep -aq "✓ QA · .* advanced → Step 2 — PM: fixture review (PM) · handoff HO-001 filed ✓" "$TEST/runA.out"'

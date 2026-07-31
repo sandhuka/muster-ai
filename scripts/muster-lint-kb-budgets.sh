@@ -37,7 +37,7 @@ $KB/founder-notices.md $KB/ui-component-requests.md $KB/pre-launch-checklist.md 
 remedy(){ # per-file archive/trim move for the offender report
   case "$1" in
     */orchestration-queue.md)  echo "Done cap is script-enforced; trim Upcoming step verbosity, archive answered Founder Decisions" ;;
-    */agent-requests.md)       echo "reconcile Active to Resolved (muster-requests-lint.sh) and trim Resolved to its cap" ;;
+    */agent-requests.md)       echo "reconcile Active to Resolved (muster-lint-requests.sh) and trim Resolved to its cap" ;;
     */decision-log.md)         echo "move pre-current-sprint entries to decision-log-archive.md" ;;
     */current-sprint.md)       echo "move completed sprints to sprint-archive.md; full task specs live in agent-context files" ;;
     */founder-notices.md)      echo "sweep acted-on / stale notices" ;;

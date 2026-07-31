@@ -9,9 +9,9 @@ trap 'rm -rf "$SBX"' EXIT
 
 PROJ="$SBX/proj"
 mkdir -p "$PROJ/muster/scripts" "$PROJ/knowledge-base/agent-context"
-for s in muster-plan-gate.sh muster-closeout.sh muster-queue-lint.sh muster-lint-context.sh \
+for s in muster-plan-gate.sh muster-closeout.sh muster-lint-queue.sh muster-lint-context.sh \
          muster-read-queue.sh muster-read-populated.sh muster-lint-kb-budgets.sh \
-         muster-requests-lint.sh muster-lint-entry.sh muster-lint-decisions.sh \
+         muster-lint-requests.sh muster-lint-entry.sh muster-lint-decisions.sh \
          muster-lint-durability.sh muster-lint-gate-packet.sh muster-list-open-items.sh; do
   cp "$SRC/scripts/$s" "$PROJ/muster/scripts/"
 done

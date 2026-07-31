@@ -5,7 +5,7 @@
 # Next Step to Done (one-line entry, newest first, 10-entry cap), promote the first Upcoming
 # step to Next Step (or mark the sprint complete). This is the step-end mutation autonomous
 # runs corrupt when a model does it half-right — so it is SELF-CHECKING: the rewrite lands in
-# a temp file, muster-queue-lint.sh must pass on it, and the real queue is replaced only on
+# a temp file, muster-lint-queue.sh must pass on it, and the real queue is replaced only on
 # green. A red self-check leaves the queue untouched and exits 1.
 #
 # Safety contract:
@@ -15,7 +15,7 @@
 #   - WARNs (does not block) when a specialist summary carries no HO-ref — the driver's
 #     handoff lint stops the run later if a referenced HO is missing; no ref means no check.
 #   - Fence-aware parsing throughout: `## `/`### ` lines INSIDE a step's fenced block are
-#     body text, never section/step boundaries (clones muster-queue-lint.sh's toggle).
+#     body text, never section/step boundaries (clones muster-lint-queue.sh's toggle).
 #
 # Usage: bash muster/scripts/muster-advance-queue.sh <role> "<one-line summary>"
 # Exit:  0 advanced (prints what moved) · 1 refused (reason printed, queue untouched) · 3 usage
@@ -157,7 +157,7 @@ elif [ "$AWK_RC" -ne 0 ]; then
 fi
 
 # Self-check: the rewritten queue must satisfy the same structural contract the driver parses.
-if ! LINT_OUT="$(bash "$SCRIPT_DIR/muster-queue-lint.sh" "$TMP" 2>&1)"; then
+if ! LINT_OUT="$(bash "$SCRIPT_DIR/muster-lint-queue.sh" "$TMP" 2>&1)"; then
   echo "REFUSED: rewrite failed queue-lint — queue NOT modified. Lint output:"
   printf '%s\n' "$LINT_OUT"
   exit 1

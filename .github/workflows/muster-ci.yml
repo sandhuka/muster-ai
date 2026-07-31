@@ -61,10 +61,10 @@ jobs:
         run: bash scripts/test-pillar-budgets.sh
 
       - name: Queue lint (planning-correctness contract)
-        run: bash scripts/test-queue-lint.sh
+        run: bash scripts/test-lint-queue.sh
 
       - name: Requests lint (handoff-closure contract)
-        run: bash scripts/test-requests-lint.sh
+        run: bash scripts/test-lint-requests.sh
 
       - name: Migration gate (v3→v4 upgrade path)
         run: bash scripts/test-migrate.sh
@@ -78,7 +78,7 @@ jobs:
       - name: Clean-tree guard (dirty-worktree footgun)
         run: bash scripts/test-sprint-new.sh
       - name: Commit-subject convention (Rule 16)
-        run: bash scripts/test-commit-lint.sh
+        run: bash scripts/test-lint-commit.sh
 
       - name: Skill resolver (name→path contract)
         run: bash scripts/test-find-skill.sh

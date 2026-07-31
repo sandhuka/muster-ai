@@ -32,7 +32,7 @@ echo "MUSTER CLOSEOUT GATE"
 echo "-- open-items worklist (INFO — disposition each; never blocks) --"
 bash "$SCRIPT_DIR/muster-list-open-items.sh" 2>&1 | sed 's/^/  /'
 echo "-- checks --"
-check "board closure (requests lifecycle)"      bash "$SCRIPT_DIR/muster-requests-lint.sh"
+check "board closure (requests lifecycle)"      bash "$SCRIPT_DIR/muster-lint-requests.sh"
 check "entry bodies (fields + deliverables)"    bash "$SCRIPT_DIR/muster-lint-entry.sh"
 check "decision reconciliation (Rule 11)"       bash "$SCRIPT_DIR/muster-lint-decisions.sh"
 check "kb budgets (Rule 14 bootstrap surface)"  bash "$SCRIPT_DIR/muster-lint-kb-budgets.sh"

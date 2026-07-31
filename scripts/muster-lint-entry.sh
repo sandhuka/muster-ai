@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # muster-lint-entry.sh — lint: handoff/request entry well-formedness (family: lint — reports, never mutates).
 #
-# muster-requests-lint.sh checks the board's CLOSURE lifecycle; nothing checked an entry's BODY.
+# muster-lint-requests.sh checks the board's CLOSURE lifecycle; nothing checked an entry's BODY.
 # The silent failure this closes: a handoff whose `Deliverable:` path doesn't exist on disk is
 # invisible to its producer and breaks the REVIEWER's next session instead. Also asserts the
 # canonical field sets (system-guide.md → Agent Communication Protocol) per entry type.

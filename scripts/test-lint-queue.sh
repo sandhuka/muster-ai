@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# test-queue-lint.sh — regression fixtures for muster-queue-lint.sh. The lint mirrors the driver's
+# test-lint-queue.sh — regression fixtures for muster-lint-queue.sh. The lint mirrors the driver's
 # (muster-sprint-run.sh) queue-parsing contract; this test pins both so they can't silently drift.
 # Each fixture asserts an exit code + a substring of the verdict. Exit 0 = all green.
 set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-LINT="$HERE/muster-queue-lint.sh"
+LINT="$HERE/muster-lint-queue.sh"
 T="$(mktemp -d)"; trap 'rm -rf "$T"' EXIT
 pass=0; fail=0
 check(){ # name  expected_exit  expected_substr  fixture_file
@@ -124,6 +124,12 @@ Role: qa
 ## Founder Decisions
 EOF
 check "nested ### Upcoming form (NS bounded at any-level Upcoming)" 0 "OK: queue well-formed" "$T/nested.md"
+
+# --- deprecation shim: the old name forwards + warns (kept one release cycle) ---
+so="$(bash "$HERE/muster-queue-lint.sh" "$T/nested.md" 2>&1)"; src=$?
+if [ "$src" = 0 ] && printf '%s' "$so" | grep -q "deprecated" && printf '%s' "$so" | grep -q "OK: queue well-formed"; then
+  echo "PASS: shim muster-queue-lint.sh forwards + warns"; pass=$((pass+1))
+else echo "FAIL: shim muster-queue-lint.sh (rc=$src out=<<$so>>)"; fail=$((fail+1)); fi
 
 echo "---- $pass passed, $fail failed ----"
 [ "$fail" = 0 ]

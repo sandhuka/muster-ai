@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# test-commit-lint.sh — regression fixtures for muster-commit-lint.sh (CLAUDE.md Rule 16).
+# test-lint-commit.sh — regression fixtures for muster-lint-commit.sh (CLAUDE.md Rule 16).
 # Builds a throwaway repo, makes commits with known subjects, asserts lint verdicts.
 set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-LINT="$HERE/muster-commit-lint.sh"
+LINT="$HERE/muster-lint-commit.sh"
 T="$(mktemp -d)"; trap 'rm -rf "$T"' EXIT
 pass=0; fail=0
 
@@ -32,6 +32,12 @@ git checkout -qb side HEAD~1 && echo s > g && git add g && git commit -qm "conte
 check "merge commit exempt (range)" 1 "$first..HEAD"          # still 1: earlier violations in range
 git checkout -qb clean2 "$first" && c "pm: clean range start" && c "legal: clean range end"
 check "clean range" 0 "$first..HEAD"
+
+# --- deprecation shim: the old name forwards + warns (kept one release cycle) ---
+so="$(bash "$HERE/muster-commit-lint.sh" HEAD 2>&1)"; src=$?
+if [ "$src" = 0 ] && printf '%s' "$so" | grep -q "deprecated"; then
+  echo "PASS: shim muster-commit-lint.sh forwards + warns"; pass=$((pass+1))
+else echo "FAIL: shim muster-commit-lint.sh (rc=$src out=<<$so>>)"; fail=$((fail+1)); fi
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed"

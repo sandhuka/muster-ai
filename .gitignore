@@ -7,3 +7,4 @@ private/
 .claude/settings.local.json
 .claude/.muster-bound-role.*
 .claude/worktrees/
+__pycache__/
