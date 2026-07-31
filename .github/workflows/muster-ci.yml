@@ -39,6 +39,9 @@ jobs:
       - name: Entry bodies (fields + Deliverable exists on disk)
         run: bash scripts/test-lint-entry.sh
 
+      - name: Gate packet (founder notices folded, never luck)
+        run: bash scripts/test-lint-gate-packet.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 

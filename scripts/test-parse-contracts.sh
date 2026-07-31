@@ -59,6 +59,12 @@ for f in product-spec.md architecture.md foundational-assumptions.md brand-guide
   needfile "templates/knowledge-base/$f" "muster-lint-durability.sh durable-set scope"
 done
 
+W=templates/knowledge-base/wave-review.md
+need "$W" '## Current Wave'              "muster-lint-gate-packet.sh + muster-sprint-resume.sh gate flow"
+need "$W" '**Wave:**'                    "muster-lint-gate-packet.sh active-gate detection"
+need "$W" '### Notices since last gate'  "muster-lint-gate-packet.sh fold-in scaffold"
+need templates/knowledge-base/founder-notices.md '- YYYY-MM-DD' "muster-lint-gate-packet.sh notice extraction (entry format)"
+
 D=templates/knowledge-base/decision-log.md
 need "$D" '**Impact**'          "muster-lint-decisions.sh field + role extraction"
 need "$D" '**Touched**'         "muster-lint-decisions.sh field + path checks"

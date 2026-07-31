@@ -151,7 +151,8 @@ NEW_ENTRIES='[
   "Bash(bash muster/scripts/muster-lint-durability.sh)",
   "Bash(bash muster/scripts/muster-lint-decisions.sh:*)",
   "Bash(bash muster/scripts/muster-lint-kb-budgets.sh)",
-  "Bash(bash muster/scripts/muster-lint-entry.sh)"
+  "Bash(bash muster/scripts/muster-lint-entry.sh)",
+  "Bash(bash muster/scripts/muster-lint-gate-packet.sh)"
 ]'
 
 USER_SETTINGS="$HOME/.claude/settings.json"
@@ -172,7 +173,7 @@ if [ "$PROJECT_EXISTS" -eq 1 ]; then
     ' .claude/settings.json)
 
     if [ "$MISSING" = "0" ]; then
-        skip ".claude/settings.json permissions" "all 12 entries already present"
+        skip ".claude/settings.json permissions" "all 13 entries already present"
     else
         if [ "$DRY_RUN" -eq 1 ]; then
             ok "Would add $MISSING permission entry/entries to .claude/settings.json (project-level)"
@@ -195,7 +196,7 @@ elif [ "$USER_KEYS" -gt 0 ]; then
     ' "$USER_SETTINGS")
 
     if [ "$USER_MISSING" = "0" ]; then
-        skip "project-level skipped" "user-level $USER_SETTINGS already has all 12 entries"
+        skip "project-level skipped" "user-level $USER_SETTINGS already has all 13 entries"
     else
         STEP2_DEFERRED=1
         say ""
@@ -219,7 +220,8 @@ elif [ "$USER_KEYS" -gt 0 ]; then
         say '  "Bash(bash muster/scripts/muster-lint-durability.sh)",'
         say '  "Bash(bash muster/scripts/muster-lint-decisions.sh:*)",'
         say '  "Bash(bash muster/scripts/muster-lint-kb-budgets.sh)",'
-        say '  "Bash(bash muster/scripts/muster-lint-entry.sh)"'
+        say '  "Bash(bash muster/scripts/muster-lint-entry.sh)",'
+        say '  "Bash(bash muster/scripts/muster-lint-gate-packet.sh)"'
         say ""
         say "Paths are project-relative — these only match when CWD is inside a"
         say "muster project. Adding at user level means every muster project you"
@@ -261,7 +263,7 @@ if [ "$DRY_RUN" -eq 1 ]; then
     say "${BOLD}Dry run complete.${RESET} Re-run without --dry-run to apply."
 elif [ "${STEP2_DEFERRED:-0}" -eq 1 ]; then
     say "${YELLOW}${BOLD}Partial:${RESET} CLAUDE.md updated, but settings.json step needs your manual edit (above)."
-    say "Permission prompts will continue to fire until you add the 12 entries to your user-level settings."
+    say "Permission prompts will continue to fire until you add the 13 entries to your user-level settings."
     say ""
     say "Commit the CLAUDE.md change when ready:"
     say "  git add CLAUDE.md"
