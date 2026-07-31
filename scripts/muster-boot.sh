@@ -54,19 +54,11 @@ halt(){ log_route "route=halt msg=\"$1\""; printf 'ROUTE=halt MSG="%s"\n' "$1"; 
 # Session-start housekeeping (idempotent; its own contract lives in the script).
 bash "$SCRIPT_DIR/muster-housekeeping.sh" || true
 
-# --- .populated parse (flat known-shape JSON; no jq dependency) ---
-# key <name> [agents]: prints the raw value of "name": — null stays the literal string "null",
-# timestamps lose their quotes, a missing key prints nothing (callers fail closed on empty).
-key(){
-  awk -v k="\"$1\"" -v scope="${2:-top}" '
-    /"agents"[[:space:]]*:/ {inag=1}
-    inag && /}/ {inag=0}
-    index($0, k":") || $0 ~ k"[[:space:]]*:" {
-      if ((scope=="agents") != (inag==1)) next
-      line=$0; sub(/^[^:]*:[[:space:]]*/,"",line); sub(/[,[:space:]]*$/,"",line)
-      gsub(/"/,"",line); print line; exit
-    }' "$POP" 2>/dev/null
-}
+# .populated parse: the shared parser (muster-check-context.sh sources the same file, so the
+# routing gate and the subagent startup gate can never disagree on the state file).
+# Fail CLOSED: a missing parser halts rather than misrouting on empty reads.
+source "$SCRIPT_DIR/muster-read-populated.sh" 2>/dev/null || halt "muster/scripts/muster-read-populated.sh missing — update the muster submodule (git submodule update --remote muster)."
+key(){ pop_key "$@"; }
 
 if [ ! -f "$POP" ]; then
   if [ -d knowledge-base ]; then

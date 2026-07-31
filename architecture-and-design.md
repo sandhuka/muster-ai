@@ -306,7 +306,7 @@ PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`
 2. **Context cascading** — When decisions happen, update each affected agent's context file with filtered, relevant context
 3. **Handoff review** — Accept or request revision on agent deliverables
 4. **Decision logging** — Every decision goes to decision-log.md with rationale and files touched
-5. **Monitoring** — Check for stale requests (>3 days), stale handoffs (>3 days in review), revision loops (3+ rounds)
+5. **Monitoring** — Check for stale board items (`muster-list-open-items.sh` tags STALE >5 days), revision loops (3+ rounds)
 6. **Founder escalation** — PM has a Decision Autonomy Matrix. Some things PM decides alone (task sequencing, spec clarifications). Some require founder input (scope changes, pricing, architecture lock-in). Escalations go to the Founder Decisions section of orchestration-queue.md.
 
 **Cascade lag prevention** — After every decision, PM audits:

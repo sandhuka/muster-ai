@@ -21,7 +21,7 @@
 <!-- Ordered sequence of remaining steps for this sprint. -->
 
 ## Done (Last 10)
-<!-- Completed steps, newest at the top. Growth rules: Done keeps max 10 entries (trim oldest on overflow). PM clears Done entirely at each new sprint. -->
+<!-- Completed steps, newest at the top. Growth rules enforced by `muster-advance-queue.sh` (keeps 10, newest first). PM clears Done entirely at each new sprint. -->
 <!-- Format: - [DATE] [Agent]: [One-line summary] -->
 <!-- A specialist Done entry is a POINTER to the handoff, not a substitute for it: `- DATE — Step N: <title> (HO-NNN). <one-line outcome>.` If it grows past ~5 lines, the detail belongs in the HO body. The autonomous loop lints the most-recent Done entry's HO reference against agent-requests.md and stops if it's missing. -->
 

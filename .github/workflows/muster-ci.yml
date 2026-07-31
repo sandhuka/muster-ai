@@ -18,6 +18,12 @@ jobs:
       - name: Session boot (routing + bind contract)
         run: bash scripts/test-boot.sh
 
+      - name: Role floor (startup gate, comms check, queue advance)
+        run: bash scripts/test-role-scripts.sh
+
+      - name: Parse contracts (script anchors exist in templates)
+        run: bash scripts/test-parse-contracts.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 

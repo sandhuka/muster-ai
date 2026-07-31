@@ -14,7 +14,7 @@ export CLAUDE_CODE_SESSION_ID=boot-fixture
 PROJ="$SBX/proj"
 mkdir -p "$PROJ/muster/scripts" "$PROJ/muster/team/pm/skills/generic" \
          "$PROJ/knowledge-base/agent-context" "$PROJ/.claude/agents"
-for s in muster-boot.sh muster-read-queue.sh muster-bind.sh muster-housekeeping.sh muster-list-open-items.sh; do
+for s in muster-boot.sh muster-read-queue.sh muster-read-populated.sh muster-bind.sh muster-housekeeping.sh muster-list-open-items.sh; do
   cp "$SRC/scripts/$s" "$PROJ/muster/scripts/"
 done
 touch "$PROJ/muster/system-guide.md"
