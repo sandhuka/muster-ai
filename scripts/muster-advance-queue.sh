@@ -131,9 +131,13 @@ awk -v labelfile="$PROMOTED_LABEL_FILE" '
       if (sec == "done" && l ~ /^[[:space:]]*-[[:space:]]/ && !infence_before) {
         if (!done_inserted) { print entry; done_inserted = 1 }
         done_bullets++
-        if (done_bullets >= 10) continue     # new entry + 9 kept = cap 10
+        if (done_bullets >= 10) { done_drop = 1; continue }  # new entry + 9 kept = cap 10
+        done_drop = 0
         print l; continue
       }
+      # A dropped entry takes its indented continuation lines with it (the template mandates
+      # one-line Done entries; this hardens the trim so a multi-line entry cannot orphan).
+      if (sec == "done" && done_drop && !infence_before && l ~ /^[[:space:]]+[^[:space:]]/) continue
       # transition emit: when leaving an empty Done section, the new entry must not be lost.
       if (l ~ /^## / && !infence_before && prevsec == "done" && !done_inserted) { print entry; done_inserted = 1 }
       print l

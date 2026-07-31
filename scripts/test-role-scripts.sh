@@ -220,6 +220,13 @@ assert_eq  "aq-done-cap-10" "$cnt" "10"
 assert_has "aq-cap-keeps-newest" "newest (HO-50)" "$(cat "$QF")"
 assert_not "aq-cap-drops-oldest" "old entry 10" "$(cat "$QF")"
 
+# done cap: a dropped multi-line entry takes its indented continuation lines with it (no orphans)
+seed_queue
+{ awk '/^## Done/{print; for(i=1;i<=9;i++) printf "- 2026-07-%02d Developer: old entry %d (HO-%d)\n", i+10, i, i; print "- 2026-07-01 QA: ancient multi-line (HO-9)"; print "  orphan continuation A"; print "  orphan continuation B"; next} {print}' "$QF" > "$SBX/q2b" && mv "$SBX/q2b" "$QF"; }
+out="$(cd "$PROJ" && bash $AQ developer "newest again (HO-60)")"
+assert_not "aq-cap-no-orphans" "orphan continuation" "$(cat "$QF")"
+assert_has "aq-cap-multiline-newest" "newest again (HO-60)" "$(cat "$QF")"
+
 # summary with quotes and backslashes survives literally
 seed_queue
 out="$(cd "$PROJ" && bash $AQ developer 'fix \n "quoted" & done (HO-51)')"
