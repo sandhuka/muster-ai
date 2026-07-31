@@ -84,7 +84,7 @@ The decision log is the PM's tool. Agents should never need to read the full dec
 
 ### Rule 4: Split Large Docs When They Cross Thresholds
 - Product spec: If it exceeds ~1000 lines, consider splitting into `product-spec-features.md` (feature details) and `product-spec-overview.md` (architecture, monetization, data model). Agents read only the section they need.
-- Decision log: When it exceeds ~50 entries, archive older resolved entries to `decision-log-archive.md` and keep only the last 20 in the active file.
+- Decision log: keep only current-sprint entries active (Rule 14); older entries go to `decision-log-archive.md`. The archiving trigger is `muster-lint-kb-budgets.sh` (the 600-line bootstrap budget + soft ceilings) — not an entry count.
 
 ### Rule 5: Skill Files are Read-Per-Task, Not Read-All
 Agent startup configs should NOT tell agents to read all their skills. They should read the 1-2 skill files relevant to their CURRENT task. The skill index in CLAUDE.md tells them which to pick.

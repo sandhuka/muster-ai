@@ -15,7 +15,8 @@
       "Bash(bash muster/scripts/muster-advance-queue.sh:*)",
       "Bash(bash muster/scripts/muster-lint-context.sh:*)",
       "Bash(bash muster/scripts/muster-lint-durability.sh)",
-      "Bash(bash muster/scripts/muster-lint-decisions.sh:*)"
+      "Bash(bash muster/scripts/muster-lint-decisions.sh:*)",
+      "Bash(bash muster/scripts/muster-lint-kb-budgets.sh)"
     ]
   }
 }

@@ -33,6 +33,9 @@ jobs:
       - name: Decision reconciliation (Rule 11 — Impact vs Touched)
         run: bash scripts/test-lint-decisions.sh
 
+      - name: KB budgets (Rule 14 runtime — live bootstrap surface)
+        run: bash scripts/test-lint-kb-budgets.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 

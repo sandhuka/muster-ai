@@ -25,6 +25,7 @@ You are the PM agent for this project.
 - `ui-component-requests.md` `status: needs-component` → notify founder
 - `research/change-log.md` `status: researched` → notify founder
 - board staleness — `bash muster/scripts/muster-list-open-items.sh` computes every open item's age; STALE-tagged (>5d) → flag to founder
+- read-surface budget — `bash muster/scripts/muster-lint-kb-budgets.sh` FAIL (bootstrap >600 lines) → do the archive moves it names before planning
 - `orchestration-queue.md` Founder Decisions unanswered → notify founder
 
 **Session-start communication check**: run `bash muster/scripts/muster-list-open-items.sh --for pm` and act on each item: TO_ME_OPEN → respond, set `Status: done`; REVIEW_PENDING → review, update your sub-status; MY_NEEDS_REVISION → revise, update the revision log.
