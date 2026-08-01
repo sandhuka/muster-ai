@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# test-lint-sprint.sh — regression fixtures for muster-lint-sprint.sh (board floor + coherence).
-# Calibrated before shipping against BOTH live conventions: the arogh Sprint-9 wave-table board
-# (green) and the empty seeded template board (green — planning fills it).
+# test-lint-sprint.sh — regression fixtures for muster-lint-sprint.sh (wave-board floor + coherence).
+# The wave-table is THE board format (founder-ruled); calibrated against the live arogh Sprint-9
+# board+queue (green, incl. per-step coherence across 18 shared step numbers) and the seeded
+# template (green — an empty board passes, planning fills it).
 set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 LINT="$HERE/muster-lint-sprint.sh"
@@ -14,68 +15,55 @@ check(){ # name  expected_exit  expected_substr  board  [queue]
   else echo "FAIL: $1 (rc=$rc want=$2; out=<<$out>>)"; fail=$((fail+1)); fi
 }
 
-# empty seeded-shape board -> clean (nothing to check yet)
-printf '# Current Sprint\n## Sprint [N]: [Name]\n### Developer\n### QA\n' > "$T/empty.md"
-check "empty seeded board passes" 0 "OK: board well-formed" "$T/empty.md"
+# the seeded template itself must pass with an empty queue-shaped file
+printf '## Next Step\n\n_(empty)_\n' > "$T/emptyq.md"
+check "seeded template board passes" 0 "OK: wave-board well-formed" "$HERE/../templates/knowledge-base/current-sprint.md" "$T/emptyq.md"
 
-# well-formed checkbox entry
+# well-formed wave-table
 cat > "$T/good.md" <<'EOF'
-## Sprint 3: Ship it
-### Developer
-- [ ] **Build the widget** — Priority: HIGH, Effort: M, Platform: ios
-  - **Deliverable**: `App/Widget.swift`
-  - **Dependencies**: design spec HO-12
-  - **Acceptance criteria**:
-    - renders
-    - tests green
-EOF
-check "well-formed checkbox entry passes" 0 "OK: board well-formed" "$T/good.md"
-
-# bad enums fail, named
-cat > "$T/badenum.md" <<'EOF'
-### Developer
-- [ ] **Build it** — Priority: URGENT, Effort: XXL, Platform: metaverse
-  - **Deliverable**: `x`
-  - **Acceptance criteria**: works
-EOF
-check "invalid Priority fails" 1 "Priority missing or not HIGH/MED/LOW" "$T/badenum.md"
-check "invalid Effort fails"   1 "Effort missing or not S/M/L/XL" "$T/badenum.md"
-check "invalid Platform fails" 1 "Platform not a valid value" "$T/badenum.md"
-
-# missing sub-bullets fail
-cat > "$T/nosub.md" <<'EOF'
-### QA
-- [ ] **Verify the build** — Priority: MED, Effort: S
-  - **Dependencies**: none
-EOF
-check "missing Deliverable+Acceptance fails" 1 "missing sub-bullet(s): Deliverable, Acceptance" "$T/nosub.md"
-
-# capacity guidelines warn (6 open tasks, 3 HIGH) — warn only, exit 0
-{ echo '### Developer'
-  for i in 1 2 3; do printf -- '- [ ] **T%s** — Priority: HIGH, Effort: S\n  - **Deliverable**: `d`\n  - **Acceptance criteria**: ok\n' "$i"; done
-  for i in 4 5 6; do printf -- '- [ ] **T%s** — Priority: LOW, Effort: S\n  - **Deliverable**: `d`\n  - **Acceptance criteria**: ok\n' "$i"; done
-} > "$T/cap.md"
-check "capacity warns (>5 open)" 0 "open tasks (capacity guideline" "$T/cap.md"
-check "HIGH-count warns (>2)"    0 "open HIGH tasks" "$T/cap.md"
-
-# wave-table rows: good passes, empty deliverable fails
-cat > "$T/table.md" <<'EOF'
-### Phase C
-| Step | Role | Deliverable | Pinned assertion |
+## Wave board
+### Phase A — build
+| Step | Role | Deliverable | Verification |
 |---|---|---|---|
-| 3 | QA | the net | FD-5 |
-| 4 | Developer | the revert | R11 |
+| 1 | Developer | the widget | widget assertion |
+| 2 | QA | verification HO | suite green |
+| 3 | **founder (halt)** | gate verdict | — |
 EOF
-check "wave-table board passes" 0 "OK: board well-formed" "$T/table.md"
-cat > "$T/tablebad.md" <<'EOF'
-| 5 | Developer |  | x |
-EOF
-check "empty table Deliverable cell fails" 1 "empty Deliverable cell" "$T/tablebad.md"
+check "well-formed wave-table passes" 0 "OK: wave-board well-formed" "$T/good.md"
 
-# coherence: queued role absent from board / board role never queued -> WARNs
+# empty cells fail
+cat > "$T/badcells.md" <<'EOF'
+| 4 | Developer |  | x |
+| 5 |  | thing | x |
+EOF
+check "empty Deliverable cell fails" 1 "empty Deliverable cell" "$T/badcells.md"
+check "empty Role cell fails"        1 "empty Role cell" "$T/badcells.md"
+
+# unrecognized role warns only
+printf '| 6 | Wizard | spells | — |\n' > "$T/badrole.md"
+check "unrecognized Role warns" 0 "unrecognized Role cell" "$T/badrole.md"
+
+# capacity: >5 rows for one role warns
+{ echo '| Step | Role | Deliverable | Verification |'; echo '|---|---|---|---|'
+  for i in 1 2 3 4 5 6; do echo "| $i | Developer | thing $i | t$i |"; done; } > "$T/cap.md"
+check "capacity warns (>5 rows one role)" 0 "capacity guideline" "$T/cap.md"
+
+# a queue for coherence checks
 cat > "$T/q.md" <<'EOF'
 ## Next Step
-### Step 1 — QA: verify
+
+### Step 1 — Developer: build
+```
+Role: developer
+Inputs: a
+Deliverable: b
+Acceptance: c
+On-completion: d
+```
+
+## Upcoming
+
+### Step 2 — QA: verify
 ```
 Role: qa
 Inputs: a
@@ -84,8 +72,39 @@ Acceptance: c
 On-completion: d
 ```
 EOF
-check "coherence: queued role missing from board warns" 0 "queued role 'qa' has no open work on the board" "$T/good.md" "$T/q.md"
-check "coherence: board role never queued warns"        0 "board role 'developer' has open work but is never queued" "$T/good.md" "$T/q.md"
+
+# per-step coherence: board row 2 claims Developer but queue Step 2 binds qa -> FAIL
+cat > "$T/mismatch.md" <<'EOF'
+| Step | Role | Deliverable | Verification |
+|---|---|---|---|
+| 1 | Developer | the widget | t |
+| 2 | Developer | more widget | t |
+EOF
+check "per-step role mismatch fails" 1 "board row 2 says 'developer' but queue Step 2 binds 'qa'" "$T/mismatch.md" "$T/q.md"
+
+# matching board -> clean incl. coherence
+cat > "$T/match.md" <<'EOF'
+| Step | Role | Deliverable | Verification |
+|---|---|---|---|
+| 1 | Developer | the widget | t |
+| 2 | QA | verification | t |
+EOF
+check "matching board+queue clean" 0 "OK: wave-board well-formed" "$T/match.md" "$T/q.md"
+
+# role-set: queued role with no board row / board role never queued -> WARNs
+printf '| Step | Role | Deliverable | Verification |\n|---|---|---|---|\n| 1 | Developer | w | t |\n| 9 | Marketing | docs | — |\n' > "$T/roleset.md"
+check "queued role without board row warns" 0 "queued role 'qa' has no board row" "$T/roleset.md" "$T/q.md"
+check "board role never queued warns"       0 "board role 'marketing' is never queued" "$T/roleset.md" "$T/q.md"
+
+# a done step on the board whose fence left the queue is NOT flagged (only whole-role absence)
+cat > "$T/done.md" <<'EOF'
+| Step | Role | Deliverable | Verification |
+|---|---|---|---|
+| 0 | QA | earlier verification, done | t |
+| 1 | Developer | the widget | t |
+| 2 | QA | verification | t |
+EOF
+check "done board row (no queue step) not flagged" 0 "OK: wave-board well-formed" "$T/done.md" "$T/q.md"
 
 # missing board -> exit 3
 check "missing board exit 3" 3 "board not found" "$T/nope.md"

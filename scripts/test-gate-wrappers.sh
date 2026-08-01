@@ -41,14 +41,13 @@ ctx qa; ctx developer; ctx pm
 cat > "$PROJ/knowledge-base/current-sprint.md" <<'EOF'
 # Current Sprint
 ## Sprint 1: Fixture
-### Developer
-- [ ] **Build the fixture widget** — Priority: MED, Effort: S
-  - **Deliverable**: `widget`
-  - **Acceptance criteria**: compiles
-### QA
-- [ ] **Verify the widget** — Priority: MED, Effort: S
-  - **Deliverable**: verification HO
-  - **Acceptance criteria**: suite green
+## Wave board
+### Phase A — fixture
+| Step | Role | Deliverable | Verification |
+|---|---|---|---|
+| 1 | QA | verification HO | suite green |
+| 2 | Developer | the widget | compiles |
+| 3 | **founder (halt)** | gate verdict | — |
 EOF
 cat > "$PROJ/knowledge-base/orchestration-queue.md" <<'EOF'
 # Orchestration Queue

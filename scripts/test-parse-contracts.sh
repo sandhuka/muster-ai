@@ -110,11 +110,10 @@ need "$SP" '**On completion:**' "muster-lint-step.sh field contract"
 need "$SP" 'Role: halt'         "muster-lint-step.sh gate check + muster-sprint-run.sh halt stop"
 need "$SP" 'wave-review.md'     "muster-lint-step.sh halt-gate pointer check"
 
-# lint-sprint: the board entry format + enums live in the same skill; agent sections in the
-# seeded board are the section anchors
-need "$SP" 'Priority: [HIGH/MED/LOW]' "muster-lint-sprint.sh enum validation"
-need "$SP" 'Effort: [S/M/L/XL]'       "muster-lint-sprint.sh enum validation"
-need templates/knowledge-base/current-sprint.md '### Developer' "muster-lint-sprint.sh agent-section scan"
+# lint-sprint: the wave-table is THE board format (founder-ruled) — its header row is the
+# anchor, taught in the skill and seeded in the template
+need "$SP" '| Step | Role | Deliverable | Verification |' "muster-lint-sprint.sh row parsing (taught format)"
+need templates/knowledge-base/current-sprint.md '| Step | Role | Deliverable | Verification |' "muster-lint-sprint.sh row parsing (seeded format)"
 
 # lint-kb-budgets: the PM-bootstrap file set it measures must exist under these exact names
 needfile templates/knowledge-base/current-sprint.md "muster-lint-kb-budgets.sh watched set, one-active-sprint check"

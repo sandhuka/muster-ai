@@ -74,19 +74,18 @@ Each task assigned to an agent must include:
 - **Dependencies**: What must happen first, from which agent
 - **Acceptance criteria**: How we'll know it's done correctly (2-3 bullet points)
 
-**Board entry format** — the per-task layout PM writes under each `### [Agent]` heading in `current-sprint.md`:
+**Board format — the wave-table** (the ONE board convention; `muster-lint-sprint.sh` enforces it). The board is a compact index, not a third copy of the task specs: full specs live in each agent's agent-context Current Tasks (step 5 above), sequence and prompts live in the queue. The board's job is to show the whole sprint at a glance and to AGREE with the queue — the lint proves per-step role agreement (board row N must bind the same role as queue Step N).
+
+Under each phase/wave heading (`### Phase … — <name>`), one table:
 
 ```
-- [ ] **[Task name]** — Priority: [HIGH/MED/LOW], Effort: [S/M/L/XL], Platform: [ios/android/web/backend/desktop/cli/cross-platform/n-a]
-  - **Deliverable**: [File path or description]
-  - **Dependencies**: [What must be done first]
-  - **Acceptance criteria**:
-    - [Criterion 1]
-    - [Criterion 2]
-  - **Key refs**: [Knowledge-base files to read]
+| Step | Role | Deliverable | Verification |
+|---|---|---|---|
+| 1 | Developer | [one-line deliverable] | [pinned assertion / test / gate — or "—"] |
+| 2 | QA | [one-line deliverable] | [how done is proven] |
 ```
 
-Platform field: a specific value (`ios`/`android`/`web`/`backend`/`desktop`/`cli`) when the task touches that surface only; `cross-platform` when it intentionally spans surfaces (shared design tokens, cross-platform feature spec); `n-a` for tasks without a platform axis (most Legal, Marketing, Research). Do NOT include a per-task skill list — the agent's brain file (`team/<role>/CLAUDE.md`) holds the skill index and agents self-select; call out a specific skill in the task prose only when the methodology is unusual.
+Step numbers match the queue's `### Step N` headings 1:1. Role values: the eight agent names (`Developer`, `UI/UX`, `QA`, `Content`, `Marketing`, `Legal`, `Research`, `PM`) or `founder (halt)` for gate rows. The Verification column names the mechanical proof that the step is done (a pinned assertion, a test run, a cert pass) — `—` for paper/docs steps. Priority, effort, and dependencies are PLANNING inputs: they shape the sequence (the ordering IS the priority; dependencies are resolved by position) and the effort call lands in the agent-context task spec — they do not live on the board. Platform, when it matters, goes in the step title (see Queue Step Format's platform-tag guidance).
 
 ## Solo Founder Model
 This project is run by a solo founder working with AI agents sequentially — NOT in parallel.

@@ -1,25 +1,19 @@
 # Current Sprint
-<!-- Full task board. PM populates at sprint planning. -->
-<!-- This is the sprint summary board. Detailed task briefs live in each agent's context file (`knowledge-base/agent-context/<agent>.md`). -->
-<!-- Orchestration queue tells agents WHICH task to do now; agent-context files have the full task specs. -->
+<!-- The sprint's wave-board. PM populates at sprint planning. -->
+<!-- The board is a compact INDEX: full task specs live in each agent's context file
+     (`knowledge-base/agent-context/<agent>.md`); sequence + prompts live in the orchestration
+     queue. Step numbers match the queue's `### Step N` headings 1:1 — `muster-lint-sprint.sh`
+     proves the board and queue agree (it runs inside the plan gate). -->
+<!-- Format (sprint-planning.md → "Task Definition Standard" → the wave-table). Example row:
+     | 1 | Developer | one-line deliverable | pinned assertion / test / gate — or "—" |
+-->
 
 ## Sprint [N]: [Name]
 **Goal**: [One sentence]
 **Duration**: [Start date] — [End date]
 
-### [Agent Name]
-<!-- Task-entry format + platform-field guidance: sprint-planning.md → "Task Definition Standard". The populated sections below also demonstrate the format. -->
+## Wave board
 
-### Developer
-
-### UI/UX
-
-### Content
-
-### QA
-
-### Marketing
-
-### Legal
-
-### Research
+### Phase A — [name]
+| Step | Role | Deliverable | Verification |
+|---|---|---|---|
