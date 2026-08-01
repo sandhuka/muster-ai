@@ -33,6 +33,9 @@ jobs:
       - name: Step-body lint (cold-agent executability)
         run: bash scripts/test-lint-step.sh
 
+      - name: Board lint (entries + queue coherence)
+        run: bash scripts/test-lint-sprint.sh
+
       - name: Session boot (routing + bind contract)
         run: bash scripts/test-boot.sh
 

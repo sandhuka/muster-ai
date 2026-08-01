@@ -10,10 +10,10 @@ trap 'rm -rf "$SBX"' EXIT
 PROJ="$SBX/proj"
 mkdir -p "$PROJ/muster/scripts" "$PROJ/knowledge-base/agent-context"
 for s in muster-plan-gate.sh muster-closeout.sh muster-lint-queue.sh muster-lint-step.sh \
-         muster-lint-context.sh muster-read-queue.sh muster-read-populated.sh \
-         muster-lint-kb-budgets.sh muster-lint-requests.sh muster-lint-entry.sh \
-         muster-lint-decisions.sh muster-lint-durability.sh muster-lint-gate-packet.sh \
-         muster-list-open-items.sh; do
+         muster-lint-sprint.sh muster-lint-context.sh muster-read-queue.sh \
+         muster-read-populated.sh muster-lint-kb-budgets.sh muster-lint-requests.sh \
+         muster-lint-entry.sh muster-lint-decisions.sh muster-lint-durability.sh \
+         muster-lint-gate-packet.sh muster-list-open-items.sh; do
   cp "$SRC/scripts/$s" "$PROJ/muster/scripts/"
 done
 touch "$PROJ/muster/system-guide.md"
@@ -38,6 +38,18 @@ cat > "$PROJ/knowledge-base/agent-context/.populated" <<'EOF'
 EOF
 ctx(){ printf '# %s\n## Current Tasks\n### Sprint 1 — real task\nDo the thing well.\n## Product Context\n' "$1" > "$PROJ/knowledge-base/agent-context/$1.md"; }
 ctx qa; ctx developer; ctx pm
+cat > "$PROJ/knowledge-base/current-sprint.md" <<'EOF'
+# Current Sprint
+## Sprint 1: Fixture
+### Developer
+- [ ] **Build the fixture widget** — Priority: MED, Effort: S
+  - **Deliverable**: `widget`
+  - **Acceptance criteria**: compiles
+### QA
+- [ ] **Verify the widget** — Priority: MED, Effort: S
+  - **Deliverable**: verification HO
+  - **Acceptance criteria**: suite green
+EOF
 cat > "$PROJ/knowledge-base/orchestration-queue.md" <<'EOF'
 # Orchestration Queue
 

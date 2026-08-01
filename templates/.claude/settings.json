@@ -21,7 +21,9 @@
       "Bash(bash muster/scripts/muster-lint-gate-packet.sh)",
       "Bash(bash muster/scripts/muster-doctor-populated.sh)",
       "Bash(bash muster/scripts/muster-plan-gate.sh)",
-      "Bash(bash muster/scripts/muster-closeout.sh)"
+      "Bash(bash muster/scripts/muster-closeout.sh)",
+      "Bash(bash muster/scripts/muster-lint-step.sh:*)",
+      "Bash(bash muster/scripts/muster-lint-sprint.sh:*)"
     ]
   }
 }
