@@ -95,7 +95,7 @@ From here, you follow the orchestration queue. For each step:
 
 Warm multi-tab — one tab per role you're actively working with — is the **Manual** way to run a sprint, and a good default: PM tab for planning and review, specialist tabs for execution. The status line `[muster: <role>]` keeps each tab clearly identified. You can also have PM spawn each step as a subagent (**Assisted**), or let a script walk the queue unattended in a worktree (**Autonomous**). See [operating-modes.md](operating-modes.md) for when to pick each.
 
-Power-user shortcut: `MUSTER_ROLE=<role> claude` skips the picker. `MUSTER_ROLE=auto claude --dangerously-skip-permissions "execute next step"` runs the queue's next step autonomously — the primitive behind Autonomous mode. Autonomous sprint execution is **Muster v4**; existing projects adopt it via `muster/scripts/migrate-v3-to-v4.sh` (see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md)).
+Power-user shortcut: `MUSTER_ROLE=<role> claude` skips the picker. `MUSTER_ROLE=auto claude --dangerously-skip-permissions "execute next step"` runs the queue's next step autonomously — the primitive behind Autonomous mode.
 
 ---
 

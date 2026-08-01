@@ -18,7 +18,6 @@ bad(){ echo "FAIL: $1"; fail=$((fail+1)); }
 legacy_ok(){
   case "$1" in
     setup-project.sh|setup-existing-project.sh|add-bootstrap-permissions.sh) return 0 ;;
-    migrate-v1-to-v2.sh|migrate-v2-to-v3.sh|migrate-v3-to-v4.sh) return 0 ;;
     *) return 1 ;;
   esac
 }

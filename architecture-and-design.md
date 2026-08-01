@@ -44,9 +44,7 @@ muster-ai/
 ├── scripts/
 │   ├── setup-project.sh               # Scaffolds a new (greenfield) project repo
 │   ├── setup-existing-project.sh      # Adopts Muster into an existing codebase
-│   └── migrate-v1-to-v2.sh            # Upgrades a pre-v2 project to v2 (creates .populated, injects HALT check, patches CLAUDE.md)
-│
-└── MIGRATING-V1-TO-V2.md              # User-facing migration guide for the above script
+│   └── muster-update.sh               # Converges project-level framework-owned files after a submodule bump
 ```
 
 ### Project Repo (Your Product)

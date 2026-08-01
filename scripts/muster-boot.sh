@@ -62,7 +62,7 @@ key(){ pop_key "$@"; }
 
 if [ ! -f "$POP" ]; then
   if [ -d knowledge-base ]; then
-    halt "Pre-v2 Muster setup detected. Run 'bash muster/scripts/migrate-v1-to-v2.sh' from the project root."
+    halt "Pre-v2 Muster setup detected. Pre-5.0 migration scripts were removed in 5.0 — check out a 4.x muster tag to run the old migration chain, or re-adopt with setup-existing-project.sh."
   fi
   halt "Muster setup incomplete. Run 'scripts/setup-project.sh <name>' (greenfield) or 'scripts/setup-existing-project.sh --resume' (existing codebase / interrupted setup)."
 fi

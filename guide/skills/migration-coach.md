@@ -2,61 +2,61 @@
 
 The user you're coaching is deep in real work and afraid an upgrade will eat their project data.
 That fear is correct to have and your job to make unnecessary: backups before anything, dry runs
-before writes, verification between every step, and zero improvisation.
+before writes, verification between steps, and zero improvisation.
+
+Since 5.0 an upgrade is two moves: **bump the submodule, run one command** — and the command is
+often optional. Session protocols, scripts, and skills live in the submodule and arrive with the
+bump; `muster-update.sh` converges only the platform-located, framework-owned files (`.claude/`
+stubs, the CLAUDE.md bootstrap block, settings pre-approvals, the version stamp). It never
+touches `knowledge-base/`, `.muster/config` values, or anything founder-authored.
 
 ## Flow (in order, no skipping)
 
-**1. Detect the current version.** `cat muster/VERSION` in the project (the pinned submodule's
-version). Structural cross-check: no `knowledge-base/agent-context/.populated` but a
-`knowledge-base/` → pre-v2. State what you found and what the path to current is before touching
-anything.
+**1. Detect.** `cat muster/VERSION` (what the submodule is) vs `cat .muster/seeded-version`
+(what the project's platform files were seeded from). A mismatch is exactly what the boot
+`NOTICE=` line and the sprint driver's warn report — drift is expected mid-upgrade, never
+silent, and never a stop. State both versions before touching anything.
 
-**2. Back up first, always.** Even though the scripts carry their own rails:
+**2. Back up.** Cheap insurance even though the updater refuses dirty trees:
 
 ```bash
-git tag pre-migration-v<from>-$(date +%Y%m%d)
+git tag pre-update-$(date +%Y%m%d)
 cp -r knowledge-base /tmp/<proj>-kb-backup-$(date +%Y%m%d)
 ```
 
-A git tag plus a plain filesystem copy of `knowledge-base/` — the second one survives even a
-git mistake. Tell the user where the copy is.
+A git tag plus a plain filesystem copy of `knowledge-base/` — the second survives even a git
+mistake. Tell the user where the copy is.
 
-**3. Step zero: update the submodule.** `git submodule update --remote muster` (+ commit the
-pointer). **The migration scripts ship with the NEW muster, not the version the project is
-pinned to** — running an old checkout's scripts is the classic failure. This is why it's step
-zero, not step three.
+**3. Bump.** `git submodule update --remote muster`. Commit any unrelated work first — the
+updater refuses a dirty tree by design (git is the undo for everything it overwrites); the
+fresh submodule pointer itself is exempt from that check.
 
-**4. Run the chain stepwise** — one script per version hop, each from `muster/scripts/`:
-
-| Hop | Script | Its own rails |
-|---|---|---|
-| v1 → v2 | `migrate-v1-to-v2.sh` | Makes a tarball backup (`.muster-archive/`); diff-asks before editing CLAUDE.md |
-| v2 → v3 | `migrate-v2-to-v3.sh` | Supports `--dry-run` — **always dry-run first** |
-| v3 → v4 | `migrate-v3-to-v4.sh` | Supports `--dry-run` — **always dry-run first** |
-
-For a v1 project specifically: recommend rehearsing the whole chain on a **copy** of the project
-first (`cp -r` the repo, run the chain there, inspect) — it's minutes of cost against their real
-fear.
-
-**Minor bumps (same major, e.g. 4.1 → 4.2): no hop script.** Most framework code arrives with
-the submodule pointer bump, but a minor can add project-level files that live OUTSIDE the
-submodule (knowledge-base templates, `.claude/skills/*` like the `/muster` front door,
-`scripts/test.sh`) — a bump alone never delivers those. After bumping, run the live upgrade
-script (`bash muster/scripts/migrate-v3-to-v4.sh`; it doubles as "bring project files current"):
-copy-if-absent, it seeds anything new and never clobbers existing files. Skipping it is why an
-upgraded project can have the new framework code but be missing its `/muster` skill.
-
-**5. Verify after EACH script, before the next.** Project data intact: `knowledge-base/` files
-present and readable, `product-spec.md` / `decision-log.md` content preserved, `.populated`
-parses, git status comprehensible. Don't run hop N+1 on an unverified hop N.
-
-**6. If a script fails: stop.** Never improvise a migration by hand-editing toward what the
-script "would have done." Give restore guidance —
+**4. Converge.** Dry-run first, then apply:
 
 ```bash
-tar xzf .muster-archive/v1-backup-*.tar.gz -C .   # v1→v2's tarball
-git checkout pre-migration-v<from>-<date>          # or the tag from step 2
+bash muster/scripts/muster-update.sh --dry-run
+bash muster/scripts/muster-update.sh
 ```
 
-— then file a field report (`field-report.md`): a failed migration script is exactly the
-friction the upstream loop exists for.
+It prints a ✓/✗ report per step, creates anything missing, preserves founder content
+(CLAUDE.md project sections, user settings keys, user-added skills), and writes the
+`.muster/seeded-version` stamp last — a failed run keeps the drift NOTICE alive so nothing
+half-converged can pass as done. Re-running is always safe (idempotent).
+
+**5. Verify.** Boot a session: the drift NOTICE should be gone. `knowledge-base/` files intact
+(`product-spec.md`, `decision-log.md` readable, `.populated` parses), `git diff` shows only
+framework-owned paths changed. Then commit: `git add -A && git commit -m "chore: muster update
+to <version>"`.
+
+**6. If a step fails: stop.** Never improvise toward what the updater "would have done." The
+✗ line names the problem (e.g. missing CLAUDE.md bootstrap markers — restore them from
+`muster/templates/CLAUDE.md`); fix it and re-run. Restore path: `git checkout pre-update-<date>`
+plus the KB copy from step 2. Then file a field report (`field-report.md`) — a failed upgrade
+is exactly the friction the upstream loop exists for.
+
+## Pre-5.0 projects
+
+The v1→v2→v3→v4 migration chain was removed in 5.0 (no live projects needed it). Two honest
+paths: check out the last 4.x muster tag, run the old chain from there, then return to 5.0 and
+run `muster-update.sh` — or, for a project that drifted far, re-adopt with
+`setup-existing-project.sh` (it archives existing files before touching anything).

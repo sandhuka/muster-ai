@@ -3,8 +3,9 @@
 Framework version lives in `VERSION`. This file tracks what changed at each bump so you can
 trace behavior to a version. Newest first.
 
-Versioning: **major** = a workflow or routing model change that existing projects migrate to
-(ships with a `MIGRATING-*` guide); **minor** = additive capability or hardening, non-breaking.
+Versioning: **major** = a workflow or routing model change; **minor** = additive capability or
+hardening, non-breaking. Since 5.0, upgrades converge via `muster/scripts/muster-update.sh`
+(pre-5.0 `MIGRATING-*` guides and `migrate-v*` scripts live on the 4.x tags).
 Most of a minor arrives on the next `muster/` submodule pointer bump; any new project-level files
 it adds (knowledge-base templates, `.claude/skills/*`, `scripts/test.sh` — these live outside the
 submodule) are seeded copy-if-absent by re-running the live upgrade script. No breaking migration.
