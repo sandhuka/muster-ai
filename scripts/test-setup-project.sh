@@ -13,16 +13,21 @@ pass=0; fail=0
 ok(){ echo "PASS: $1"; pass=$((pass+1)); }
 no(){ echo "FAIL: $1"; fail=$((fail+1)); }
 
-BRANCH="$(git -C "$SRC" rev-parse --abbrev-ref HEAD)"
+# Clone source: a sandbox bare repo receiving THIS repo's HEAD under a fixed branch name —
+# works whether the checkout is on a branch (local) or detached (CI actions/checkout, where
+# --abbrev-ref returns the literal 'HEAD' and a -b clone dies on it; cost one red CI run).
 # local file:// submodule clones need explicit allowance on modern git; env-injected config
 # reaches every git child the setup script spawns. Git identity for the initial commit.
 # HOME is overridden per case so the user-level-statusline branch is DETERMINISTIC, not an
 # artifact of whichever machine runs the fixture.
+git -C "$SB" init -q --bare src.git
+git -C "$SRC" push -q "$SB/src.git" HEAD:refs/heads/fixture
+BRANCH=fixture
 export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=protocol.file.allow GIT_CONFIG_VALUE_0=always
 export GIT_AUTHOR_NAME=fixture GIT_AUTHOR_EMAIL=f@x GIT_COMMITTER_NAME=fixture GIT_COMMITTER_EMAIL=f@x
 mkdir -p "$SB/homeA"
 
-( cd "$SB" && HOME="$SB/homeA" bash "$SRC/scripts/setup-project.sh" seedling --muster-url "file://$SRC" --muster-branch "$BRANCH" ) > "$SB/setup.out" 2>&1
+( cd "$SB" && HOME="$SB/homeA" bash "$SRC/scripts/setup-project.sh" seedling --muster-url "file://$SB/src.git" --muster-branch "$BRANCH" ) > "$SB/setup.out" 2>&1
 rc=$?
 P="$SB/seedling"
 if [ "$rc" -eq 0 ]; then ok "setup-project.sh exits 0"
@@ -70,7 +75,7 @@ out="$(cd "$P" && bash muster/scripts/muster-doctor-populated.sh 2>&1)"; rc=$?
 # ---- user-level-statusline path: permissions must STILL ship (statusLine key deferred) ----
 mkdir -p "$SB/homeB/.claude"
 printf '{\n  "statusLine": { "type": "command", "command": "mine.sh" }\n}\n' > "$SB/homeB/.claude/settings.json"
-( cd "$SB" && HOME="$SB/homeB" bash "$SRC/scripts/setup-project.sh" seedling2 --muster-url "file://$SRC" --muster-branch "$BRANCH" ) > "$SB/setup2.out" 2>&1
+( cd "$SB" && HOME="$SB/homeB" bash "$SRC/scripts/setup-project.sh" seedling2 --muster-url "file://$SB/src.git" --muster-branch "$BRANCH" ) > "$SB/setup2.out" 2>&1
 P2="$SB/seedling2"
 if [ -f "$P2/.claude/settings.json" ] && ! grep -q '"statusLine"' "$P2/.claude/settings.json" \
    && [ ! -f "$P2/.claude/statusline.sh" ]; then
