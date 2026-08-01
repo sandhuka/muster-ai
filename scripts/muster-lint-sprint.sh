@@ -31,6 +31,8 @@ awk -v mapfile="$TMP/board_map" '
     gsub(/\//, "-", s)                                   # UI/UX -> ui-ux
     return s
   }
+  /^```/ { fence = !fence; next }
+  fence  { next }                                        # fenced examples are not board rows
   /^\|[[:space:]]*[0-9]+[a-z]?[[:space:]]*\|/ {
     split($0, c, "|")
     step = c[2]; gsub(/[[:space:]]/, "", step)

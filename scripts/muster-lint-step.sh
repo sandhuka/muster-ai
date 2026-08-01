@@ -49,15 +49,16 @@ awk '
   }
   /^### / { if (!fence) { heading = $0; sub(/^### +/, "", heading) } }
   /^```/ {
-    if (!fence) { fence = 1; instep = 1; role = ""; firstline = 1
+    if (!fence) { fence = 1; instep = 1; role = ""
                   f_inputs = f_deliv = f_accept = f_oncomp = f_wavereview = 0 }
     else        { fence = 0; flush_step() }
     next
   }
   fence && instep {
     l = $0
-    if (firstline) { if (l ~ /^Role:[[:space:]]*/) { role = l; sub(/^Role:[[:space:]]*/, "", role); sub(/[[:space:]]+$/, "", role) }
-                     firstline = 0 }
+    # first Role: line ANYWHERE in the fence — the driver parser accepts a Role: line at any
+    # position, so keying on line 1 only would let a blank-led step dodge every check below
+    if (role == "" && l ~ /^Role:[[:space:]]*/) { role = l; sub(/^Role:[[:space:]]*/, "", role); sub(/[[:space:]]+$/, "", role) }
     low = tolower(l)
     if (low ~ /^(\*\*)?inputs?[:*]/)                          f_inputs = 1
     if (low ~ /^(\*\*)?deliverable[:*]/)                      f_deliv = 1

@@ -106,6 +106,15 @@ cat > "$T/done.md" <<'EOF'
 EOF
 check "done board row (no queue step) not flagged" 0 "OK: wave-board well-formed" "$T/done.md" "$T/q.md"
 
+# a table row inside a fenced example is NOT a board row
+cat > "$T/fenced.md" <<'EOF'
+Example of a malformed row:
+```
+| 1 | Developer |  | x |
+```
+EOF
+check "fenced example row not parsed" 0 "OK: wave-board well-formed" "$T/fenced.md"
+
 # missing board -> exit 3
 check "missing board exit 3" 3 "board not found" "$T/nope.md"
 

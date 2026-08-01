@@ -157,6 +157,17 @@ On-completion: HO.
 EOF
 check "malformed Model line fails" 1 "malformed Model: line" "$T/badmodel.md"
 
+# a blank line before Role: must NOT dodge the field checks (driver accepts Role anywhere)
+cat > "$T/blankrole.md" <<'EOF'
+### Step 13 — QA: verify
+```
+
+Role: qa
+nothing else here
+```
+EOF
+check "Role after blank line still checked" 1 "missing field line(s)" "$T/blankrole.md"
+
 # missing file -> exit 3 usage
 check "missing file exit 3" 3 "file not found" "$T/nope.md"
 

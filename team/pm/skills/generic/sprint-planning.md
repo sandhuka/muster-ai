@@ -31,9 +31,11 @@ After populating the orchestration queue, scan for skill gaps:
 
 <!-- The format templates the queue's `## Prompt Standard` section points to. Every Next Step / Upcoming entry wraps its prompt in a fenced code block so the founder can copy the whole block in one shot. The `Role: <agent>` line at the top is the role marker — informational text telling the founder which role-bound tab to open (or which subagent to spawn from a PM tab), parsed by `MUSTER_ROLE=auto` to determine the bind target. Do NOT use `@<agent>` as a role marker — Claude Code's input parser auto-routes @-mentions to that subagent regardless of bound role, causing redundant spawns when pasted into a role-bound tab.
 
-Specialist-agent format:
+Specialist-agent format — the heading is `### Step N — [Agent (platform)]: [Step title]`.
+Step numbers are mandatory and match the wave-board rows 1:1 (`muster-lint-sprint.sh` proves
+per-step role agreement through them); inserted fix steps take suffixed numbers (11b).
 
-### [DATE] [Agent (platform)]: [Step title]
+### Step N — [Agent (platform)]: [Step title]
 
 ```
 Role: <agent-name>
@@ -57,7 +59,7 @@ Available `Role:` values: `developer`, `ui-ux`, `qa`, `content`, `marketing`, `l
 
 PM-step format:
 
-### [DATE] PM: [Step title]
+### Step N — PM: [Step title]
 
 ```
 Role: pm
@@ -179,7 +181,7 @@ A conditional gate is therefore just the presence or absence of a gate step — 
 
 ### Gate-step insertion convention
 For each wave needing human verification, insert a **wave-gate step** at its end:
-- A `Role: halt` step with a recognizable title (e.g., `### [DATE] Wave N Gate — founder review`). The loop already stops on `Role: halt`.
+- A `Role: halt` step with a recognizable title carrying its step number (e.g., `### Step 12 — Founder: Wave 2 gate (halt)`). The loop already stops on `Role: halt`.
 - Its block points to the build and to `knowledge-base/wave-review.md`, where PM writes the human-only verification checklist (Output) and the founder writes the verdict (Input). The loop does not parse `wave-review.md`; PM reads it on resume. Author the checklist as the **human-judgment residue only** — felt experience, taste, product calls — with machine-verified results attached as "already green, evidence here," never re-litigated by the founder (`decision-making.md` → "Spend founder time only where the machine can't substitute"; certify the mechanical layer first).
 - **Fold unread founder notices into the gate packet — mandatory, named heading.** Every gate packet MUST contain a `Notices since last gate` heading that lists every still-present `knowledge-base/founder-notices.md` entry verbatim (or `none` when empty). It is required even when empty — run `bash muster/scripts/muster-lint-gate-packet.sh` after writing the packet: it FAILs a missing heading or any live notice not folded verbatim. Surfacing a notice only inside a topic section you happened to write is **not** sufficient — that makes the fold-in luck-dependent, and a less-diligent gate-prep session can silently drop a between-gate FYI (a pod-update that doesn't block the gate but affects shipped quality is exactly the kind of item that must never depend on luck to surface). The named heading is the one canonical place the founder scans; it must always be there. The founder deletes notices once acted on.
 - Resume after a gate is **not** a blind re-run (a mechanical `Role: halt` can't self-clear): the founder writes their verdict to `wave-review.md`, then runs `muster/scripts/muster-sprint-resume.sh` **from inside the sprint worktree** (it operates on the CWD's queue and `wave-review.md`; the wrong tree processes the wrong files), which has PM process the verdict (insert a fix step per bug, or clear the gate and promote the next wave's first step if approved) and then re-enters the loop.
