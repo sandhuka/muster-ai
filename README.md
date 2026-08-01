@@ -135,7 +135,7 @@ Muster uses a two-repo model.
 ```
 my-project/
 ├── .claude/
-│   ├── agents/            # Bootloaders for all 8 roles (invoke via picker or @<role>)
+│   ├── agents/            # Framework-owned stubs — each hops to muster/team/<role>/bootloader.md
 │   ├── skills/rebind/     # /rebind slash command (mid-session role swap)
 │   ├── skills/muster/     # /muster slash command (the framework Guide)
 │   ├── statusline.sh      # Status-line script (shows [muster: <role>])

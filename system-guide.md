@@ -46,7 +46,7 @@ See `templates/knowledge-base/agent-context/` for section templates per agent.
 | 3 | `muster/team/<name>/bootloader.md` | Startup protocol (template below — must include `.populated` halt check) |
 | 3b | Project `.claude/agents/<name>.md` | Platform stub: frontmatter + hop to the bootloader (template below) |
 | 4 | `muster/CLAUDE.md` — Agent Roster table | New row |
-| 5 | `muster/CLAUDE.md` — Sub-Agent Access line | Add `@<name>` |
+| 5 | `muster/CLAUDE.md` — Sub-Agent Invocation roster | Add the role name to the agent list |
 | 6 | Project `knowledge-base/agent-context/<name>.md` | Filtered product context + tasks |
 | 7 | Project `knowledge-base/agent-skills/<name>/` | Create directory for product-specific skills |
 | 8 | Project `knowledge-base/agent-context/.populated` | Add `<name>: null` entry under the `agents` block (PM populates the timestamp at first cascade or JIT populate) |
@@ -118,7 +118,7 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 3. Create `muster/team/<name>/skills/` with domain skill files (organized by platform)
 4. Create `muster/team/<name>/bootloader.md` from the bootloader template (include the `.populated` halt check) AND `templates/.claude/agents/<name>.md` from the stub template (projects get the stub via seed/update)
 5. Add row to `muster/CLAUDE.md` Agent Roster table
-6. Add `@<name>` to `muster/CLAUDE.md` Sub-Agent Access line
+6. Add the role name to the `muster/CLAUDE.md` Sub-Agent Invocation agent list
 7. Create `knowledge-base/agent-context/<name>.md` from template in the project repo
 8. Add `<name>: null` to `knowledge-base/agent-context/.populated` (project-level) AND to `templates/knowledge-base/agent-context/.populated` (framework-level so future projects scaffold with the new agent)
 9. PM (in a PM-bound session) populates the agent-context file with project-specific content and sets the agent's timestamp in `.populated`
@@ -131,7 +131,7 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 - [ ] Agent-context file exists in the project with PM-managed product context
 - [ ] Dependencies mirrored in counterpart agents' brain files
 - [ ] Agent appears in `muster/CLAUDE.md` roster table
-- [ ] `@<name>` appears in `muster/CLAUDE.md` Sub-Agent Access line
+- [ ] Role name appears in the `muster/CLAUDE.md` Sub-Agent Invocation agent list
 - [ ] Bootloader reads muster/CLAUDE.md, brain file, and agent-context file
 - [ ] Bootloader includes the `.populated` halt check as its first action (before any other read)
 - [ ] Bootloader uses two-tier reading model (always-read vs on-demand)

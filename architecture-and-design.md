@@ -233,11 +233,11 @@ Every file that agents read at startup has a size cap to prevent context window 
 
 | File | Cap | Who Enforces |
 |------|-----|-------------|
-| orchestration-queue.md Done section | Max 10 entries | Completing agent trims; PM clears at new sprint |
-| agent-requests.md Resolved section | Max 10 entries | Completing agent trims |
-| agent-requests.md total | Target <150 lines | Self-cleaning rules |
-| Decision log | Archive at 50 entries | PM |
-| Agent startup reads | <200 lines per specialist, <400 for PM | System verification checklist |
+| orchestration-queue.md Done section | Max 10 entries | `muster-advance-queue.sh` (mechanical — refuses to over-fill); PM clears at new sprint |
+| agent-requests.md | Resolved trimmed by completing agent; Active-over-budget and closure defects flagged | `muster-lint-requests.sh` |
+| decision-log.md | Current sprint only (older → `decision-log-archive.md`); soft ceiling 150 lines | PM at sprint closeout; `muster-lint-kb-budgets.sh` warns |
+| current-sprint.md | One sprint only; soft ceiling 120 lines | PM at sprint closeout; `muster-lint-kb-budgets.sh` warns |
+| PM bootstrap-read total | ≤600 lines (Rule 14) | `muster-lint-kb-budgets.sh` (runtime FAIL) + `test-pillar-budgets.sh` (shipped-baseline CI gate) |
 
 ---
 
@@ -324,6 +324,7 @@ PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`
 |------|---------|------------|
 | `muster/CLAUDE.md` | System rules, protocols, agent roster, role-binding mechanism | Framework maintainer |
 | `muster/team/<name>/CLAUDE.md` | Agent role definition, skill index | Framework maintainer |
+| `muster/team/<name>/bootloader.md` | Role startup protocol — read at bind (the project's `.claude/agents/<name>.md` stub hops here) | Framework maintainer |
 | `muster/team/<name>/skills/` | Domain methodology — how to do the work | Framework maintainer |
 | `muster/system-guide.md` | Templates, extensibility, verification checklist | Framework maintainer |
 
@@ -337,7 +338,9 @@ PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`
 | `knowledge-base/agent-context/.populated` | Per-agent populate state + lifecycle anchors `onboarded_at`, `onboarding_complete_at`, and `agents.<role>` timestamps. `muster-boot.sh` routes into one of four routing paths plus a halt case: (1) **Existing-project onboarding active** — `onboarded_at` timestamp + `onboarding_complete_at` null → force-bind PM, load `reverse-discovery.md`. No picker. (2) **Greenfield first session** — `onboarded_at` null + `agents.pm` null → force-bind PM, load `greenfield-discovery.md`, fire welcome. No picker. (3) **Greenfield ongoing / post-Discovery steady-state** — `onboarded_at` null + `agents.pm` timestamp → fire role picker. Greenfield projects remain here permanently after Stage 1.3 (they never transition to path 4). (4) **Existing-project steady-state** — `onboarded_at` AND `onboarding_complete_at` both timestamps → fire role picker. (Halt) **File missing/invalid** → halt with setup instructions. Null `agents.<role>` entries in paths 3/4 trigger JIT populate at first invocation, not re-onboarding. | Script (init); PM (updates: `agents.pm` at greenfield Stage 1.3 OR existing-project init; agent timestamps during cascade + JIT; `onboarding_complete_at` at end of reverse-discovery — applies to existing-project flow only) |
 | `knowledge-base/product-spec.md` | Full product specification | PM |
 | `knowledge-base/architecture.md` | Technical architecture | Developer produces, PM reviews |
-| `knowledge-base/current-sprint.md` | Task board — assignments and status | PM |
+| `knowledge-base/current-sprint.md` | Task board — one wave-table per wave (`Step / Role / Deliverable / Verification`) | PM |
+| `.muster/config` | Project knobs (models, caps, provider) sourced by the sprint driver — committed so worktrees inherit it | Founder (Guide coaches edits) |
+| `.muster/seeded-version` | Stamp of the muster version the platform files were last converged to — boot compares it to `muster/VERSION` and NOTICEs drift | Setup scripts + `muster-update.sh` |
 | `knowledge-base/orchestration-queue.md` | Turn-by-turn execution sequence | PM populates; agents update |
 | `knowledge-base/agent-requests.md` | Inter-agent communication | All agents |
 | `knowledge-base/decision-log.md` | Decisions with rationale and affected files | PM (any agent can append) |

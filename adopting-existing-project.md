@@ -10,7 +10,7 @@ Greenfield starts with Research validating your idea and PM writing specs from z
 
 The existing-project path does **reverse discovery**: it reads what you know plus what's in the code, cross-checks the two, fills gaps with a short questionnaire, and drafts a complete knowledge base. You review, PM plans Sprint 1, done.
 
-Total: about 2 hours of your time. **One-time cost** — future Muster updates pull in via `git submodule update` without repeating onboarding.
+Total: about 2 hours of your time. **One-time cost** — future Muster updates pull in via `git submodule update` (plus `bash muster/scripts/muster-update.sh` to converge the few platform-level files) without repeating onboarding.
 
 ## Prerequisites
 
@@ -121,7 +121,7 @@ From here, you follow the orchestration queue — same loop as the greenfield pa
 
 **First invocation of a non-Sprint-1 agent**: when you later invoke an agent that wasn't populated during onboarding (e.g., `@marketing` a few sprints in), it returns control to PM briefly (~30 seconds) while PM populates that agent's context file. You'll see a short "populating marketing context…" message, then the normal agent output. User-transparent.
 
-**Muster framework updates**: pull updates via `git submodule update --remote muster`. Major framework additions (new rules, new agents) may prompt small updates to your project `CLAUDE.md`, but onboarding does not repeat.
+**Muster framework updates**: `git submodule update --remote muster`, then `bash muster/scripts/muster-update.sh` — it converges the framework-owned project files (agent stubs, bootstrap block, pre-approvals) and never touches your knowledge base. If you skip it, the next session's boot prints a NOTICE naming that exact command. Onboarding never repeats.
 
 **A teammate pulls the repo**: they do NOT re-run the setup script. The `.populated` state file tells Claude that setup has already been run. They just `cd` into the repo and open Claude.
 
