@@ -110,7 +110,7 @@ Think of yourself as the "runner" — PM is the brain, you're the hands.
 **Where everything lives:**
 - `muster/` — The framework (agent brains, skills, methodology). You don't edit this.
 - `knowledge-base/` — Your project's source of truth (product spec, decisions, sprint tasks, research). PM manages this.
-- `.claude/agents/` — Bootloaders for all 8 roles (loaded by the picker on bind, or by `Agent({subagent_type: "<role>"})` for one-shot subagent calls).
+- `.claude/agents/` — Framework-owned stubs for all 8 roles; each hops to `muster/team/<role>/bootloader.md` (picker binds read the bootloader directly; `Agent({subagent_type: "<role>"})` enters via the stub).
 - `.claude/skills/rebind/` — `/rebind` slash command for swapping roles mid-session.
 - `.claude/skills/muster/` — `/muster` slash command for framework help (the Guide).
 - `.claude/statusline.sh` — Status-line script showing which role this session is bound to.

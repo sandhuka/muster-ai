@@ -79,7 +79,7 @@ Every session picks ONE role at start. Root Claude operates as that role for the
 
 **JIT populate on Task HALT return**: when a specialist returns `HALT: agent-context null`, PM auto-handles per `context-cascading.md` → Just-in-time mode. Mid-session trigger; separate from boot's JIT gate above.
 
-**`/rebind`**: re-fires the flow mid-session (the skill re-runs `muster-boot.sh` + picker). Conversation context is preserved.
+**`/rebind`**: re-fires the flow mid-session — run `muster-boot.sh` and obey its `ROUTE=` line exactly as at session start, declaring *"Re-binding to <Role> for this session."* A `ROUTE=onboarding` result means onboarding is still active (boot has re-bound PM) — re-binding away from the discovery flow isn't available until it completes. Conversation context is preserved: previous turns stay referenceable, the operative role for new responses is the rebound one, and the status line updates on next refresh.
 
 **Cross-role consults**: default is file-based via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent via Agent tool, OR open a new role-bound tab. Test: if the answer deserves a `decision-log` entry, use file-based instead. Rationale: `architecture-and-design.md` mistake #5 — conversations are ephemeral, files persist.
 

@@ -37,7 +37,7 @@ muster-ai/
 │   └── ... (ui-ux, content, marketing, legal, qa, research)
 │
 ├── templates/                         # Everything a new project needs
-│   ├── .claude/agents/                # Canonical bootloader files
+│   ├── .claude/agents/                # Harness stubs (hop to team/<role>/bootloader.md)
 │   ├── CLAUDE.md                      # Project CLAUDE.md with placeholders
 │   └── knowledge-base/               # Pre-structured KB templates
 │
@@ -52,10 +52,10 @@ muster-ai/
 ### Project Repo (Your Product)
 ```
 my-project/
-├── .claude/agents/                    # AGENT STARTUP CONFIGS
-│   ├── developer.md                   # What Claude reads when you say @developer
-│   ├── ui-ux.md                       # What Claude reads when you say @ui-ux
-│   └── ...                            # Each file: ~30 lines of boot instructions
+├── .claude/agents/                    # HARNESS STUBS (framework-owned)
+│   ├── developer.md                   # Frontmatter + hop to muster/team/developer/bootloader.md
+│   ├── ui-ux.md                       # Frontmatter + hop to muster/team/ui-ux/bootloader.md
+│   └── ...                            # Each file: 10 lines; protocol lives in the submodule
 │
 ├── CLAUDE.md                          # PROJECT BRAIN — bootstrap routing + product info + project-specific rules
 │
@@ -85,7 +85,8 @@ my-project/
 ### The Five Layers
 
 ```
-Layer 1: .claude/agents/               STARTUP CONFIGS     "What to read when invoked"
+Layer 1: muster/team/<role>/bootloader.md  STARTUP PROTOCOL "What to read when invoked"
+         (.claude/agents/<role>.md = harness stubs that hop to Layer 1)
 Layer 2: muster/team/<agent>/          AGENT IDENTITY       "Who I am, how I work" (shared)
 Layer 3: knowledge-base/agent-context/ FILTERED CONTEXT     "What I need to know about THIS project"
 Layer 4: knowledge-base/               SHARED TRUTH         "What the product IS"
@@ -136,7 +137,7 @@ Layer 5: src/                          ACTUAL CODE          "The thing being bui
      - Cascades context to agent-context files
      - Reviews handoffs, monitors stale items
 
-         Each role's bootloader (.claude/agents/<role>.md) reads at bind:
+         Each role's bootloader (muster/team/<role>/bootloader.md) reads at bind:
          1. muster/CLAUDE.md (system rules)
          2. muster/team/<role>/CLAUDE.md (role identity + skill index)
          3. knowledge-base/agent-context/<role>.md (product context)
@@ -299,7 +300,7 @@ Each handoff has named reviewers with individual statuses. The producing agent r
 
 ## How the PM Manages Everything
 
-PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`.claude/agents/pm.md`), which loads PM brain + agent-context + 6 monitoring files, then runs PM monitoring duties before answering the user's first message.
+PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`muster/team/pm/bootloader.md`), which loads PM brain + agent-context + 6 monitoring files, then runs PM monitoring duties before answering the user's first message.
 
 **Key responsibilities:**
 1. **Sprint planning** — Break work into agent tasks, sequence by dependencies, populate orchestration queue
@@ -332,7 +333,7 @@ PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`
 
 | File | Purpose | Who Writes |
 |------|---------|------------|
-| `.claude/agents/<name>.md` | Startup config — what to read when invoked | Copied from templates |
+| `.claude/agents/<name>.md` | Harness stub — frontmatter + hop to `muster/team/<name>/bootloader.md` | Framework-owned; seeded and updated by muster |
 | `CLAUDE.md` | Three-section project file: Muster Framework pointer (read-only), Product Information, Project-Specific Rules | Founder + PM |
 | `knowledge-base/agent-context/<name>.md` | Filtered product context per agent | PM |
 | `knowledge-base/agent-context/.populated` | Per-agent populate state + lifecycle anchors `onboarded_at`, `onboarding_complete_at`, and `agents.<role>` timestamps. `muster-boot.sh` routes into one of four routing paths plus a halt case: (1) **Existing-project onboarding active** — `onboarded_at` timestamp + `onboarding_complete_at` null → force-bind PM, load `reverse-discovery.md`. No picker. (2) **Greenfield first session** — `onboarded_at` null + `agents.pm` null → force-bind PM, load `greenfield-discovery.md`, fire welcome. No picker. (3) **Greenfield ongoing / post-Discovery steady-state** — `onboarded_at` null + `agents.pm` timestamp → fire role picker. Greenfield projects remain here permanently after Stage 1.3 (they never transition to path 4). (4) **Existing-project steady-state** — `onboarded_at` AND `onboarding_complete_at` both timestamps → fire role picker. (Halt) **File missing/invalid** → halt with setup instructions. Null `agents.<role>` entries in paths 3/4 trigger JIT populate at first invocation, not re-onboarding. | Script (init); PM (updates: `agents.pm` at greenfield Stage 1.3 OR existing-project init; agent timestamps during cascade + JIT; `onboarding_complete_at` at end of reverse-discovery — applies to existing-project flow only) |

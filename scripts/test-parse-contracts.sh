@@ -104,6 +104,13 @@ need scripts/muster-statusline.sh '.muster-bound-role.' "muster-bind.sh writer <
 need templates/.claude/statusline.sh 'muster/scripts/muster-statusline.sh' "statusline stub exec hop -> muster-statusline.sh"
 need templates/.claude/statusline.sh '[muster: submodule missing]' "statusline stub degrade contract (test-muster-agent.sh)"
 
+# seeded slash-command stubs hop to submodule contracts — the heading/paragraph each stub
+# names must keep existing, and each stub must keep naming it
+need MUSTER.md 'Invocation — Bind or Consult'  "templates/.claude/skills/muster stub hop target"
+need CLAUDE.md '**`/rebind`**'                 "templates/.claude/skills/rebind stub hop target"
+need templates/.claude/skills/muster/SKILL.md 'Invocation — Bind or Consult' "stub -> MUSTER.md hop"
+need templates/.claude/skills/rebind/SKILL.md 'Role Binding'                 "stub -> muster/CLAUDE.md hop"
+
 # settings template shape: both setup scripts awk-strip the statusLine block when a user-level
 # statusline exists — the block-open line and the permissions key are their parse anchors
 need templates/.claude/settings.json '"statusLine": {' "setup-project.sh + setup-existing-project.sh statusLine strip"
