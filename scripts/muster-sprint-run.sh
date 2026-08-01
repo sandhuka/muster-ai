@@ -482,7 +482,7 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
     git add -A -- . ":(exclude)$LOGDIR" 2>/dev/null || git add -A
     lbl="${label:-step $step}"
     role_lc="$(printf '%s' "${role:-pm}" | tr '[:upper:]' '[:lower:]')"
-    if git commit -q -m "${role_lc}: step-boundary sweep — ${lbl:0:40}"; then
+    if git commit -q -m "${role_lc}: step-boundary sweep — ${lbl:0:36}"; then
       echo "  📦 step-boundary commit · swept $n_dirty path(s) the closeout didn't commit:" | tee -a "$HUMANLOG"
       printf '%s\n' "$dirty" | head -6 | sed 's/^/       /' | tee -a "$HUMANLOG"
       [ "$n_dirty" -gt 6 ] && echo "       … and $((n_dirty-6)) more" | tee -a "$HUMANLOG"
