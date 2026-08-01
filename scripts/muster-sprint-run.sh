@@ -19,7 +19,7 @@ source "$(dirname "$0")/muster-agent-cli.sh" || { echo "⛔ agent-cli adapter mi
 # config > built-in default — invocation env is captured before the source and re-applied after,
 # so a config line can never override what the user typed on the command line.
 if [ -f ./.muster/config ]; then
-  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT CTX_WARN_PCT MUSTER_COLOR MUSTER_AGENT_CLI 2>/dev/null)"
+  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT CTX_WARN_PCT MUSTER_COLOR MUSTER_AGENT_CLI MUSTER_PROVIDER_URL MUSTER_PROVIDER_KEY_ENV 2>/dev/null)"
   . ./.muster/config
   eval "$_inv_env"
   export ANTHROPIC_MODEL 2>/dev/null || true   # claude reads it from env; config-set needs the export

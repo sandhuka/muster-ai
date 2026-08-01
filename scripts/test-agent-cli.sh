@@ -17,6 +17,7 @@ mkdir -p "$SB/bin"
 cat > "$SB/bin/stub-cli" <<EOF
 #!/usr/bin/env bash
 { echo "ROLE=\$MUSTER_ROLE"; for a in "\$@"; do echo "\$a"; done; } > "$SB/argv"
+{ echo "BASE=\${ANTHROPIC_BASE_URL:-}"; echo "TOK=\${ANTHROPIC_AUTH_TOKEN:-}"; } > "$SB/env"
 exit "\${STUB_RC:-0}"
 EOF
 cp "$SB/bin/stub-cli" "$SB/bin/claude"
@@ -73,6 +74,29 @@ MUSTER_AGENT_CLI="$SB/bin/stub-cli" STUB_RC=7 agent_plain pm 5 "hi" >/dev/null
 [ $? -eq 7 ] && ok "exit code passes through (7)" || no "exit code masked"
 MUSTER_AGENT_CLI="$SB/bin/stub-cli" STUB_RC=0 agent_stream auto 5 "" "hi" >/dev/null
 [ $? -eq 0 ] && ok "clean exit passes through (0)" || no "clean exit not 0"
+
+# ---- provider indirection (model-portability Stage 1) — subshells isolate the exports ----
+( MUSTER_AGENT_CLI="$SB/bin/stub-cli" MUSTER_PROVIDER_URL="http://prov.local/v1" \
+  MUSTER_PROVIDER_KEY_ENV=FIXTURE_KEY FIXTURE_KEY=sk-test agent_plain pm 5 "hi" >/dev/null )
+if grep -qx "BASE=http://prov.local/v1" "$SB/env" && grep -qx "TOK=sk-test" "$SB/env"; then
+  ok "provider URL + key reach the CLI (ANTHROPIC_BASE_URL/AUTH_TOKEN)"
+else no "provider env not exported: $(cat "$SB/env")"; fi
+
+rm -f "$SB/argv" "$SB/env"
+( MUSTER_AGENT_CLI="$SB/bin/stub-cli" MUSTER_PROVIDER_KEY_ENV=FIXTURE_EMPTY agent_plain pm 5 "hi" >/dev/null 2>"$SB/err" )
+rc=$?
+[ "$rc" -ne 0 ] && [ ! -f "$SB/argv" ] && grep -q "is empty" "$SB/err" \
+  && ok "empty provider key refuses loudly, CLI never invoked" \
+  || no "empty-key path wrong (rc=$rc invoked=$([ -f "$SB/argv" ] && echo yes || echo no))"
+
+( MUSTER_AGENT_CLI="$SB/bin/stub-cli" MUSTER_PROVIDER_KEY_ENV="BAD NAME" agent_plain pm 5 "hi" >/dev/null 2>"$SB/err" )
+rc=$?
+[ "$rc" -ne 0 ] && grep -q "not a valid env-var name" "$SB/err" \
+  && ok "invalid key-env name refused" || no "invalid-name path wrong (rc=$rc)"
+
+( MUSTER_AGENT_CLI="$SB/bin/stub-cli" agent_plain pm 5 "hi" >/dev/null )
+grep -qx "BASE=" "$SB/env" && grep -qx "TOK=" "$SB/env" \
+  && ok "no provider knobs -> no provider env leaked" || no "provider env leaked: $(cat "$SB/env")"
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed"
