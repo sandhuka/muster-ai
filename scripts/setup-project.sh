@@ -277,15 +277,21 @@ if ! state_has_step "scaffold_templates"; then
         chmod +x .claude/statusline.sh
     fi
 
-    # settings.json — only install project-level if no user-level statusline AND no project-level
-    if [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
-        :
-    elif [ -f ".claude/settings.json" ]; then
-        if grep -q '"statusLine"' .claude/settings.json; then
+    # settings.json — the permission pre-approvals ALWAYS ship (without them every session-start
+    # script fires a permission prompt); only the statusLine KEY defers to a user-level statusline.
+    # The strip is awk, not jq (fresh machines may lack jq) — safe because we own the template
+    # shape: the statusLine block is the object opened by the "statusLine" line (pinned in
+    # test-parse-contracts.sh; consumer: this strip).
+    if [ -f ".claude/settings.json" ]; then
+        if grep -q '"statusLine"' .claude/settings.json || [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
             :
         else
             echo "  ⚠  .claude/settings.json exists without statusLine — please add statusLine config manually from muster/templates/.claude/settings.json"
         fi
+    elif [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
+        awk '/"statusLine": \{/{skip=1; next} skip && /^  \},$/{skip=0; next} !skip' \
+            muster/templates/.claude/settings.json > .claude/settings.json
+        echo "  ·  seeded .claude/settings.json with permissions only (statusLine deferred to your user-level)"
     else
         cp muster/templates/.claude/settings.json .claude/settings.json
     fi

@@ -89,6 +89,11 @@ done
 # it, the seeded statusline and muster-bound-role.sh read it, housekeeping prunes it by glob
 need templates/.claude/statusline.sh '.muster-bound-role.' "muster-bind.sh writer <-> statusline/muster-bound-role.sh readers, muster-housekeeping.sh prune glob"
 
+# settings template shape: both setup scripts awk-strip the statusLine block when a user-level
+# statusline exists — the block-open line and the permissions key are their parse anchors
+need templates/.claude/settings.json '"statusLine": {' "setup-project.sh + setup-existing-project.sh statusLine strip"
+need templates/.claude/settings.json '"permissions"'   "setup-project.sh + setup-existing-project.sh permissions seed, add-bootstrap-permissions.sh merge"
+
 # lint-deps: brain-file dependency bullets are the parse anchor (live corpus, developer declares both)
 need team/developer/CLAUDE.md '- Depends on:'  "muster-lint-deps.sh symmetry scan"
 need team/developer/CLAUDE.md '- Provides to:' "muster-lint-deps.sh symmetry scan"

@@ -36,6 +36,9 @@ jobs:
       - name: Board lint (entries + queue coherence)
         run: bash scripts/test-lint-sprint.sh
 
+      - name: Setup smoke (pristine seed passes the shipped gates)
+        run: bash scripts/test-setup-project.sh
+
       - name: Session boot (routing + bind contract)
         run: bash scripts/test-boot.sh
 
