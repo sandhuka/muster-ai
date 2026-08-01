@@ -532,6 +532,13 @@ if ! state_has_step "scaffold_templates"; then
         cp muster/templates/.muster/config .muster/config
     fi
 
+    # Seeded-version stamp: a fresh seed is born converged, so boot's drift NOTICE stays quiet
+    # until a real submodule bump (muster-update.sh maintains this stamp from then on)
+    if [ -f "muster/VERSION" ]; then
+        mkdir -p .muster
+        tr -d '[:space:]' < muster/VERSION > .muster/seeded-version && printf '\n' >> .muster/seeded-version
+    fi
+
     # Remove template .DS_Store files if any
     find . -name ".DS_Store" -delete 2>/dev/null || true
 

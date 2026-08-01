@@ -77,6 +77,18 @@ out="$(cd "$P" && bash muster/scripts/muster-lint-requests.sh 2>&1)"; rc=$?
 out="$(cd "$P" && bash muster/scripts/muster-doctor-populated.sh 2>&1)"; rc=$?
 [ "$rc" -eq 0 ] && ok "populated doctor clean on seed" || { no "doctor red on seed (rc=$rc)"; printf '%s\n' "$out" | tail -5 | sed 's/^/  got: /'; }
 
+# ---- 5.0 stamp: a fresh seed is born converged (no drift NOTICE), updater no-ops ----
+v="$(tr -d '[:space:]' < "$P/muster/VERSION" 2>/dev/null)"
+s="$(tr -d '[:space:]' < "$P/.muster/seeded-version" 2>/dev/null)"
+[ -n "$v" ] && [ "$s" = "$v" ] && ok "fresh seed carries the seeded-version stamp ($v)" \
+  || no "stamp '$s' does not match muster VERSION '$v'"
+before="$(cd "$P" && find .claude CLAUDE.md .muster -type f -exec cat {} + | cksum)"
+out="$(cd "$P" && bash muster/scripts/muster-update.sh 2>&1)"; rc=$?
+after="$(cd "$P" && find .claude CLAUDE.md .muster -type f -exec cat {} + | cksum)"
+[ "$rc" -eq 0 ] && [ "$before" = "$after" ] && printf '%s\n' "$out" | grep -q "Current." \
+  && ok "muster-update.sh no-ops on the pristine seed (Current, zero changes)" \
+  || { no "updater not a no-op on pristine seed (rc=$rc)"; printf '%s\n' "$out" | tail -8 | sed 's/^/  got: /'; }
+
 # ---- user-level-statusline path: permissions must STILL ship (statusLine key deferred) ----
 mkdir -p "$SB/homeB/.claude"
 printf '{\n  "statusLine": { "type": "command", "command": "mine.sh" }\n}\n' > "$SB/homeB/.claude/settings.json"
