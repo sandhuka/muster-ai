@@ -23,10 +23,15 @@ check_lines(){ # $1=file $2=line-budget — missing file is a hard fail (fail-cl
   if [ "$n" -le "$2" ]; then ok "$1 — $n/$2 lines"; else bad "$1 — $n lines exceeds budget $2"; fi
 }
 
-# --- always-read project surface (shipped templates) ---
+# --- always-read project surface (shipped templates + submodule bootloaders) ---
 check_lines templates/CLAUDE.md 40
+for f in team/*/bootloader.md; do
+  check_lines "$f" 46                       # largest bootloader body (pm, 41) + 10%
+done
+# platform stubs: frontmatter + hop only — growth here means protocol content leaking back
+# into the harness layer instead of the submodule bootloader
 for f in templates/.claude/agents/*.md; do
-  check_lines "$f" 51                       # largest bootloader (pm, 46) + 10%
+  check_lines "$f" 12
 done
 
 # --- always-read KB templates (read at bind/monitoring time in every project) ---
@@ -79,11 +84,12 @@ else
 fi
 
 # --- tier-1 bind-path total (CLAUDE.md Rule 14: PM bootstrap reads ≤ 600 lines) ---
-# Static proxy at template level: project CLAUDE.md + pm bootloader + PM brain + the 8
-# PM-monitored KB templates. Runtime growth inside a project is Rule 14's own archiving job;
-# this guards the SHIPPED baseline so projects don't start life over budget.
+# Static proxy at template level: project CLAUDE.md + PM bootloader (submodule — boot's READ=
+# target; the .claude/agents stub is only the subagent entry hop, never on the bind path) +
+# PM brain + the 8 PM-monitored KB templates. Runtime growth inside a project is Rule 14's own
+# archiving job; this guards the SHIPPED baseline so projects don't start life over budget.
 t1=0
-for f in templates/CLAUDE.md templates/.claude/agents/pm.md team/pm/CLAUDE.md \
+for f in templates/CLAUDE.md team/pm/bootloader.md team/pm/CLAUDE.md \
          templates/knowledge-base/orchestration-queue.md \
          templates/knowledge-base/agent-requests.md \
          templates/knowledge-base/current-sprint.md \

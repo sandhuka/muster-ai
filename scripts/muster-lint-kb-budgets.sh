@@ -7,7 +7,7 @@
 # output and higher bills, never as an error.
 #
 # Checks (mirrors the static tier-1 proxy, measured live):
-#   FAIL — PM bootstrap-read total > 600 lines (project CLAUDE.md + .claude/agents/pm.md +
+#   FAIL — PM bootstrap-read total > 600 lines (project CLAUDE.md + muster/team/pm/bootloader.md +
 #          muster/team/pm/CLAUDE.md + the 8 monitoring KB files). Prints per-file breakdown
 #          and names the archive move for the top offenders.
 #   FAIL — current-sprint.md holds more than one sprint (completed sprints belong in
@@ -30,7 +30,7 @@ cd "$MUSTER_ROOT/.."
 
 BUDGET=600
 KB=knowledge-base
-TIER1="CLAUDE.md .claude/agents/pm.md muster/team/pm/CLAUDE.md \
+TIER1="CLAUDE.md muster/team/pm/bootloader.md muster/team/pm/CLAUDE.md \
 $KB/orchestration-queue.md $KB/agent-requests.md $KB/current-sprint.md $KB/decision-log.md \
 $KB/founder-notices.md $KB/ui-component-requests.md $KB/pre-launch-checklist.md $KB/foundational-assumptions.md"
 

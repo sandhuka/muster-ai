@@ -50,7 +50,7 @@ When a major decision affects multiple agents:
 1. Create `muster/team/<name>/` directory
 2. Create `muster/team/<name>/CLAUDE.md` brain file using the standard template (see system-guide.md for template — include Project Skills note)
 3. Create `muster/team/<name>/skills/` directory with domain skill files
-4. Create `.claude/agents/<name>.md` startup config in the project repo
+4. Create `muster/team/<name>/bootloader.md` (startup protocol) and the `.claude/agents/<name>.md` stub from the templates in system-guide.md
 5. Update `muster/CLAUDE.md` agent roster table and sub-agent access line
 6. Create `knowledge-base/agent-context/<name>.md` in the project repo and populate with PM-managed product context, Project Skills section, and current tasks
 7. Create `knowledge-base/agent-skills/<name>/` directory for product-specific skills (populate as needed)
@@ -74,7 +74,7 @@ Each agent's Product Context section should contain a **self-sufficient summary*
 **Anti-pattern to avoid**: "Read knowledge-base/product-spec.md for all details" as the primary context delivery mechanism.
 
 ### Rule 2: Agents Read Full Docs Only When Needed
-Agent startup configs (`.claude/agents/*.md`) should instruct agents to:
+Agent bootloaders (`muster/team/<role>/bootloader.md`) should instruct agents to:
 1. ALWAYS read: Their own `CLAUDE.md` and relevant skill file(s) for the current task
 2. Read ON DEMAND: Product spec sections relevant to a specific feature they're working on (not the whole doc)
 3. NEVER read at startup: Decision log (PM summarizes relevant decisions in agent context), other agents' files

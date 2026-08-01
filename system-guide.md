@@ -43,7 +43,8 @@ See `templates/knowledge-base/agent-context/` for section templates per agent.
 |---|------|-------------|
 | 1 | `muster/team/<name>/CLAUDE.md` | Agent brain file |
 | 2 | `muster/team/<name>/skills/` | Domain skill files organized by platform |
-| 3 | Project `.claude/agents/<name>.md` | Startup config (template below — must include `.populated` halt check) |
+| 3 | `muster/team/<name>/bootloader.md` | Startup protocol (template below — must include `.populated` halt check) |
+| 3b | Project `.claude/agents/<name>.md` | Platform stub: frontmatter + hop to the bootloader (template below) |
 | 4 | `muster/CLAUDE.md` — Agent Roster table | New row |
 | 5 | `muster/CLAUDE.md` — Sub-Agent Access line | Add `@<name>` |
 | 6 | Project `knowledge-base/agent-context/<name>.md` | Filtered product context + tasks |
@@ -51,7 +52,15 @@ See `templates/knowledge-base/agent-context/` for section templates per agent.
 | 8 | Project `knowledge-base/agent-context/.populated` | Add `<name>: null` entry under the `agents` block (PM populates the timestamp at first cascade or JIT populate) |
 | 9 | `templates/knowledge-base/agent-context/.populated` | Add `<name>: null` to the framework template so future projects scaffold with the new agent |
 
-### Startup Config Template (`.claude/agents/<name>.md`)
+### Startup Config Templates — Bootloader + Platform Stub
+
+The startup protocol lives in the submodule (`muster/team/<name>/bootloader.md`, harness-neutral
+— it updates on submodule bump). The project-level `.claude/agents/<name>.md` is a thin
+framework-owned stub: harness frontmatter + an imperative hop to the bootloader. Keep protocol
+content out of the stub — content in the platform layer is what recreates migration pain.
+
+**Platform stub (`.claude/agents/<name>.md`)** — the `tools:` line MUST include `Read` (or be
+absent = unrestricted): a stub that cannot Read cannot reach its own bootloader:
 
 ```markdown
 ---
@@ -60,6 +69,14 @@ description: "<one-line role description>"
 tools: Read, Write, Edit, Grep, Glob, Bash
 ---
 
+Read `muster/team/<name>/bootloader.md` and follow it exactly. It is your complete startup protocol and operating contract for this session — do not answer the user or read anything else until you have read it.
+
+(Framework-owned harness stub — overwritten on every muster update. Never edit; project content never lives here.)
+```
+
+**Bootloader (`muster/team/<name>/bootloader.md`)**:
+
+```markdown
 You are the <Name> agent for this project.
 
 **Startup halt — FIRST action**: Read `knowledge-base/agent-context/.populated`. If `agents.<name>` is `null`, your ENTIRE response must be exactly: `HALT: agent-context null. PM: run JIT populate per context-cascading.md, then re-invoke.` — and nothing else. Do not answer the user, read other files, or self-populate (Rule 1). If it's a timestamp, continue startup.
@@ -99,7 +116,7 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 1. Create `muster/team/<name>/` directory
 2. Create `muster/team/<name>/CLAUDE.md` from brain template
 3. Create `muster/team/<name>/skills/` with domain skill files (organized by platform)
-4. Create `.claude/agents/<name>.md` in the project repo from startup config template (include the `.populated` halt check)
+4. Create `muster/team/<name>/bootloader.md` from the bootloader template (include the `.populated` halt check) AND `templates/.claude/agents/<name>.md` from the stub template (projects get the stub via seed/update)
 5. Add row to `muster/CLAUDE.md` Agent Roster table
 6. Add `@<name>` to `muster/CLAUDE.md` Sub-Agent Access line
 7. Create `knowledge-base/agent-context/<name>.md` from template in the project repo
@@ -115,9 +132,10 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 - [ ] Dependencies mirrored in counterpart agents' brain files
 - [ ] Agent appears in `muster/CLAUDE.md` roster table
 - [ ] `@<name>` appears in `muster/CLAUDE.md` Sub-Agent Access line
-- [ ] Startup config reads muster/CLAUDE.md, brain file, and agent-context file
-- [ ] Startup config includes the `.populated` halt check as its first action (before any other read)
-- [ ] Startup config uses two-tier reading model (always-read vs on-demand)
+- [ ] Bootloader reads muster/CLAUDE.md, brain file, and agent-context file
+- [ ] Bootloader includes the `.populated` halt check as its first action (before any other read)
+- [ ] Bootloader uses two-tier reading model (always-read vs on-demand)
+- [ ] Platform stub hops to the bootloader and its `tools:` line includes `Read` (test-parse-contracts.sh asserts both)
 - [ ] Session-start rule for agent-requests.md present in startup config
 - [ ] Orchestration queue integration present (startup read + session completion protocol)
 - [ ] Agent has `<name>: null` entry in BOTH the project-level `.populated` AND the framework template `templates/knowledge-base/agent-context/.populated`
@@ -127,7 +145,7 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 If the agent needs to own a directory (like Research owns `knowledge-base/research/`):
 1. Add a new rule in `muster/CLAUDE.md`
 2. Create an async channel (like `change-log.md`) for PM communication
-3. Add monitoring instruction to `muster/CLAUDE.md` "Role Binding" section (or to `templates/.claude/agents/pm.md` "Monitoring duties" if the trigger is PM-only at PM bind time)
+3. Add monitoring instruction to `muster/CLAUDE.md` "Role Binding" section (or to `team/pm/bootloader.md` "Monitoring duties" if the trigger is PM-only at PM bind time)
 4. Document the boundary in `muster/team/pm/skills/generic/agent-management.md`
 
 ---

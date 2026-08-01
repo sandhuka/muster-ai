@@ -158,7 +158,7 @@ Executes only if `.muster-archive/claude-agents.pre-muster/` exists.
 
 - Review each archived custom agent file.
 - Identify custom behaviors (deviations from Muster's standard agent templates).
-- Offer to merge those behaviors into the corresponding Muster agent bootloader (e.g., custom `@developer` quirks merge into the project's `.claude/agents/developer.md`).
+- Offer to merge those behaviors into the corresponding agent's `knowledge-base/agent-context/<role>.md` (project-owned). Never merge into `.claude/agents/<role>.md` — those are framework-owned stubs, overwritten on every muster update.
 - Custom agents that don't map to a Muster role (e.g., a user-created `@security` agent) are preserved as-is alongside Muster's agents.
 - Per-agent founder approval before writing.
 

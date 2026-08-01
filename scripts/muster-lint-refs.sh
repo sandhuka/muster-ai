@@ -86,11 +86,12 @@ fi
 
 # ---- 2. no path-style skill citations outside the sanctioned map layer ----
 # Sanctioned: brain files (team/*/CLAUDE.md — they ARE the name→location map), the bootstrap/config
-# layer (templates/CLAUDE.md, templates/.claude/** — routing runs before any index is in context,
-# so full paths there are the map itself), and project agent-skills dirs (out of scope).
+# layer (templates/CLAUDE.md, templates/.claude/**, team/*/bootloader.md — routing/startup runs
+# before any index is in context, so full paths there are the map itself), and project
+# agent-skills dirs (out of scope).
 grep -rnE '(muster/)?team/[a-z-]+/skills/[A-Za-z0-9_./-]*\.md' \
      --include='*.md' team templates 2>/dev/null \
-  | grep -v -E '^team/[a-z-]+/CLAUDE\.md:' \
+  | grep -v -E '^team/[a-z-]+/CLAUDE\.md:|^team/[a-z-]+/bootloader\.md:' \
   | grep -v -E '^templates/CLAUDE\.md:|^templates/\.claude/' \
   | grep -v 'agent-skills' \
   | while IFS= read -r line; do

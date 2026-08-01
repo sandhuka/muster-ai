@@ -80,9 +80,21 @@ need "$C" 'muster-boot.sh'                            "the bootstrap itself — 
 
 # ---- Wave-8 fleet audit: pre-existing scripts' anchors, pinned ----
 
-# boot's bind route requires each role's seeded bootloader to exist by exact name
+# boot's bind route requires each role's submodule bootloader to exist by exact name; the
+# platform stub at .claude/agents/<role>.md is the Agent({subagent_type}) entry point and must
+# hop to that same bootloader (the shim seam). A stub whose frontmatter restricts tools MUST
+# grant Read — otherwise the subagent cannot follow its own hop instruction (bricked at birth);
+# no tools line = unrestricted = fine.
 for role in pm developer ui-ux qa content marketing legal research; do
-  needfile "templates/.claude/agents/$role.md" "muster-boot.sh bind route (READ= target)"
+  needfile "team/$role/bootloader.md" "muster-boot.sh bind route (READ= target), .claude/agents/$role.md stub hop"
+  needfile "templates/.claude/agents/$role.md" "setup-project.sh + setup-existing-project.sh seed, Agent({subagent_type}) entry stub"
+  need "templates/.claude/agents/$role.md" "muster/team/$role/bootloader.md" "stub -> bootloader hop (assisted mode startup)"
+  stub="templates/.claude/agents/$role.md"
+  if grep -q '^tools:' "$stub" 2>/dev/null && ! grep -q '^tools:.*Read' "$stub" 2>/dev/null; then
+    fail=$((fail+1)); echo "FAIL: $stub restricts tools without Read — stub cannot read its bootloader"
+  else
+    pass=$((pass+1)); echo "PASS: $stub grants Read (or is unrestricted)"
+  fi
 done
 
 # status-line chain: the bind-file NAME is the writer<->reader contract — muster-bind.sh writes

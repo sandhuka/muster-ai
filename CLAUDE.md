@@ -66,8 +66,8 @@ Every session picks ONE role at start. Root Claude operates as that role for the
 **First tool call of any project session: `bash muster/scripts/muster-boot.sh`.** The script is the single routing authority: it runs housekeeping, reads `.populated`, honors `$MUSTER_ROLE` (a role name binds directly; `auto` binds the queue's Next Step `Role:` via the same parser the sprint driver uses; unset fires the picker), applies the JIT gate, performs the bind, and prints exactly one `ROUTE=` directive. Obey that line literally:
 
 - `ROUTE=halt MSG="…"` → stop and relay MSG verbatim; do nothing else.
-- `ROUTE=onboarding MODE=… READ=<discovery skill>` → PM is already bound; read ONLY the named skill and run its flow. Do NOT load `.claude/agents/pm.md` — the discovery skill drives PM behavior end-to-end.
-- `ROUTE=bind ROLE=<r> INVOKER=… READ=.claude/agents/<r>.md` → declare *"Binding to <Role> for this session."* and read the bootloader — it handles brain file + agent-context + queue + requests + role-specific reads + PM monitoring duties (PM-only). Surface any `NOTICE=` line as a one-line aside; cleanup is PM's job, in a PM tab.
+- `ROUTE=onboarding MODE=… READ=<discovery skill>` → PM is already bound; read ONLY the named skill and run its flow. Do NOT load the PM bootloader (`muster/team/pm/bootloader.md`) — the discovery skill drives PM behavior end-to-end.
+- `ROUTE=bind ROLE=<r> INVOKER=… READ=muster/team/<r>/bootloader.md` → declare *"Binding to <Role> for this session."* and read the bootloader — it handles brain file + agent-context + queue + requests + role-specific reads + PM monitoring duties (PM-only). Surface any `NOTICE=` line as a one-line aside; cleanup is PM's job, in a PM tab.
 - `ROUTE=jit TARGET=<r> …` → PM is already bound; run JIT populate for TARGET per the `THEN=` line, then re-run boot with that role.
 - `ROUTE=pick LAST_ROLE=…` → two-step picker via AskUserQuestion (8 roles, 4-option cap): Q1 role group from the printed `GROUP=` lines (pre-select LAST_ROLE's group; with Q1 print one signpost line: *"Framework help: `/muster`"*), Q2 role within the group (single-option groups short-circuit). Then run the `AFTER_PICK=` command with the picked role — it binds and prints the `ROUTE=bind` directive above.
 
@@ -83,14 +83,14 @@ Every session picks ONE role at start. Root Claude operates as that role for the
 
 **Cross-role consults**: default is file-based via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent via Agent tool, OR open a new role-bound tab. Test: if the answer deserves a `decision-log` entry, use file-based instead. Rationale: `architecture-and-design.md` mistake #5 — conversations are ephemeral, files persist.
 
-**PM monitoring duties**: full reads + triggers live in `.claude/agents/pm.md` (loads only when bound to PM). The non-PM side-scan is boot's `NOTICE=` line — no manual scan.
+**PM monitoring duties**: full reads + triggers live in `muster/team/pm/bootloader.md` (loads only when bound to PM). The non-PM side-scan is boot's `NOTICE=` line — no manual scan.
 
 **Subsequent turns**: don't re-read bind-step files; use conversation context. **PM after subagent invocation**: re-read any PM-monitored files (`agent-requests.md`, `orchestration-queue.md`, `decision-log.md`, `ui-component-requests.md`) the subagent may have updated. **Skills**: each role's brain file has an "Available Skills" index — read only what the current task needs.
 
 ### Extended Reference
 **Before** adding/modifying agents, features, tools, or running workflow protocols (discovery, scope changes, product expansion), **you must read `muster/system-guide.md` first** — it contains the required templates, step-by-step procedures, and usage examples.
 
-**Note on @pm**: PM has its own `.claude/agents/pm.md` startup config. Bind via picker (Coordination → PM) or invoke as a subagent via `Agent({subagent_type: "pm"})` for one-shot consults.
+**Note on @pm**: PM's startup protocol lives in `muster/team/pm/bootloader.md` (the `.claude/agents/pm.md` stub routes there). Bind via picker (Coordination → PM) or invoke as a subagent via `Agent({subagent_type: "pm"})` for one-shot consults.
 
 ## Communication Standards
 

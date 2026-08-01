@@ -99,10 +99,10 @@ jit_or_bind(){ # $1=role $2=invoker — JIT gate first, then bind + the session 
     printf 'THEN=populate %s per Just-in-time mode, then run: bash muster/scripts/muster-boot.sh %s\n' "$role" "$role"
     exit 0
   fi
-  [ -f ".claude/agents/$role.md" ] || halt "Bootloader .claude/agents/$role.md missing. Reseed it from muster/templates/.claude/agents/."
+  [ -f "muster/team/$role/bootloader.md" ] || halt "Bootloader muster/team/$role/bootloader.md missing — muster checkout incomplete. Run: git submodule update --init, then retry."
   bind "$role" "$invoker"
   log_route "route=bind role=$role invoker=$invoker"
-  printf 'ROUTE=bind ROLE=%s INVOKER=%s READ=.claude/agents/%s.md\n' "$role" "$invoker" "$role"
+  printf 'ROUTE=bind ROLE=%s INVOKER=%s READ=muster/team/%s/bootloader.md\n' "$role" "$invoker" "$role"
   notice_line "$role"
   exit 0
 }

@@ -13,14 +13,14 @@ export CLAUDE_CODE_SESSION_ID=boot-fixture
 # --- sandbox: project layout (muster embedded at muster/) ---
 PROJ="$SBX/proj"
 mkdir -p "$PROJ/muster/scripts" "$PROJ/muster/team/pm/skills/generic" \
-         "$PROJ/knowledge-base/agent-context" "$PROJ/.claude/agents"
+         "$PROJ/knowledge-base/agent-context"
 for s in muster-boot.sh muster-read-queue.sh muster-read-populated.sh muster-bind.sh muster-housekeeping.sh muster-list-open-items.sh; do
   cp "$SRC/scripts/$s" "$PROJ/muster/scripts/"
 done
 touch "$PROJ/muster/system-guide.md"
 echo stub > "$PROJ/muster/team/pm/skills/generic/reverse-discovery.md"
 echo stub > "$PROJ/muster/team/pm/skills/generic/greenfield-discovery.md"
-for r in pm developer ui-ux qa content marketing legal research; do echo stub > "$PROJ/.claude/agents/$r.md"; done
+for r in pm developer ui-ux qa content marketing legal research; do mkdir -p "$PROJ/muster/team/$r"; echo stub > "$PROJ/muster/team/$r/bootloader.md"; done
 
 pop(){ # $1=onboarded $2=complete $3=agents.pm $4=agents.developer
   cat > "$PROJ/knowledge-base/agent-context/.populated" <<EOF
@@ -98,7 +98,7 @@ t greenfield-ongoing-pick 'ROUTE=pick' "$BOOT"
 
 # --- env-var precedence: valid / wrong-case / non-session role / garbage ---
 pop '"2026-07-01"' '"2026-07-02"' '"2026-07-01"' '"2026-07-01"'
-MR=developer t env-var-bind 'ROUTE=bind ROLE=developer INVOKER=env-var READ=.claude/agents/developer.md' "$BOOT"
+MR=developer t env-var-bind 'ROUTE=bind ROLE=developer INVOKER=env-var READ=muster/team/developer/bootloader.md' "$BOOT"
 MR=Developer t case-exact-role "ROUTE=halt MSG=\"MUSTER_ROLE='Developer'" "$BOOT"
 MR=guide t guide-not-session-role "ROUTE=halt MSG=\"MUSTER_ROLE='guide'" "$BOOT"
 MR=banana t invalid-role-halt "ROUTE=halt MSG=\"MUSTER_ROLE='banana'" "$BOOT"
@@ -147,9 +147,9 @@ tgrep phase2-invalid-role "'banana' is not a valid role" "$BOOT" banana
 pop '"2026-07-01"' '"2026-07-02"' '"2026-07-01"' null
 MR=developer t jit-needed 'ROUTE=jit TARGET=developer READ=muster/team/pm/skills/generic/context-cascading.md' "$BOOT"
 pop '"2026-07-01"' '"2026-07-02"' '"2026-07-01"' '"2026-07-01"'
-mv "$PROJ/.claude/agents/developer.md" "$SBX/dev.bak"
-MR=developer t halt-bootloader-missing 'ROUTE=halt MSG="Bootloader .claude/agents/developer.md missing' "$BOOT"
-mv "$SBX/dev.bak" "$PROJ/.claude/agents/developer.md"
+mv "$PROJ/muster/team/developer/bootloader.md" "$SBX/dev.bak"
+MR=developer t halt-bootloader-missing 'ROUTE=halt MSG="Bootloader muster/team/developer/bootloader.md missing' "$BOOT"
+mv "$SBX/dev.bak" "$PROJ/muster/team/developer/bootloader.md"
 
 # --- NOTICE side-scan: fires for non-PM with open items, silent for PM ---
 cat > "$PROJ/knowledge-base/agent-requests.md" <<'EOF'

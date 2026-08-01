@@ -6,7 +6,7 @@ SBX="$(mktemp -d "${TMPDIR:-/tmp}/muster-kbb-test.XXXXXX")"
 trap 'rm -rf "$SBX"' EXIT
 
 PROJ="$SBX/proj"
-mkdir -p "$PROJ/muster/scripts" "$PROJ/muster/team/pm" "$PROJ/knowledge-base" "$PROJ/.claude/agents"
+mkdir -p "$PROJ/muster/scripts" "$PROJ/muster/team/pm" "$PROJ/knowledge-base"
 cp "$SRC/scripts/muster-lint-kb-budgets.sh" "$PROJ/muster/scripts/"
 touch "$PROJ/muster/system-guide.md"
 LINT="$PROJ/muster/scripts/muster-lint-kb-budgets.sh"
