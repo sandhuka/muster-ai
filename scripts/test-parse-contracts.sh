@@ -98,8 +98,11 @@ for role in pm developer ui-ux qa content marketing legal research; do
 done
 
 # status-line chain: the bind-file NAME is the writer<->reader contract — muster-bind.sh writes
-# it, the seeded statusline and muster-bound-role.sh read it, housekeeping prunes it by glob
-need templates/.claude/statusline.sh '.muster-bound-role.' "muster-bind.sh writer <-> statusline/muster-bound-role.sh readers, muster-housekeeping.sh prune glob"
+# it, muster-statusline.sh and muster-bound-role.sh read it, housekeeping prunes it by glob.
+# The seeded .claude/statusline.sh is a framework-owned stub that must hop to the submodule.
+need scripts/muster-statusline.sh '.muster-bound-role.' "muster-bind.sh writer <-> muster-statusline.sh/muster-bound-role.sh readers, muster-housekeeping.sh prune glob"
+need templates/.claude/statusline.sh 'muster/scripts/muster-statusline.sh' "statusline stub exec hop -> muster-statusline.sh"
+need templates/.claude/statusline.sh '[muster: submodule missing]' "statusline stub degrade contract (test-muster-agent.sh)"
 
 # settings template shape: both setup scripts awk-strip the statusLine block when a user-level
 # statusline exists — the block-open line and the permissions key are their parse anchors

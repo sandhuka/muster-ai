@@ -29,7 +29,7 @@ family_ok(){ # muster-<rest> basename -> allowed family?
     muster-advance-queue.sh|muster-agent-cli.sh|muster-bind.sh|muster-boot.sh) return 0 ;;
     muster-bound-role.sh|muster-check-context.sh|muster-closeout.sh) return 0 ;;
     muster-doctor-*.sh|muster-find-*.sh|muster-housekeeping.sh) return 0 ;;
-    muster-list-*.sh|muster-plan-gate.sh|muster-meter.py) return 0 ;;
+    muster-list-*.sh|muster-plan-gate.sh|muster-meter.py|muster-statusline.sh) return 0 ;;
     # Tier-2 deprecation shims (remove at next major, and this exemption with them)
     muster-commit-lint.sh|muster-queue-lint.sh|muster-requests-lint.sh) return 0 ;;
     *) return 1 ;;
