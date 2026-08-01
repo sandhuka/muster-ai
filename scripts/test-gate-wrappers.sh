@@ -9,10 +9,11 @@ trap 'rm -rf "$SBX"' EXIT
 
 PROJ="$SBX/proj"
 mkdir -p "$PROJ/muster/scripts" "$PROJ/knowledge-base/agent-context"
-for s in muster-plan-gate.sh muster-closeout.sh muster-lint-queue.sh muster-lint-context.sh \
-         muster-read-queue.sh muster-read-populated.sh muster-lint-kb-budgets.sh \
-         muster-lint-requests.sh muster-lint-entry.sh muster-lint-decisions.sh \
-         muster-lint-durability.sh muster-lint-gate-packet.sh muster-list-open-items.sh; do
+for s in muster-plan-gate.sh muster-closeout.sh muster-lint-queue.sh muster-lint-step.sh \
+         muster-lint-context.sh muster-read-queue.sh muster-read-populated.sh \
+         muster-lint-kb-budgets.sh muster-lint-requests.sh muster-lint-entry.sh \
+         muster-lint-decisions.sh muster-lint-durability.sh muster-lint-gate-packet.sh \
+         muster-list-open-items.sh; do
   cp "$SRC/scripts/$s" "$PROJ/muster/scripts/"
 done
 touch "$PROJ/muster/system-guide.md"
@@ -47,7 +48,10 @@ cat > "$PROJ/knowledge-base/orchestration-queue.md" <<'EOF'
 ### Step 1 — QA: verify
 ```
 Role: qa
-Verify.
+Inputs: agent-context/qa.md
+Deliverable: verification HO
+Acceptance: suite green. See current-sprint.md.
+On-completion: file the HO; update the queue.
 ```
 
 ## Upcoming
@@ -55,13 +59,16 @@ Verify.
 ### Step 2 — Developer: build
 ```
 Role: developer
-Build.
+Inputs: agent-context/developer.md
+Deliverable: the build
+Acceptance: compiles green. See current-sprint.md.
+On-completion: file the HO; update the queue.
 ```
 
 ### Step 3 — Founder gate
 ```
 Role: halt
-Gate.
+Walk the wave-review.md checklist; write the verdict.
 ```
 
 ## Done (Last 10)

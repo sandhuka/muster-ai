@@ -102,6 +102,14 @@ need system-guide.md '**Type:**'        "muster-lint-entry.sh field regexes (col
 need system-guide.md '**Deliverable:**' "muster-lint-entry.sh deliverable-path check"
 need system-guide.md '**Reviewers:**'   "muster-lint-entry.sh reviewer checklist check"
 
+# lint-step: the step-body field contract's source of truth is the planning skill's Queue Step
+# Format (the seeded queue template deliberately carries no field example — audit fact)
+SP=team/pm/skills/generic/sprint-planning.md
+need "$SP" '**Deliverable:**'   "muster-lint-step.sh field contract (bold form; plain form is live convention)"
+need "$SP" '**On completion:**' "muster-lint-step.sh field contract"
+need "$SP" 'Role: halt'         "muster-lint-step.sh gate check + muster-sprint-run.sh halt stop"
+need "$SP" 'wave-review.md'     "muster-lint-step.sh halt-gate pointer check"
+
 # lint-kb-budgets: the PM-bootstrap file set it measures must exist under these exact names
 needfile templates/knowledge-base/current-sprint.md "muster-lint-kb-budgets.sh watched set, one-active-sprint check"
 

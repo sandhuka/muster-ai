@@ -28,6 +28,7 @@ check(){ # $1=label, rest=command
 
 echo "MUSTER PLAN GATE"
 check "queue structure (driver-parseable)" bash "$SCRIPT_DIR/muster-lint-queue.sh"
+check "step bodies (cold-agent-executable)" bash "$SCRIPT_DIR/muster-lint-step.sh"
 
 QUEUE=knowledge-base/orchestration-queue.md
 roles="$(grep '^Role:' "$QUEUE" 2>/dev/null | sed 's/^Role:[[:space:]]*//; s/[[:space:]]*$//' | grep -v '^halt$' | sort -u || true)"

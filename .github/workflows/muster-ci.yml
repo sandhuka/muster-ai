@@ -30,6 +30,9 @@ jobs:
       - name: Housekeeping (bind-file prune + log rotation)
         run: bash scripts/test-housekeeping.sh
 
+      - name: Step-body lint (cold-agent executability)
+        run: bash scripts/test-lint-step.sh
+
       - name: Session boot (routing + bind contract)
         run: bash scripts/test-boot.sh
 
