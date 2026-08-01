@@ -79,6 +79,16 @@ bind(){
     printf 'ROUTE=halt MSG="bind failed for role %s — see error above"\n' "$1"; exit 1; }
 }
 
+drift_notice(){ # seeded-version stamp vs muster/VERSION — names the one converge command
+  local v s
+  [ -f muster/VERSION ] || return 0
+  v="$(tr -d '[:space:]' < muster/VERSION)"
+  s=""; [ -f .muster/seeded-version ] && s="$(tr -d '[:space:]' < .muster/seeded-version)"
+  [ "$s" = "$v" ] && return 0
+  printf 'NOTICE=muster is at %s but project files are seeded at %s — run: bash muster/scripts/muster-update.sh\n' "$v" "${s:-unknown (no stamp)}"
+  return 0
+}
+
 notice_line(){ # deterministic non-PM side-scan: open board items + pending founder decisions
   local n fd
   [ "${1:-}" = "pm" ] && return 0   # PM runs full monitoring duties at bind — no aside needed
@@ -103,6 +113,7 @@ jit_or_bind(){ # $1=role $2=invoker — JIT gate first, then bind + the session 
   bind "$role" "$invoker"
   log_route "route=bind role=$role invoker=$invoker"
   printf 'ROUTE=bind ROLE=%s INVOKER=%s READ=muster/team/%s/bootloader.md\n' "$role" "$invoker" "$role"
+  drift_notice
   notice_line "$role"
   exit 0
 }

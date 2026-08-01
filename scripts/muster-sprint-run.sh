@@ -98,6 +98,16 @@ RULE_L="────────────────────────
   echo
 } | tee -a "$HUMANLOG"
 
+# seeded-version drift: warn-only, NEVER a stop — a mid-sprint resume must not brick on a bump.
+# Same comparison boot's drift_notice makes; promotion to a gate is a later, separate ruling.
+if [ -f muster/VERSION ]; then
+  _v="$(tr -d '[:space:]' < muster/VERSION)"
+  _s=""; [ -f .muster/seeded-version ] && _s="$(tr -d '[:space:]' < .muster/seeded-version)"
+  if [ "$_s" != "$_v" ]; then
+    echo "  ⚠ muster is at $_v but project files are seeded at ${_s:-unknown} — run: bash muster/scripts/muster-update.sh (warn-only)" | tee -a "$HUMANLOG"
+  fi
+fi
+
 # next_block/next_role live in the shared parser (muster-boot.sh executes the same file), so the
 # driver and the session bootstrap can never disagree on what the queue's Next Step says.
 # Fail CLOSED like the worktree guard: a missing parser refuses to run.

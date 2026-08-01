@@ -99,6 +99,18 @@ t greenfield-ongoing-pick 'ROUTE=pick' "$BOOT"
 # --- env-var precedence: valid / wrong-case / non-session role / garbage ---
 pop '"2026-07-01"' '"2026-07-02"' '"2026-07-01"' '"2026-07-01"'
 MR=developer t env-var-bind 'ROUTE=bind ROLE=developer INVOKER=env-var READ=muster/team/developer/bootloader.md' "$BOOT"
+
+# --- seeded-version drift NOTICE on bind (warn-only; names the one converge command) ---
+echo 5.0.0 > "$PROJ/muster/VERSION"
+MR=developer tgrep drift-notice-no-stamp 'NOTICE=muster is at 5.0.0 but project files are seeded at unknown (no stamp) — run: bash muster/scripts/muster-update.sh' "$BOOT"
+mkdir -p "$PROJ/.muster"; echo 0.1.0 > "$PROJ/.muster/seeded-version"
+MR=developer tgrep drift-notice-stale-stamp 'NOTICE=muster is at 5.0.0 but project files are seeded at 0.1.0' "$BOOT"
+echo 5.0.0 > "$PROJ/.muster/seeded-version"
+n=$((n+1)); out="$(MR=developer run "$BOOT")"
+if printf '%s\n' "$out" | head -1 | grep -q '^ROUTE=bind' && ! printf '%s\n' "$out" | grep -q 'muster-update.sh'; then
+  echo "PASS: drift-notice-quiet-when-converged"
+else fails=$((fails+1)); echo "FAIL: drift-notice-quiet-when-converged"; printf '%s\n' "$out" | sed 's/^/  got:  /'; fi
+rm -rf "$PROJ/muster/VERSION" "$PROJ/.muster"
 MR=Developer t case-exact-role "ROUTE=halt MSG=\"MUSTER_ROLE='Developer'" "$BOOT"
 MR=guide t guide-not-session-role "ROUTE=halt MSG=\"MUSTER_ROLE='guide'" "$BOOT"
 MR=banana t invalid-role-halt "ROUTE=halt MSG=\"MUSTER_ROLE='banana'" "$BOOT"

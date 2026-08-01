@@ -502,7 +502,7 @@ if ! state_has_step "scaffold_templates"; then
     # (the "statusLine" block anchor is pinned in test-parse-contracts.sh).
     if [ -f ".claude/settings.json" ]; then
         if grep -q '"statusLine"' .claude/settings.json || [ "$HAS_USER_STATUSLINE" -eq 1 ]; then
-            : # statusLine handled (project- or user-level) — permissions merge is add-bootstrap-permissions.sh's job
+            : # statusLine handled (project- or user-level) — permissions merge is muster-update.sh's job
         else
             echo "  ⚠  .claude/settings.json exists without statusLine — please add statusLine config manually from muster/templates/.claude/settings.json"
         fi

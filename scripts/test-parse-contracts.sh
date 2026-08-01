@@ -74,8 +74,8 @@ need "$D" '**Touched**'         "muster-lint-decisions.sh field + path checks"
 need "$D" '## Active Decisions' "decision-log structure (PM closeout archive boundary)"
 
 C=templates/CLAUDE.md
-need "$C" '<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->' "add-bootstrap-permissions.sh block replacement"
-need "$C" '<!-- END BOOTSTRAP -->'                    "add-bootstrap-permissions.sh block replacement"
+need "$C" '<!-- MUSTER BOOTSTRAP — DO NOT REMOVE -->' "muster-update.sh bootstrap-block sync (absorbed add-bootstrap-permissions.sh)"
+need "$C" '<!-- END BOOTSTRAP -->'                    "muster-update.sh bootstrap-block sync"
 need "$C" 'muster-boot.sh'                            "the bootstrap itself — seeded first tool call"
 
 # ---- Wave-8 fleet audit: pre-existing scripts' anchors, pinned ----
@@ -114,7 +114,7 @@ need templates/.claude/skills/rebind/SKILL.md 'Role Binding'                 "st
 # settings template shape: both setup scripts awk-strip the statusLine block when a user-level
 # statusline exists — the block-open line and the permissions key are their parse anchors
 need templates/.claude/settings.json '"statusLine": {' "setup-project.sh + setup-existing-project.sh statusLine strip"
-need templates/.claude/settings.json '"permissions"'   "setup-project.sh + setup-existing-project.sh permissions seed, add-bootstrap-permissions.sh merge"
+need templates/.claude/settings.json '"permissions"'   "setup-project.sh + setup-existing-project.sh permissions seed, muster-update.sh union merge"
 
 # lint-deps: brain-file dependency bullets are the parse anchor (live corpus, developer declares both)
 need team/developer/CLAUDE.md '- Depends on:'  "muster-lint-deps.sh symmetry scan"

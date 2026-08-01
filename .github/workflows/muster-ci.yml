@@ -39,6 +39,9 @@ jobs:
       - name: Setup smoke (pristine seed passes the shipped gates)
         run: bash scripts/test-setup-project.sh
 
+      - name: Updater (stale -> converged -> idempotent; user content preserved)
+        run: bash scripts/test-muster-update.sh
+
       - name: Session boot (routing + bind contract)
         run: bash scripts/test-boot.sh
 
