@@ -1,7 +1,7 @@
 # iOS Content Hierarchy
 
 ## Purpose
-Define how to decide what deserves emphasis on any screen — before wireframing begins. Apple-quality UI is won or lost at the hierarchy level, not the component level. A technically correct wireframe with wrong emphasis is worse than a rough wireframe with right emphasis. Read this skill when structuring a screen's information density, prioritization, and visual emphasis. See `team/ui-ux/skills/ios-wireframe-methodology.md` for the wireframe production format that comes *after* hierarchy is decided. See `team/ui-ux/skills/ios-hig-reference.md` for platform conventions that constrain how hierarchy is expressed.
+Define how to decide what deserves emphasis on any screen — before wireframing begins. Apple-quality UI is won or lost at the hierarchy level, not the component level. A technically correct wireframe with wrong emphasis is worse than a rough wireframe with right emphasis. Read this skill when structuring a screen's information density, prioritization, and visual emphasis. See the `ios-wireframe-methodology` skill for the wireframe production format that comes *after* hierarchy is decided. See the `ios-hig-reference` skill for platform conventions that constrain how hierarchy is expressed.
 
 ## Decision Rule
 Before laying out any screen, complete the hierarchy exercise below. If you can't clearly name the #1 thing the user should see, the screen isn't ready to wireframe.

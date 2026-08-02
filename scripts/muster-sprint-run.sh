@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# muster-sprint-run.sh — drive the orchestration queue to completion autonomously.
+# muster-sprint-run.sh — action: drive the orchestration queue to completion autonomously (family: sprint verb — acts).
 # RUN INSIDE A GIT WORKTREE. Never on your main checkout with --dangerously-skip-permissions.
 # Reuses MUSTER_ROLE=auto: each step binds the role named in the queue's Next Step, executes,
 # files its handoff, and advances the queue itself. The loop only reads + honors stop signals.
@@ -10,12 +10,16 @@ set -uo pipefail
 # Fail CLOSED: a missing/unreadable guard file must refuse to run, not bypass the guard.
 source "$(dirname "$0")/muster-guard-worktree.sh" || { echo "⛔ worktree guard missing — refusing to run."; exit 1; }
 
+# The agent-CLI adapter — the only place harness flags live (MUSTER_AGENT_CLI picks the binary).
+# Fail CLOSED: without it there is no way to invoke a step.
+source "$(dirname "$0")/muster-agent-cli.sh" || { echo "⛔ agent-cli adapter missing — refusing to run."; exit 1; }
+
 # Project knobs: ./.muster/config (plain KNOB=value lines, committed so worktrees inherit it)
 # supplies project defaults for the driver's env knobs. Precedence: explicit env at invocation >
 # config > built-in default — invocation env is captured before the source and re-applied after,
 # so a config line can never override what the user typed on the command line.
 if [ -f ./.muster/config ]; then
-  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT CTX_WARN_PCT MUSTER_COLOR 2>/dev/null)"
+  _inv_env="$(declare -p MAX_STEPS MAX_TURNS ANTHROPIC_MODEL KEEP_RUNS LIMIT_RESUME_AT CTX_WARN_PCT MUSTER_COLOR MUSTER_AGENT_CLI MUSTER_PROVIDER_URL MUSTER_PROVIDER_KEY_ENV 2>/dev/null)"
   . ./.muster/config
   eval "$_inv_env"
   export ANTHROPIC_MODEL 2>/dev/null || true   # claude reads it from env; config-set needs the export
@@ -94,33 +98,20 @@ RULE_L="────────────────────────
   echo
 } | tee -a "$HUMANLOG"
 
-# Text of the Next Step block: everything between '## Next Step' and the boundary that ends it.
-# The boundary is the next top-level '## ' heading OR an 'Upcoming' heading at ANY level. Older
-# projects nest the upcoming list as '### Upcoming' / '#### Step N' under Next Step; without the
-# any-level Upcoming stop the block would over-capture the whole list and completion would be
-# unreachable. The '$'-anchored Upcoming match means only a bare 'Upcoming' heading ends the block,
-# so a step whose title merely contains the word "Upcoming" does not falsely terminate it.
-next_block(){
-  awk '
-    /^## Next Step/ {f=1; next}
-    f && (/^## / || /^#+[[:space:]]+Upcoming[[:space:]]*$/) {f=0}
-    f
-  ' "$QUEUE"
-}
+# seeded-version drift: warn-only, NEVER a stop — a mid-sprint resume must not brick on a bump.
+# Same comparison boot's drift_notice makes; promotion to a gate is a later, separate ruling.
+if [ -f muster/VERSION ]; then
+  _v="$(tr -d '[:space:]' < muster/VERSION)"
+  _s=""; [ -f .muster/seeded-version ] && _s="$(tr -d '[:space:]' < .muster/seeded-version)"
+  if [ "$_s" != "$_v" ]; then
+    echo "  ⚠ muster is at $_v but project files are seeded at ${_s:-unknown} — run: bash muster/scripts/muster-update.sh (warn-only)" | tee -a "$HUMANLOG"
+  fi
+fi
 
-# Bind role for the current Next Step, mirroring the MUSTER_ROLE=auto contract in CLAUDE.md:
-#   block has a fenced code block, with a 'Role:' line -> that role
-#   block has a fenced code block, no 'Role:' line     -> 'pm'  (PM steps may omit the marker)
-#   block has NO fenced code block                     -> ''    (queue complete)
-# Completion keys on the ABSENCE of a ``` fence, NOT on whitespace: at sprint end agents write a
-# human-readable placeholder (e.g. "_(empty — sprint complete)_") that is non-whitespace but
-# fenceless. A real step (specialist or PM) always wraps its prompt in a ``` fence.
-next_role(){
-  local blk; blk="$(next_block)"
-  printf '%s\n' "$blk" | grep -q '^```' || return 0   # col-0 fence, symmetric with the ^Role: grep below
-  local r; r="$(printf '%s' "$blk" | grep -m1 -i '^Role:' | sed 's/^[Rr]ole:[[:space:]]*//')"
-  [ -n "$r" ] && printf '%s' "$r" || printf 'pm'
-}
+# next_block/next_role live in the shared parser (muster-boot.sh executes the same file), so the
+# driver and the session bootstrap can never disagree on what the queue's Next Step says.
+# Fail CLOSED like the worktree guard: a missing parser refuses to run.
+source "$(dirname "$0")/muster-read-queue.sh" || { echo "⛔ queue parser missing — refusing to run."; exit 1; }
 
 # Count the STEPS in the Next Step section = the number of fenced blocks (each step wraps its prompt
 # in one ``` fence). Count fence OPENINGS via a toggle, NOT '###' headings: a step's prompt BODY may
@@ -304,6 +295,19 @@ while :; do
     reason="handoff lint"; break
   fi
 
+  # Context gate (PROMOTED per the ramp rule — corpus went green): a cold agent with a
+  # pointer-only context file improvises scope; that is now a stop condition, not a warning.
+  # Exit 1 = the real defect → stop. Any other non-zero (exit 3 = not running from an embedded
+  # muster tree, e.g. framework fixtures) stays a warning — fail-closed for the defect,
+  # fail-open only for wiring.
+  ctx_out="$(bash "$(dirname "$0")/muster-lint-context.sh" 2>&1)"; ctx_rc=$?
+  if [ "$ctx_rc" -eq 1 ]; then
+    echo "⛔ Context gate: ${ctx_out}" | tee -a "$HUMANLOG" # cond: context-gate
+    reason="context gate"; break
+  elif [ "$ctx_rc" -ne 0 ]; then
+    echo "⚠ context gate (wiring): ${ctx_out}" | tee -a "$HUMANLOG"
+  fi
+
   blk="$(next_block)"
   role="$(next_role)"
   label="$(next_label "$blk")"
@@ -380,14 +384,14 @@ If the changes are clearly unrelated to this step, stop and route to PM. "
     echo "  ↻ dirty tree — continuation preamble added" | tee -a "$HUMANLOG"
   fi
 
-  # Stream the step's work through the formatter (live trail + logs). PIPESTATUS[0] is claude's
-  # own exit code — the formatter/tee cannot change it, so cond-4 stays accurate (verified).
-  MUSTER_ROLE=auto claude -p --dangerously-skip-permissions --max-turns "$MAX_TURNS" \
-        ${model:+--model} ${model:+"$model"} \
-        --output-format stream-json --verbose \
+  # Stream the step's work through the formatter (live trail + logs). agent_stream's return IS
+  # the CLI's own exit code (adapter contract), so PIPESTATUS[0] keeps cond-4 accurate — the
+  # formatter/tee cannot change it (verified).
+  agent_stream auto "$MAX_TURNS" "${model:-}" \
         "${preamble}Execute the current Next Step in $QUEUE end-to-end: do the work, file your handoff, \
-run the Pre-Handoff Self-Review (muster/system-guide.md), and update the queue (move your step \
-to Done, promote the next Upcoming step to Next Step). Commit subjects: '<role>: <outcome>' \
+run the Pre-Handoff Self-Review (muster/system-guide.md), and advance the queue with \
+'bash muster/scripts/muster-advance-queue.sh <your-role> \"<one-line summary (HO-ref)>\"' — never \
+hand-edit Next Step/Done. Commit subjects: '<role>: <outcome>' \
 (lowercase role, ≤60-char outcome-first line — what got better, not mechanics; why goes in the body). PM is the sole party that calls the \
 founder: if you are a specialist and hit a blocker you cannot resolve (a decision you lack \
 authority for, a missing input, a bug you cannot crack, a red build), do NOT set Role: halt and \
@@ -412,7 +416,7 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
       prev=""   # the same Next Step re-runs on purpose — don't trip cond 3 on re-entry
       continue
     fi
-    { echo "⛔ claude exited non-zero on step $step — stopping for founder"                         # cond 4
+    { echo "⛔ ${MUSTER_AGENT_CLI:-claude} exited non-zero on step $step — stopping for founder"    # cond 4
       echo "   (if this was a heavy step, it may have hit MAX_TURNS=$MAX_TURNS — raise MAX_TURNS and"
       echo "    re-run to continue, or split the step at planning. Safe to resume: state was not advanced.)"
     } | tee -a "$HUMANLOG"
@@ -478,7 +482,7 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
     git add -A -- . ":(exclude)$LOGDIR" 2>/dev/null || git add -A
     lbl="${label:-step $step}"
     role_lc="$(printf '%s' "${role:-pm}" | tr '[:upper:]' '[:lower:]')"
-    if git commit -q -m "${role_lc}: step-boundary sweep — ${lbl:0:40}"; then
+    if git commit -q -m "${role_lc}: step-boundary sweep — ${lbl:0:60}"; then
       echo "  📦 step-boundary commit · swept $n_dirty path(s) the closeout didn't commit:" | tee -a "$HUMANLOG"
       printf '%s\n' "$dirty" | head -6 | sed 's/^/       /' | tee -a "$HUMANLOG"
       [ "$n_dirty" -gt 6 ] && echo "       … and $((n_dirty-6)) more" | tee -a "$HUMANLOG"
@@ -490,7 +494,7 @@ steps)." | bash "$FMT" "$RAWLOG" "$METRICS" | tee -a "$HUMANLOG"
   # Rule-16 commit-subject lint (warn-only — style never stops a run). Covers every commit the
   # step produced, incl. the sweep above. Skipped when the step made no commits.
   if [ -n "$head_before" ] && [ "$(git rev-parse HEAD 2>/dev/null)" != "$head_before" ]; then
-    if ! lint_out="$(bash "$(dirname "$0")/muster-commit-lint.sh" "$head_before..HEAD" 2>&1)"; then
+    if ! lint_out="$(bash "$(dirname "$0")/muster-lint-commit.sh" "$head_before..HEAD" 2>&1)"; then
       echo "  ⚠ commit subject off-convention (Rule 16): $(printf '%s' "$lint_out" | head -2 | tr '\n' ' ')" | tee -a "$HUMANLOG"
     fi
   fi

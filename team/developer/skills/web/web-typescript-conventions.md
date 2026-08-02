@@ -1,7 +1,7 @@
 # Web TypeScript Conventions
 
 ## Purpose
-Define TypeScript-specific rules, type-system patterns, and conventions for web development: strict config, naming, branded types, discriminated unions, exhaustive checking, Zod patterns, module organization, forbidden types. See `team/developer/skills/web-architecture.md` for layer boundaries (where types apply). See `team/developer/skills/web-best-practices.md` for the underlying "type safety as design tool" principle. See `team/developer/skills/web-modern-react.md` for React-specific type patterns. Target: **TypeScript 5.5+, strict mode**.
+Define TypeScript-specific rules, type-system patterns, and conventions for web development: strict config, naming, branded types, discriminated unions, exhaustive checking, Zod patterns, module organization, forbidden types. See the `web-architecture` skill for layer boundaries (where types apply). See the `web-best-practices` skill for the underlying "type safety as design tool" principle. See the `web-modern-react` skill for React-specific type patterns. Target: **TypeScript 5.5+, strict mode**.
 
 ## Version & Strict Configuration
 

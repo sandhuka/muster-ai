@@ -43,15 +43,24 @@ See `templates/knowledge-base/agent-context/` for section templates per agent.
 |---|------|-------------|
 | 1 | `muster/team/<name>/CLAUDE.md` | Agent brain file |
 | 2 | `muster/team/<name>/skills/` | Domain skill files organized by platform |
-| 3 | Project `.claude/agents/<name>.md` | Startup config (template below — must include `.populated` halt check) |
+| 3 | `muster/team/<name>/bootloader.md` | Startup protocol (template below — must include `.populated` halt check) |
+| 3b | Project `.claude/agents/<name>.md` | Platform stub: frontmatter + hop to the bootloader (template below) |
 | 4 | `muster/CLAUDE.md` — Agent Roster table | New row |
-| 5 | `muster/CLAUDE.md` — Sub-Agent Access line | Add `@<name>` |
+| 5 | `muster/CLAUDE.md` — Sub-Agent Invocation roster | Add the role name to the agent list |
 | 6 | Project `knowledge-base/agent-context/<name>.md` | Filtered product context + tasks |
 | 7 | Project `knowledge-base/agent-skills/<name>/` | Create directory for product-specific skills |
 | 8 | Project `knowledge-base/agent-context/.populated` | Add `<name>: null` entry under the `agents` block (PM populates the timestamp at first cascade or JIT populate) |
 | 9 | `templates/knowledge-base/agent-context/.populated` | Add `<name>: null` to the framework template so future projects scaffold with the new agent |
 
-### Startup Config Template (`.claude/agents/<name>.md`)
+### Startup Config Templates — Bootloader + Platform Stub
+
+The startup protocol lives in the submodule (`muster/team/<name>/bootloader.md`, harness-neutral
+— it updates on submodule bump). The project-level `.claude/agents/<name>.md` is a thin
+framework-owned stub: harness frontmatter + an imperative hop to the bootloader. Keep protocol
+content out of the stub — content in the platform layer is what recreates migration pain.
+
+**Platform stub (`.claude/agents/<name>.md`)** — the `tools:` line MUST include `Read` (or be
+absent = unrestricted): a stub that cannot Read cannot reach its own bootloader:
 
 ```markdown
 ---
@@ -60,6 +69,14 @@ description: "<one-line role description>"
 tools: Read, Write, Edit, Grep, Glob, Bash
 ---
 
+Read `muster/team/<name>/bootloader.md` and follow it exactly. It is your complete startup protocol and operating contract for this session — do not answer the user or read anything else until you have read it.
+
+(Framework-owned harness stub — overwritten on every muster update. Never edit; project content never lives here.)
+```
+
+**Bootloader (`muster/team/<name>/bootloader.md`)**:
+
+```markdown
 You are the <Name> agent for this project.
 
 **Startup halt — FIRST action**: Read `knowledge-base/agent-context/.populated`. If `agents.<name>` is `null`, your ENTIRE response must be exactly: `HALT: agent-context null. PM: run JIT populate per context-cascading.md, then re-invoke.` — and nothing else. Do not answer the user, read other files, or self-populate (Rule 1). If it's a timestamp, continue startup.
@@ -73,9 +90,9 @@ PM auto-handles this by reading the JIT Populate procedure, populating the agent
 4. knowledge-base/orchestration-queue.md (check if there is a step assigned to you — that is your primary task)
 5. knowledge-base/agent-requests.md (check for requests to you, handoffs needing your review, and your handoffs needing revision)
 
-**Session completion**: After completing your task, update `knowledge-base/orchestration-queue.md` — move your step to Done with a one-line summary (if Done exceeds 10 entries, remove the oldest first), then move the next upcoming step to Next Step. This should be your final action.
+**Session completion**: run `bash muster/scripts/muster-advance-queue.sh <role> "<one-line summary>"` as your final action — it moves your step to Done (capped), promotes the next Upcoming step, and refuses steps that aren't yours. If it REFUSES, do not hand-edit the queue — route the printed reason to PM.
 
-**Session-start communication check**: After reading agent-requests.md, check: (1) Requests with `To: [you]` and `Status: open` — respond and set to `done`. (2) Handoffs listing you as a Reviewer with sub-status `pending` — review the deliverable and update your sub-status. (3) Handoffs where you are Producer with status `needs-revision` — read feedback, revise, update revision log. Flag any entry older than 5 days as stale.
+**Session-start communication check**: run `bash muster/scripts/muster-list-open-items.sh --for <role>` and act on each listed item: TO_ME_OPEN → respond, set `Status: done`; REVIEW_PENDING → review the deliverable, update your reviewer sub-status; MY_NEEDS_REVISION → read feedback, revise, update the revision log. STALE tags are computed for you — surface them in your handoff.
 
 **Read on demand** (only the sections relevant to your current task):
 - knowledge-base/product-spec.md — your agent-context file already has a role-specific summary; read the full spec only when you need feature-level detail
@@ -99,9 +116,9 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 1. Create `muster/team/<name>/` directory
 2. Create `muster/team/<name>/CLAUDE.md` from brain template
 3. Create `muster/team/<name>/skills/` with domain skill files (organized by platform)
-4. Create `.claude/agents/<name>.md` in the project repo from startup config template (include the `.populated` halt check)
+4. Create `muster/team/<name>/bootloader.md` from the bootloader template (include the `.populated` halt check) AND `templates/.claude/agents/<name>.md` from the stub template (projects get the stub via seed/update)
 5. Add row to `muster/CLAUDE.md` Agent Roster table
-6. Add `@<name>` to `muster/CLAUDE.md` Sub-Agent Access line
+6. Add the role name to the `muster/CLAUDE.md` Sub-Agent Invocation agent list
 7. Create `knowledge-base/agent-context/<name>.md` from template in the project repo
 8. Add `<name>: null` to `knowledge-base/agent-context/.populated` (project-level) AND to `templates/knowledge-base/agent-context/.populated` (framework-level so future projects scaffold with the new agent)
 9. PM (in a PM-bound session) populates the agent-context file with project-specific content and sets the agent's timestamp in `.populated`
@@ -114,10 +131,11 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 - [ ] Agent-context file exists in the project with PM-managed product context
 - [ ] Dependencies mirrored in counterpart agents' brain files
 - [ ] Agent appears in `muster/CLAUDE.md` roster table
-- [ ] `@<name>` appears in `muster/CLAUDE.md` Sub-Agent Access line
-- [ ] Startup config reads muster/CLAUDE.md, brain file, and agent-context file
-- [ ] Startup config includes the `.populated` halt check as its first action (before any other read)
-- [ ] Startup config uses two-tier reading model (always-read vs on-demand)
+- [ ] Role name appears in the `muster/CLAUDE.md` Sub-Agent Invocation agent list
+- [ ] Bootloader reads muster/CLAUDE.md, brain file, and agent-context file
+- [ ] Bootloader includes the `.populated` halt check as its first action (before any other read)
+- [ ] Bootloader uses two-tier reading model (always-read vs on-demand)
+- [ ] Platform stub hops to the bootloader and its `tools:` line includes `Read` (test-parse-contracts.sh asserts both)
 - [ ] Session-start rule for agent-requests.md present in startup config
 - [ ] Orchestration queue integration present (startup read + session completion protocol)
 - [ ] Agent has `<name>: null` entry in BOTH the project-level `.populated` AND the framework template `templates/knowledge-base/agent-context/.populated`
@@ -127,10 +145,25 @@ Your skills are indexed in your brain file (`muster/team/<name>/CLAUDE.md`) unde
 If the agent needs to own a directory (like Research owns `knowledge-base/research/`):
 1. Add a new rule in `muster/CLAUDE.md`
 2. Create an async channel (like `change-log.md`) for PM communication
-3. Add monitoring instruction to `muster/CLAUDE.md` "Role Binding" section (or to `templates/.claude/agents/pm.md` "Monitoring duties" if the trigger is PM-only at PM bind time)
+3. Add monitoring instruction to `muster/CLAUDE.md` "Role Binding" section (or to `team/pm/bootloader.md` "Monitoring duties" if the trigger is PM-only at PM bind time)
 4. Document the boundary in `muster/team/pm/skills/generic/agent-management.md`
 
 ---
+
+## Script Naming Convention
+
+Every script in `scripts/` self-sorts by name into one of three families, and its header comment
+declares the family's contract:
+
+- **`muster-lint-<thing>.sh`** — checks and reports (`OK`/`FAIL: <file>:<line> — <fix>`), exit code
+  is the verdict, never mutates anything.
+- **`muster-guard-<thing>.sh`** — blocks an unsafe action; fails closed (a missing guard refuses,
+  never bypasses).
+- **`muster-<verb>-<thing>.sh`** — performs an action or answers a question (`muster-bind`,
+  `muster-find-skill`, `muster-list-open-items`).
+
+Legacy pre-convention names (`muster-lint-commit`, `muster-lint-queue`, `muster-lint-requests`)
+keep working; new scripts follow the grammar.
 
 ## Adding a New Skill
 
@@ -156,7 +189,7 @@ If the agent needs to own a directory (like Research owns `knowledge-base/resear
 # [Skill Name]
 
 ## Purpose
-[One-liner describing what this skill covers and when to use it.] See `team/<agent>/skills/<sibling>.md` for [related methodology]. See `knowledge-base/<doc>.md` for [related product context].
+[One-liner describing what this skill covers and when to use it.] See the `<sibling>` skill for [related methodology]. See `knowledge-base/<doc>.md` for [related product context].
 
 ## [Core Sections]
 [The methodology, standards, templates, or workflows this skill defines.]
@@ -171,7 +204,7 @@ If the agent needs to own a directory (like Research owns `knowledge-base/resear
 
 ### Quality Checklist
 - [ ] **Purpose section** immediately after the H1 title
-- [ ] **At least one cross-reference** to a sibling skill or knowledge-base doc
+- [ ] **At least one cross-reference** to a sibling skill or knowledge-base doc. Skills are cited **by name, never by path**, in exactly one of two canonical forms: ``the `<name>` skill`` or, when the name exists under more than one role, ``<Role>'s `<name>` skill``. (`bash scripts/muster-find-skill.sh <name>` resolves a name to its file; `muster-lint-refs.sh` enforces that every citation resolves.)
 - [ ] **Principles section** at the end if the skill involves judgment
 - [ ] **Output section** if the skill produces a deliverable with a specific destination
 - [ ] **No duplicated content** from knowledge-base — reference, don't copy
@@ -180,7 +213,7 @@ If the agent needs to own a directory (like Research owns `knowledge-base/resear
 ### Registration
 1. Create the skill file in `muster/team/<agent>/skills/{generic,platform}/<skill-name>.md`
 2. Add entry to the agent's brain file under "Available Skills"
-3. Verify cross-referenced files exist
+3. Run `bash scripts/muster-lint-refs.sh` — every skill citation must resolve and the brain-file index must match disk (green result, not a manual scan)
 
 ---
 
@@ -207,7 +240,7 @@ Muster methodology skills are product-agnostic frameworks. Product-specific stra
 ```markdown
 # [Product Name] [Topic] — Product Specifics
 
-Supplements `muster/team/<agent>/skills/generic/<methodology-skill>.md` methodology.
+Supplements the `<methodology-skill>` skill's methodology.
 
 ## [Sections matching the methodology skill's structure]
 [Filled-in content with strategic reasoning — not just values, but WHY these values]
@@ -343,7 +376,8 @@ The three modes above are how you run *project* work. **Muster** is a separate, 
 - **Invocation**: `/muster`, any tab, anytime — the single front door (there is no name-trigger). Its first action checks the session's bound state: an **unbound** tab is bound as the Guide for the session; a **bound** tab gets a one-shot **consult** (Muster answers, then the tab keeps its role — the `/btw` analog). Binds show as `[muster: guide]` / `[muster: xo]`.
 - **Question-routing — the load-bearing rule**: **process** questions are the Guide's ("where did the run stop?", "which mode should I use?", "how do I resume past this halt?", "tune a knob"); **project** questions ("what did the developer decide?", "is the spec updated?") route to a PM tab and are never answered from the Guide's stale read. Two altitudes, two owners.
 - **Write boundary**: the Guide may write framework plumbing only (`.muster/config`, a drafted field report). It never writes product state (the queue, `knowledge-base/`, code) — those belong to the bound roles and PM.
-- **`.muster/config`** (project-local, committed, sourced by the sprint driver): the durable home for the driver's knobs — `MAX_STEPS`, `MAX_TURNS`, `ANTHROPIC_MODEL`, `KEEP_RUNS`, `LIMIT_RESUME_AT`, `CTX_WARN_PCT` (hot-step threshold), `MUSTER_COLOR` (terminal color). Precedence is **explicit env at invocation > config > built-in default**. Worktrees inherit it, so autonomous runs honor it without an env prefix. The Guide resolves knob-shaped frictions into a one-tap write here (`guide/skills/config-knobs.md`); new knobs are added only via knob-ify when field reports prove demand, never speculatively.
+- **`.muster/config`** (project-local, committed, sourced by the sprint driver): the durable home for the driver's knobs — `MAX_STEPS`, `MAX_TURNS`, `ANTHROPIC_MODEL`, `KEEP_RUNS`, `LIMIT_RESUME_AT`, `CTX_WARN_PCT` (hot-step threshold), `MUSTER_COLOR` (terminal color), `MUSTER_AGENT_CLI` (the harness binary), and the foreign-provider pair `MUSTER_PROVIDER_URL` + `MUSTER_PROVIDER_KEY_ENV`. Precedence is **explicit env at invocation > config > built-in default**. Worktrees inherit it, so autonomous runs honor it without an env prefix. The Guide resolves knob-shaped frictions into a one-tap write here (`guide/skills/config-knobs.md`); new knobs are added only via knob-ify when field reports prove demand, never speculatively.
+- **Foreign models** (any Anthropic-compatible provider): set `MUSTER_PROVIDER_URL` to the endpoint (Kimi/GLM/DeepSeek ship native Anthropic-compatible APIs; a LiteLLM or claude-code-router proxy covers everything else) and `MUSTER_PROVIDER_KEY_ENV` to the NAME of the env var holding that provider's key (the name, never the key — config is committed; the run refuses loudly if the named var is empty). Autonomous steps then run against that provider; per-step `Model:` lines carry the provider's model ids unchanged, and `muster-meter.py --prices <litellm.json>` prices them. The adapter (`muster-agent-cli.sh`) owns the export — nothing else in the fleet knows the provider exists.
 - **Feedback loop**: at a friction moment the Guide drafts a scrubbed, framework-level field report, shows the **verbatim payload** as the consent gate, and files it (`gh issue create --label field-report`). The XO pulls open reports at bind time, triages by the ROI doctrine, and closes the loop with an outcome label.
 
 ### Autonomous Sprint Execution
@@ -429,10 +463,12 @@ Agents communicate via `knowledge-base/agent-requests.md` using two entry types.
 
 Observations let an agent flag something it noticed that isn't part of whether this deliverable passes — tech debt, a hygiene issue, a scope idea. They are **non-blocking by definition**: filing one never holds up the handoff or (in autonomous runs) stops the loop. PM triages them per `team/pm/skills/generic/observation-triage.md`. IDs are HO-scoped (`OBS-001`, `OBS-002` within a handoff); reference across handoffs as `OBS-001 (HO-NNN)`. Soft cap ~3 per handoff — more than that usually means a deliverable problem that belongs in the revision log instead.
 
+**After filing any entry**, run `bash muster/scripts/muster-lint-entry.sh` — it FAILs a missing canonical field or a `Deliverable:` path that doesn't exist on disk (a phantom path is silent to you and breaks the REVIEWER's session), and WARNs on prose-only deliverables.
+
 #### Status Lifecycles
 - Requests: `open` -> `done`
 - Handoffs: `open` -> `in-review` -> `needs-revision` (if flagged) -> `done` (all reviewers complete)
-- A handoff also reaches `done` via **boundary reconciliation**: when its deliverable was validated collectively by a later regression/validation handoff rather than by its own reviewer ticks, PM closes it at sprint closeout citing the covering HO. See `team/pm/skills/generic/sprint-planning.md` Sprint Closeout (worklist via `muster/scripts/muster-list-open-items.sh`). Closure is enforced deterministically by `muster/scripts/muster-requests-lint.sh` — run at every PM bind and as a hard closeout gate, it blocks on a reviewed-but-`Status`-stale handoff, a `done` entry still in Active, a duplicate ID, or Active over its line budget (the four ways the ledger silently rots in autonomous runs).
+- A handoff also reaches `done` via **boundary reconciliation**: when its deliverable was validated collectively by a later regression/validation handoff rather than by its own reviewer ticks, PM closes it at sprint closeout citing the covering HO. See `team/pm/skills/generic/sprint-planning.md` Sprint Closeout (worklist via `muster/scripts/muster-list-open-items.sh`). Closure is enforced deterministically by `muster/scripts/muster-lint-requests.sh` — run at every PM bind and as a hard closeout gate, it blocks on a reviewed-but-`Status`-stale handoff, a `done` entry still in Active, a duplicate ID, or Active over its line budget (the four ways the ledger silently rots in autonomous runs).
 
 #### Self-Cleaning Rules
 - The agent that flips status to `done` moves the entry to Resolved as a one-liner. If completing a request also creates a handoff (REQ -> HO), move the request to Resolved first.
@@ -451,14 +487,14 @@ Before filing a handoff, the producing agent MUST run this self-review:
 
 1. **Internal consistency**: Grep the deliverable for contradictions. Pay attention to assumptions that appear in multiple sections.
 2. **Acceptance criteria**: Re-read criteria from `current-sprint.md`. Verify each is met. Document ambiguous interpretations in the revision log.
-3. **Cross-references**: Spot-check at least 3 references to other knowledge-base files (file exists, section exists, content matches). For skill paths specifically: any `team/<role>/skills/...` path cited in this handoff (in prose, agent-context updates, or cascade docs) must resolve on disk — skills live under platform subfolders (`skills/{generic,ios,backend,android,web}/`), so a flat `skills/<name>.md` path is stale.
+3. **Cross-references**: Spot-check at least 3 references to other knowledge-base files (file exists, section exists, content matches). Skills are cited by NAME (``the `<name>` skill`` / ``<Role>'s `<name>` skill``), never by path — `bash muster/scripts/muster-find-skill.sh <name>` resolves a name; `muster-lint-refs.sh` is the deterministic check for citation validity, so this item's manual scan covers only knowledge-base refs the lint can't classify.
 4. **Feature ID validation**: Grep `product-spec.md` for every feature ID referenced. Every ID must exist — fix or remove phantoms.
 5. **Foundational assumptions**: Read `foundational-assumptions.md`. Verify consistency with active assumptions. Use EXACT terminology — flag any new terms not in assumptions or product spec.
 6. **Open questions**: List unresolved questions explicitly in the revision log.
 7. **Missing assets**: List assets the agent cannot produce (logos, illustrations) as founder dependencies.
 8. **Test discipline**: (a) *Cover behavioral change.* Every change to behavior ships with a test that proves it — **including a composition/UI change that carries a logic contract or invariant** ("looks cosmetic" is not an exemption when an enum case, a `rawValue`↔index mapping, or a navigation contract rides along). A change a human can only tap-through is not covered for such a contract (`team/qa/skills/generic/verification-discipline.md` → Meaningful Coverage). (b) *Don't launder failures.* If a test failure surfaces in your run, do NOT label it "flaky" or "pre-existing" without a root-cause look. A failure may be tagged "flaky" exactly once across handoffs; on its second appearance, the next agent that observes it MUST either root-cause it, quarantine it with a filed bug ID, or escalate to PM. Copy-pasting prior handoffs' "flaky test, scoped to QA regression" language forward across multiple sessions is a self-review violation — it masks deterministic bugs under the cover of a false story.
 9. **Durability discipline** (Rule 15): Strip bug IDs, handoff IDs, session-date stamps, sprint / wave references, "previously / now" framings, and specific-agent mentions from durable artifacts (source code, product spec, design specs, brand docs, architecture, test strategy, foundational assumptions, agent-skills). That history belongs in `agent-requests.md`, `orchestration-queue.md`, `current-sprint.md`, `decision-log.md`, and git commits.
-10. **Session closeout**: Update `orchestration-queue.md` — add your step to the top of `## Done` (newest first) and promote the next Upcoming step to Next Step (trim oldest if Done exceeds 10). A specialist Done entry is a **one-line pointer to the handoff, not a substitute for it**: `- DATE — Step N: <title> (HO-NNN). <one-line outcome>.` If it grows past ~5 lines, the summary content belongs in the HO body, not the queue. Append any resolved decisions to `decision-log.md`. If your handoff needs review before the next step proceeds, add an "Awaiting review" note to the Done entry.
+10. **Session closeout**: run `bash muster/scripts/muster-advance-queue.sh <role> "<summary>"` (moves your step to Done, promotes the next, enforces the cap — refuses steps that aren't yours). The summary is a **one-line pointer to the handoff, not a substitute for it**: `Step N: <title> (HO-NNN). <one-line outcome>.` — detail belongs in the HO body. Append any resolved decisions to `decision-log.md`. If your handoff needs review before the next step proceeds, note "awaiting review" in the summary.
 
 If any check fails, fix before filing. Log what self-review caught in the revision log.
 
@@ -474,7 +510,7 @@ Full procedure lives in `team/pm/skills/generic/greenfield-discovery.md` (5 user
 
 **User-facing nomenclature**: Stage 1: Idea share, Stage 2: Market research, Stage 3: Go/no-go decision, Stage 4: Draft review, Stage 5: Sprint 1 plan.
 
-**Entry detection**: priority-zero check reads `.populated` at session start. If `onboarded_at` is null AND `agents.pm` is null → first greenfield session, force-bind PM (skip picker), fire welcome via `greenfield-discovery.md`. After Stage 1.3 (idea captured), PM sets `agents.pm` timestamp; subsequent sessions hit the role picker normally.
+**Entry detection**: `muster-boot.sh` reads `.populated` at session start. If `onboarded_at` is null AND `agents.pm` is null → first greenfield session, force-bind PM (skip picker), fire welcome via `greenfield-discovery.md`. After Stage 1.3 (idea captured), PM sets `agents.pm` timestamp; subsequent sessions hit the role picker normally.
 
 **High-level flow**:
 1. Stage 1: Founder shares idea → PM seeds `knowledge-base/research/product-brief.md` Founder's Idea section, writes change-log entry (`status: needs-research`), queues Research step. Sets `agents.pm` timestamp.
@@ -504,7 +540,7 @@ Location: `knowledge-base/agent-context/.populated`. Tracks specialist populate 
 - `agents.pm` (greenfield-only signal): null at script init for greenfield. PM sets its own timestamp at Stage 1.3 of greenfield-discovery (after capturing the founder's idea). The transition `null → timestamp` flips routing from "greenfield first session, fire welcome" to "greenfield ongoing, skip welcome". For existing-project, the setup script sets `agents.pm` at init (PM is auto-engaged when adopting an existing codebase).
 - `lock`: held during in-flight populate; 15-min stale threshold.
 - Tracked in git (not gitignored — teammates pulling the repo need the state).
-- Priority-zero check reads at session start — see CLAUDE.md "Role Binding" → Priority-zero routing for the four routing paths.
+- `muster-boot.sh` reads it at session start and routes deterministically — route semantics documented in `architecture-and-design.md` (State & Config Files table); the model-facing contract is CLAUDE.md "Role Binding".
 
 #### `.muster-onboarding/` transient-file protocol
 Location: `knowledge-base/.muster-onboarding/`. Gitignored by default (brain-dump may contain sensitive content).

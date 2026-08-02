@@ -6,9 +6,24 @@
   },
   "permissions": {
     "allow": [
-      "Bash(bash muster/scripts/muster-housekeeping.sh)",
+      "Bash(bash muster/scripts/muster-boot.sh)",
+      "Bash(bash muster/scripts/muster-boot.sh:*)",
       "Bash(bash muster/scripts/muster-bind.sh:*)",
-      "Bash(echo \"${MUSTER_ROLE:-UNSET}\")"
+      "Bash(bash muster/scripts/muster-find-skill.sh:*)",
+      "Bash(bash muster/scripts/muster-check-context.sh:*)",
+      "Bash(bash muster/scripts/muster-list-open-items.sh:*)",
+      "Bash(bash muster/scripts/muster-advance-queue.sh:*)",
+      "Bash(bash muster/scripts/muster-lint-context.sh:*)",
+      "Bash(bash muster/scripts/muster-lint-durability.sh)",
+      "Bash(bash muster/scripts/muster-lint-decisions.sh:*)",
+      "Bash(bash muster/scripts/muster-lint-kb-budgets.sh)",
+      "Bash(bash muster/scripts/muster-lint-entry.sh)",
+      "Bash(bash muster/scripts/muster-lint-gate-packet.sh)",
+      "Bash(bash muster/scripts/muster-doctor-populated.sh)",
+      "Bash(bash muster/scripts/muster-plan-gate.sh)",
+      "Bash(bash muster/scripts/muster-closeout.sh)",
+      "Bash(bash muster/scripts/muster-lint-step.sh:*)",
+      "Bash(bash muster/scripts/muster-lint-sprint.sh:*)"
     ]
   }
 }

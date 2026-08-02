@@ -1,7 +1,7 @@
 # Web Architecture (Next.js App Router)
 
 ## Purpose
-Define the layered architecture for modern Next.js features: server/client boundary discipline, folder structure, domain isolation, dependency injection, testability seams, and anti-patterns. See `team/developer/skills/web-best-practices.md` for the underlying philosophy. See `team/developer/skills/web-modern-react.md` for RSC and Server Action API patterns. See `team/developer/skills/web-state-management.md` for client and server state discipline. See `team/developer/skills/web-testing.md` for how to exercise the seams established here. Target: **Next.js 15+, React 19+, TypeScript 5.5+, Node.js 20+**.
+Define the layered architecture for modern Next.js features: server/client boundary discipline, folder structure, domain isolation, dependency injection, testability seams, and anti-patterns. See the `web-best-practices` skill for the underlying philosophy. See the `web-modern-react` skill for RSC and Server Action API patterns. See the `web-state-management` skill for client and server state discipline. See Developer's `web-testing` skill for how to exercise the seams established here. Target: **Next.js 15+, React 19+, TypeScript 5.5+, Node.js 20+**.
 
 ## Core Layers
 
@@ -398,7 +398,7 @@ describe("createInvoice", () => {
 
 Action tests pass a test `deps` directly. No module mocking, no global state — the dependency seam is the function signature, so tests stay readable and refactors don't break them.
 
-See `team/developer/skills/web-testing.md` for the full testing strategy and Playwright integration patterns.
+See Developer's `web-testing` skill for the full testing strategy and Playwright integration patterns.
 
 ## Where Does X Go?
 

@@ -1,7 +1,7 @@
 # Web Testing
 
 ## Purpose
-Define the testing strategy for modern Next.js + React 19 web apps: the test pyramid, Vitest patterns, React Testing Library principles, testing Server Components and Server Actions, Playwright E2E, mocking discipline, coverage targets. The architecture from `web-architecture.md` makes testing tractable; this skill is how to use the seams it provides. See `team/developer/skills/web-architecture.md` for the dependency-injection pattern that makes tests work without mocking the universe. See `team/developer/skills/web-best-practices.md` for the quality gates that enforce these tests in CI. See `team/developer/skills/web-modern-react.md` for the component patterns being tested. Target: **Vitest 2+, React Testing Library 16+, Playwright 1.45+, Testing Library/jest-dom**.
+Define the testing strategy for modern Next.js + React 19 web apps: the test pyramid, Vitest patterns, React Testing Library principles, testing Server Components and Server Actions, Playwright E2E, mocking discipline, coverage targets. The architecture from `web-architecture.md` makes testing tractable; this skill is how to use the seams it provides. See the `web-architecture` skill for the dependency-injection pattern that makes tests work without mocking the universe. See the `web-best-practices` skill for the quality gates that enforce these tests in CI. See the `web-modern-react` skill for the component patterns being tested. Target: **Vitest 2+, React Testing Library 16+, Playwright 1.45+, Testing Library/jest-dom**.
 
 ## Running Tests — Quiet by Default, Targeted Then Full
 

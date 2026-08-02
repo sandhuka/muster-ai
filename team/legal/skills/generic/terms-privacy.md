@@ -1,7 +1,7 @@
 # Terms of Service & Privacy Policy Framework
 
 ## Purpose
-Define the required sections and content for Terms of Service and Privacy Policy documents, including platform-specific requirements. See `team/legal/skills/compliance.md` for regulatory requirements that feed into these documents and `team/legal/skills/ip-protection.md` for IP clauses to include in the ToS.
+Define the required sections and content for Terms of Service and Privacy Policy documents, including platform-specific requirements. See the `compliance` skill for regulatory requirements that feed into these documents and the `ip-protection` skill for IP clauses to include in the ToS.
 
 ## Terms of Service Must Include
 - Service description and limitations (what the app does and doesn't do)

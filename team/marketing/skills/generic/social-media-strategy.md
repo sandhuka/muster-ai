@@ -1,7 +1,7 @@
 # Social Media Strategy
 
 ## Purpose
-Platform-by-platform playbook for organic social media. Social is the primary awareness engine for a consumer app. This skill covers platform mechanics, content strategy, and cadence. Coordinate with Content agent (`team/content/skills/brand-voice.md`) for copy/voice consistency. See `team/marketing/skills/paid-acquisition.md` for amplifying organic winners with paid spend.
+Platform-by-platform playbook for organic social media. Social is the primary awareness engine for a consumer app. This skill covers platform mechanics, content strategy, and cadence. Coordinate with Content agent (the `brand-voice` skill) for copy/voice consistency. See the `paid-acquisition` skill for amplifying organic winners with paid spend.
 
 ## Platform Priority (Solo Founder)
 

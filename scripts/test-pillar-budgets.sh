@@ -23,10 +23,15 @@ check_lines(){ # $1=file $2=line-budget — missing file is a hard fail (fail-cl
   if [ "$n" -le "$2" ]; then ok "$1 — $n/$2 lines"; else bad "$1 — $n lines exceeds budget $2"; fi
 }
 
-# --- always-read project surface (shipped templates) ---
-check_lines templates/CLAUDE.md 52
+# --- always-read project surface (shipped templates + submodule bootloaders) ---
+check_lines templates/CLAUDE.md 40
+for f in team/*/bootloader.md; do
+  check_lines "$f" 46                       # largest bootloader body (pm, 41) + 10%
+done
+# platform stubs: frontmatter + hop only — growth here means protocol content leaking back
+# into the harness layer instead of the submodule bootloader
 for f in templates/.claude/agents/*.md; do
-  check_lines "$f" 51                       # largest bootloader (pm, 46) + 10%
+  check_lines "$f" 12
 done
 
 # --- always-read KB templates (read at bind/monitoring time in every project) ---
@@ -41,6 +46,27 @@ check_lines templates/knowledge-base/foundational-assumptions.md 18
 
 # --- MUSTER.md (loaded on every /muster invocation) ---
 check_lines MUSTER.md 120                   # the build-time hard budget, kept as the gate
+
+# --- skills trees (on-demand tier, budget-gated per role — the founder-ruled replacement for
+# the retired "80-line hard cap": green at encoding-time size (+~10%), red on growth. A red
+# means trim/split the contribution or consciously raise the budget here in the same commit.
+# Fail-closed: an empty tree means the folder moved — the gate must notice, not skip. ---
+check_skill_tree(){ # $1=skills-dir $2=line-budget
+  local n c
+  c="$(find "$1" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
+  if [ "${c:-0}" -eq 0 ]; then bad "$1 — no skill files found (folder moved?)"; return; fi
+  n="$(find "$1" -name '*.md' -exec cat {} + 2>/dev/null | wc -l | tr -d ' ')"
+  if [ "$n" -le "$2" ]; then ok "$1 — $n/$2 lines ($c skills)"; else bad "$1 — $n lines exceeds budget $2"; fi
+}
+check_skill_tree team/pm/skills        2150
+check_skill_tree team/developer/skills 9600
+check_skill_tree team/ui-ux/skills     8600
+check_skill_tree team/qa/skills        1700
+check_skill_tree team/content/skills   1690
+check_skill_tree team/marketing/skills 1490
+check_skill_tree team/legal/skills      520
+check_skill_tree team/research/skills   350
+check_skill_tree guide/skills           360
 
 # --- the driver's wrapper prompt (sent with EVERY autonomous step) ---
 # End anchor is the prompt's pipe-to-formatter line, NOT a phrase inside the prompt: the prompt's
@@ -58,11 +84,12 @@ else
 fi
 
 # --- tier-1 bind-path total (CLAUDE.md Rule 14: PM bootstrap reads ≤ 600 lines) ---
-# Static proxy at template level: project CLAUDE.md + pm bootloader + PM brain + the 8
-# PM-monitored KB templates. Runtime growth inside a project is Rule 14's own archiving job;
-# this guards the SHIPPED baseline so projects don't start life over budget.
+# Static proxy at template level: project CLAUDE.md + PM bootloader (submodule — boot's READ=
+# target; the .claude/agents stub is only the subagent entry hop, never on the bind path) +
+# PM brain + the 8 PM-monitored KB templates. Runtime growth inside a project is Rule 14's own
+# archiving job; this guards the SHIPPED baseline so projects don't start life over budget.
 t1=0
-for f in templates/CLAUDE.md templates/.claude/agents/pm.md team/pm/CLAUDE.md \
+for f in templates/CLAUDE.md team/pm/bootloader.md team/pm/CLAUDE.md \
          templates/knowledge-base/orchestration-queue.md \
          templates/knowledge-base/agent-requests.md \
          templates/knowledge-base/current-sprint.md \

@@ -1,7 +1,7 @@
 # Next.js App Router
 
 ## Purpose
-Define App Router conventions: file-system routing, special files (page, layout, loading, error, not-found), dynamic and parallel/intercepting routes, route handlers, middleware, rendering modes, caching layers, revalidation, the Metadata API, and runtime selection. See `team/developer/skills/web-architecture.md` for folder structure that hosts these routes. See `team/developer/skills/web-modern-react.md` for Server Components, Server Actions, and Suspense semantics. See `team/developer/skills/web-best-practices.md` for performance budgets enforced by routing decisions. Target: **Next.js 15+, React 19+**.
+Define App Router conventions: file-system routing, special files (page, layout, loading, error, not-found), dynamic and parallel/intercepting routes, route handlers, middleware, rendering modes, caching layers, revalidation, the Metadata API, and runtime selection. See the `web-architecture` skill for folder structure that hosts these routes. See the `web-modern-react` skill for Server Components, Server Actions, and Suspense semantics. See the `web-best-practices` skill for performance budgets enforced by routing decisions. Target: **Next.js 15+, React 19+**.
 
 ## Routing Model
 

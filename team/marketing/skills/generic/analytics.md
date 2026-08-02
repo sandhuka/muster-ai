@@ -1,7 +1,7 @@
 # Analytics & Measurement
 
 ## Purpose
-Core KPIs, cohort analysis, attribution, funnel diagnostics, and testing standards. Analytics is the feedback loop for all other marketing skills. See `team/marketing/skills/growth-strategy.md` for unit economics and `knowledge-base/product-spec.md` for product success metrics.
+Core KPIs, cohort analysis, attribution, funnel diagnostics, and testing standards. Analytics is the feedback loop for all other marketing skills. See the `growth-strategy` skill for unit economics and `knowledge-base/product-spec.md` for product success metrics.
 
 ## Core KPIs
 

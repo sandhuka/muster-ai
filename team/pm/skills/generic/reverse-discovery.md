@@ -1,16 +1,16 @@
 # Reverse Discovery (Existing-Project Onboarding)
 
 ## Purpose
-Procedural methodology for PM to conduct existing-project onboarding — the reverse of Muster's greenfield discovery flow. This skill runs once per project, takes ~120-140 minutes of founder-attended time, and produces a populated knowledge base + Sprint 1 plan. See `team/developer/skills/generic/codebase-audit.md` for the Developer-side audit procedure this skill invokes; see `team/pm/skills/generic/context-cascading.md` for the JIT cascade applied to Sprint 1 agents at the end of this flow; see `team/pm/skills/generic/sprint-planning.md` for the standard sprint planning this skill hands off to.
+Procedural methodology for PM to conduct existing-project onboarding — the reverse of Muster's greenfield discovery flow. This skill runs once per project, takes ~120-140 minutes of founder-attended time, and produces a populated knowledge base + Sprint 1 plan. See the `codebase-audit` skill for the Developer-side audit procedure this skill invokes; see the `context-cascading` skill for the JIT cascade applied to Sprint 1 agents at the end of this flow; see the `sprint-planning` skill for the standard sprint planning this skill hands off to.
 
 ## When This Skill Runs
 
 PM reads this skill when:
-1. At session start, PM reads `knowledge-base/agent-context/.populated` (per the priority-zero check in muster CLAUDE.md) and finds it has **any `null` entries**.
+1. At session start, `muster-boot.sh` routes on `knowledge-base/agent-context/.populated` and PM finds it has **any `null` entries**.
 2. Before producing any user-facing output, PM must have this skill loaded. This is mandatory — see CLAUDE.md bootstrap behavior for the rule.
 
 **Missing-skill fallback**: if this file is missing or unreadable when PM attempts the read, PM halts with:
-> "Muster onboarding skill not found at `muster/team/pm/skills/generic/reverse-discovery.md`. Check submodule version with `git submodule status muster`, pull latest with `git submodule update --remote muster`, or re-run `scripts/setup-existing-project.sh`. Onboarding cannot proceed without this skill."
+> "Muster onboarding skill not found at the `reverse-discovery` skill. Check submodule version with `git submodule status muster`, pull latest with `git submodule update --remote muster`, or re-run `scripts/setup-existing-project.sh`. Onboarding cannot proceed without this skill."
 
 Do not silently skip, do not improvise.
 
@@ -158,7 +158,7 @@ Executes only if `.muster-archive/claude-agents.pre-muster/` exists.
 
 - Review each archived custom agent file.
 - Identify custom behaviors (deviations from Muster's standard agent templates).
-- Offer to merge those behaviors into the corresponding Muster agent bootloader (e.g., custom `@developer` quirks merge into the project's `.claude/agents/developer.md`).
+- Offer to merge those behaviors into the corresponding agent's `knowledge-base/agent-context/<role>.md` (project-owned). Never merge into `.claude/agents/<role>.md` — those are framework-owned stubs, overwritten on every muster update.
 - Custom agents that don't map to a Muster role (e.g., a user-created `@security` agent) are preserved as-is alongside Muster's agents.
 - Per-agent founder approval before writing.
 
@@ -295,19 +295,19 @@ On a verbose brain-dump, the questionnaire can shrink to 3-5 real questions. On 
 At the top of the questionnaire AND at any question the founder can't answer confidently, offer:
 > "Want Research to do a 20-minute market check on your positioning / users / competition? Or skip for now?"
 
-Default is offer-not-force. If founder accepts, invoke Research via Task tool with `subagent_type="research"` and wait for their output before proceeding. Research uses `team/pm/skills/generic/product-evaluation.md` methodology.
+Default is offer-not-force. If founder accepts, invoke Research via Task tool with `subagent_type="research"` and wait for their output before proceeding. Research uses the `product-evaluation` skill methodology.
 
 ## Phase 8: Product Synthesis (T+115)
 
 ### 8.1 PM writes (direct)
-- `knowledge-base/product-spec.md` — using `team/pm/skills/generic/product-spec-writing.md`. Inputs: questionnaire answers + brain-dump extracted claims + ingested docs.
-- `knowledge-base/brand-guidelines.md` — using `team/pm/skills/generic/brand-guidelines.md`. Inputs: any visual/brand content from triage + brain-dump/questionnaire.
+- `knowledge-base/product-spec.md` — using the `product-spec-writing` skill. Inputs: questionnaire answers + brain-dump extracted claims + ingested docs.
+- `knowledge-base/brand-guidelines.md` — using the `brand-guidelines` skill. Inputs: any visual/brand content from triage + brain-dump/questionnaire.
 - `knowledge-base/foundational-assumptions.md` — current-truth assumptions only. See "Foundational Assumptions Authoring" below.
 
 ### 8.2 Delegated writes (via Task tool)
 
-- **Content writes `brand-voice-guide.md`** if Phase 2.1 triage routed brand-voice content, OR if brain-dump/questionnaire surfaced voice material. Invoke Content via Task tool with `subagent_type="content"`, pass the triage+extracted voice material as input. Content uses `team/content/skills/generic/brand-voice.md`.
-- **QA writes `test-strategy.md`** if Phase 2.1 triage routed testing content. Invoke QA via Task tool with `subagent_type="qa"`, pass the triage material as input. QA uses `team/qa/skills/generic/test-strategy.md`.
+- **Content writes `brand-voice-guide.md`** if Phase 2.1 triage routed brand-voice content, OR if brain-dump/questionnaire surfaced voice material. Invoke Content via Task tool with `subagent_type="content"`, pass the triage+extracted voice material as input. Content uses the `brand-voice` skill.
+- **QA writes `test-strategy.md`** if Phase 2.1 triage routed testing content. Invoke QA via Task tool with `subagent_type="qa"`, pass the triage material as input. QA uses the `test-strategy` skill.
 
 If no content was routed to these destinations and nothing in the brain-dump/questionnaire covers them, skip — these files can be created in a later sprint when there's real material.
 
@@ -367,7 +367,7 @@ After populating, present a one-line confirmation to the founder: *"Updated your
 
 ## Phase 9: Agent-Context Cascade (T+133)
 
-Use `team/pm/skills/generic/context-cascading.md` methodology. Populate agent-context files **only for the agents needed for Sprint 1** — do not populate agents whose work isn't part of the first sprint; those stay `null` and populate lazily at first invocation (per `context-cascading.md` → `## Just-in-time mode` subsection).
+Use the `context-cascading` skill methodology. Populate agent-context files **only for the agents needed for Sprint 1** — do not populate agents whose work isn't part of the first sprint; those stay `null` and populate lazily at first invocation (per `context-cascading.md` → `## Just-in-time mode` subsection).
 
 **Which agents are Sprint 1 agents depends on project shape**, not a fixed list. Derive from the audit output + questionnaire + the first feature/task the founder names in Phase 10:
 
@@ -386,7 +386,7 @@ After writing each populated agent-context file, update `.populated` with a time
 
 ### 10.1 Sprint 1
 
-Use `team/pm/skills/generic/sprint-planning.md`. Ask founder: "What's the first feature/task you want to tackle? I'll plan Sprint 1 around it." Populate `knowledge-base/current-sprint.md` and `knowledge-base/orchestration-queue.md` with 3-5 steps.
+Use the `sprint-planning` skill. Ask founder: "What's the first feature/task you want to tackle? I'll plan Sprint 1 around it." Populate `knowledge-base/current-sprint.md` and `knowledge-base/orchestration-queue.md` with 3-5 steps.
 
 ### 10.2 Sprint 2 backlog (auto-queued)
 

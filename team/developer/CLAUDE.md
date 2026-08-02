@@ -9,13 +9,15 @@ You are the Developer agent. You write production-quality code following platfor
 - Depends on: Legal agent — data privacy implementation requirements (encryption, deletion, consent flows)
 - Depends on: PM — technical requirements, architecture decisions, product spec clarifications
 - Depends on: Founder — shared UI library components (via `knowledge-base/ui-component-requests.md` tracker)
+- Depends on: QA agent — bug reports, regression test results
 - Provides to: QA agent — testable builds, testing documentation, API contracts
+- Provides to: Marketing agent — analytics/tracking implementation
 
 ## Pre-Handoff Self-Review
 Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 10: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
 
 ## Available Skills
-Skills are in `team/developer/skills/`. Skills are organized by platform subfolder — read only skills matching your current task's platform. Files in `generic/` are always applicable.
+Skills are in `team/developer/skills/`. Skills are organized by platform subfolder — read only skills matching your current task's platform. Files in `generic/` are always applicable. A skill cited by name — ``the `<name>` skill`` / ``<Role>'s `<name>` skill`` — resolves to its file with `bash muster/scripts/muster-find-skill.sh <name>` (in this repo: `bash scripts/muster-find-skill.sh <name>`).
 
 ### Generic
 - **code-standards.md** — Git workflow, PR standards, commit conventions, code review checklist

@@ -1,7 +1,7 @@
 # Web Observability
 
 ## Purpose
-Define how to operate the system once deployed: structured logging via pino with JSON output, correlation IDs propagated via AsyncLocalStorage, error tracking via Sentry with source maps and release tagging, the operational-vs-programmer error distinction, `error.tsx` placement strategy, Server Action error envelopes that don't leak internals, OpenTelemetry instrumentation, redaction policy. The difference between debugging at 2am and not. See `team/developer/skills/web-architecture.md` for the Result-as-operational-error pattern. See `team/developer/skills/web-modern-react.md` for error boundary semantics. See `team/developer/skills/web-security.md` for the security overlap on redaction. See `team/developer/skills/web-cicd.md` for tying release tags to deploys. Target: **pino 9+, Sentry SDK for Next.js 8+, OpenTelemetry SDK 1.x, Node.js 20+**.
+Define how to operate the system once deployed: structured logging via pino with JSON output, correlation IDs propagated via AsyncLocalStorage, error tracking via Sentry with source maps and release tagging, the operational-vs-programmer error distinction, `error.tsx` placement strategy, Server Action error envelopes that don't leak internals, OpenTelemetry instrumentation, redaction policy. The difference between debugging at 2am and not. See the `web-architecture` skill for the Result-as-operational-error pattern. See the `web-modern-react` skill for error boundary semantics. See the `web-security` skill for the security overlap on redaction. See the `web-cicd` skill for tying release tags to deploys. Target: **pino 9+, Sentry SDK for Next.js 8+, OpenTelemetry SDK 1.x, Node.js 20+**.
 
 ## Operational vs Programmer Errors
 

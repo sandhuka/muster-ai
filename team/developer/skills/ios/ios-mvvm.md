@@ -1,7 +1,7 @@
 # iOS MVVM Architecture
 
 ## Purpose
-Define the MVVM pattern for iOS features: ViewModel structure, state modeling, dependency injection, navigation ownership, and anti-patterns. See `team/developer/skills/ios-swiftui.md` for SwiftUI API patterns (@Observable, NavigationStack, presentation). See `team/developer/skills/ios-best-practices.md` for project-level folder structure and hybrid local/cloud architecture. See `team/developer/skills/ios-concurrency.md` for async/concurrency rules. Target: **iOS 26+, Swift 6.2+**.
+Define the MVVM pattern for iOS features: ViewModel structure, state modeling, dependency injection, navigation ownership, and anti-patterns. See the `ios-swiftui` skill for SwiftUI API patterns (@Observable, NavigationStack, presentation). See the `ios-best-practices` skill for project-level folder structure and hybrid local/cloud architecture. See the `ios-concurrency` skill for async/concurrency rules. Target: **iOS 26+, Swift 6.2+**.
 
 ## Core Boundaries
 
@@ -81,7 +81,7 @@ Key rules:
 - `try Task.checkCancellation()` after every `await` before writing state
 - Filter `CancellationError` — it's lifecycle, not an error to surface
 - Cancel stored tasks in `deinit`
-- For expensive mapping, move CPU work off main actor. See `team/developer/skills/ios-concurrency.md` (@concurrent, Task.detached)
+- For expensive mapping, move CPU work off main actor. See the `ios-concurrency` skill (@concurrent, Task.detached)
 
 ## Dependency Injection
 
@@ -114,7 +114,7 @@ final class AppContainer {
 }
 ```
 
-**Dual-backend coordinator** — switches between local and remote based on subscription state (see `team/developer/skills/ios-best-practices.md` for hybrid local/cloud architecture):
+**Dual-backend coordinator** — switches between local and remote based on subscription state (see the `ios-best-practices` skill for hybrid local/cloud architecture):
 ```swift
 struct FeedRepositoryCoordinator: FeedRepository {
     private let local: FeedRepository
@@ -158,13 +158,13 @@ struct FeedView: View {
 }
 ```
 
-- `@State` owns the ViewModel instance (see `team/developer/skills/ios-swiftui.md` State Management)
+- `@State` owns the ViewModel instance (see the `ios-swiftui` skill State Management)
 - Use `.task {}` for lifecycle — not `onAppear()` with `Task {}`
 - Keep `body` declarative — all logic lives in ViewModel methods
 
 ## Navigation Ownership
 
-ViewModel decides *where*, routing layer decides *how*. Model destinations as enums. See `team/developer/skills/ios-swiftui.md` (Navigation) for NavigationStack API rules.
+ViewModel decides *where*, routing layer decides *how*. Model destinations as enums. See the `ios-swiftui` skill (Navigation) for NavigationStack API rules.
 
 ### Option A: ViewModel-Owned Path
 Simplest wiring. ViewModel holds `navigationPath` directly.
@@ -241,7 +241,7 @@ For UIKit-hosted or complex multi-step flows (onboarding, checkout): inject a `C
 
 Test deterministic transitions: success (`loading→loaded`), failure (`loading→failed`), cancellation (no stale overwrite), mapping correctness (domain→ViewData).
 
-Use protocol stubs for repositories. Avoid sleep-based tests — use controllable responses. See `team/developer/skills/ios-testing.md` for Swift Testing framework patterns.
+Use protocol stubs for repositories. Avoid sleep-based tests — use controllable responses. See Developer's `ios-testing` skill for Swift Testing framework patterns.
 
 ```swift
 @Test @MainActor

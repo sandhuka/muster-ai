@@ -1,7 +1,7 @@
 # Web Security (Everything Not-Auth)
 
 ## Purpose
-Define security disciplines beyond authentication: security headers and CSP with per-request nonces, input validation as fail-closed defaults, output encoding rules, secrets management, rate limiting, file-upload hardening, webhook signature verification, dependency supply-chain security. See `team/developer/skills/web-auth.md` for authentication and authorization (the gate at the top of every action). See `team/developer/skills/web-architecture.md` for the `deps` pattern (rate limiter and object-store services follow it). See `team/developer/skills/web-nextjs-app-router.md` for middleware integration. See `team/developer/skills/web-best-practices.md` for the env-validation foundation. Target: **Next.js 15+, Node.js 20+**.
+Define security disciplines beyond authentication: security headers and CSP with per-request nonces, input validation as fail-closed defaults, output encoding rules, secrets management, rate limiting, file-upload hardening, webhook signature verification, dependency supply-chain security. See the `web-auth` skill for authentication and authorization (the gate at the top of every action). See the `web-architecture` skill for the `deps` pattern (rate limiter and object-store services follow it). See the `web-nextjs-app-router` skill for middleware integration. See the `web-best-practices` skill for the env-validation foundation. Target: **Next.js 15+, Node.js 20+**.
 
 ## Security Headers & CSP
 

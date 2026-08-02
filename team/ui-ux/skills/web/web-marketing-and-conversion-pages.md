@@ -1,7 +1,7 @@
 # Web Marketing and Conversion Pages
 
 ## Purpose
-Define the design discipline for marketing surfaces — landing pages, pricing pages, comparison tables, trial-end / paywall pages, social-proof patterns, OG / social card design, and the conversion hierarchy that makes them work without dark patterns. Marketing pages and product UI follow different rhythms: product wants efficient task completion; marketing wants the user to *act*. Conflating the two produces marketing pages that feel like dashboards and product UI that feels like sales pitches. This skill is the home for the craft Apple's marketing demonstrably leads on (apple.com product pages, App Store editorial, Fitness+ landings) and that vibes-coded LLM output is consistently bad at. See `team/ui-ux/skills/web-content-hierarchy.md` for the parent hierarchy discipline; the marketing landing ladder there is the input to this skill. See `team/ui-ux/skills/web-design-system.md` for the tokens marketing pages consume — marketing surfaces still use product tokens, with selective art-directed exceptions called out. See `team/ui-ux/skills/web-form-patterns.md` for the form rules that interact with marketing-page conversion forms (sign-up, lead capture). See `team/ui-ux/skills/web-information-architecture.md` for the marketing-vs-product route separation (route groups). See `team/ui-ux/skills/web-onboarding-flows.md` for what happens after the marketing CTA is clicked (and for the cookie consent that must not break LCP / CLS on the marketing hero). See `team/ui-ux/skills/web-localization-and-i18n.md` for marketing-page localization (currency display, locale-prefixed routes, `hreflang` for SEO). See `team/ui-ux/skills/web-empty-error-and-edge-states.md` for the marketing 404 / 500 (which use the same brand-moment patterns as product errors but with marketing voice). See `team/developer/skills/web-performance-engineering.md` for the LCP discipline marketing pages live or die by. Target: **marketing surfaces on web — landing pages, pricing pages, comparison pages, paywall / trial-end pages, brand pages, OG / social card design**.
+Define the design discipline for marketing surfaces — landing pages, pricing pages, comparison tables, trial-end / paywall pages, social-proof patterns, OG / social card design, and the conversion hierarchy that makes them work without dark patterns. Marketing pages and product UI follow different rhythms: product wants efficient task completion; marketing wants the user to *act*. Conflating the two produces marketing pages that feel like dashboards and product UI that feels like sales pitches. This skill is the home for the craft Apple's marketing demonstrably leads on (apple.com product pages, App Store editorial, Fitness+ landings) and that vibes-coded LLM output is consistently bad at. See the `web-content-hierarchy` skill for the parent hierarchy discipline; the marketing landing ladder there is the input to this skill. See the `web-design-system` skill for the tokens marketing pages consume — marketing surfaces still use product tokens, with selective art-directed exceptions called out. See the `web-form-patterns` skill for the form rules that interact with marketing-page conversion forms (sign-up, lead capture). See the `web-information-architecture` skill for the marketing-vs-product route separation (route groups). See the `web-onboarding-flows` skill for what happens after the marketing CTA is clicked (and for the cookie consent that must not break LCP / CLS on the marketing hero). See the `web-localization-and-i18n` skill for marketing-page localization (currency display, locale-prefixed routes, `hreflang` for SEO). See the `web-empty-error-and-edge-states` skill for the marketing 404 / 500 (which use the same brand-moment patterns as product errors but with marketing voice). See the `web-performance-engineering` skill for the LCP discipline marketing pages live or die by. Target: **marketing surfaces on web — landing pages, pricing pages, comparison pages, paywall / trial-end pages, brand pages, OG / social card design**.
 
 ## The Anchor: One Promise, One Action
 
@@ -182,7 +182,7 @@ Every shareable URL should have a designed OG image. When a user shares the URL 
 - **Twitter card type**: `summary_large_image` for the 1200 × 630 layout.
 - **Test the preview** in the actual platforms before shipping a major page. Slack's OG preview, Twitter's card preview, LinkedIn's preview each render slightly differently.
 
-The implementation lives in `team/developer/skills/web-nextjs-app-router.md` → Metadata API; the design responsibility is the template + per-page asset.
+The implementation lives in the `web-nextjs-app-router` skill → Metadata API; the design responsibility is the template + per-page asset.
 
 ## Performance: Marketing Pages Live or Die By It
 
@@ -193,7 +193,7 @@ A landing page with LCP > 3 seconds loses about half its visitors before they se
 - **CLS < 0.1.** Cumulative Layout Shift — hero must not jump as fonts load or images decode. Reserve `width` × `height` on every image, including the hero. Cookie banners (see `web-onboarding-flows.md` → Cookie Consent) must not push hero content down.
 - **Hero image is `priority` in `next/image`** — preloaded, not lazy.
 - **No render-blocking third-party scripts** above the fold. Analytics, chat widgets, A/B test SDKs, marketing-pixel SDKs all defer or load post-LCP.
-- **No web fonts blocking text render** — `font-display: swap` or `optional` per `team/developer/skills/web-performance-engineering.md`.
+- **No web fonts blocking text render** — `font-display: swap` or `optional` per the `web-performance-engineering` skill.
 - **Hero video** (when used): poster image renders first, video loads after. Never block paint on video decode. See "Video as Content" below.
 - **Page weight under 1MB total** for marketing pages where possible. Heavy hero videos and high-res photos eat the budget; compress aggressively.
 
@@ -216,7 +216,7 @@ If the product team can't ship a hero asset that meets this bar, ship a *quieter
 
 ## Scrollytelling Discipline
 
-Apple's product pages are scroll-tied stories: each scroll-screen reveals a new product fact, with the visual transforming or shifting in coordination. This is *not* the same as the AOS-style "fade in as you enter the viewport" pattern called out as anti-pattern in `team/ui-ux/skills/web-interaction-patterns.md`. The difference matters; conflating them produces either timid pages (no scroll storytelling) or overstuffed ones (every section fades and translates).
+Apple's product pages are scroll-tied stories: each scroll-screen reveals a new product fact, with the visual transforming or shifting in coordination. This is *not* the same as the AOS-style "fade in as you enter the viewport" pattern called out as anti-pattern in the `web-interaction-patterns` skill. The difference matters; conflating them produces either timid pages (no scroll storytelling) or overstuffed ones (every section fades and translates).
 
 | Legitimate scrollytelling | AOS-style anti-pattern |
 |--------------------------|----------------------|
@@ -246,7 +246,7 @@ When marketing uses video — hero loop, product demo, customer story — the de
 
 Most marketing pages benefit from an FAQ section near the bottom, addressing the common pre-purchase questions a high-intent visitor asks before clicking the CTA.
 
-- **Pattern**: accordion (one-at-a-time disclosure) — see `team/ui-ux/skills/web-interaction-patterns.md`. Don't use linear stacked Q&As that double the page length.
+- **Pattern**: accordion (one-at-a-time disclosure) — see the `web-interaction-patterns` skill. Don't use linear stacked Q&As that double the page length.
 - **5–10 questions max.** Beyond 10, the FAQ becomes a help center; link to the help center instead.
 - **Real questions**, written in the user's voice ("How does pricing work?" not "Pricing methodology overview").
 - **Honest answers.** "We don't currently support X" beats marketing-speak around the missing feature.
@@ -272,7 +272,7 @@ Often the last thing designed; sometimes the most-clicked area on the page.
 - **Product links** (features, pricing, security, changelog) — by category.
 - **Company links** (about, blog, careers, contact) — by category.
 - **Legal** (terms, privacy, cookie preferences) — separate row, smaller text.
-- **Language switcher** — see `team/ui-ux/skills/web-localization-and-i18n.md`. Footer is the canonical placement.
+- **Language switcher** — see the `web-localization-and-i18n` skill. Footer is the canonical placement.
 - **Social handles** with real icons (not platform-stamped logos that go out of date).
 - **Copyright + company name** — bottom, muted.
 
@@ -301,7 +301,7 @@ Apple's footer is calm, dense, and load-bearing — the team finds the help link
 | **Long-scroll page with no anchor nav.** Twelve sections; user scrolls past what they wanted. | Frustrating; users bounce. | Sticky in-page anchor nav that highlights the current section, OR shorter pages with focused content. |
 | **Newsletter-popup modal that blocks the page after 5 seconds.** | Hostile; bounces users; ad-blockers flag it; ubiquitous SaaS regression. | Inline newsletter signup in the footer or a single section. If a modal is genuinely warranted, trigger on exit-intent at most, and dismissible permanently. |
 | **Live-chat widget that fights LCP and is keyboard-trap-prone.** Intercom / Drift / etc. injected at top of `<body>`. | Slows LCP, blocks render, traps keyboard focus, conflicts with `inert` modal patterns. | Lazy-load post-LCP; defer to user click on a "Need help?" affordance; or omit entirely on landing pages. The conversion gain rarely justifies the cost. |
-| **Cookie banner that shifts the marketing hero.** Banner renders after first paint; hero content jumps down. | CLS spike; hero CTA may be pushed off-screen on mobile; user clicks the wrong thing. | Reserve banner space at first paint via fixed height; or render banner as overlay (no layout shift). Coordinate with `team/ui-ux/skills/web-onboarding-flows.md` → Cookie Consent on placement. |
+| **Cookie banner that shifts the marketing hero.** Banner renders after first paint; hero content jumps down. | CLS spike; hero CTA may be pushed off-screen on mobile; user clicks the wrong thing. | Reserve banner space at first paint via fixed height; or render banner as overlay (no layout shift). Coordinate with the `web-onboarding-flows` skill → Cookie Consent on placement. |
 | **Auth-required marketing screenshots.** "See how it works → sign in to see the demo." | Defeats the marketing page; high-intent user bounces. | Show real screenshots inline. Sensitive customer data is anonymized or generic. |
 | **Fabricated "As seen in" press logos.** Press logos from publications that haven't covered the product. | Trust-eroding when discovered; sometimes legally actionable. | Real coverage with real attribution, or omit the section. |
 | **Hero headline that's a feature spec.** "React 19 + Server Components + Edge Runtime" as the H1. | Communicates capability, not value. The user doesn't buy capabilities; they buy outcomes. | Headline is the promise (the outcome), not the spec. Specs go in supporting sections. |
@@ -310,7 +310,7 @@ Apple's footer is calm, dense, and load-bearing — the team finds the help link
 
 A marketing-page design produces:
 
-1. **The page spec** in `knowledge-base/design-specs/marketing-<page>.md` — full screen spec per `team/ui-ux/skills/web-screen-specification.md`, with marketing-specific additions (conversion funnel events, A/B-test variants planned, performance budget, OG image asset).
+1. **The page spec** in `knowledge-base/design-specs/marketing-<page>.md` — full screen spec per the `web-screen-specification` skill, with marketing-specific additions (conversion funnel events, A/B-test variants planned, performance budget, OG image asset).
 2. **OG image asset** committed to the repo (e.g., `public/og/<route>.png` or generated via `next/og`).
 3. **Conversion-funnel event list** — every CTA tracked, every section view tracked. Coordinated with PM and Marketing agents.
 4. **Performance budget** for the page in the spec — explicit LCP target, image-weight budget, third-party-script policy.
@@ -335,4 +335,4 @@ A marketing-page design produces:
 
 9. **Footer is load-bearing.** Calm, dense, categorized links. The team finds help; the developer finds docs; the investor finds investor-relations. Not decorative.
 
-10. **The marketing route group is separate from the product route group.** Cleanly separated concerns: `(marketing)` for landing / pricing / blog; `(app)` for product. Different chrome, different patterns, different performance budgets, different A/B infrastructure. See `team/developer/skills/web-architecture.md`.
+10. **The marketing route group is separate from the product route group.** Cleanly separated concerns: `(marketing)` for landing / pricing / blog; `(app)` for product. Different chrome, different patterns, different performance budgets, different A/B infrastructure. See the `web-architecture` skill.

@@ -1,7 +1,7 @@
 # iOS Screen Specification Template
 
 ## Purpose
-Define the complete screen specification format used to hand off designs to the Developer agent. A screen spec is the single source of truth for implementing one screen. It wraps wireframes, component specs, interaction specs, state definitions, and accessibility annotations into one document. See `team/ui-ux/skills/ios-content-hierarchy.md` for the hierarchy exercise that precedes layout. See `team/ui-ux/skills/ios-wireframe-methodology.md` for wireframe format. See `team/ui-ux/skills/design-system.md` for component token usage. See `team/ui-ux/skills/ios-animation-interaction.md` for animation specs. See `team/ui-ux/skills/ios-copy-fitting-microstates.md` for copy budgets, placeholder format, and microstate specs. See `team/ui-ux/skills/accessibility.md` for a11y requirements.
+Define the complete screen specification format used to hand off designs to the Developer agent. A screen spec is the single source of truth for implementing one screen. It wraps wireframes, component specs, interaction specs, state definitions, and accessibility annotations into one document. See the `ios-content-hierarchy` skill for the hierarchy exercise that precedes layout. See the `ios-wireframe-methodology` skill for wireframe format. See the `design-system` skill for component token usage. See the `ios-animation-interaction` skill for animation specs. See the `ios-copy-fitting-microstates` skill for copy budgets, placeholder format, and microstate specs. See the `accessibility` skill for a11y requirements.
 
 ## Apple's Detail Standard
 Apple ships screens where every pixel is intentional. A world-class screen spec leaves zero ambiguity:

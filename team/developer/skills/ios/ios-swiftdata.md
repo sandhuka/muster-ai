@@ -1,7 +1,7 @@
 # iOS SwiftData & Persistence
 
 ## Purpose
-Define SwiftData model definitions, queries, predicates, migrations, and persistence patterns for iOS development. Use SwiftData. Do not use Core Data. See `team/developer/skills/ios-best-practices.md` for the repository pattern and dual-backend architecture. See `team/developer/skills/ios-testing.md` for in-memory testing patterns.
+Define SwiftData model definitions, queries, predicates, migrations, and persistence patterns for iOS development. Use SwiftData. Do not use Core Data. See the `ios-best-practices` skill for the repository pattern and dual-backend architecture. See Developer's `ios-testing` skill for in-memory testing patterns.
 
 ## Model Definitions
 - Use `@Model` macro for all persistent types
@@ -99,7 +99,7 @@ Predicates support only a subset of Swift. Some unsupported operations won't com
 - Inject via `.modelContainer()` modifier — available to all descendant views
 - For hybrid local/cloud architectures, the local container can serve as offline cache
 
-For local-to-cloud migration patterns, see `team/developer/skills/ios-best-practices.md` (Hybrid Local/Cloud Architecture).
+For local-to-cloud migration patterns, see the `ios-best-practices` skill (Hybrid Local/Cloud Architecture).
 
 ## Testing
 - Use in-memory `ModelContainer` for all persistence tests — fast, isolated, no disk cleanup

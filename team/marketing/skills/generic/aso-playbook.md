@@ -1,7 +1,7 @@
 # App Store Optimization (ASO) Playbook
 
 ## Purpose
-Strategic ASO for maximizing organic discovery and conversion on the App Store. Marketing owns keyword research, ranking strategy, testing methodology, and conversion optimization. Content agent owns the actual copy (`team/content/skills/app-store-listing.md`). See `knowledge-base/research/app-store-intel.md` for keyword data.
+Strategic ASO for maximizing organic discovery and conversion on the App Store. Marketing owns keyword research, ranking strategy, testing methodology, and conversion optimization. Content agent owns the actual copy (the `app-store-listing` skill). See `knowledge-base/research/app-store-intel.md` for keyword data.
 
 ## How the Algorithm Works
 Apple's ranking factors (approximate priority):

@@ -1,7 +1,7 @@
 # iOS Security & Keychain
 
 ## Purpose
-Define keychain operations, biometric authentication, CryptoKit usage, credential storage, and security anti-patterns for iOS development. See `team/developer/skills/ios-code-standards.md` for the `@AppStorage` rule. See `team/developer/skills/ios-networking.md` for Supabase auth integration. See `team/developer/skills/ios-concurrency.md` for actor patterns used in keychain wrappers. Target: **iOS 26+, Swift 6.2+**.
+Define keychain operations, biometric authentication, CryptoKit usage, credential storage, and security anti-patterns for iOS development. See the `ios-code-standards` skill for the `@AppStorage` rule. See the `ios-networking` skill for Supabase auth integration. See the `ios-concurrency` skill for actor patterns used in keychain wrappers. Target: **iOS 26+, Swift 6.2+**.
 
 ## Core Rules
 

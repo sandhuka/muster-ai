@@ -1,7 +1,7 @@
 # Web Localization and Internationalization
 
 ## Purpose
-Define how to design web product UI for languages other than English: text expansion across locales (German +30%, Finnish +40%, Russian +20%, Japanese -50%), RTL mirroring (not just text flow — icons, scroll, animation direction, focus order), CSS logical properties as the default, locale-aware date / number / currency / plural / sort formatting via the full `Intl.*` family, the `lang` attribute discipline, IME composition handling, bidi text via `<bdi>`, ICU MessageFormat for complex strings, hreflang and URL structure as UX, language switcher design, and the cultural-meaning concerns most product teams discover only when shipping breaks. This skill is the design-side counterpart to the developer-side i18n implementation; design must build for localizability from screen one because retrofitting is one of the most expensive product mistakes a team can make. See `team/ui-ux/skills/web-design-system.md` for the tokens that consume logical properties (gutter, control padding) — those token names should never carry directional bias. See `team/ui-ux/skills/web-screen-specification.md` for how locale + direction get specified per screen. See `team/ui-ux/skills/web-content-hierarchy.md` for hierarchy under text expansion. See `team/ui-ux/skills/web-form-patterns.md` for the autocomplete + label-position rules that interact with i18n (and the IME-composition discipline this skill flags). See `team/ui-ux/skills/web-information-architecture.md` for locale-prefixed URL structure. See `team/ui-ux/skills/web-accessibility.md` for the `lang` attribute's screen-reader role and RTL focus-order requirements. See `team/ui-ux/skills/web-onboarding-flows.md` for first-visit locale detection (an onboarding decision). See `team/developer/skills/web-nextjs-app-router.md` for the App Router locale routing primitive. **Note: there is no Developer-side `web-i18n` skill yet** — the message-extraction / runtime / build-time / cached-translation pipeline (typically `next-intl` or `next-international` with App Router) is a known framework gap; flag for a future Developer wave when the project hits real i18n implementation. Target: **product UI on web shipping to multiple languages, multiple text directions, multiple locale formatting conventions**.
+Define how to design web product UI for languages other than English: text expansion across locales (German +30%, Finnish +40%, Russian +20%, Japanese -50%), RTL mirroring (not just text flow — icons, scroll, animation direction, focus order), CSS logical properties as the default, locale-aware date / number / currency / plural / sort formatting via the full `Intl.*` family, the `lang` attribute discipline, IME composition handling, bidi text via `<bdi>`, ICU MessageFormat for complex strings, hreflang and URL structure as UX, language switcher design, and the cultural-meaning concerns most product teams discover only when shipping breaks. This skill is the design-side counterpart to the developer-side i18n implementation; design must build for localizability from screen one because retrofitting is one of the most expensive product mistakes a team can make. See the `web-design-system` skill for the tokens that consume logical properties (gutter, control padding) — those token names should never carry directional bias. See the `web-screen-specification` skill for how locale + direction get specified per screen. See the `web-content-hierarchy` skill for hierarchy under text expansion. See the `web-form-patterns` skill for the autocomplete + label-position rules that interact with i18n (and the IME-composition discipline this skill flags). See the `web-information-architecture` skill for locale-prefixed URL structure. See UI/UX's `web-accessibility` skill for the `lang` attribute's screen-reader role and RTL focus-order requirements. See the `web-onboarding-flows` skill for first-visit locale detection (an onboarding decision). See the `web-nextjs-app-router` skill for the App Router locale routing primitive. **Note: there is no Developer-side `web-i18n` skill yet** — the message-extraction / runtime / build-time / cached-translation pipeline (typically `next-intl` or `next-international` with App Router) is a known framework gap; flag for a future Developer wave when the project hits real i18n implementation. Target: **product UI on web shipping to multiple languages, multiple text directions, multiple locale formatting conventions**.
 
 ## The Anchor: Localization Is a Design Constraint, Not a Translation Step
 
@@ -132,7 +132,7 @@ Dates, numbers, currencies, plurals, names, addresses — every one of these has
 - **Server-side**, do the same — `Intl.DateTimeFormat` is available in Node 20+.
 - **Month abbreviations differ by locale** ("Jan" vs "Janv." vs "1月"). Design for variable width.
 - **Calendar systems**: Most locales use Gregorian, but some users prefer Hijri (Saudi Arabia), Hebrew (Israel — alongside Gregorian), Buddhist (Thailand). For most products, Gregorian is correct; for products that target these markets, allow user preference.
-- **Time zones**: store UTC, display in user's TZ. Show the abbreviation when ambiguous ("3:00 PM PT" not "3:00 PM"). See `team/ui-ux/skills/web-form-patterns.md` → Time Zone.
+- **Time zones**: store UTC, display in user's TZ. Show the abbreviation when ambiguous ("3:00 PM PT" not "3:00 PM"). See the `web-form-patterns` skill → Time Zone.
 
 ### Numbers and Currencies
 
@@ -238,7 +238,7 @@ For larger blocks (a comment, a chat message), `<bdo>` or CSS `unicode-bidi: iso
 
 For CJK input methods (Japanese IME, Chinese pinyin, Korean Hangul), the user types into an *intermediate* composition buffer that resolves into the final character on confirmation. During composition, the input fires `input` events (with the in-progress romaji or pinyin) and `blur` may fire mid-composition if focus moves.
 
-This breaks the form-validation discipline (`team/ui-ux/skills/web-form-patterns.md` → "validate on blur"): a Japanese user typing `"こん"` mid-composition who triggers blur sees a "this isn't a valid name" error before they've finished typing.
+This breaks the form-validation discipline (the `web-form-patterns` skill → "validate on blur"): a Japanese user typing `"こん"` mid-composition who triggers blur sees a "this isn't a valid name" error before they've finished typing.
 
 The correct discipline:
 
@@ -330,7 +330,7 @@ const label = displayNames.of(targetLocale); // "Deutsch" for de, "日本語" fo
 
 ### Locale Cookie and GDPR Classification
 
-The locale-preference cookie (the one that remembers "this user prefers German") is **essential under GDPR / ePrivacy** — no consent banner required for it. Tracking the locale switch as an analytics event is a separate concern that *does* require consent. Specify the locale-preference cookie in the cookie-policy as essential; coordinate with `team/ui-ux/skills/web-onboarding-flows.md` → Cookie Consent.
+The locale-preference cookie (the one that remembers "this user prefers German") is **essential under GDPR / ePrivacy** — no consent banner required for it. Tracking the locale switch as an analytics event is a separate concern that *does* require consent. Specify the locale-preference cookie in the cookie-policy as essential; coordinate with the `web-onboarding-flows` skill → Cookie Consent.
 
 ## Cultural Meaning: Beyond Translation
 
@@ -374,7 +374,7 @@ Per-screen, the spec must address:
 | **Mirroring icons that shouldn't mirror.** Logos, media play, photographs flipped in RTL. | Logos become wrong; play icon convention violated; faces look uncanny. | Mirror by default; explicit opt-out for the non-mirror set (logos, media, photographs, code, math). |
 | **Translating brand names, technical terms, or established loanwords.** "Cloud" translated as a German word for atmospheric water vapor. | Loses meaning; users expect the loan-word; SEO suffers. | Keep brand names and technical terms in source language unless there's a real local convention. |
 | **No `hreflang` declarations on localized pages.** | Search engines duplicate-content-flag your locales; users land in the wrong language from search. | Every localized page declares its alternates including `x-default`. |
-| **Color-symbolic UX** (red = danger, green = success) with no shape backup. | Color meaning differs across cultures; color-blind users miss it. | Pair color with shape, icon, or text. See `team/ui-ux/skills/web-accessibility.md`. |
+| **Color-symbolic UX** (red = danger, green = success) with no shape backup. | Color meaning differs across cultures; color-blind users miss it. | Pair color with shape, icon, or text. See UI/UX's `web-accessibility` skill. |
 | **Showing prices in the engineer's currency on a foreign-locale page.** USD prices on `/de/pricing` because "we haven't built currency conversion yet." | German user does mental math, abandons; signals "we don't actually serve your market." | Either build currency display in the user's locale (with the resource currency clearly noted) or restrict the localized page to markets where the source currency is appropriate. |
 | **Partial translation.** UI translated; error messages and third-party-component strings stay English. | Worse than full English — looks broken; user can't trust which parts they understand. | Either fully translate the surface or don't ship that locale yet. |
 | **Engineer's TZ as default for every new user.** "Pacific Time" everywhere. | Confusing for non-PT users; wrong by default. | Detect via `Intl.DateTimeFormat().resolvedOptions().timeZone`; user can override. |
@@ -393,7 +393,7 @@ A localization design produces:
 
 1. **Locale list** in `knowledge-base/design-specs/locales.md` — supported locales, their script, their text direction, the default fallback (`x-default`).
 2. **i18n routing strategy** in the same file — path prefix vs. subdomain vs. domain; URL structure for each supported locale.
-3. **Per-screen i18n addressing** in the screen spec (`team/ui-ux/skills/web-screen-specification.md`) — verified expansion, direction handling, ICU patterns for count-dependent strings, locale-aware formatting for all dynamic values.
+3. **Per-screen i18n addressing** in the screen spec (the `web-screen-specification` skill) — verified expansion, direction handling, ICU patterns for count-dependent strings, locale-aware formatting for all dynamic values.
 4. **Cultural-review flags** — any color, icon, or photo choice with locale-specific meaning, in the relevant screen spec's Open Questions or as a dedicated review pass before launch in a new market.
 
 ## Principles

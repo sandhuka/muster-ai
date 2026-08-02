@@ -1,7 +1,7 @@
 # Campaign Playbook
 
 ## Purpose
-Campaign orchestration — how to plan, execute, and evaluate marketing campaigns across channels. Individual channel tactics live in dedicated skill files. Coordinate with Content agent (`team/content/skills/brand-voice.md`) for copy, Legal agent for compliance review on claims. See `knowledge-base/brand-guidelines.md` for brand tone.
+Campaign orchestration — how to plan, execute, and evaluate marketing campaigns across channels. Individual channel tactics live in dedicated skill files. Coordinate with Content agent (the `brand-voice` skill) for copy, Legal agent for compliance review on claims. See `knowledge-base/brand-guidelines.md` for brand tone.
 
 ## Campaign Planning Template
 Every campaign answers these 10 questions before launch:

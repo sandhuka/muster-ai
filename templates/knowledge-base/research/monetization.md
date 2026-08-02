@@ -1,6 +1,6 @@
 # Monetization Research — [Product Name]
 <!-- Revenue model research and pricing strategy. -->
-<!-- Skill reference: muster/team/research/skills/generic/monetization.md -->
+<!-- Skill reference: the `monetization` skill -->
 
 ## Current State
 <!-- Executive summary of monetization findings. Update as research evolves. -->

@@ -1,7 +1,7 @@
 # Design System
 
 ## Purpose
-Define the component standards, spec handoff format, and component request workflow that ensure every screen is built from shared UI library tokens — never raw values. See `team/ui-ux/skills/mobile-patterns.md` for screen-level layout patterns and `team/ui-ux/skills/accessibility.md` for accessibility requirements that apply to every component.
+Define the component standards, spec handoff format, and component request workflow that ensure every screen is built from shared UI library tokens — never raw values. See the `mobile-patterns` skill for screen-level layout patterns and the `accessibility` skill for accessibility requirements that apply to every component.
 
 ## Token Source of Truth
 All design tokens (colors, typography, spacing, radius) are defined in the **shared UI library** (e.g., a private CocoaPod, Swift Package, or design token package). Components are added incrementally as the UI/UX agent designs screens and identifies reusable patterns — the Components section in the reference file may be empty. The authoritative reference is `knowledge-base/design-system-reference.md`, auto-generated from the library source files after every dependency update. Do not edit it manually. Do not duplicate token values here — always reference that file.

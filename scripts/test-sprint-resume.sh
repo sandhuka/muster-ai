@@ -46,12 +46,13 @@ rc="$(run_resume "$SB/noguard/muster-sprint-resume.sh")"
 [ "$rc" -ne 0 ] && ok "resume refuses when the guard file is missing (exit $rc)" || no "resume ran with no guard present"
 [ ! -f "$SB/claude-was-called" ] && ok "no claude call when guard missing" || no "claude was invoked with no guard"
 
-# --- 3. structural: the guard is sourced BEFORE the skip-permissions claude line ---
+# --- 3. structural: the guard is sourced BEFORE the skip-permissions PM call (now the
+# adapter's agent_plain — the harness flags themselves live in muster-agent-cli.sh) ---
 gl="$(grep -n 'muster-guard-worktree.sh' "$MUSTER/scripts/muster-sprint-resume.sh" | head -1 | cut -d: -f1)"
-cl="$(grep -n 'claude -p --dangerously-skip-permissions' "$MUSTER/scripts/muster-sprint-resume.sh" | head -1 | cut -d: -f1)"
+cl="$(grep -n '^agent_plain pm' "$MUSTER/scripts/muster-sprint-resume.sh" | head -1 | cut -d: -f1)"
 { [ -n "$gl" ] && [ -n "$cl" ] && [ "$gl" -lt "$cl" ]; } \
   && ok "guard sourced before the skip-permissions call (line $gl < $cl)" \
-  || no "guard not before skip-permissions (guard=$gl claude=$cl)"
+  || no "guard not before skip-permissions (guard=$gl call=$cl)"
 
 echo "-----------------------------------------------"
 echo "RESULT: $pass passed, $fail failed   (sandbox: $SB)"

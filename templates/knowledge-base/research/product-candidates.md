@@ -1,6 +1,6 @@
 # Product Candidates — [Product Name]
 <!-- Alternative product directions evaluated during discovery. -->
-<!-- Skill reference: muster/team/research/skills/generic/product-validation.md -->
+<!-- Skill reference: the `product-validation` skill -->
 
 ## Current State
 <!-- Summary of evaluation status. Which direction was chosen and why. -->

@@ -1,7 +1,7 @@
 # Backend Data Modeling
 
 ## Purpose
-Relational schema design methodology for mobile app backends. This covers the design thinking -- see `team/developer/skills/backend-supabase-database.md` for SQL implementation syntax. See `team/developer/skills/ios-swiftdata.md` for the local SwiftData schema that mirrors the cloud schema. See `knowledge-base/architecture.md` Sections 5 and 10 for the target data model and migration flow. See `knowledge-base/legal/privacy-policy-draft.md` for data retention and deletion requirements.
+Relational schema design methodology for mobile app backends. This covers the design thinking -- see the `backend-supabase-database` skill for SQL implementation syntax. See the `ios-swiftdata` skill for the local SwiftData schema that mirrors the cloud schema. See `knowledge-base/architecture.md` Sections 5 and 10 for the target data model and migration flow. See `knowledge-base/legal/privacy-policy-draft.md` for data retention and deletion requirements.
 
 ## Schema Design for Mobile Apps
 - **Normalize for writes, denormalize for reads**: Mobile apps read far more than they write. Normalize core tables (user_profiles, workout_history, workout_exercises) for data integrity, but consider denormalized read views for frequently-queried aggregations (e.g., weekly summary).
@@ -12,7 +12,7 @@ Relational schema design methodology for mobile app backends. This covers the de
 
 ## Audit Trails & Timestamps
 - Every table gets `created_at` and `updated_at` (both `timestamptz NOT NULL DEFAULT now()`).
-- `updated_at` is maintained by a database trigger (see `team/developer/skills/backend-supabase-database.md` for the trigger SQL).
+- `updated_at` is maintained by a database trigger (see the `backend-supabase-database` skill for the trigger SQL).
 - These columns serve three purposes: debugging (when was this created?), sync ordering (which version is newer?), and data retention enforcement (when was this last touched?).
 - Never update `created_at` -- it is the immutable birth timestamp.
 - For sync conflict resolution, `updated_at` is the tiebreaker: server timestamp wins for plan/schedule data.

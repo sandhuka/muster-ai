@@ -1,7 +1,7 @@
 # Codebase Audit (Bootstrap Mode)
 
 ## Purpose
-Defines how Developer performs a shallow code audit during existing-project onboarding — a one-time, read-only pass that produces the evidence base for `knowledge-base/architecture.md`. Runs only in **bootstrap mode** (triggered by the onboarding flow), not as a standard Developer task. See `team/developer/skills/generic/code-standards.md` for standard development workflow. Invoked from `team/pm/skills/generic/reverse-discovery.md` during the onboarding audit step; output feeds the durable `knowledge-base/architecture.md`.
+Defines how Developer performs a shallow code audit during existing-project onboarding — a one-time, read-only pass that produces the evidence base for `knowledge-base/architecture.md`. Runs only in **bootstrap mode** (triggered by the onboarding flow), not as a standard Developer task. See the `code-standards` skill for standard development workflow. Invoked from the `reverse-discovery` skill during the onboarding audit step; output feeds the durable `knowledge-base/architecture.md`.
 
 ## Bootstrap Mode Contract
 

@@ -4,7 +4,7 @@
 
 ## Prompt Standard
 
-<!-- Authoring or editing a step? The format templates + Role:-marker rules live in `muster/team/pm/skills/generic/sprint-planning.md` → "Queue Step Format". The live steps below already demonstrate the format, and `muster-queue-lint.sh` enforces the structure. -->
+<!-- Authoring or editing a step? The format templates + Role:-marker rules live in the `sprint-planning` skill → "Queue Step Format". The live steps below already demonstrate the format, and `muster-lint-queue.sh` enforces the structure. -->
 
 ## Founder Decisions
 <!-- Agents add questions requiring founder input here. -->
@@ -21,7 +21,7 @@
 <!-- Ordered sequence of remaining steps for this sprint. -->
 
 ## Done (Last 10)
-<!-- Completed steps, newest at the top. Growth rules: Done keeps max 10 entries (trim oldest on overflow). PM clears Done entirely at each new sprint. -->
+<!-- Completed steps, newest at the top. Growth rules enforced by `muster-advance-queue.sh` (keeps 10, newest first). PM clears Done entirely at each new sprint. -->
 <!-- Format: - [DATE] [Agent]: [One-line summary] -->
 <!-- A specialist Done entry is a POINTER to the handoff, not a substitute for it: `- DATE — Step N: <title> (HO-NNN). <one-line outcome>.` If it grows past ~5 lines, the detail belongs in the HO body. The autonomous loop lints the most-recent Done entry's HO reference against agent-requests.md and stops if it's missing. -->
 

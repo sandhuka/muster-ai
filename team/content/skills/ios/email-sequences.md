@@ -1,7 +1,7 @@
 # Email Copy
 
 ## Purpose
-Define the methodology for writing email content — transactional emails (v1.0), lifecycle sequences, and campaign emails (post-MVP). See `team/content/skills/brand-voice.md` for voice application. See `team/content/skills/sensitive-health-copy.md` for missed-session and lapsed-user tone rules. See `team/content/skills/notification-copy.md` for related short-form copy patterns.
+Define the methodology for writing email content — transactional emails (v1.0), lifecycle sequences, and campaign emails (post-MVP). See the `brand-voice` skill for voice application. See the `sensitive-health-copy` skill for missed-session and lapsed-user tone rules. See the `notification-copy` skill for related short-form copy patterns.
 
 ## Transactional Emails (v1.0)
 

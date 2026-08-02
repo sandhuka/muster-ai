@@ -1,7 +1,7 @@
 # iOS Modern API Reference
 
 ## Purpose
-Scannable reference of deprecated vs modern SwiftUI and Swift APIs. Use when writing or reviewing iOS code to ensure current API usage. See `team/developer/skills/ios-swiftui.md` for architectural patterns. See `team/developer/skills/ios-code-standards.md` for Swift conventions. Target: **iOS 26+, Swift 6.2+**.
+Scannable reference of deprecated vs modern SwiftUI and Swift APIs. Use when writing or reviewing iOS code to ensure current API usage. See the `ios-swiftui` skill for architectural patterns. See the `ios-code-standards` skill for Swift conventions. Target: **iOS 26+, Swift 6.2+**.
 
 ## SwiftUI API — Use This, Not That
 
@@ -71,7 +71,7 @@ Scannable reference of deprecated vs modern SwiftUI and Swift APIs. Use when wri
 
 ## Swift Concurrency (Quick Flags)
 
-For full concurrency guidance, see `team/developer/skills/ios-concurrency.md`.
+For full concurrency guidance, see the `ios-concurrency` skill.
 
 | Deprecated / Avoid | Modern Replacement |
 |--------------------|--------------------|

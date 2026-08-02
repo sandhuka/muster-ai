@@ -1,7 +1,7 @@
 # Referral & Virality
 
 ## Purpose
-Word-of-mouth amplification: referral program, viral loops, social sharing hooks. Referral is the only channel with zero marginal cost — if viral coefficient (k) reaches 0.3-0.5, every 2-3 users bring in 1 additional. See `team/marketing/skills/retention-lifecycle.md` for milestone celebrations that trigger sharing, `team/marketing/skills/community-building.md` for community-driven word-of-mouth.
+Word-of-mouth amplification: referral program, viral loops, social sharing hooks. Referral is the only channel with zero marginal cost — if viral coefficient (k) reaches 0.3-0.5, every 2-3 users bring in 1 additional. See the `retention-lifecycle` skill for milestone celebrations that trigger sharing, the `community-building` skill for community-driven word-of-mouth.
 
 ## Viral Loop Design
 Product-native moments where users are intrinsically motivated to share:

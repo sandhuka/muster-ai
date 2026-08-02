@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Muster — session-start housekeeping
+# muster-housekeeping.sh — action: session-start housekeeping (family: verb — acts; prunes stale bind files, rotates logs).
 #
 # Runs at every session start (called from CLAUDE.md bootstrap).
 # Two jobs:
@@ -14,12 +14,13 @@ set -euo pipefail
 # 1. Prune stale bind files (>1 day old). 2>/dev/null suppresses "no such file" if .claude missing.
 find .claude -maxdepth 1 -name '.muster-bound-role.*' -mtime +0 -delete 2>/dev/null || true
 
-# 2. Rotate bind log if oversized
-LOG="knowledge-base/.muster-bind-log"
-if [ -f "$LOG" ]; then
-    LINES=$(wc -l < "$LOG")
-    if [ "$LINES" -gt 500 ]; then
-        TS=$(date +%Y%m%d-%H%M%S)
-        mv -n "$LOG" "${LOG}.archive.${TS}"
+# 2. Rotate bind log + boot telemetry log if oversized
+for LOG in knowledge-base/.muster-bind-log knowledge-base/.muster-boot-log; do
+    if [ -f "$LOG" ]; then
+        LINES=$(wc -l < "$LOG")
+        if [ "$LINES" -gt 500 ]; then
+            TS=$(date +%Y%m%d-%H%M%S)
+            mv -n "$LOG" "${LOG}.archive.${TS}"
+        fi
     fi
-fi
+done

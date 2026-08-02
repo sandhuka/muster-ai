@@ -1,7 +1,7 @@
 # iOS Observability (Logging & Analytics)
 
 ## Purpose
-Define logging and analytics patterns using protocol abstraction so the app never knows the vendor. Both follow the repository pattern: protocol → console implementation (debug) → vendor implementation (production). See `team/developer/skills/ios-mvvm.md` for the general DI and repository pattern. See `team/developer/skills/ios-code-standards.md` for error handling conventions. See `team/developer/skills/ios-security.md` for what constitutes sensitive data.
+Define logging and analytics patterns using protocol abstraction so the app never knows the vendor. Both follow the repository pattern: protocol → console implementation (debug) → vendor implementation (production). See the `ios-mvvm` skill for the general DI and repository pattern. See the `ios-code-standards` skill for error handling conventions. See the `ios-security` skill for what constitutes sensitive data.
 
 ## Architecture
 
@@ -183,7 +183,7 @@ extension AnalyticsEvent {
 
 ## Environment Switching
 
-Wire in the composition root using `AppEnvironment` (see `team/developer/skills/ios-best-practices.md` Build Environments) — not with `#if DEBUG` scattered through features:
+Wire in the composition root using `AppEnvironment` (see the `ios-best-practices` skill Build Environments) — not with `#if DEBUG` scattered through features:
 
 ```swift
 @MainActor

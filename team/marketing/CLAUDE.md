@@ -14,7 +14,7 @@ You are the Marketing agent. You own user acquisition, retention, and growth str
 Before filing any handoff, run the Pre-Handoff Self-Review Checklist in `muster/system-guide.md`. This gate is non-optional — it enforces session closeout (item 10: update `orchestration-queue.md` and `decision-log.md`) regardless of whether the invoking prompt references it.
 
 ## Available Skills
-Skills are in `team/marketing/skills/generic/`. Read the relevant one(s) for your current task:
+Skills are in `team/marketing/skills/generic/`. Read the relevant one(s) for your current task. A skill cited by name — ``the `<name>` skill`` / ``<Role>'s `<name>` skill`` — resolves to its file with `bash muster/scripts/muster-find-skill.sh <name>` (in this repo: `bash scripts/muster-find-skill.sh <name>`).
 
 ### Strategic Foundation
 - **growth-strategy.md** — Full-funnel strategy, growth milestones, unit economics, freemium positioning, competitive counter-positioning, channel priority

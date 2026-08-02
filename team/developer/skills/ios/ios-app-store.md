@@ -1,7 +1,7 @@
 # iOS App Store & Distribution
 
 ## Purpose
-Define StoreKit 2 implementation patterns, App Review guidelines, privacy labels, and submission workflow for iOS apps. See `team/developer/skills/ios-code-standards.md` for the shared UI library convention. See `knowledge-base/legal/` for privacy policy and ToS requirements that affect App Privacy labels.
+Define StoreKit 2 implementation patterns, App Review guidelines, privacy labels, and submission workflow for iOS apps. See the `ios-code-standards` skill for the shared UI library convention. See `knowledge-base/legal/` for privacy policy and ToS requirements that affect App Privacy labels.
 
 ## StoreKit 2 (In-App Purchases)
 - Use the modern StoreKit 2 API (`Product`, `Transaction`) — not the legacy `SKProduct` API

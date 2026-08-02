@@ -1,7 +1,7 @@
 # Test Strategy
 
 ## Purpose
-Define testing levels, coverage targets, environment strategy, and the device testing matrix. See `team/qa/skills/bug-reporting.md` for the bug workflow that test findings feed into and `team/qa/skills/release-checklist.md` for test gates that must pass before release.
+Define testing levels, coverage targets, environment strategy, and the device testing matrix. See the `bug-reporting` skill for the bug workflow that test findings feed into and the `release-checklist` skill for test gates that must pass before release.
 
 ## Testing Levels
 1. **Unit**: Individual functions and methods — Developer owns, QA reviews coverage
@@ -15,7 +15,7 @@ Define testing levels, coverage targets, environment strategy, and the device te
 - Integration: All API endpoints tested with mock and staging servers
 - UI automation: All primary user journeys (onboarding, core loop, subscription)
 - **Zero-test-surface sweep**: periodically — and before any release gate — enumerate the production surfaces with *no* automated test at all, so an entire untested screen or module surfaces without a founder having to ask. A percentage target hides a surface that was never tested; this finds it.
-- **Code-read is not coverage** for a load-bearing contract (`team/qa/skills/generic/verification-discipline.md` → Meaningful Coverage): distinguish "validated by reading the diff" from "covered by a test that re-runs"; a silent-breakage invariant requires the latter.
+- **Code-read is not coverage** for a load-bearing contract (the `verification-discipline` skill → Meaningful Coverage): distinguish "validated by reading the diff" from "covered by a test that re-runs"; a silent-breakage invariant requires the latter.
 
 ## Two-Tier Test Design
 Every feature with a free/premium split needs test cases for both paths:

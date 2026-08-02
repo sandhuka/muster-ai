@@ -1,7 +1,7 @@
 # Backend Security
 
 ## Purpose
-Security design patterns and decision-making for the Supabase backend. This covers when and why to apply security measures -- see `team/developer/skills/backend-supabase-database.md` for RLS SQL syntax and `team/developer/skills/backend-supabase-auth.md` for auth configuration. See `team/developer/skills/ios-security.md` for client-side security (Keychain, biometrics). See `knowledge-base/architecture.md` Section 8 for RLS policy details and `knowledge-base/legal/privacy-policy-draft.md` for data privacy requirements.
+Security design patterns and decision-making for the Supabase backend. This covers when and why to apply security measures -- see the `backend-supabase-database` skill for RLS SQL syntax and the `backend-supabase-auth` skill for auth configuration. See the `ios-security` skill for client-side security (Keychain, biometrics). See `knowledge-base/architecture.md` Section 8 for RLS policy details and `knowledge-base/legal/privacy-policy-draft.md` for data privacy requirements.
 
 ## RLS Policy Design Patterns
 
@@ -9,7 +9,7 @@ Security design patterns and decision-making for the Supabase backend. This cove
 
 2. **Per-user isolation**: Every user-facing table gets a policy matching `auth.uid() = user_id`. This is the foundational pattern -- no user can read or modify another user's data.
 
-3. **Join-based child policies**: For child tables without a direct `user_id` column (e.g., `workout_exercises`), use an EXISTS subquery joining to the parent table. See `team/developer/skills/backend-supabase-database.md` for the SQL syntax.
+3. **Join-based child policies**: For child tables without a direct `user_id` column (e.g., `workout_exercises`), use an EXISTS subquery joining to the parent table. See the `backend-supabase-database` skill for the SQL syntax.
 
 4. **Operation-specific policies**: Use `FOR SELECT`, `FOR INSERT`, `FOR UPDATE`, `FOR DELETE` when different operations need different rules. Example: users can INSERT and SELECT their own data but cannot DELETE workout history (soft-delete via app logic instead).
 

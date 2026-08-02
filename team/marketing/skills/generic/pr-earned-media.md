@@ -1,7 +1,7 @@
 # PR & Earned Media
 
 ## Purpose
-Strategy for earning media coverage and building credibility. A single feature in a major outlet can drive 5-20K downloads. For a solo founder, PR is high-leverage — one story reaches millions. See `team/marketing/skills/launch-playbook.md` for launch-day PR coordination, `team/marketing/skills/social-media-strategy.md` for amplifying coverage.
+Strategy for earning media coverage and building credibility. A single feature in a major outlet can drive 5-20K downloads. For a solo founder, PR is high-leverage — one story reaches millions. See the `launch-playbook` skill for launch-day PR coordination, the `social-media-strategy` skill for amplifying coverage.
 
 ## Media Targets
 

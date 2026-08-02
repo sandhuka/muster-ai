@@ -1,7 +1,7 @@
 # Web Accessibility (Design Side)
 
 ## Purpose
-Define the accessibility decisions that belong to *design* — color contrast at the token layer, focus-ring specification, motion design and reduced-motion alternatives, target sizing, design-time review process, and the heading/landmark intent that the implementation enforces. This skill is the design-side counterpart to `team/developer/skills/web-accessibility.md` (which covers semantic HTML, ARIA, focus management code, axe testing, and the implementation mechanics). Design decides intent; the developer implements mechanism. Both are required; neither is sufficient on its own. See `team/ui-ux/skills/web-design-system.md` for the token system that encodes most of these decisions. See `team/ui-ux/skills/web-screen-specification.md` for how a11y intent is documented in the spec. See `team/ui-ux/skills/web-content-hierarchy.md` for the heading-tree discipline. See `team/ui-ux/skills/web-interaction-patterns.md` for motion tokens and reduced-motion patterns. Target: **WCAG 2.2 AA as the floor — never the ceiling. EAA-compliant by default for European product surfaces. Modern web (React 19+, Next.js 15+, Tailwind v4)**.
+Define the accessibility decisions that belong to *design* — color contrast at the token layer, focus-ring specification, motion design and reduced-motion alternatives, target sizing, design-time review process, and the heading/landmark intent that the implementation enforces. This skill is the design-side counterpart to Developer's `web-accessibility` skill (which covers semantic HTML, ARIA, focus management code, axe testing, and the implementation mechanics). Design decides intent; the developer implements mechanism. Both are required; neither is sufficient on its own. See the `web-design-system` skill for the token system that encodes most of these decisions. See the `web-screen-specification` skill for how a11y intent is documented in the spec. See the `web-content-hierarchy` skill for the heading-tree discipline. See the `web-interaction-patterns` skill for motion tokens and reduced-motion patterns. Target: **WCAG 2.2 AA as the floor — never the ceiling. EAA-compliant by default for European product surfaces. Modern web (React 19+, Next.js 15+, Tailwind v4)**.
 
 ## The Anchor: Accessibility Is a Design Constraint
 
@@ -92,7 +92,7 @@ The result: a 2px ring in the focus-ring color, 2px offset from the element edge
 Every page has a skip-to-content link as the first focusable element. Visually hidden until focused, then it appears at the top of the viewport with the focus ring. Activating it skips past the navigation to `<main>`. This is a design element — specify its appearance and position in the design system.
 
 ```tsx
-// Pattern (mechanism in team/developer/skills/web-accessibility.md)
+// Pattern (mechanism in Developer's `web-accessibility` skill)
 <a
   href="#main"
   className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-control focus:bg-surface-raised focus:px-3 focus:py-2 focus:text-text focus:ring-2 focus:ring-focus-ring"
@@ -114,7 +114,7 @@ The token-layer contrast verification (above) handles `prefers-contrast: more` a
 
 ### Designing for Forced-Colors
 
-The fix is not to fight forced-colors mode — it's to ensure the product still works. See `team/ui-ux/skills/web-design-system.md` → Forced Colors for the implementation pattern. The design-side rules:
+The fix is not to fight forced-colors mode — it's to ensure the product still works. See the `web-design-system` skill → Forced Colors for the implementation pattern. The design-side rules:
 
 - **Don't communicate state via background-color or background-image alone.** A button that's "primary" only because of its blue background disappears when the OS forces a flat background. Pair color with a visible border, an icon, or text weight.
 - **Borders are visible by default.** A button distinguished only by background color disappears in forced-colors; one with `1px solid` border survives.
@@ -160,7 +160,7 @@ Treat reduced-motion as a primary user mode, not an edge case. Every animated el
 | Route transition (View Transitions) | As designed | Instant |
 | Drag-and-drop snap | Spring | Linear, fast |
 
-Specify both the default and the reduced-motion variant in the screen spec (`team/ui-ux/skills/web-screen-specification.md` → Interactions → Animations).
+Specify both the default and the reduced-motion variant in the screen spec (the `web-screen-specification` skill → Interactions → Animations).
 
 ### Motion Tokens
 
@@ -211,14 +211,14 @@ A page that reads as "Today / Recent activity / Settings" via headings should no
 
 ## Form Accessibility (Design Side)
 
-Implementation lives in `team/developer/skills/web-accessibility.md`. The design-side decisions:
+Implementation lives in Developer's `web-accessibility` skill. The design-side decisions:
 
 | Decision | Specification |
 |----------|--------------|
 | Label position | Above the field. Always. Placeholder is *not* a label. |
 | Required indicator | Small `*` next to the label. Don't write "(required)" as text. Use `*` only if the form has a mix of required and optional. |
 | Error placement | Directly below the field, in `text-caption text-danger`. Linked via `aria-describedby` (developer's job). Visible *and* announced. |
-| Error trigger | On blur or on submit. Never on every keystroke (see `team/ui-ux/skills/web-interaction-patterns.md` → Forms). |
+| Error trigger | On blur or on submit. Never on every keystroke (see the `web-interaction-patterns` skill → Forms). |
 | Helper text | Below the field, in `text-caption text-text-muted`. Non-error guidance. |
 | Field grouping | Use `<fieldset>` + `<legend>` for related groups (address, payment card). Visually styled, semantically required. |
 | Autocomplete hints | Specify in the spec: which fields have which `autocomplete` attribute. Browsers and password managers depend on these. |
@@ -299,7 +299,7 @@ If any box is unchecked, the design is incomplete.
 
 ## What Lives Where (Design vs. Implementation)
 
-| Concern | Design owns (this skill) | Implementation owns (`team/developer/skills/web-accessibility.md`) |
+| Concern | Design owns (this skill) | Implementation owns (Developer's `web-accessibility` skill) |
 |---------|-------------------------|-------------------------------------------------------------------|
 | Color contrast | Token-level verification, "no color-only" rule | — |
 | Focus ring | Spec (token, offset, when visible) | `:focus-visible` mechanics, removing default outline correctly |
@@ -324,7 +324,7 @@ Both sides are required. A design spec without these decisions is incomplete; an
 | **Removing focus outlines without replacement.** `outline: none;` with no `:focus-visible` ring. | Keyboard users have no cursor. The most common a11y failure on the web. | Always pair `outline: none` with a `:focus-visible:ring-2 ring-focus-ring` replacement. Treat it as a non-negotiable token-level rule. |
 | **`user-scalable=no` / `maximum-scale=1.0` in viewport meta.** The page disables zoom. | Removes zoom for low-vision users. Direct WCAG violation. Common on "polished" mobile sites that want to prevent accidental zoom. | Omit. Allow user-scalable. Accidental zoom is fine; preventing it is hostile. |
 | **`aria-label` on every element ("aria-label-bombing").** `<button aria-label="Save">Save</button>`, decorative icons with elaborate labels, redundant ARIA on already-labeled elements. | The aria-label *overrides* the visible text — so the visible "Save" is replaced by the aria-label "Save," but if they ever drift the SR user gets a different word than the sighted user. Decorative icons get announced as content. Common LLM output that hurts SR experience. | Don't use aria-label when a visible label exists. Use it for icon-only buttons (where there's no text) and for genuinely landmark-level labels. Decorative SVGs get `aria-hidden="true"`. |
-| **Disabled state via `opacity` only.** A button at 50% opacity is "disabled." | Collides with focus-visible (the focus ring is also opacity'd out); fails contrast for disabled-but-meaningful text; encourages skipping `aria-disabled`. | Use distinct `disabled-fg` / `disabled-bg` tokens (see `team/ui-ux/skills/web-design-system.md`). Pair with `aria-disabled="true"` so SR users hear the state. |
+| **Disabled state via `opacity` only.** A button at 50% opacity is "disabled." | Collides with focus-visible (the focus ring is also opacity'd out); fails contrast for disabled-but-meaningful text; encourages skipping `aria-disabled`. | Use distinct `disabled-fg` / `disabled-bg` tokens (see the `web-design-system` skill). Pair with `aria-disabled="true"` so SR users hear the state. |
 | **Color-only state signals.** Required fields red-only, status indicators color-only. | Color-blind, low-vision, and high-glare users miss the state. | Add a second channel — icon, shape, position, or text. |
 | **Decorative motion on by default with no reduced-motion handler.** Skeleton shimmer, hover lifts, mount animations all assume motion is fine. | ~17% of macOS users have reduced-motion enabled. They get unintended motion. | Specify reduced-motion alternatives in the spec and enforce in components. |
 | **Touch targets visually-small with no hit-area extension.** A 24×24 icon button on touch. | Misses WCAG 2.5.5; users miss taps; the product feels imprecise. | Extend hit area to 44×44 minimum via padding or absolute overlay. Visual stays small. |

@@ -1,7 +1,7 @@
 # Web Onboarding Flows
 
 ## Purpose
-Define the behavioral and structural design of web onboarding: anonymous-first by default, motivation before commitment, progressive profiling, permission-ask timing, sign-in mechanics (passkeys / social / magic link), activation-event identification, and the discipline that distinguishes a flow that converts from one that leaks. Web onboarding is fundamentally different from mobile-app onboarding — there is no install gate, no app-store review, and abandonment is one tab-close away. Designing for that loose grip is the job. See `team/ui-ux/skills/web-content-hierarchy.md` for the per-screen hierarchy ladder (one question per screen). See `team/ui-ux/skills/web-interaction-patterns.md` for forms, modals, and validation patterns. See `team/ui-ux/skills/web-screen-specification.md` for how each onboarding screen is specified. See `team/ui-ux/skills/web-accessibility.md` for the focus, keyboard, and screen-reader requirements that onboarding flows must meet from screen one. See `team/developer/skills/web-auth.md` for the implementation-side auth mechanics (sessions, requireUser, RBAC). Target: **product onboarding for SaaS, productivity tools, content products, and consumer apps. Not transactional checkouts (separate domain — different psychology, different patterns).**
+Define the behavioral and structural design of web onboarding: anonymous-first by default, motivation before commitment, progressive profiling, permission-ask timing, sign-in mechanics (passkeys / social / magic link), activation-event identification, and the discipline that distinguishes a flow that converts from one that leaks. Web onboarding is fundamentally different from mobile-app onboarding — there is no install gate, no app-store review, and abandonment is one tab-close away. Designing for that loose grip is the job. See the `web-content-hierarchy` skill for the per-screen hierarchy ladder (one question per screen). See the `web-interaction-patterns` skill for forms, modals, and validation patterns. See the `web-screen-specification` skill for how each onboarding screen is specified. See UI/UX's `web-accessibility` skill for the focus, keyboard, and screen-reader requirements that onboarding flows must meet from screen one. See the `web-auth` skill for the implementation-side auth mechanics (sessions, requireUser, RBAC). Target: **product onboarding for SaaS, productivity tools, content products, and consumer apps. Not transactional checkouts (separate domain — different psychology, different patterns).**
 
 ## The Anchor: Onboarding Is the Product's First Impression
 
@@ -66,7 +66,7 @@ Steps 1 and 3 are skippable depending on the product. Steps 2, 4, and 5 are the 
 
 ## Per-Screen Discipline
 
-Every onboarding screen does *one* thing. The hierarchy ladder for onboarding (see `team/ui-ux/skills/web-content-hierarchy.md`) is non-negotiable here:
+Every onboarding screen does *one* thing. The hierarchy ladder for onboarding (see the `web-content-hierarchy` skill) is non-negotiable here:
 
 | Level | Content |
 |-------|---------|
@@ -153,7 +153,7 @@ The vibes-coded default is an interrupting modal that:
 - **No nag once chosen**: a banner closed via Accept / Reject / Customize stays closed; revisit only via an explicit settings link or on policy change.
 - **Designed in the brand voice**: the same typography, the same tone, the same colors. Cookie consent is not a third-party widget; it is part of the product.
 - **Persists explicit choices** (Accept / Reject / Customize) in a cookie that survives sessions; closing without choosing is *not* an explicit choice and re-prompts on next visit.
-- **Loads no third-party scripts before consent** for non-essential cookies. This is a coordination point with the Developer agent — see `team/developer/skills/web-security.md` and Developer's privacy patterns.
+- **Loads no third-party scripts before consent** for non-essential cookies. This is a coordination point with the Developer agent — see the `web-security` skill and Developer's privacy patterns.
 
 The decision tree:
 
@@ -275,14 +275,14 @@ Each of these is a flow variant, not a separate spec. Document the variants on t
 | **Reset-onboarding-on-return.** User finishes 3 of 5 steps, leaves, returns — sees screen 1 again. | Repeats the friction; signals the product doesn't remember them. | Resume at the last incomplete step. Persist progress state on first action. |
 | **Required profile photo / name / fields with no escape.** "Upload a photo to continue." | Friction with no proportional value. | Make optional; surface again later if relevant. |
 | **Modal-only onboarding on the home screen.** A modal "tour" overlaid on the empty home screen. | Modal tours are skipped 80%+ of the time and blocked by ad blockers. The empty home screen is still empty when the modal is dismissed. | Design the empty home screen as the first onboarding step (a designed empty state with a single clear CTA toward activation). |
-| **No reduced-motion handling on onboarding animations.** Welcome animation, progress transitions, success confetti — all decorative motion. | Vestibular triggers, accessibility failures, bad first impression for users who set the preference. | Specify reduced-motion alternatives (no animation or instant) for every onboarding animation. See `team/ui-ux/skills/web-accessibility.md`. |
+| **No reduced-motion handling on onboarding animations.** Welcome animation, progress transitions, success confetti — all decorative motion. | Vestibular triggers, accessibility failures, bad first impression for users who set the preference. | Specify reduced-motion alternatives (no animation or instant) for every onboarding animation. See UI/UX's `web-accessibility` skill. |
 
 ## Output
 
 An onboarding-flow design produces:
 
 1. **Flow diagram** in `knowledge-base/design-specs/onboarding-flow.md` — the screen sequence, branching points, skip targets, success and error paths. Text-based (mermaid or ASCII) per the durability discipline.
-2. **One screen spec per onboarding step** in `knowledge-base/design-specs/onboarding-<step>.md`, following `team/ui-ux/skills/web-screen-specification.md`.
+2. **One screen spec per onboarding step** in `knowledge-base/design-specs/onboarding-<step>.md`, following the `web-screen-specification` skill.
 3. **Activation event definition** in the relevant feature's section of `knowledge-base/product-spec.md` (PM owns; UI/UX provides recommendation based on flow).
 4. **Funnel events list** for analytics — one event per step in the flow, plus the activation event. Marketing and PM align on these; UI/UX surfaces the full list during flow design.
 

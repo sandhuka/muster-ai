@@ -4,9 +4,9 @@
 
 Procedural methodology for PM to conduct greenfield (new product from zero) onboarding — the forward complement to `reverse-discovery.md`. Greenfield Discovery is **multi-session by design** (founder shares idea → invokes Research separately → returns to PM for evaluation → drafts → Sprint 1 plan), spread across ~3 sessions over a day or two. Total founder-attended time: ~1-2 hours.
 
-This skill governs the **first** session's welcome + Stage 1 idea capture, and the **post-Research evaluation session** (Stages 3-5). Stage 2 (Research) is handled by the Research agent — see `team/research/skills/generic/product-validation.md`.
+This skill governs the **first** session's welcome + Stage 1 idea capture, and the **post-Research evaluation session** (Stages 3-5). Stage 2 (Research) is handled by the Research agent — see the `product-validation` skill.
 
-See `team/pm/skills/generic/product-evaluation.md` for the Stage 3 scoring rubric. See `team/pm/skills/generic/sprint-planning.md` for the Stage 5 sprint planning this skill hands off to.
+See the `product-evaluation` skill for the Stage 3 scoring rubric. See the `sprint-planning` skill for the Stage 5 sprint planning this skill hands off to.
 
 ## When This Skill Runs
 
@@ -88,7 +88,7 @@ Verify the JSON is valid before finalizing.
 ### 1.4 Queue Research
 
 - Write a `change-log.md` entry in `knowledge-base/research/change-log.md` with `status: needs-research` referencing the seeded brief.
-- Add a Research step to `knowledge-base/orchestration-queue.md` with the prompt: "Read `knowledge-base/research/product-brief.md` Founder's Idea section. Conduct full discovery research per `team/research/skills/generic/product-validation.md`. Update brief, market-landscape, competitive-analysis, user-insights. Set change-log entry to `status: researched` when complete."
+- Add a Research step to `knowledge-base/orchestration-queue.md` with the prompt: "Read `knowledge-base/research/product-brief.md` Founder's Idea section. Conduct full discovery research per the `product-validation` skill. Update brief, market-landscape, competitive-analysis, user-insights. Set change-log entry to `status: researched` when complete."
 
 ### 1.5 Hand off to founder
 
@@ -98,7 +98,7 @@ End Session 1 cleanly. Do NOT continue into Stage 2 — Research is a separate a
 
 ## Stage 2: Market Research (Session 2 — Research-owned)
 
-PM does not run this stage. Founder invokes `@research` directly. Research reads the seeded brief and conducts investigation per `team/research/skills/generic/product-validation.md`.
+PM does not run this stage. Founder invokes `@research` directly. Research reads the seeded brief and conducts investigation per the `product-validation` skill.
 
 PM is NOT in the loop during Stage 2. This is by design — keeps Research focused, keeps PM context clean.
 
@@ -124,7 +124,7 @@ Research delivered: product-brief, market-landscape, competitive-analysis, user-
 
 ### 3.3 Run product evaluation
 
-Use `team/pm/skills/generic/product-evaluation.md` 6-dimension scoring rubric. Read all Research outputs. Produce GO / CONDITIONAL / NO-GO recommendation with explicit reasoning per dimension.
+Use the `product-evaluation` skill's 6-dimension scoring rubric. Read all Research outputs. Produce GO / CONDITIONAL / NO-GO recommendation with explicit reasoning per dimension.
 
 Present to founder. Founder decides — accept, push back on a dimension, or reject. Log the decision in `decision-log.md`.
 
@@ -146,8 +146,8 @@ Recommendation: GO. Decision logged.
 
 ### 4.2 PM writes drafts
 
-- `knowledge-base/product-spec.md` — using `team/pm/skills/generic/product-spec-writing.md`. Inputs: Founder's Idea + Research findings.
-- `knowledge-base/brand-guidelines.md` — using `team/pm/skills/generic/brand-guidelines.md`. Inputs: brand-relevant content from Research + idea share.
+- `knowledge-base/product-spec.md` — using the `product-spec-writing` skill. Inputs: Founder's Idea + Research findings.
+- `knowledge-base/brand-guidelines.md` — using the `brand-guidelines` skill. Inputs: brand-relevant content from Research + idea share.
 - `knowledge-base/foundational-assumptions.md` — current-truth assumptions only. See "Foundational Assumptions Authoring" in `reverse-discovery.md` Phase 8.3 (same pattern).
 
 ### 4.3 Founder review
@@ -189,13 +189,13 @@ Product spec, brand guidelines, and foundational assumptions approved. Project C
 
 ### 5.2 Cascade context to Sprint 1 agents
 
-Use `team/pm/skills/generic/context-cascading.md` methodology. Populate agent-context files **only for the agents needed for Sprint 1** — typically Developer + UI/UX + QA + Content for product-with-UI projects. Other agents stay `null` and populate lazily at first invocation.
+Use the `context-cascading` skill methodology. Populate agent-context files **only for the agents needed for Sprint 1** — typically Developer + UI/UX + QA + Content for product-with-UI projects. Other agents stay `null` and populate lazily at first invocation.
 
 After writing each populated agent-context file, set the agent's timestamp in `.populated`.
 
 ### 5.3 Sprint 1 planning
 
-Use `team/pm/skills/generic/sprint-planning.md`. Ask the founder: *"What's the first feature/task you want to tackle? I'll plan Sprint 1 around it."* Populate `knowledge-base/current-sprint.md` and `knowledge-base/orchestration-queue.md` with 3-5 steps.
+Use the `sprint-planning` skill. Ask the founder: *"What's the first feature/task you want to tackle? I'll plan Sprint 1 around it."* Populate `knowledge-base/current-sprint.md` and `knowledge-base/orchestration-queue.md` with 3-5 steps.
 
 ### 5.4 Close Discovery
 

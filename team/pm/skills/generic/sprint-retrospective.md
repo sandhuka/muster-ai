@@ -13,7 +13,7 @@ Do not rely on memory — check these sources:
 | Source | What to look for |
 |--------|-----------------|
 | `decision-log.md` | Entries requiring 2+ revision passes or multi-file correction cascades |
-| `agent-requests.md` | Stale entries (open >3 days), revision loops (3+ rounds) |
+| `agent-requests.md` | STALE-tagged entries (`muster-list-open-items.sh`, >5 days), revision loops (3+ rounds) |
 | `orchestration-queue.md` | Steps that blocked or required re-sequencing |
 | Agent CLAUDE.md files | Outdated terminology, stale references, context drift from spec |
 

@@ -46,12 +46,37 @@ rc=$?
 [ "$rc" -eq 0 ] && [ -f "$SB/.claude/.muster-bound-role.ctest" ] && [ "$(cat "$SB/.claude/.muster-bound-role.ctest")" = "xo" ] \
   && ok "bind writes the xo bind file + exits 0 (no knowledge-base)" || no "xo bind did not write file / exit 0 (rc=$rc)"
 
+# ─── Public: functional — session-id fallback chain (the bind is never harness-gated) ─
+# MUSTER_SESSION_ID (harness-neutral) wins over CLAUDE_CODE_SESSION_ID
+( cd "$SB" && env MUSTER_SESSION_ID=alt CLAUDE_CODE_SESSION_ID=ctest bash "$FW/scripts/muster-bind.sh" xo interactive ) >/dev/null 2>&1
+rc=$?
+[ "$rc" -eq 0 ] && [ -f "$SB/.claude/.muster-bound-role.alt" ] \
+  && ok "MUSTER_SESSION_ID wins the session-id resolution" || no "MUSTER_SESSION_ID not honored (rc=$rc)"
+# NEITHER set: bind still exits 0, writes NO bind file, logs "nosession" (project layout)
+mkdir -p "$SB/proj/knowledge-base"
+( cd "$SB/proj" && env -u MUSTER_SESSION_ID -u CLAUDE_CODE_SESSION_ID bash "$FW/scripts/muster-bind.sh" pm auto ) >/dev/null 2>&1
+rc=$?
+nfiles="$(ls "$SB/proj/.claude"/.muster-bound-role.* 2>/dev/null | wc -l | tr -d ' ')"
+[ "$rc" -eq 0 ] && [ "$nfiles" = "0" ] && grep -q "pm auto nosession$" "$SB/proj/knowledge-base/.muster-bind-log" \
+  && ok "no session id: bind succeeds, no orphan file, log says nosession" \
+  || no "sessionless bind broken (rc=$rc files=$nfiles log=$(tail -1 "$SB/proj/knowledge-base/.muster-bind-log" 2>/dev/null))"
+
 # ─── Public: functional — status-line chain renders the role ─────────────────
 mkdir -p "$SB/.claude"; echo xo > "$SB/.claude/.muster-bound-role.s1"
 brs="$(cd "$SB" && echo '{"session_id":"s1"}' | bash "$FW/scripts/muster-bound-role.sh")"
 [ "$brs" = "xo" ] && ok "muster-bound-role.sh resolves role from stdin session_id" || no "muster-bound-role.sh output wrong: '$brs'"
+brs="$(cd "$SB" && env MUSTER_SESSION_ID=s1 bash "$FW/scripts/muster-bound-role.sh" </dev/null)"
+[ "$brs" = "xo" ] && ok "muster-bound-role.sh honors MUSTER_SESSION_ID env fallback" || no "MUSTER_SESSION_ID fallback wrong: '$brs'"
+sl="$(cd "$SB" && echo '{"session_id":"s1"}' | bash "$FW/scripts/muster-statusline.sh")"
+echo "$sl" | grep -q "\[muster: xo\]" && ok "muster-statusline.sh renders [muster: xo]" || no "muster-statusline.sh did not render the role: '$sl'"
+# stub chain: project-level stub execs the submodule script (cwd = project root)
+mkdir -p "$SB/muster/scripts"; cp "$FW/scripts/muster-statusline.sh" "$SB/muster/scripts/"
 sl="$(cd "$SB" && echo '{"session_id":"s1"}' | bash "$FW/templates/.claude/statusline.sh")"
-echo "$sl" | grep -q "\[muster: xo\]" && ok "statusline.sh renders [muster: xo]" || no "statusline.sh did not render the role: '$sl'"
+echo "$sl" | grep -q "\[muster: xo\]" && ok "statusline stub hops to submodule and renders" || no "statusline stub chain broken: '$sl'"
+# stub degrade: no submodule checkout -> loud placeholder, never a crash
+mkdir -p "$SB/deg"
+sl="$(cd "$SB/deg" && echo '{"session_id":"s1"}' | bash "$FW/templates/.claude/statusline.sh")"
+[ "$sl" = "[muster: submodule missing]" ] && ok "statusline stub degrades to [muster: submodule missing]" || no "statusline stub degrade wrong: '$sl'"
 
 # ─── Public: guide skills + /muster front door ───────────────────────────────
 for s in setup-coach operating-help config-knobs field-report migration-coach; do

@@ -1,7 +1,7 @@
 # iOS System Integration
 
 ## Purpose
-Define how the product participates in the iOS ecosystem beyond the app itself — notifications, widgets, Live Activities, Shortcuts, HealthKit, share sheets, and deep linking. Apple's best apps feel woven into the OS, not isolated behind an app icon. This skill covers when to extend into system surfaces, what to show there, and how to bring users back into the app gracefully. Read this skill when designing any feature that touches notifications, widgets, Live Activities, Shortcuts, HealthKit permissions, or deep links. See `team/ui-ux/skills/ios-hig-reference.md` for in-app platform conventions. See `team/ui-ux/skills/ios-onboarding-psychology.md` for permission timing rules.
+Define how the product participates in the iOS ecosystem beyond the app itself — notifications, widgets, Live Activities, Shortcuts, HealthKit, share sheets, and deep linking. Apple's best apps feel woven into the OS, not isolated behind an app icon. This skill covers when to extend into system surfaces, what to show there, and how to bring users back into the app gracefully. Read this skill when designing any feature that touches notifications, widgets, Live Activities, Shortcuts, HealthKit permissions, or deep links. See the `ios-hig-reference` skill for in-app platform conventions. See the `ios-onboarding-psychology` skill for permission timing rules.
 
 ## When to Extend vs. Stay Inside the App
 Not every feature should become a widget or notification. Apply this filter:

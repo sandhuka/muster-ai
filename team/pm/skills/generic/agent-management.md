@@ -30,7 +30,7 @@ This skill defines how the PM updates agent-context files (`knowledge-base/agent
 - Move completed tasks to a "Recently Completed" subsection (keep last 5)
 - Archive older completed tasks to decision-log.md
 - Tasks must be self-contained — an agent should be able to work from just its agent-context file without reading current-sprint.md
-- Do NOT inline skill paths per task. The agent's brain file (`team/<role>/CLAUDE.md`) already lists every available skill with a one-line description, organized by platform subfolder (`skills/{generic,ios,backend,android,web}/`) — agents self-select per task from that index. If a task involves unusual methodology an agent might otherwise miss, call out the specific skill in the task description prose (e.g., "involves screen-reader behavior — consult `team/qa/skills/ios/accessibility-testing.md`"). That's the exception; default is no skill list. Inlining a per-task skill subset duplicates the brain-file index with strictly less information and ages poorly when skills reorganize.
+- Do NOT inline skill paths per task. The agent's brain file (`team/<role>/CLAUDE.md`) already lists every available skill with a one-line description, organized by platform subfolder (`skills/{generic,ios,backend,android,web}/`) — agents self-select per task from that index. If a task involves unusual methodology an agent might otherwise miss, call out the specific skill in the task description prose (e.g., "involves screen-reader behavior — consult the `accessibility-testing` skill"). That's the exception; default is no skill list. Inlining a per-task skill subset duplicates the brain-file index with strictly less information and ages poorly when skills reorganize.
 
 ### Cross-Agent Dependencies
 Cross-agent dependencies are maintained in agent **brain files** (`muster/team/<agent>/CLAUDE.md`), not in agent-context files. These describe generic role relationships (e.g., "Developer depends on UI/UX for design specs") that apply to any project.
@@ -50,7 +50,7 @@ When a major decision affects multiple agents:
 1. Create `muster/team/<name>/` directory
 2. Create `muster/team/<name>/CLAUDE.md` brain file using the standard template (see system-guide.md for template — include Project Skills note)
 3. Create `muster/team/<name>/skills/` directory with domain skill files
-4. Create `.claude/agents/<name>.md` startup config in the project repo
+4. Create `muster/team/<name>/bootloader.md` (startup protocol) and the `.claude/agents/<name>.md` stub from the templates in system-guide.md
 5. Update `muster/CLAUDE.md` agent roster table and sub-agent access line
 6. Create `knowledge-base/agent-context/<name>.md` in the project repo and populate with PM-managed product context, Project Skills section, and current tasks
 7. Create `knowledge-base/agent-skills/<name>/` directory for product-specific skills (populate as needed)
@@ -74,7 +74,7 @@ Each agent's Product Context section should contain a **self-sufficient summary*
 **Anti-pattern to avoid**: "Read knowledge-base/product-spec.md for all details" as the primary context delivery mechanism.
 
 ### Rule 2: Agents Read Full Docs Only When Needed
-Agent startup configs (`.claude/agents/*.md`) should instruct agents to:
+Agent bootloaders (`muster/team/<role>/bootloader.md`) should instruct agents to:
 1. ALWAYS read: Their own `CLAUDE.md` and relevant skill file(s) for the current task
 2. Read ON DEMAND: Product spec sections relevant to a specific feature they're working on (not the whole doc)
 3. NEVER read at startup: Decision log (PM summarizes relevant decisions in agent context), other agents' files
@@ -84,7 +84,7 @@ The decision log is the PM's tool. Agents should never need to read the full dec
 
 ### Rule 4: Split Large Docs When They Cross Thresholds
 - Product spec: If it exceeds ~1000 lines, consider splitting into `product-spec-features.md` (feature details) and `product-spec-overview.md` (architecture, monetization, data model). Agents read only the section they need.
-- Decision log: When it exceeds ~50 entries, archive older resolved entries to `decision-log-archive.md` and keep only the last 20 in the active file.
+- Decision log: keep only current-sprint entries active (Rule 14); older entries go to `decision-log-archive.md`. The archiving trigger is `muster-lint-kb-budgets.sh` (the 600-line bootstrap budget + soft ceilings) — not an entry count.
 
 ### Rule 5: Skill Files are Read-Per-Task, Not Read-All
 Agent startup configs should NOT tell agents to read all their skills. They should read the 1-2 skill files relevant to their CURRENT task. The skill index in CLAUDE.md tells them which to pick.
@@ -126,6 +126,6 @@ Done section: max 10 entries. The completing agent trims, but PM catches any tha
 ## Agent Management Principles
 - **Read before writing.** Always read the full target agent-context file before making changes. Agents may have added context to non-PM-managed sections (e.g., Agent-Specific Context) that creates dependencies you need to know about.
 - **Filter, don't dump.** The PM's job is to be a context translator, not a forwarder. If you find yourself copying entire sections from the knowledge base into an agent's file, stop — link to the source doc instead.
-- **Both sides of every dependency.** A dependency that only appears in one agent's file will cause coordination failures. Mirror every dependency on both sides, every time, without exception.
+- **Both sides of every dependency.** A dependency that only appears in one agent's file will cause coordination failures. After editing brain-file dependencies, run `bash muster/scripts/muster-lint-deps.sh` (in the framework repo: `bash scripts/muster-lint-deps.sh`) — it FAILs any missing mirror and prints the exact line to add.
 - **Cascade in dependency order.** Update upstream agents first so their outputs are available when downstream agents start work. A Developer who starts before UI/UX has delivered design specs will guess or block.
 - **Treat the Research agent differently.** The PM does not write to `knowledge-base/research/`. All Research interactions go through `change-log.md`. This boundary exists to prevent the PM from overwriting validated research with PM assumptions.

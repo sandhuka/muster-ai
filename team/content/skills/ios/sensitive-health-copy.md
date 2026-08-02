@@ -1,7 +1,7 @@
 # Sensitive Health Copy
 
 ## Purpose
-Methodology for writing copy that touches health, body, fitness behavior, and physical outcomes — the emotional and behavioral layer of health communication. [Product Name] is YMYL-adjacent: copy about bodies, movement habits, and physical capability carries real psychological weight. This skill defines the guardrails. See `team/content/skills/brand-voice.md` for inclusive language rules and voice application. See `team/content/skills/ux-writing.md` for error states and progressive reduction. See `team/content/skills/notification-copy.md` for streak and missed-session messaging patterns. See `team/content/skills/email-sequences.md` for win-back sequence (lapsed user messaging). See `team/legal/skills/fitness-claims-advertising.md` for claim boundaries. See `team/legal/skills/compliance.md` for health data and regulatory context. See `knowledge-base/brand-guidelines.md` for brand voice.
+Methodology for writing copy that touches health, body, fitness behavior, and physical outcomes — the emotional and behavioral layer of health communication. [Product Name] is YMYL-adjacent: copy about bodies, movement habits, and physical capability carries real psychological weight. This skill defines the guardrails. See the `brand-voice` skill for inclusive language rules and voice application. See the `ux-writing` skill for error states and progressive reduction. See the `notification-copy` skill for streak and missed-session messaging patterns. See the `email-sequences` skill for win-back sequence (lapsed user messaging). See the `fitness-claims-advertising` skill for claim boundaries. See the `compliance` skill for health data and regulatory context. See `knowledge-base/brand-guidelines.md` for brand voice.
 
 ## Body-Image-Safe Language
 
@@ -54,7 +54,7 @@ The app adapts. The copy states the adaptation. That is the entire message. No c
 - Never quantify the absence in user-facing copy. "Welcome back" is enough — "You missed 12 days" is a guilt mechanism, even if it looks like a fact.
 - Never use reunion language ("we missed you", "glad you're back", "welcome home"). The app is a tool, not a relationship that suffers when unused.
 - Never frame return as redemption or second chances. "Fresh start" is acceptable because it's forward-looking. "Second chance" is not because it implies the first attempt failed.
-- Win-back emails follow the same rules — see `team/content/skills/email-sequences.md` for the full sequence.
+- Win-back emails follow the same rules — see the `email-sequences` skill for the full sequence.
 
 ## Injury and Discomfort Copy
 

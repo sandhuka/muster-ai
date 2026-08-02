@@ -1,7 +1,7 @@
 # Subscription & Monetization Copy
 
 ## Purpose
-Define the methodology for writing all subscription-related copy: paywall screens, plan comparisons, price display, trial language, renewal and cancellation flows, Apple compliance disclosures, and subscription state messaging. See `team/content/skills/brand-voice.md` for voice rules and upgrade prompt patterns. See `team/content/skills/notification-copy.md` for paywall prompt rotation strategy. See `team/content/skills/ux-writing.md` for state-based copy patterns and character budgets. See `team/legal/skills/app-store-review.md` for Apple 3.1.2 compliance requirements. See `knowledge-base/product-spec.md` Section 5H for subscription feature specs and paywall trigger rules.
+Define the methodology for writing all subscription-related copy: paywall screens, plan comparisons, price display, trial language, renewal and cancellation flows, Apple compliance disclosures, and subscription state messaging. See the `brand-voice` skill for voice rules and upgrade prompt patterns. See the `notification-copy` skill for paywall prompt rotation strategy. See the `ux-writing` skill for state-based copy patterns and character budgets. See the `app-store-review` skill for Apple 3.1.2 compliance requirements. See `knowledge-base/product-spec.md` Section 5H for subscription feature specs and paywall trigger rules.
 
 ## Paywall Screen Copy
 
@@ -213,7 +213,7 @@ Rewrite the required disclosures in the same voice as the rest of the paywall --
 - Use the same font weight and size as other supporting text on the screen -- never reduce it to fine print
 - "[price]" and "[period]" are dynamic values from StoreKit, never hardcoded
 - "Turn off auto-renewal" and "manage or cancel" are both acceptable phrasings -- the key is that the user knows where to go (iOS Settings > Subscriptions)
-- This copy must also appear in the App Store description metadata (see `team/content/skills/app-store-listing.md`)
+- This copy must also appear in the App Store description metadata (see the `app-store-listing` skill)
 - Legal agent approves substance, Content agent approves voice. Both sign off before shipping.
 
 ## Subscription State Copy
@@ -263,7 +263,7 @@ When a user's state changes, the first session after the change should surface a
 
 4. **Compliance is copy, not fine print**: Apple 3.1.2 disclosures are written in product voice, at the same font size and weight as surrounding text, placed where users naturally read. If the disclosure reads like a different product wrote it, rewrite it.
 
-5. **Repetition demands rotation**: Paywall trigger 2 fires weekly. Any copy the user sees on a recurring basis needs a rotation pool (see `team/content/skills/notification-copy.md` for the variant strategy). The same message every Monday breeds annoyance, not conversion.
+5. **Repetition demands rotation**: Paywall trigger 2 fires weekly. Any copy the user sees on a recurring basis needs a rotation pool (see the `notification-copy` skill for the variant strategy). The same message every Monday breeds annoyance, not conversion.
 
 6. **Dynamic values, never hardcoded prices**: All prices, dates, and periods come from StoreKit or the subscription state. A hardcoded price string will be wrong in every non-US market and will break if pricing changes. Use placeholders that resolve at runtime.
 

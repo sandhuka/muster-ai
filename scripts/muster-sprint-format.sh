@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# muster-sprint-format.sh — render Claude Code stream-json (stdin) as a human-readable trail.
+# muster-sprint-format.sh — action: render the step event stream as a human trail (family: shared renderer — presentation only, never exits non-zero).
 #
 # Usage:  claude ... --output-format stream-json | muster-sprint-format.sh [RAW_LOG] [METRICS]
 #   stdin — the stream-json event stream
@@ -19,10 +19,14 @@
 # biggest turn) — the "how full did the window get" step-sizing signal. Deliberately NOT total
 # input tokens: every turn re-sends the conversation (mostly cache reads), so total input is
 # inflated by turn count and measures cost, not size. out = total output tokens (result event).
-# Window for the %: the 4.6+ frontier generation (Opus 4.6/4.7/4.8, Sonnet 4.6, Fable 5) ships a
-# 1M window by default, so unknown/new model ids resolve to 1M; only Haiku and the legacy
-# 4.5-and-earlier families are 200k. Absent usage -> the telemetry segment is omitted entirely
-# (graceful degradation, never an error).
+# Window for the %: known Claude families resolve from a table — the 4.6+ frontier generation
+# (Opus 4.6/4.7/4.8, Sonnet 4.6, Fable 5) ships 1M, so unknown/new claude ids assume 1M; Haiku
+# and the legacy 4.5-and-earlier families are 200k. A NON-claude model id claims NO window:
+# peak prints bare (no /win, no %) and the metrics pct is "—", which the driver's hot-ctx check
+# already skips. Deliberate: a guessed window on a foreign model yields a falsely-low % that
+# silently disables the hot-step warning — worse than no % at all. A foreign-model adapter
+# supplies the real window when one exists. Absent usage -> the telemetry segment is omitted
+# entirely (graceful degradation, never an error).
 
 RAWLOG="${1:-}"
 METRICS="${2:-}"
@@ -39,7 +43,15 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 0
 fi
 
-# @@U / @@R are internal sentinels (usage sample / result), consumed below — never printed.
+# ══════════════════ EVENT PARSER — the harness boundary (Claude Code stream-json) ═════════════
+# Everything between these rules is the ONLY schema-specific code in this file: the jq program
+# translates raw harness events into the NORMALIZED RECORD the renderer below consumes. Porting
+# to a different harness = replacing parse_event() (and the no-jq fallback above) so it emits:
+#   @@U <prompt-tokens> <model-id>   — one sample per turn: total tokens the prompt sent
+#   @@R <turns>|<cost-usd>|<is_error 0/1>|<subtype>|<output-tokens>   — exactly one, at step end
+#   any other line                   — a ready-to-print display line (two-space indent)
+# The renderer never sees a raw event; nothing below the closing rule may parse harness JSON.
+# @@U / @@R are internal sentinels, consumed by the renderer — never printed.
 # Display text lines can't collide: they are always emitted with a leading two-space indent.
 JQ_PROG='
 if .type=="system" and (.subtype=="init") then
@@ -76,6 +88,11 @@ elif .type=="result" then
 else empty end
 '
 
+# parse_event <raw-line> — one raw harness event in, zero-or-more normalized lines out.
+# A malformed/partial line yields nothing (2>/dev/null) — skipped, never fatal.
+parse_event(){ printf '%s\n' "$1" | jq -r "$JQ_PROG" 2>/dev/null; }
+# ══════════════════ RENDERER — harness-neutral from here down ═════════════════════════════════
+
 PEAK=0; MODEL=""
 c_read=0; c_edit=0; c_write=0; c_bash=0; c_search=0; c_agent=0; c_err=0
 
@@ -102,13 +119,18 @@ emit_done(){
   seg="${turns:-?} turns · \$${cost:-?}"
   pct="—"
   if [ "${PEAK:-0}" -gt 0 ]; then
-    win=1000000; wl="1M"
     case "$MODEL" in
       *haiku*|*opus-4-5*|*opus-4-1*|*opus-4-0*|*sonnet-4-5*|*sonnet-4-0*|*claude-3*|*claude-2*)
         win=200000; wl="200k" ;;
+      *claude*) win=1000000; wl="1M" ;;
+      *)        win=0 ;;   # foreign/unknown vendor — claim no window (see header)
     esac
-    pct="$(( PEAK * 100 / win ))%"
-    seg="$seg · peak ctx $(fmt_k "$PEAK")/$wl $pct · out $(fmt_k "${outraw:-0}")"
+    if [ "$win" -gt 0 ]; then
+      pct="$(( PEAK * 100 / win ))%"
+      seg="$seg · peak ctx $(fmt_k "$PEAK")/$wl $pct · out $(fmt_k "${outraw:-0}")"
+    else
+      seg="$seg · peak ctx $(fmt_k "$PEAK") · out $(fmt_k "${outraw:-0}")"
+    fi
   fi
   printf '  %s %s  (%s)\n' "$mark" "$seg" "${subtype:-?}"
   [ -n "$METRICS" ] && printf '%s|%s|%s|%s|%s\n' "${turns:-0}" "${cost:-0}" "$pct" \
@@ -116,11 +138,11 @@ emit_done(){
   return 0
 }
 
-# Per-line so one malformed/partial line is skipped, not fatal; per-line jq keeps it real-time.
+# Per-line so one malformed/partial line is skipped, not fatal; per-line parse keeps it real-time.
 while IFS= read -r line; do
   [ -n "$RAWLOG" ] && printf '%s\n' "$line" >> "$RAWLOG"
   [ -z "$line" ] && continue
-  out="$(printf '%s\n' "$line" | jq -r "$JQ_PROG" 2>/dev/null)" || true
+  out="$(parse_event "$line")" || true
   [ -z "$out" ] && continue
   while IFS= read -r o; do
     [ -z "$o" ] && continue

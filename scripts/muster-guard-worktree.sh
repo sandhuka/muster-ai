@@ -1,4 +1,5 @@
 # muster-guard-worktree.sh — Tier-1 deterministic guard, meant to be SOURCED.
+# muster-guard-worktree.sh — guard: refuse to run on the primary checkout (family: guard — blocks, fail-closed; sourced).
 # Refuse to run on the primary checkout before any --dangerously-skip-permissions call.
 # --dangerously-skip-permissions unattended on your main tree is irreversible. Enforce the
 # worktree requirement MECHANICALLY instead of trusting the operator to remember it.

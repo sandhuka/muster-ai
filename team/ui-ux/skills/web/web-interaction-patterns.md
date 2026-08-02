@@ -1,7 +1,7 @@
 # Web Interaction Patterns
 
 ## Purpose
-Define the overlay and engagement patterns the product uses — modals, sheets, popovers, dropdowns, tooltips, toasts, banners, confirmations, undo, disclosure, optimistic UI, drag-and-drop. The point of this skill is to *narrow the menu*: a coherent product uses a small, consistent set of patterns. The same scrappy choice repeated everywhere reads as deliberate; varied "best of" picks read as chaos. Forms have their own dedicated skill (see below). See `team/ui-ux/skills/web-form-patterns.md` for forms, validation, multi-step flow, autosave, file upload, date / time / range pickers, and toggle vs. switch vs. checkbox. See `team/ui-ux/skills/web-information-architecture.md` for navigation as a coordinated system (top nav + sidebar + breadcrumbs + tabs + command palette + URL structure). See `team/ui-ux/skills/web-empty-error-and-edge-states.md` for loading, empty, error, and brand-moment states (404, 500, maintenance, offline). See `team/ui-ux/skills/web-design-system.md` for the components these patterns are built on (Radix-based primitives owned in repo) and the motion tokens they consume. See `team/ui-ux/skills/web-screen-specification.md` for how interactions are documented in the spec. See `team/ui-ux/skills/web-accessibility.md` for the source-of-truth on touch targets (44×44 floor), reduced-motion alternatives, and hover-only-interactivity rules — this skill cites those rules rather than restating them. See `team/developer/skills/web-modern-react.md` for the React-side mechanics (`useTransition`, `useOptimistic`, `useActionState`). See `team/developer/skills/web-accessibility.md` for the implementation-side accessibility rules (keyboard, ARIA, focus mechanics). Target: **product UI on modern web (React 19+, Radix primitives, Tailwind v4, container queries available)**.
+Define the overlay and engagement patterns the product uses — modals, sheets, popovers, dropdowns, tooltips, toasts, banners, confirmations, undo, disclosure, optimistic UI, drag-and-drop. The point of this skill is to *narrow the menu*: a coherent product uses a small, consistent set of patterns. The same scrappy choice repeated everywhere reads as deliberate; varied "best of" picks read as chaos. Forms have their own dedicated skill (see below). See the `web-form-patterns` skill for forms, validation, multi-step flow, autosave, file upload, date / time / range pickers, and toggle vs. switch vs. checkbox. See the `web-information-architecture` skill for navigation as a coordinated system (top nav + sidebar + breadcrumbs + tabs + command palette + URL structure). See the `web-empty-error-and-edge-states` skill for loading, empty, error, and brand-moment states (404, 500, maintenance, offline). See the `web-design-system` skill for the components these patterns are built on (Radix-based primitives owned in repo) and the motion tokens they consume. See the `web-screen-specification` skill for how interactions are documented in the spec. See UI/UX's `web-accessibility` skill for the source-of-truth on touch targets (44×44 floor), reduced-motion alternatives, and hover-only-interactivity rules — this skill cites those rules rather than restating them. See the `web-modern-react` skill for the React-side mechanics (`useTransition`, `useOptimistic`, `useActionState`). See Developer's `web-accessibility` skill for the implementation-side accessibility rules (keyboard, ARIA, focus mechanics). Target: **product UI on modern web (React 19+, Radix primitives, Tailwind v4, container queries available)**.
 
 ## The Anchor Rule
 
@@ -11,7 +11,7 @@ This skill picks defaults. If a screen needs to break a default, that's a real c
 
 ## Forms
 
-Forms have their own dedicated skill: `team/ui-ux/skills/web-form-patterns.md`. It covers layout (label-above, one-per-row), validation strategy (on blur + on submit), submission (pending state, one primary submit), multi-step flow (one route per step), autosave, conditional fields, file upload, date / time / range pickers, toggle vs. switch vs. checkbox, password fields, and autocomplete attributes. Read that skill when designing or specifying any form.
+Forms have their own dedicated skill: the `web-form-patterns` skill. It covers layout (label-above, one-per-row), validation strategy (on blur + on submit), submission (pending state, one primary submit), multi-step flow (one route per step), autosave, conditional fields, file upload, date / time / range pickers, toggle vs. switch vs. checkbox, password fields, and autocomplete attributes. Read that skill when designing or specifying any form.
 
 ## Modals, Sheets, Popovers — Picking the Right Surface
 
@@ -55,7 +55,7 @@ Use the `inert` attribute on the page background while a modal is open — it re
 
 ### Modal vs. Route — URL State
 
-Modals showing a *specific resource* (record detail, settings panel, share sheet for a specific item) should be URL-stateful via App Router's intercepting routes (`@modal` slot). The user can bookmark, share, refresh, and use back-button to close. Ephemeral modals (confirmation dialogs, command palette, transient popovers) stay URL-less. Spec each modal as one or the other. See `team/ui-ux/skills/web-information-architecture.md` → Modal State and Intercepting Routes.
+Modals showing a *specific resource* (record detail, settings panel, share sheet for a specific item) should be URL-stateful via App Router's intercepting routes (`@modal` slot). The user can bookmark, share, refresh, and use back-button to close. Ephemeral modals (confirmation dialogs, command palette, transient popovers) stay URL-less. Spec each modal as one or the other. See the `web-information-architecture` skill → Modal State and Intercepting Routes.
 
 ## Dropdowns: Select, Combobox, Menu
 
@@ -101,7 +101,7 @@ A page has at most one toast region and at most one banner slot. Multiple banner
 
 ## Navigation Patterns
 
-Navigation as a *system* — how top nav, sidebar, breadcrumbs, tabs, command palette, and search compose into a coordinated whole — lives in `team/ui-ux/skills/web-information-architecture.md`. Read that skill for the IA-level decisions (which surfaces the product uses, what each is for, how URL state is encoded, when to add a command palette).
+Navigation as a *system* — how top nav, sidebar, breadcrumbs, tabs, command palette, and search compose into a coordinated whole — lives in the `web-information-architecture` skill. Read that skill for the IA-level decisions (which surfaces the product uses, what each is for, how URL state is encoded, when to add a command palette).
 
 This section covers the per-component widget patterns. Pick the right widget; coordinate via the IA skill.
 
@@ -113,7 +113,7 @@ For switching between views of the *same* content (e.g., "Overview / Activity / 
 - Tabs that map to URL state (`?tab=activity`) get linkability and back-button support for free. Reach for this whenever the tabs represent meaningful destinations.
 
 ### Top Nav, Sidebar, Bottom Nav, Breadcrumbs
-Per-widget specifications (entry counts, breakpoints, sticky behavior, mobile collapse) live in `team/ui-ux/skills/web-information-architecture.md`. The summary: top nav 4–6 entries, sidebar 2 levels max, bottom nav mutually exclusive with top-nav-as-primary on mobile, breadcrumbs only for deep hierarchies. Don't restate per screen; cite the IA skill.
+Per-widget specifications (entry counts, breakpoints, sticky behavior, mobile collapse) live in the `web-information-architecture` skill. The summary: top nav 4–6 entries, sidebar 2 levels max, bottom nav mutually exclusive with top-nav-as-primary on mobile, breadcrumbs only for deep hierarchies. Don't restate per screen; cite the IA skill.
 
 ## Confirmations and Undo
 
@@ -174,7 +174,7 @@ Use sparingly. When the use case is genuine (reordering a list, dragging a file,
 
 ## Loading, Empty, and Error States
 
-These have their own dedicated skill: `team/ui-ux/skills/web-empty-error-and-edge-states.md`. It covers the empty-state taxonomy (never-had-content / you-emptied-it / no-search-results / filter-emptied-it / permission-denied), error categories (validation / recoverable / irrecoverable / maintenance / offline), brand-moment 404 / 500 / 403 / maintenance pages, recovery patterns (autosave + restore, optimistic rollback), retry semantics, error-message voice, and skeleton-vs-spinner-vs-nothing decision rules. Read that skill for any state that isn't the happy path.
+These have their own dedicated skill: the `web-empty-error-and-edge-states` skill. It covers the empty-state taxonomy (never-had-content / you-emptied-it / no-search-results / filter-emptied-it / permission-denied), error categories (validation / recoverable / irrecoverable / maintenance / offline), brand-moment 404 / 500 / 403 / maintenance pages, recovery patterns (autosave + restore, optimistic rollback), retry semantics, error-message voice, and skeleton-vs-spinner-vs-nothing decision rules. Read that skill for any state that isn't the happy path.
 
 ## Animation and Motion
 
@@ -188,7 +188,7 @@ The motion vocabulary is small. From `tokens.css`:
 Reach for these tokens in every component. Magic numbers (`transition-all duration-150`) are defects; the system should look coherent because every component pulls from the same vocabulary.
 
 ### Reduced Motion
-Every animated component must respect `prefers-reduced-motion: reduce`. The full per-pattern alternative table (decoration motion, functional motion, vestibular safety) lives in `team/ui-ux/skills/web-accessibility.md` → Motion and Animation. Cite that table in screen specs; don't restate. Summary: decoration disabled, functional motion instant or near-instant, parallax/autoplay/marquee disabled entirely.
+Every animated component must respect `prefers-reduced-motion: reduce`. The full per-pattern alternative table (decoration motion, functional motion, vestibular safety) lives in UI/UX's `web-accessibility` skill → Motion and Animation. Cite that table in screen specs; don't restate. Summary: decoration disabled, functional motion instant or near-instant, parallax/autoplay/marquee disabled entirely.
 
 ### View Transitions API
 For route-level transitions (cross-page animations), the View Transitions API is the modern correct mechanism. Use sparingly — most route changes don't need a custom transition; the default (instant) is appropriate. Reserve transitions for moments where *continuity matters* (a list-item expanding into a detail view, a hero image persisting between pages).
@@ -202,7 +202,7 @@ For route-level transitions (cross-page animations), the View Transitions API is
 | **Scroll-driven entrance animations on every section ("AOS-style").** Sections fade-and-translate in as they enter the viewport. | Slows perceived performance, fights `prefers-reduced-motion` even when the handler exists, masks layout shifts as "design," screams template. Apple doesn't do it. | Default to no entrance animation. Reserve subtle reveals for genuinely curated marketing sections, with reduced-motion alternatives. Never on product UI. |
 | **Tooltip with interactive content.** Buttons or links inside a tooltip. | Users can't reach them on touch; pointer users have to "race the tooltip" to interact before it dismisses. | Use a popover for interactive content, a tooltip for text only. |
 | **Confirmation dialog for every delete.** A click-to-confirm dance for trivially recoverable actions. | Trains users to dismiss confirmations reflexively, missing the genuinely critical ones. | Default to undo (toast with "Undo" for 8–10s). Reserve confirmations for irrecoverable actions. |
-| **Hover-to-discover patterns on touch devices.** See `team/ui-ux/skills/web-accessibility.md` → Anti-Patterns → Hover-only interactivity for the canonical statement. | Touch users have no hover. They never discover the controls. | Show controls persistently on touch (`@media (pointer: coarse)`); hide on hover only on `(hover: hover)` devices. |
+| **Hover-to-discover patterns on touch devices.** See UI/UX's `web-accessibility` skill → Anti-Patterns → Hover-only interactivity for the canonical statement. | Touch users have no hover. They never discover the controls. | Show controls persistently on touch (`@media (pointer: coarse)`); hide on hover only on `(hover: hover)` devices. |
 | **Custom select reproducing a native dropdown for no reason.** Radix `Select` for a 5-option country/state picker on mobile. | Native `<select>` opens the OS picker, which is faster and more familiar. Custom UI fights muscle memory. | Native `<select>` for simple single-value pickers. Reserve custom for search, grouping, or async loading. |
 | **Toast for every action.** "Saved!" toast on every keystroke of an autosave. | Toast fatigue. Users tune them out. The genuinely important toast is missed. | Inline status indicator for autosave ("Saved" caption, briefly). Toast for actions that took user effort and may have unexpected outcome. |
 | **Carousels and auto-rotating banners.** Auto-advancing hero rotators, cycling promo banners. | Click-through rates drop sharply after slide 1; users mentally tune them out; accessibility is a constant struggle. | Pick the one message. If you can't, that's a strategy problem upstream. |

@@ -1,7 +1,7 @@
 # Release Checklist
 
 ## Purpose
-Define the pre-release, TestFlight, App Store submission, and post-release checks that gate every release. See `team/qa/skills/test-strategy.md` for regression requirements that must pass before release and `knowledge-base/current-sprint.md` for sprint completion gates.
+Define the pre-release, TestFlight, App Store submission, and post-release checks that gate every release. See the `test-strategy` skill for regression requirements that must pass before release and `knowledge-base/current-sprint.md` for sprint completion gates.
 
 ## Pre-Release (Before TestFlight Build)
 - [ ] All sprint tasks marked complete by assigned agents

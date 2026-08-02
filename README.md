@@ -27,7 +27,7 @@ You (Founder)
 
 The PM coordinates: plans sprints, makes decisions, cascades context to specialists. Specialists do the domain work in their own session and file handoffs. Status line shows `[muster: <role>]` so you always know which tab is which.
 
-Built and validated on a real iOS app, mid-construction. Not framework theory.
+Built and validated on real production projects — an iOS app mid-construction and a shipped marketing site. Not framework theory.
 
 Just open Claude Code. Pick a role. Ship.
 
@@ -52,6 +52,10 @@ Agent brains, orchestration queues, handoff logs, and decision records persist a
 ### Self-improving skills
 
 During sprint planning, the PM scans for methodology gaps. New skills are classified as generic or product-specific. Generic skills are contributed back to the framework, so every project makes Muster sharper for the next one.
+
+### Deterministic guardrails
+
+Prose is reserved for judgment; mechanics are bash. Session routing, queue advancement, plan gates, and every content-quality rule that *can* be checked mechanically *is* — by small scripts, each proven by a CI fixture that can both fail and pass. Agents can't drift from the protocol, because the protocol isn't a suggestion they read — it's a gate they pass.
 
 ## Quick start
 
@@ -135,7 +139,7 @@ Muster uses a two-repo model.
 ```
 my-project/
 ├── .claude/
-│   ├── agents/            # Bootloaders for all 8 roles (invoke via picker or @<role>)
+│   ├── agents/            # Framework-owned stubs — each hops to muster/team/<role>/bootloader.md
 │   ├── skills/rebind/     # /rebind slash command (mid-session role swap)
 │   ├── skills/muster/     # /muster slash command (the framework Guide)
 │   ├── statusline.sh      # Status-line script (shows [muster: <role>])
@@ -162,14 +166,11 @@ my-project/
 | [architecture-and-design.md](architecture-and-design.md) | Architecture deep dive — data flow, context management, agent communication | Evaluating whether to adopt Muster |
 | [system-guide.md](system-guide.md) | Templates, extensibility, verification checklist | Adding agents, skills, or modifying the framework |
 | [operating-modes.md](operating-modes.md) | The three ways to run a sprint — Manual, Assisted, Autonomous — with cost/quality tradeoffs | Choosing how to run a sprint |
-| [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md) | Upgrade an existing v3 project to v4 (autonomous sprint execution) | Adopting v4 from an existing v3 project |
-| [MIGRATING-V2-TO-V3.md](MIGRATING-V2-TO-V3.md) | Upgrade an existing v2 project to v3 (role-picker, status line, /rebind) | Adopting v3 from an existing v2 project |
-| [MIGRATING-V1-TO-V2.md](MIGRATING-V1-TO-V2.md) | One-shot migration for projects set up before v2 | A `muster/` update halted with "Pre-v2 Muster setup detected" |
 | [CHANGELOG.md](CHANGELOG.md) | Version history — what changed at each bump | Tracing behavior to a framework version |
 
-Current framework version: **4.6** (commit convention — the git history reads as the product's story; `muster-meter` build telemetry — measure what a build actually cost; QA web-testing methodology; see [CHANGELOG.md](CHANGELOG.md)). Upgrading an existing v3 project to v4? Bump the `muster/` submodule and run `muster/scripts/migrate-v3-to-v4.sh` — see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md). Bumps from 4.1 onward are additive: bump the submodule pointer, then re-run `migrate-v3-to-v4.sh` to seed any new project-level files — or let the Guide coach the upgrade for you (below).
+Current framework version: **5.0** (seamless migration — session protocols live in the submodule and arrive with the bump; `muster/scripts/muster-update.sh` converges the few platform-located files and stamps the project; see [CHANGELOG.md](CHANGELOG.md)). Upgrading: bump the `muster/` submodule, run `bash muster/scripts/muster-update.sh`, commit. Pre-5.0 migration scripts were removed at 5.0 — old chains live on the 4.x tags.
 
-**Upgrading and want it done for you?** From any version, bump the `muster/` submodule, then tell Claude: *"Read `muster/MUSTER.md` and act as the Guide; coach me through upgrading this project to the latest Muster."* The Guide runs the migration with backups and per-step verification — see the callout atop each `MIGRATING-*.md`.
+**Upgrading and want it done for you?** Bump the `muster/` submodule, then tell Claude: *"Read `muster/MUSTER.md` and act as the Guide; coach me through upgrading this project to the latest Muster."* The Guide runs the upgrade with backups and per-step verification.
 
 ## Stay updated
 

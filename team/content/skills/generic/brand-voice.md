@@ -1,7 +1,7 @@
 # Brand Voice Guidelines
 
 ## Purpose
-Define the writing methodology and per-surface copy patterns that implement the brand voice. The authoritative voice definition lives in `knowledge-base/brand-guidelines.md` — this skill covers how to apply it. See `team/content/skills/content-calendar.md` for copy cadence and refresh cycles. For external-facing artifacts (pitch decks, cold emails, DMs, social posts, landing copy, READMEs, demo scripts), apply the quality bar in `team/marketing/skills/generic/signal-density-comms.md` in addition to this skill.
+Define the writing methodology and per-surface copy patterns that implement the brand voice. The authoritative voice definition lives in `knowledge-base/brand-guidelines.md` — this skill covers how to apply it. See the `content-calendar` skill for copy cadence and refresh cycles. For external-facing artifacts (pitch decks, cold emails, DMs, social posts, landing copy, READMEs, demo scripts), apply the quality bar in the `signal-density-comms` skill in addition to this skill.
 
 ## Authoritative Voice Reference
 The complete brand voice definition — personality, tone spectrum, do's/don'ts, example phrases, and competitive positioning language — lives in `knowledge-base/brand-guidelines.md` (Sections 2-3). Read that file before writing any copy. This skill file covers methodology and per-surface guidance that supplements the brand guidelines.
@@ -97,7 +97,7 @@ If your product explains its decisions to users, define template patterns for ea
 **Tone**: Informative, not prescriptive. The product explains its reasoning briefly and confidently — "why" before "what."
 
 ### Upgrade Prompt Patterns
-Always informative, never pushy. Lead with the specific benefit. See `team/content/skills/subscription-copy.md` for full paywall screen methodology and `team/content/skills/notification-copy.md` for recurring prompt rotation:
+Always informative, never pushy. Lead with the specific benefit. See the `subscription-copy` skill for full paywall screen methodology and the `notification-copy` skill for recurring prompt rotation:
 - "[Premium feature] uses your full [data history]. Unlock it."
 - "[Premium insight] knows when [personalized condition]. See yours."
 - "Your [content] syncs across devices with premium."
@@ -105,7 +105,7 @@ Always informative, never pushy. Lead with the specific benefit. See `team/conte
 - Every upgrade prompt must reference a specific premium feature the user just encountered or would benefit from *right now*. Generic "go premium" prompts are banned.
 
 ### Error State Patterns
-Calm, solution-oriented, brand-consistent. See `team/content/skills/ux-writing.md` for the full error state framework by error type:
+Calm, solution-oriented, brand-consistent. See the `ux-writing` skill for the full error state framework by error type:
 - Network: "Couldn't load your [content]. Check your connection and try again."
 - Generic: "Something didn't work. Tap to retry."
 - Data: "Your data wasn't saved. Try again in a moment."

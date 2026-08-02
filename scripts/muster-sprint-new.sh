@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# muster-sprint-new.sh — create an isolated sprint worktree and print its path, WITHOUT running
+# muster-sprint-new.sh — action: create an isolated sprint worktree, print its path (family: sprint verb — acts).
+# Creates the worktree WITHOUT running
 # the loop. Use this for the two-tab autonomous flow: create the worktree first, open an
 # interactive PM tab INSIDE it (plan / handle halts), then run the loop in a second tab — also
 # inside it. Both tabs share the worktree's tree, so PM's edits reach the loop with no syncing.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# muster-lint-handoff.sh — handoff-filing integrity check (deterministic).
+# muster-lint-handoff.sh — lint: handoff-filing integrity (family: lint — reports OK/FAIL, never mutates).
 #
 # Catches the dangling-reference failure: an agent writes a queue Done entry that
 # references (HO-NNN), advances the queue, but never files HO-NNN in agent-requests.md.

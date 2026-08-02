@@ -1,7 +1,7 @@
 # Web Accessibility (Implementation)
 
 ## Purpose
-Define accessibility implementation patterns for modern Next.js + React 19 web apps: semantic HTML, ARIA discipline, keyboard navigation, focus management, screen reader patterns, forms, dialogs, motion, color, testing. The UI/UX agent owns the design side (`team/ui-ux/skills/web/`); this skill is the developer-facing implementation. See `team/developer/skills/web-best-practices.md` for the WCAG 2.2 AA quality gate. See `team/developer/skills/web-testing.md` for axe automation in CI. See `team/developer/skills/web-modern-react.md` for form/error patterns. Target: **WCAG 2.2 AA floor, AAA where it matters; React 19+, Next.js 15+**.
+Define accessibility implementation patterns for modern Next.js + React 19 web apps: semantic HTML, ARIA discipline, keyboard navigation, focus management, screen reader patterns, forms, dialogs, motion, color, testing. The UI/UX agent owns the design side (`team/ui-ux/skills/web/`); this skill is the developer-facing implementation. See the `web-best-practices` skill for the WCAG 2.2 AA quality gate. See Developer's `web-testing` skill for axe automation in CI. See the `web-modern-react` skill for form/error patterns. Target: **WCAG 2.2 AA floor, AAA where it matters; React 19+, Next.js 15+**.
 
 ## The Bar
 

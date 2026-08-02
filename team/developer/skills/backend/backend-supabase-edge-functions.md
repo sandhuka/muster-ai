@@ -1,7 +1,7 @@
 # Supabase Edge Functions
 
 ## Purpose
-Development patterns for Supabase Edge Functions (Deno runtime). Covers project structure, request handling, deployment, and local development. See `team/developer/skills/backend-typescript.md` for Deno/TypeScript language patterns. See `team/developer/skills/backend-api-design.md` for request/response contract design. See `team/developer/skills/backend-supabase-auth.md` for auth verification in functions. See `knowledge-base/architecture.md` Section 7 for the Edge Function contract specification.
+Development patterns for Supabase Edge Functions (Deno runtime). Covers project structure, request handling, deployment, and local development. See the `backend-typescript` skill for Deno/TypeScript language patterns. See the `backend-api-design` skill for request/response contract design. See the `backend-supabase-auth` skill for auth verification in functions. See `knowledge-base/architecture.md` Section 7 for the Edge Function contract specification.
 
 ## Project Structure
 Each function lives in `supabase/functions/<function-name>/index.ts`. Shared code in `supabase/functions/_shared/` (underscore prefix prevents deployment as a function). Import map at `supabase/functions/import_map.json` is shared across all functions.

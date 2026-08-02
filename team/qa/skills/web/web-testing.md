@@ -4,8 +4,8 @@
 Web-specific validation patterns: responsive layout, code-level accessibility auditing, PWA/service-worker
 verification, network-absence and privacy assertions, cross-engine rendering, link/asset validation, and
 timezone-sensitive logic. Covers static sites, web apps, and web surfaces of multi-platform products. See
-`team/qa/skills/generic/test-strategy.md` for testing levels and coverage targets;
-`team/qa/skills/generic/verification-discipline.md` for the trust-then-verify stance every check below
+the `test-strategy` skill for testing levels and coverage targets;
+the `verification-discipline` skill for the trust-then-verify stance every check below
 assumes (re-run it yourself; never accept the developer's screenshot as evidence).
 
 ## Sandbox Reality

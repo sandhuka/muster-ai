@@ -1,7 +1,7 @@
 # App Store Listing & ASO
 
 ## Purpose
-Define the methodology for writing and optimizing App Store listing content. This is the single highest-leverage content surface for an iOS-only product — the listing is the storefront. See `team/content/skills/seo-guidelines.md` for web SEO. See `team/content/skills/brand-voice.md` for voice consistency. See `team/legal/skills/app-store-review.md` for Apple metadata compliance requirements.
+Define the methodology for writing and optimizing App Store listing content. This is the single highest-leverage content surface for an iOS-only product — the listing is the storefront. See the `seo-guidelines` skill for web SEO. See the `brand-voice` skill for voice consistency. See the `app-store-review` skill for Apple metadata compliance requirements.
 
 ## App Store Metadata Structure
 
@@ -42,7 +42,7 @@ The App Store description has two zones: **above the fold** (first 3 lines visib
 This is the only copy most users will read. Must contain:
 1. What the app does (one sentence)
 2. Key differentiator
-3. Health disclaimer sentence (Apple compliance — see `team/legal/skills/app-store-review.md`)
+3. Health disclaimer sentence (Apple compliance — see the `app-store-review` skill)
 
 ### Full Description Structure
 1. **Hook** (1-2 sentences): Problem statement in user's language

@@ -25,6 +25,11 @@ Stop at the first rung that answers. All paths relative to the **worktree** the 
 4. **`knowledge-base/founder-notices.md`** — anything the agents flagged for the human.
 5. **Raw `.jsonl`** — ONLY for deep debugging of a specific identified failure.
 
+**Routing/bind weirdness** (session misrouted, picker fired wrong, bind state confused): run
+`bash muster/scripts/muster-doctor-populated.sh` — it validates the state file that routes every
+session (schema, roster, timestamps, stale locks, gitignore traps) and reads the boot telemetry
+log for dropped picker handshakes and abandoned JIT populates. One command, exact diagnosis.
+
 A typical status question costs under ~50 lines. Reading the raw jsonl or spelunking the
 worktree to answer "where is the run?" is the anti-pattern this ladder exists to kill.
 
@@ -63,6 +68,16 @@ Sprint Execution — read the section, don't recite this list from memory):
   line); anything else stopped for the founder. Re-run is safe: state didn't advance.
 - **run cap (`MAX_STEPS`)** — budget, not failure. Re-run for a fresh budget, or raise the knob
   (`config-knobs.md`).
+
+## Reds That Are Expected (do not diagnose these)
+
+- **Batched-gate sprints run the requests lint red until the review sweep.** A sprint designed
+  around one batched review gate holds every handoff of the wave open at once by construction —
+  the Active-budget red is the sprint shape, not a filing defect, and it clears when the review
+  step sweeps. Explain it once and move on (a lint red that needs a prose apology every session
+  is telling you the shape, not finding a bug).
+- **A fresh submodule bump shows the drift NOTICE until `muster-update.sh` runs.** That is the
+  NOTICE working.
 
 ## Manual Recovery Moves
 

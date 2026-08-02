@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""muster-meter — what did this build actually cost? Project-lifetime telemetry from
-Claude Code session logs.
+"""muster-meter.py — what did this build actually cost? (family: verb — answers, never mutates).
+Project-lifetime telemetry from Claude Code session logs.
 
 Tokens are the currency; this measures them. The sprint driver already meters autonomous
 runs per-step (`.muster-sprint-logs/*.metrics`); muster-meter is the whole-project rollup —
@@ -41,6 +41,7 @@ RATES = [
     ("claude-fable-5",   (10.0, 12.5, 20.0, 1.0, 50.0)),
     ("claude-mythos-5",  (10.0, 12.5, 20.0, 1.0, 50.0)),
     ("claude-sonnet-5",  (2.0, 2.5, 4.0, 0.2, 10.0)),
+    ("claude-opus-5",    (5.0, 6.25, 10.0, 0.5, 25.0)),
     ("claude-opus-4-8",  (5.0, 6.25, 10.0, 0.5, 25.0)),
     ("claude-opus-4-5",  (5.0, 6.25, 10.0, 0.5, 25.0)),
     ("claude-opus-4",    (15.0, 18.75, 30.0, 1.5, 75.0)),   # 4.0/4.1 legacy pricing
@@ -55,10 +56,12 @@ def encode(path):
     return path.rstrip("/").replace("/", "-").replace(".", "-")
 
 def load_prices(path):
+    # Any model in the prices file is loadable — no vendor filter. Foreign models priced via
+    # --prices is the port path; entries missing the required cost keys are skipped below.
     rates = []
     d = json.load(open(path))
     for k, v in d.items():
-        if not k.startswith("claude-"):
+        if k == "sample_spec":  # LiteLLM's schema-documentation entry, not a model
             continue
         try:
             rates.append((k, (v["input_cost_per_token"] * 1e6,

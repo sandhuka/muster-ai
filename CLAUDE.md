@@ -2,7 +2,7 @@
 
 > **Framework-repo carve-out (check before any routing):** if `system-guide.md` exists at the
 > repo root, this IS the muster framework repo — no project routing below applies (no picker, no
-> priority-zero check). Read `MUSTER.md` and bind accordingly (XO if `private/xo/` exists, else
+> `muster-boot.sh` call). Read `MUSTER.md` and bind accordingly (XO if `private/xo/` exists, else
 > Guide).
 
 ## System Architecture
@@ -40,15 +40,15 @@ This project is managed by a team of specialized AI agents. Every session picks 
 5. **Reference, don't duplicate** — Agents point to knowledge-base/ docs rather than copying product info into their own files.
 6. **Log decisions** — All product decisions are appended to knowledge-base/decision-log.md.
 7. **Agent communication protocol** — Agents communicate via `knowledge-base/agent-requests.md` using two entry types: *requests* (questions, clarifications, new work asks between agents) and *handoffs* (completed deliverables needing review). All agents check this file at session start for items addressed to them. See `muster/system-guide.md` for the full protocol.
-8. **Orchestration queue** — `knowledge-base/orchestration-queue.md` is the founder's "what to do next" file. PM-bound sessions populate it during sprint planning with the sequence of agent invocations. Each agent reads it at session start (their step is their primary task) and updates it on session completion (mark done, promote next step). When the queue is empty, open a PM-bound tab and ask PM to plan the next sprint. Growth cap: Done section keeps only last 10 entries; PM clears it entirely at each new sprint.
+8. **Orchestration queue** — `knowledge-base/orchestration-queue.md` is the founder's "what to do next" file. PM-bound sessions populate it during sprint planning with the sequence of agent invocations. Each agent reads it at session start (their step is their primary task) and updates it on session completion (mark done, promote next step). When the queue is empty, open a PM-bound tab and ask PM to plan the next sprint. Growth cap: `muster-advance-queue.sh` enforces the Done cap; PM clears Done entirely at each new sprint.
 9. **Design system awareness** — Developer checks `knowledge-base/design-system-reference.md` before building screens. If a designed component isn't available in the shared UI library, check `knowledge-base/ui-component-requests.md` for its status. Projects may override this rule with a more detailed design system workflow in their project CLAUDE.md.
 10. **Pre-launch checklist** — `knowledge-base/pre-launch-checklist.md` tracks deferred items that must be resolved before release milestones. Any agent can append items. PM must review this file at milestone gates (beta, submission, launch) and block progress on unresolved "hard" blockers.
-11. **Cascade verification** — Before finalizing any decision-log entry, PM must: (a) grep the full repo for old terminology/values being replaced, (b) verify every agent listed in the Impact field has either a corresponding update in the Touched field OR is marked `stub` (unpopulated agent — decision accrues in `decision-log.md` and is applied at first populate via `context-cascading.md` → Just-in-time mode). If either check reveals gaps, update the missing files before writing the entry. The decision is not complete until Touched and Impact are fully reconciled.
+11. **Cascade verification** — Before finalizing any decision-log entry, PM must: (a) grep the full repo for old terminology/values being replaced, (b) run `bash muster/scripts/muster-lint-decisions.sh` — it FAILs any entry whose Impact names an agent with no recorded agent-context update and no stub exemption, and checks the required fields. Fix gaps before writing the entry; the decision is not complete until the lint is clean on it.
 12. **Founder-facing questions go to Founder Decisions** — Any agent with an open question requiring founder input must add it to the Founder Decisions section of `knowledge-base/orchestration-queue.md` in the same session. Mentioning it in a deliverable file or handoff revision log is not sufficient — Founder Decisions is the only place the PM monitors for unanswered founder questions.
 13. **Muster submodule commits** — When editing files inside the `muster/` submodule from a project session, always make TWO commits: (1) commit + push inside the submodule (`cd muster && git add . && git commit && git push`), then (2) commit the updated submodule pointer in the project repo (`git add muster && git commit`). Both commits are required — a submodule edit without updating the pointer means other clones won't see the change.
 14. **Bootstrap context budget** — PM bootstrap reads (all 8 monitoring files + PM brain file) should stay under 600 lines. To enforce this: (a) `current-sprint.md` contains only the active sprint — completed sprints are moved to `sprint-archive.md` at sprint closeout, (b) `decision-log.md` keeps only entries from the current sprint — older entries are moved to `decision-log-archive.md` at sprint closeout. Not counted against budget: `.populated` (structured state, ~12 lines), `reverse-discovery.md` (conditional read, onboarding only). If bootstrap reads exceed 600 lines despite archiving, investigate which file is growing and trim or archive further.
 15. **Durability discipline** — Durable artifacts (source code, product-spec.md, design-specs/*, brand-guidelines.md, brand-voice-guide.md, architecture.md, test-strategy.md, foundational-assumptions.md, design-patterns.md, migration-path.md, agent-skills/*) describe the current truth only. They must not contain bug IDs (BUG-XYZ), handoff IDs (HO-XYZ, REQ-XYZ), session-date stamps on individual edits, sprint / wave references, "previously X / now Y" framings, "revised per / added for / changed from" phrasings, or specific-agent mentions. That history belongs in transient artifacts (`agent-requests.md`, `orchestration-queue.md`, `current-sprint.md`, `decision-log.md`) and in git commits. Lens: would a new team adopting this product from these docs need this line? If no, strip it. Durable rationale (WHY the current design is this way) stays; archaeology (how it got there) goes.
-16. **Commit convention** — every agent commit subject is `<role>: <outcome>` (the bound role, lowercase; ≤72 chars total; outcome-first — what the product can now do, not the mechanics performed). Optional 1–2-line body carries the why; HO-/DEC- references belong in the body, never the subject. The commit history is the product's public story — write it for the reader. Backstop: `muster/scripts/muster-commit-lint.sh [range]`; the sprint driver warns on non-conforming step commits.
+16. **Commit convention** — every agent commit subject is `<role>: <outcome>` (the bound role, lowercase; ≤100 chars total; outcome-first — what the product can now do, not the mechanics performed). Use the room to inform — never truncate meaning to fit — but keep it one line. Optional 1–2-line body carries the why; HO-/DEC- references belong in the body, never the subject. The commit history is the product's public story — write it for the reader. Backstop: `muster/scripts/muster-lint-commit.sh [range]`; the sprint driver warns on non-conforming step commits.
 
 ### How to Work With This System
 - **Three operating modes** (shared vocabulary): **Manual** — warm role-bound tabs via the picker; **Assisted** — one PM tab spawning subagents (`Agent({subagent_type})`); **Autonomous** — the sprint loop (`MUSTER_ROLE=auto` + `muster/scripts/muster-sprint-run.sh`). Mechanisms detailed below and in `system-guide.md`.
@@ -61,69 +61,36 @@ Agents in `.claude/agents/` (pm, content, developer, legal, marketing, qa, resea
 
 ### Role Binding
 
-Every session picks ONE role at start via a role-picker. Root Claude operates as that role for the session lifetime.
+Every session picks ONE role at start. Root Claude operates as that role for the session lifetime.
 
-**Session-start housekeeping** (runs once before priority-zero check, on every session): execute `bash muster/scripts/muster-housekeeping.sh` (idempotent — prunes stale bind files >1 day old, rotates bind log if >500 lines). Skip if `muster/scripts/muster-housekeeping.sh` doesn't exist (uninitialized project — priority-zero will halt with setup instructions).
+**First tool call of any project session: `bash muster/scripts/muster-boot.sh`.** The script is the single routing authority: it runs housekeeping, reads `.populated`, honors `$MUSTER_ROLE` (a role name binds directly; `auto` binds the queue's Next Step `Role:` via the same parser the sprint driver uses; unset fires the picker), applies the JIT gate, performs the bind, and prints exactly one `ROUTE=` directive. Obey that line literally:
 
-**Each bootstrap Bash call must be a separate tool call** — do not chain housekeeping, the `MUSTER_ROLE` env-var check, or the bind script call with `&&` or `;`. Pre-approval patterns match discrete commands only; chains fall through to the permission prompt.
+- `ROUTE=halt MSG="…"` → stop and relay MSG verbatim; do nothing else.
+- `ROUTE=onboarding MODE=… READ=<discovery skill>` → PM is already bound; read ONLY the named skill and run its flow. Do NOT load the PM bootloader (`muster/team/pm/bootloader.md`) — the discovery skill drives PM behavior end-to-end.
+- `ROUTE=bind ROLE=<r> INVOKER=… READ=muster/team/<r>/bootloader.md` → declare *"Binding to <Role> for this session."* and read the bootloader — it handles brain file + agent-context + queue + requests + role-specific reads + PM monitoring duties (PM-only). Surface any `NOTICE=` line as a one-line aside; cleanup is PM's job, in a PM tab.
+- `ROUTE=jit TARGET=<r> …` → PM is already bound; run JIT populate for TARGET per the `THEN=` line, then re-run boot with that role.
+- `ROUTE=pick LAST_ROLE=…` → two-step picker via AskUserQuestion (8 roles, 4-option cap): Q1 role group from the printed `GROUP=` lines (pre-select LAST_ROLE's group; with Q1 print one signpost line: *"Framework help: `/muster`"*), Q2 role within the group (single-option groups short-circuit). Then run the `AFTER_PICK=` command with the picked role — it binds and prints the `ROUTE=bind` directive above.
 
-**Priority-zero routing check** (runs before any other bootstrap reads). Read `knowledge-base/agent-context/.populated` and route on `onboarded_at`, `onboarding_complete_at`, and `agents.pm`:
-- `onboarded_at` is a timestamp AND `onboarding_complete_at` is `null` → **existing-project onboarding active**. Bind PM via Bash: `bash muster/scripts/muster-bind.sh pm onboarding` (writes bind file so status line shows `[muster: pm]`, appends bind log entry). Read `muster/team/pm/skills/generic/reverse-discovery.md` and run its flow (Phase 1 orientation first). No picker. Do NOT load `.claude/agents/pm.md` — onboarding is self-contained in the discovery skill (the skill drives PM behavior end-to-end through Phase 11). If `reverse-discovery.md` is missing, halt: `"Onboarding skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-existing-project.sh'."`
-- `onboarded_at` is `null` AND `agents.pm` is `null` → **greenfield first session**. Bind PM via Bash: `bash muster/scripts/muster-bind.sh pm onboarding` (writes bind file so status line shows `[muster: pm]`, appends bind log entry). Read `muster/team/pm/skills/generic/greenfield-discovery.md` and fire Stage 1 welcome. No picker. Do NOT load `.claude/agents/pm.md` — the discovery skill drives PM behavior through Stage 1.3 (where it sets `agents.pm` timestamp). Subsequent sessions hit the picker per the greenfield-ongoing path below. If `greenfield-discovery.md` is missing, halt: `"Greenfield Discovery skill not found. Run 'git submodule update --remote muster' or re-run 'scripts/setup-project.sh'."`
-- `onboarded_at` is `null` AND `agents.pm` is a timestamp → **greenfield ongoing** (Discovery in progress or post-Sprint-1 work). **Fire picker** (see below). Do NOT re-read `greenfield-discovery.md` — welcome already shown in a prior session.
-- `onboarded_at` AND `onboarding_complete_at` both timestamps → **steady-state** (existing-project, post-onboarding; regardless of individual `agents.<name>` state — null entries trigger JIT populate, not re-onboarding). **Fire picker** (see below). Do NOT re-read `reverse-discovery.md`.
-- File missing entirely → check whether `knowledge-base/` exists at the project root. If yes (pre-v2 Muster project), halt: `"Pre-v2 Muster setup detected. Run 'bash muster/scripts/migrate-v1-to-v2.sh' from the project root."`. If no (uninitialized directory), halt: `"Muster setup incomplete. Run 'scripts/setup-project.sh <name>' (greenfield) or 'scripts/setup-existing-project.sh' (existing codebase)."`
-
-**Role-picker mechanism** (fires only on the picker-fire paths above):
-
-1. **`MUSTER_ROLE` env var precedence**: BEFORE firing the picker, you MUST actively check the env var by running the Bash tool. **Action**: invoke the Bash tool with command `echo "${MUSTER_ROLE:-UNSET}"` and read the output. Then route on the result:
-   - Output is `UNSET` (or empty) → fire picker (interactive mode, step 2).
-   - Output is a valid role name (`pm`, `developer`, `ui-ux`, `qa`, `content`, `marketing`, `legal`, `research`) → skip picker entirely, jump directly to step 3 (JIT) and step 4 (Bind) with that role.
-   - Output is `auto` → read `knowledge-base/orchestration-queue.md`, locate the `## Next Step` section, find the first fenced code block under it. Look for a `Role: <role>` line (typically the first non-blank line) and bind to that role. If no `Role:` line is present, bind to `pm` (PM steps may omit the marker — they're handled directly in the bound PM tab). If `## Next Step` is missing, empty, contains no fenced code block, or the parsed role is invalid, halt with explicit error: `"MUSTER_ROLE=auto but orchestration queue has no parseable Next Step. Cannot determine role. Halt."`. Continue to step 3 (JIT) and step 4 (Bind).
-   - Output is anything else → halt with explicit error: `"MUSTER_ROLE='<value>' is not a valid role. Valid: pm, developer, ui-ux, qa, content, marketing, legal, research, auto. Halt."`. Do NOT silently fall through to picker.
-
-   **Critical**: do NOT skip the Bash check. The picker should NEVER fire when `MUSTER_ROLE` is set — always check first.
-
-   **Invoker tag** (for bind log step 6): `env-var` if `MUSTER_ROLE` is set to a role name, `auto` if set to `auto`, `interactive` otherwise.
-
-   **Invocation examples**:
-   - `MUSTER_ROLE=developer claude --dangerously-skip-permissions "build feature X"` (CI step / scripted run)
-   - `MUSTER_ROLE=auto claude --dangerously-skip-permissions "execute next step"` (orchestrator daemon loop — reads queue, binds, executes, exits; loop again)
-   - `unset MUSTER_ROLE; claude` (return to interactive picker after env-var sessions)
-
-2. **Two-step picker** (interactive mode): muster has 8 roles but `AskUserQuestion` supports max 4 options per question. Picker fires in two stages:
-   - Q1 (role group): Coordination | Build | Communicate | Validate
-   - Q2 (role within group):
-     - Coordination → PM (single-option group; short-circuits Q2)
-     - Build → Developer | UI-UX | QA
-     - Communicate → Content | Marketing
-     - Validate → Research | Legal
-   - With Q1, print one signpost line: *"Framework help: `/muster`"*.
-
-3. **JIT populate**: if `.populated.agents.<picked-role>` is null, force-bind PM, run JIT populate per `team/pm/skills/generic/context-cascading.md`, then re-fire picker.
-
-4. **Bind**: declare *"Binding to <Role> for this session."* and read `.claude/agents/<role>.md` — the bootloader handles brain file + agent-context + queue + requests + role-specific reads + PM monitoring duties (PM-only). Then call `bash muster/scripts/muster-bind.sh <role> <invoker>` — the script writes the bind file (for status line), appends the bind log entry, and writes last-role memory if `<invoker>=interactive`. `<invoker>` comes from step 1: `interactive`, `env-var`, or `auto`. Log rotation is handled by session-start housekeeping (>500 lines → archived).
+**Env-var contract** (scripted runs): `MUSTER_ROLE=<role> claude "..."` binds directly (CI steps, known-role scripts); `MUSTER_ROLE=auto claude --dangerously-skip-permissions "execute next step"` is the autonomous-loop primitive; `unset MUSTER_ROLE` returns to the interactive picker.
 
 **Subagents**: picker fires only at primary-tab session start. `Agent({subagent_type: "<role>"})` invocations bind via the argument and never fire the picker. Same-role parallel subagents are allowed for side work (Claude Code `/btw` analog) — not a substitute for role binding for follow-up turns. Tool-permission note: picker-bound roles inherit Root Claude's full toolset; subagents are tool-restricted per their `.claude/agents/<role>.md` config.
 
 **@-mentions in user input**: Claude Code's input parser auto-routes any `@<agent>` mention in user-typed input to that subagent — this happens at the platform layer, before muster's instructions can apply. Implication: `orchestration-queue.md` prompts MUST NOT use `@<role>` as a role marker (would auto-spawn even when user is in the matching role's tab). Use `Role: <role>` instead — see Queue Step Format in `team/pm/skills/generic/sprint-planning.md`. (@-mentions in file contents Claude reads are NOT auto-routed; only user-typed input.)
 
-**JIT populate on Task HALT return**: when a specialist returns `HALT: agent-context null`, PM auto-handles per `context-cascading.md` → Just-in-time mode. Mid-session trigger; separate from the picker JIT check above.
+**JIT populate on Task HALT return**: when a specialist returns `HALT: agent-context null`, PM auto-handles per `context-cascading.md` → Just-in-time mode. Mid-session trigger; separate from boot's JIT gate above.
 
-**`/rebind`**: re-fires picker mid-session. Overwrites the bound-role PID file. Conversation context is preserved.
+**`/rebind`**: re-fires the flow mid-session — run `muster-boot.sh` and obey its `ROUTE=` line exactly as at session start, declaring *"Re-binding to <Role> for this session."* A `ROUTE=onboarding` result means onboarding is still active (boot has re-bound PM) — re-binding away from the discovery flow isn't available until it completes. Conversation context is preserved: previous turns stay referenceable, the operative role for new responses is the rebound one, and the status line updates on next refresh.
 
 **Cross-role consults**: default is file-based via `agent-requests.md` (write request, switch tabs to answer). Permitted exceptions for throwaway trivia: spawn a one-shot subagent via Agent tool, OR open a new role-bound tab. Test: if the answer deserves a `decision-log` entry, use file-based instead. Rationale: `architecture-and-design.md` mistake #5 — conversations are ephemeral, files persist.
 
-**PM monitoring duties**: full reads + triggers live in `.claude/agents/pm.md` (loads only when bound to PM).
-
-**Non-PM bind side-scan** (lightweight): when picker binds a non-PM role, scan `agent-requests.md` + `orchestration-queue.md` for stale items, unanswered Founder Decisions, or `Status: done` cleanup. Surface a one-line notice: *"PM has N stale items pending — consider opening a PM tab when done here."* Cleanup is PM's job.
+**PM monitoring duties**: full reads + triggers live in `muster/team/pm/bootloader.md` (loads only when bound to PM). The non-PM side-scan is boot's `NOTICE=` line — no manual scan.
 
 **Subsequent turns**: don't re-read bind-step files; use conversation context. **PM after subagent invocation**: re-read any PM-monitored files (`agent-requests.md`, `orchestration-queue.md`, `decision-log.md`, `ui-component-requests.md`) the subagent may have updated. **Skills**: each role's brain file has an "Available Skills" index — read only what the current task needs.
 
 ### Extended Reference
 **Before** adding/modifying agents, features, tools, or running workflow protocols (discovery, scope changes, product expansion), **you must read `muster/system-guide.md` first** — it contains the required templates, step-by-step procedures, and usage examples.
 
-**Note on @pm**: PM has its own `.claude/agents/pm.md` startup config. Bind via picker (Coordination → PM) or invoke as a subagent via `Agent({subagent_type: "pm"})` for one-shot consults.
+**Note on @pm**: PM's startup protocol lives in `muster/team/pm/bootloader.md` (the `.claude/agents/pm.md` stub routes there). Bind via picker (Coordination → PM) or invoke as a subagent via `Agent({subagent_type: "pm"})` for one-shot consults.
 
 ## Communication Standards
 

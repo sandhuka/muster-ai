@@ -1,7 +1,7 @@
 # Onboarding Copy
 
 ## Purpose
-Define the methodology for writing onboarding flows — the first impression of the brand voice and the critical path to activation. See `team/content/skills/brand-voice.md` for voice application rules. See `team/content/skills/sensitive-health-copy.md` for body-image-safe language and sensitive self-assessment copy (fitness level, goals). See `knowledge-base/product-spec.md` Section 5A for onboarding feature specs (F-ONB-0 through F-ONB-6).
+Define the methodology for writing onboarding flows — the first impression of the brand voice and the critical path to activation. See the `brand-voice` skill for voice application rules. See the `sensitive-health-copy` skill for body-image-safe language and sensitive self-assessment copy (fitness level, goals). See `knowledge-base/product-spec.md` Section 5A for onboarding feature specs (F-ONB-0 through F-ONB-6).
 
 ## Onboarding Copy Principles
 
@@ -81,7 +81,7 @@ Legal disclaimers must read in the same voice as the rest of onboarding. The use
 - **Fallback placement**: Dedicated screen between onboarding and first routine, only if the pre-workout integration doesn't provide enough visibility
 
 ### Writing the Disclaimer in Product Voice
-The Legal agent provides the required substance (see `team/legal/skills/terms-privacy.md` — Fitness App Disclaimer Template). The Content agent rewrites it in product voice. Both agents must approve.
+The Legal agent provides the required substance (see the `terms-privacy` skill — Fitness App Disclaimer Template). The Content agent rewrites it in product voice. Both agents must approve.
 
 | Legal Substance | Compliance Copy | Product Voice Copy |
 |----------------|----------------|-------------------|

@@ -1,7 +1,7 @@
 # iOS Swift Concurrency
 
 ## Purpose
-Define Swift concurrency patterns, actor usage, structured/unstructured concurrency, cancellation, async streams, callback bridging, and common bug patterns for iOS development. Target: Swift 6.2+ with strict concurrency. See `team/developer/skills/ios-modern-api.md` for quick deprecated-vs-modern API flags. See `team/developer/skills/ios-testing.md` for async test patterns with Swift Testing.
+Define Swift concurrency patterns, actor usage, structured/unstructured concurrency, cancellation, async streams, callback bridging, and common bug patterns for iOS development. Target: Swift 6.2+ with strict concurrency. See the `ios-modern-api` skill for quick deprecated-vs-modern API flags. See Developer's `ios-testing` skill for async test patterns with Swift Testing.
 
 ## Actor Reentrancy
 The #1 concurrency bug LLMs produce. After every `await` inside an actor, all assumptions about actor state are invalidated — other calls may have run during the suspension.

@@ -1,7 +1,7 @@
 # Web Authentication & Authorization
 
 ## Purpose
-Define authentication and authorization as a unified concern: every Server Action and Route Handler is an RPC endpoint and starts with explicit auth gating; Server Components read session through a cached `getSession()`; middleware does cheap pre-route redirects; authorization happens at the action and component boundary, not in middleware. See `team/developer/skills/web-architecture.md` for the `deps` parameter pattern (auth integrates as a `deps.session` interface). See `team/developer/skills/web-security.md` for everything not-auth (CSP, rate limiting, output encoding). See `team/developer/skills/web-modern-react.md` for Server Actions. Target: **Next.js 15+, React 19+, Auth.js v5+**.
+Define authentication and authorization as a unified concern: every Server Action and Route Handler is an RPC endpoint and starts with explicit auth gating; Server Components read session through a cached `getSession()`; middleware does cheap pre-route redirects; authorization happens at the action and component boundary, not in middleware. See the `web-architecture` skill for the `deps` parameter pattern (auth integrates as a `deps.session` interface). See the `web-security` skill for everything not-auth (CSP, rate limiting, output encoding). See the `web-modern-react` skill for Server Actions. Target: **Next.js 15+, React 19+, Auth.js v5+**.
 
 ## The Mental Model
 

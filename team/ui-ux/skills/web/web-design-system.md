@@ -1,7 +1,7 @@
 # Web Design System
 
 ## Purpose
-Define the load-bearing design-system architecture for modern web product work: a two-tier token system (primitives → semantic), Tailwind v4 as the CSS runtime, shadcn-style components owned by the codebase, dark/light theming that falls out of the token layer, and the rules for when to add a new token vs. reuse an existing one. This is the anchor skill for every other UI/UX web skill — responsive patterns, screen specs, interaction patterns, and design-side accessibility all reference the tokens defined here. See `team/ui-ux/skills/web-responsive-patterns.md` for layout primitives that consume these tokens. See `team/ui-ux/skills/web-screen-specification.md` for the handoff format that references these tokens. See `team/ui-ux/skills/web-accessibility.md` for design-side accessibility (color contrast at the token layer, focus-ring spec, motion tokens). See `team/developer/skills/web-architecture.md` for the folder layout that hosts `components/ui/`. See `team/developer/skills/web-modern-react.md` for composition patterns the components implement. Target: **Tailwind CSS 4+, shadcn/ui (Radix-based), React 19+, TypeScript 5.5+**.
+Define the load-bearing design-system architecture for modern web product work: a two-tier token system (primitives → semantic), Tailwind v4 as the CSS runtime, shadcn-style components owned by the codebase, dark/light theming that falls out of the token layer, and the rules for when to add a new token vs. reuse an existing one. This is the anchor skill for every other UI/UX web skill — responsive patterns, screen specs, interaction patterns, and design-side accessibility all reference the tokens defined here. See the `web-responsive-patterns` skill for layout primitives that consume these tokens. See the `web-screen-specification` skill for the handoff format that references these tokens. See UI/UX's `web-accessibility` skill for design-side accessibility (color contrast at the token layer, focus-ring spec, motion tokens). See the `web-architecture` skill for the folder layout that hosts `components/ui/`. See the `web-modern-react` skill for composition patterns the components implement. Target: **Tailwind CSS 4+, shadcn/ui (Radix-based), React 19+, TypeScript 5.5+**.
 
 ## The One Rule That Anchors Everything
 
@@ -190,7 +190,7 @@ Resist the seventh size. If a designer needs "something between h2 and h3," the 
 ### Radius, Shadow, Motion, Layering
 - **Radius**: `control` (buttons, inputs), `card` (cards, modals, popovers), `pill` (avatars, chips). Three is enough.
 - **Shadow**: deemphasize. Apple uses shadows sparingly — almost never on flat UI, only on floating surfaces (popovers, drag previews). Two tokens cover this: `shadow-popover`, `shadow-drag`. Resist adding a "card shadow" — flat cards with a clear `border` token communicate elevation without the visual weight.
-- **Motion**: define easing, duration, *and spring* tokens here, used by `team/ui-ux/skills/web-interaction-patterns.md` and `team/ui-ux/skills/web-accessibility.md`:
+- **Motion**: define easing, duration, *and spring* tokens here, used by the `web-interaction-patterns` skill and UI/UX's `web-accessibility` skill:
 
 ```css
 /* Easing — for transitions */
@@ -274,7 +274,7 @@ What breaks in forced-colors and how to design around it:
 - **Icons rendered as background images** become invisible. Use inline SVG or icon fonts so the OS can color them.
 - **Borders are visible by default.** A button distinguished only by background color disappears; one with a `1px solid` border survives.
 
-The audit: turn on Windows High Contrast Mode (or DevTools "Emulate forced-colors: active") and verify every interactive element is still distinguishable. Buttons should look like buttons; links should look like links; focus should be visible. If anything disappears, fix it via the strategies above. See `team/ui-ux/skills/web-accessibility.md` for the full design-side a11y treatment.
+The audit: turn on Windows High Contrast Mode (or DevTools "Emulate forced-colors: active") and verify every interactive element is still distinguishable. Buttons should look like buttons; links should look like links; focus should be visible. If anything disappears, fix it via the strategies above. See UI/UX's `web-accessibility` skill for the full design-side a11y treatment.
 
 ## Dark Mode (Falls Out For Free)
 

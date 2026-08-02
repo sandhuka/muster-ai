@@ -1,7 +1,7 @@
 # Community Building
 
 ## Purpose
-Strategy for building a community that drives retention, UGC, and word-of-mouth. Community creates switching costs (social bonds), free content (UGC), and compounds all other marketing. At 100K+ users, a well-built community becomes self-sustaining. See `team/marketing/skills/referral-virality.md` for challenges and sharing hooks, `team/marketing/skills/creator-partnerships.md` for ambassador program crossover.
+Strategy for building a community that drives retention, UGC, and word-of-mouth. Community creates switching costs (social bonds), free content (UGC), and compounds all other marketing. At 100K+ users, a well-built community becomes self-sustaining. See the `referral-virality` skill for challenges and sharing hooks, the `creator-partnerships` skill for ambassador program crossover.
 
 ## Strategy by Growth Stage
 

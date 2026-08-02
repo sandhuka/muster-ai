@@ -1,7 +1,7 @@
 # User Flow & State Mapping
 
 ## Purpose
-Define how to document end-to-end user journeys, screen state machines, and branching logic. A wireframe shows what one screen looks like. A user flow shows how screens connect, what decisions the user makes, and what the system does in response. See `team/ui-ux/skills/ios-wireframe-methodology.md` for individual screen wireframe format. See `team/ui-ux/skills/ios-hig-reference.md` for navigation patterns that constrain how screens connect.
+Define how to document end-to-end user journeys, screen state machines, and branching logic. A wireframe shows what one screen looks like. A user flow shows how screens connect, what decisions the user makes, and what the system does in response. See the `ios-wireframe-methodology` skill for individual screen wireframe format. See the `ios-hig-reference` skill for navigation patterns that constrain how screens connect.
 
 ## Apple's Flow Philosophy
 Apple never makes users think about where they are in an app. Great flows have:
@@ -93,7 +93,7 @@ Every screen must define these core states: **Loading**, **Content**, **Empty**,
 
 Additional conditional states when applicable: **First-time**, **Free-tier**, **Premium**, **Offline**.
 
-See `team/ui-ux/skills/ios-wireframe-methodology.md` Wireframe Completeness Checklist for the full list of states and edge cases every wireframe must cover. See `team/ui-ux/skills/ios-copy-fitting-microstates.md` for transient microstate design (syncing, saving, generating, etc.).
+See the `ios-wireframe-methodology` skill Wireframe Completeness Checklist for the full list of states and edge cases every wireframe must cover. See the `ios-copy-fitting-microstates` skill for transient microstate design (syncing, saving, generating, etc.).
 
 ## User Journey Template
 For documenting a complete user journey (not just screen-to-screen flow):

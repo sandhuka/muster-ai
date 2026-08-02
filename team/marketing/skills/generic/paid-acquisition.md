@@ -1,7 +1,7 @@
 # Paid Acquisition
 
 ## Purpose
-Tactical playbook for paid user acquisition: Apple Search Ads, Meta, TikTok Ads, Google App Campaigns. Paid accelerates growth once organic product-market fit is proven. See `team/marketing/skills/growth-strategy.md` for unit economics and channel sequencing, `team/marketing/skills/analytics.md` for ATT-era attribution.
+Tactical playbook for paid user acquisition: Apple Search Ads, Meta, TikTok Ads, Google App Campaigns. Paid accelerates growth once organic product-market fit is proven. See the `growth-strategy` skill for unit economics and channel sequencing, the `analytics` skill for ATT-era attribution.
 
 ## Channel Activation Order
 

@@ -64,7 +64,7 @@ Run every item against every deliverable, regardless of producing agent.
 
 ## Post-Accept Housekeeping
 
-**Atomic close (the checkbox and the Status field must never disagree).** When you tick the LAST required reviewer box on a handoff, flip its top-level `**Status:** done` in the SAME edit — never leave a fully-reviewed handoff at `in-review`. A reviewer-checkbox that says done while `Status` lags is invisible to the "done → Resolved" sweep (which keys on `Status`), so the accepted entry rots in Active; that is the root cause behind ledger bloat, and `muster-requests-lint.sh` is the deterministic backstop that catches it if it slips.
+**Atomic close (the checkbox and the Status field must never disagree).** When you tick the LAST required reviewer box on a handoff, flip its top-level `**Status:** done` in the SAME edit — never leave a fully-reviewed handoff at `in-review`. A reviewer-checkbox that says done while `Status` lags is invisible to the "done → Resolved" sweep (which keys on `Status`), so the accepted entry rots in Active; that is the root cause behind ledger bloat, and `muster-lint-requests.sh` is the deterministic backstop that catches it if it slips.
 
 After accepting a handoff (status → `done` or PM reviewer checked), PM must immediately:
 
@@ -109,6 +109,6 @@ During founder review of audit-notes, every `[inferred]` row requires an explici
 "Approve all" is NOT offered for `[inferred]` rows. `[verified]` rows don't require action (founder may still override).
 
 ### Where the mechanics live
-- Audit procedure + tag assignment: `team/developer/skills/generic/codebase-audit.md`
-- Review flow in onboarding context + architecture finalize: `team/pm/skills/generic/reverse-discovery.md` → Phase 6
+- Audit procedure + tag assignment: the `codebase-audit` skill
+- Review flow in onboarding context + architecture finalize: the `reverse-discovery` skill → Phase 6
 - Rule 15 discipline on destinations: `reverse-discovery.md` → Phases 2.1 (triage), 6.3 (architecture), 8.3 (foundational-assumptions)

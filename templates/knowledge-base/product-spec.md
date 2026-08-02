@@ -1,6 +1,6 @@
 # Product Specification — [Product Name]
 <!-- Full product specification. PM owns this file. -->
-<!-- Structure follows PM's product-spec-writing skill (muster/team/pm/skills/generic/product-spec-writing.md) -->
+<!-- Structure follows PM's `product-spec-writing` skill -->
 
 ## 1. Overview
 <!-- Product name, tagline, 2-3 sentence description, key differentiators -->

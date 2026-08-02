@@ -37,25 +37,23 @@ muster-ai/
 │   └── ... (ui-ux, content, marketing, legal, qa, research)
 │
 ├── templates/                         # Everything a new project needs
-│   ├── .claude/agents/                # Canonical bootloader files
+│   ├── .claude/agents/                # Harness stubs (hop to team/<role>/bootloader.md)
 │   ├── CLAUDE.md                      # Project CLAUDE.md with placeholders
 │   └── knowledge-base/               # Pre-structured KB templates
 │
 ├── scripts/
 │   ├── setup-project.sh               # Scaffolds a new (greenfield) project repo
 │   ├── setup-existing-project.sh      # Adopts Muster into an existing codebase
-│   └── migrate-v1-to-v2.sh            # Upgrades a pre-v2 project to v2 (creates .populated, injects HALT check, patches CLAUDE.md)
-│
-└── MIGRATING-V1-TO-V2.md              # User-facing migration guide for the above script
+│   └── muster-update.sh               # Converges project-level framework-owned files after a submodule bump
 ```
 
 ### Project Repo (Your Product)
 ```
 my-project/
-├── .claude/agents/                    # AGENT STARTUP CONFIGS
-│   ├── developer.md                   # What Claude reads when you say @developer
-│   ├── ui-ux.md                       # What Claude reads when you say @ui-ux
-│   └── ...                            # Each file: ~30 lines of boot instructions
+├── .claude/agents/                    # HARNESS STUBS (framework-owned)
+│   ├── developer.md                   # Frontmatter + hop to muster/team/developer/bootloader.md
+│   ├── ui-ux.md                       # Frontmatter + hop to muster/team/ui-ux/bootloader.md
+│   └── ...                            # Each file: 10 lines; protocol lives in the submodule
 │
 ├── CLAUDE.md                          # PROJECT BRAIN — bootstrap routing + product info + project-specific rules
 │
@@ -85,7 +83,8 @@ my-project/
 ### The Five Layers
 
 ```
-Layer 1: .claude/agents/               STARTUP CONFIGS     "What to read when invoked"
+Layer 1: muster/team/<role>/bootloader.md  STARTUP PROTOCOL "What to read when invoked"
+         (.claude/agents/<role>.md = harness stubs that hop to Layer 1)
 Layer 2: muster/team/<agent>/          AGENT IDENTITY       "Who I am, how I work" (shared)
 Layer 3: knowledge-base/agent-context/ FILTERED CONTEXT     "What I need to know about THIS project"
 Layer 4: knowledge-base/               SHARED TRUTH         "What the product IS"
@@ -136,7 +135,7 @@ Layer 5: src/                          ACTUAL CODE          "The thing being bui
      - Cascades context to agent-context files
      - Reviews handoffs, monitors stale items
 
-         Each role's bootloader (.claude/agents/<role>.md) reads at bind:
+         Each role's bootloader (muster/team/<role>/bootloader.md) reads at bind:
          1. muster/CLAUDE.md (system rules)
          2. muster/team/<role>/CLAUDE.md (role identity + skill index)
          3. knowledge-base/agent-context/<role>.md (product context)
@@ -234,11 +233,11 @@ Every file that agents read at startup has a size cap to prevent context window 
 
 | File | Cap | Who Enforces |
 |------|-----|-------------|
-| orchestration-queue.md Done section | Max 10 entries | Completing agent trims; PM clears at new sprint |
-| agent-requests.md Resolved section | Max 10 entries | Completing agent trims |
-| agent-requests.md total | Target <150 lines | Self-cleaning rules |
-| Decision log | Archive at 50 entries | PM |
-| Agent startup reads | <200 lines per specialist, <400 for PM | System verification checklist |
+| orchestration-queue.md Done section | Max 10 entries | `muster-advance-queue.sh` (mechanical — refuses to over-fill); PM clears at new sprint |
+| agent-requests.md | Resolved trimmed by completing agent; Active-over-budget and closure defects flagged | `muster-lint-requests.sh` |
+| decision-log.md | Current sprint only (older → `decision-log-archive.md`); soft ceiling 150 lines | PM at sprint closeout; `muster-lint-kb-budgets.sh` warns |
+| current-sprint.md | One sprint only; soft ceiling 120 lines | PM at sprint closeout; `muster-lint-kb-budgets.sh` warns |
+| PM bootstrap-read total | ≤600 lines (Rule 14) | `muster-lint-kb-budgets.sh` (runtime FAIL) + `test-pillar-budgets.sh` (shipped-baseline CI gate) |
 
 ---
 
@@ -299,14 +298,14 @@ Each handoff has named reviewers with individual statuses. The producing agent r
 
 ## How the PM Manages Everything
 
-PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`.claude/agents/pm.md`), which loads PM brain + agent-context + 6 monitoring files, then runs PM monitoring duties before answering the user's first message.
+PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`muster/team/pm/bootloader.md`), which loads PM brain + agent-context + 6 monitoring files, then runs PM monitoring duties before answering the user's first message.
 
 **Key responsibilities:**
 1. **Sprint planning** — Break work into agent tasks, sequence by dependencies, populate orchestration queue
 2. **Context cascading** — When decisions happen, update each affected agent's context file with filtered, relevant context
 3. **Handoff review** — Accept or request revision on agent deliverables
 4. **Decision logging** — Every decision goes to decision-log.md with rationale and files touched
-5. **Monitoring** — Check for stale requests (>3 days), stale handoffs (>3 days in review), revision loops (3+ rounds)
+5. **Monitoring** — Check for stale board items (`muster-list-open-items.sh` tags STALE >5 days), revision loops (3+ rounds)
 6. **Founder escalation** — PM has a Decision Autonomy Matrix. Some things PM decides alone (task sequencing, spec clarifications). Some require founder input (scope changes, pricing, architecture lock-in). Escalations go to the Founder Decisions section of orchestration-queue.md.
 
 **Cascade lag prevention** — After every decision, PM audits:
@@ -325,6 +324,7 @@ PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`
 |------|---------|------------|
 | `muster/CLAUDE.md` | System rules, protocols, agent roster, role-binding mechanism | Framework maintainer |
 | `muster/team/<name>/CLAUDE.md` | Agent role definition, skill index | Framework maintainer |
+| `muster/team/<name>/bootloader.md` | Role startup protocol — read at bind (the project's `.claude/agents/<name>.md` stub hops here) | Framework maintainer |
 | `muster/team/<name>/skills/` | Domain methodology — how to do the work | Framework maintainer |
 | `muster/system-guide.md` | Templates, extensibility, verification checklist | Framework maintainer |
 
@@ -332,13 +332,15 @@ PM is one of the eight peer roles. A PM-bound session reads the PM bootloader (`
 
 | File | Purpose | Who Writes |
 |------|---------|------------|
-| `.claude/agents/<name>.md` | Startup config — what to read when invoked | Copied from templates |
+| `.claude/agents/<name>.md` | Harness stub — frontmatter + hop to `muster/team/<name>/bootloader.md` | Framework-owned; seeded and updated by muster |
 | `CLAUDE.md` | Three-section project file: Muster Framework pointer (read-only), Product Information, Project-Specific Rules | Founder + PM |
 | `knowledge-base/agent-context/<name>.md` | Filtered product context per agent | PM |
-| `knowledge-base/agent-context/.populated` | Per-agent populate state + lifecycle anchors `onboarded_at`, `onboarding_complete_at`, and `agents.<role>` timestamps. The priority-zero check routes into one of four routing paths plus a halt case: (1) **Existing-project onboarding active** — `onboarded_at` timestamp + `onboarding_complete_at` null → force-bind PM, load `reverse-discovery.md`. No picker. (2) **Greenfield first session** — `onboarded_at` null + `agents.pm` null → force-bind PM, load `greenfield-discovery.md`, fire welcome. No picker. (3) **Greenfield ongoing / post-Discovery steady-state** — `onboarded_at` null + `agents.pm` timestamp → fire role picker. Greenfield projects remain here permanently after Stage 1.3 (they never transition to path 4). (4) **Existing-project steady-state** — `onboarded_at` AND `onboarding_complete_at` both timestamps → fire role picker. (Halt) **File missing/invalid** → halt with setup instructions. Null `agents.<role>` entries in paths 3/4 trigger JIT populate at first invocation, not re-onboarding. | Script (init); PM (updates: `agents.pm` at greenfield Stage 1.3 OR existing-project init; agent timestamps during cascade + JIT; `onboarding_complete_at` at end of reverse-discovery — applies to existing-project flow only) |
+| `knowledge-base/agent-context/.populated` | Per-agent populate state + lifecycle anchors `onboarded_at`, `onboarding_complete_at`, and `agents.<role>` timestamps. `muster-boot.sh` routes into one of four routing paths plus a halt case: (1) **Existing-project onboarding active** — `onboarded_at` timestamp + `onboarding_complete_at` null → force-bind PM, load `reverse-discovery.md`. No picker. (2) **Greenfield first session** — `onboarded_at` null + `agents.pm` null → force-bind PM, load `greenfield-discovery.md`, fire welcome. No picker. (3) **Greenfield ongoing / post-Discovery steady-state** — `onboarded_at` null + `agents.pm` timestamp → fire role picker. Greenfield projects remain here permanently after Stage 1.3 (they never transition to path 4). (4) **Existing-project steady-state** — `onboarded_at` AND `onboarding_complete_at` both timestamps → fire role picker. (Halt) **File missing/invalid** → halt with setup instructions. Null `agents.<role>` entries in paths 3/4 trigger JIT populate at first invocation, not re-onboarding. | Script (init); PM (updates: `agents.pm` at greenfield Stage 1.3 OR existing-project init; agent timestamps during cascade + JIT; `onboarding_complete_at` at end of reverse-discovery — applies to existing-project flow only) |
 | `knowledge-base/product-spec.md` | Full product specification | PM |
 | `knowledge-base/architecture.md` | Technical architecture | Developer produces, PM reviews |
-| `knowledge-base/current-sprint.md` | Task board — assignments and status | PM |
+| `knowledge-base/current-sprint.md` | Task board — one wave-table per wave (`Step / Role / Deliverable / Verification`) | PM |
+| `.muster/config` | Project knobs (models, caps, provider) sourced by the sprint driver — committed so worktrees inherit it | Founder (Guide coaches edits) |
+| `.muster/seeded-version` | Stamp of the muster version the platform files were last converged to — boot compares it to `muster/VERSION` and NOTICEs drift | Setup scripts + `muster-update.sh` |
 | `knowledge-base/orchestration-queue.md` | Turn-by-turn execution sequence | PM populates; agents update |
 | `knowledge-base/agent-requests.md` | Inter-agent communication | All agents |
 | `knowledge-base/decision-log.md` | Decisions with rationale and affected files | PM (any agent can append) |

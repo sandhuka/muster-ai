@@ -1,7 +1,7 @@
 # Apple Human Interface Guidelines — iOS Reference
 
 ## Purpose
-Codify the Apple HIG conventions that every screen must follow. This is not a summary of the full HIG — it's the subset that directly impacts day-to-day design decisions for an iOS app. When in doubt, the answer should feel like something Apple would ship. See `team/ui-ux/skills/mobile-patterns.md` for product-specific screen patterns built on top of these conventions. See `team/ui-ux/skills/ios-animation-interaction.md` for motion and haptic guidelines.
+Codify the Apple HIG conventions that every screen must follow. This is not a summary of the full HIG — it's the subset that directly impacts day-to-day design decisions for an iOS app. When in doubt, the answer should feel like something Apple would ship. See the `mobile-patterns` skill for product-specific screen patterns built on top of these conventions. See the `ios-animation-interaction` skill for motion and haptic guidelines.
 
 ## Apple's Core Design Principles
 These aren't abstract ideals — they are decision filters. When choosing between two design options, pick the one that better satisfies these:
@@ -167,7 +167,7 @@ Rules:
 
 The most common mistake: choosing by data type, then shipping into a flow where the value is entered dozens of times a day. Ask the frequency question first — a wheel that feels delightful during onboarding is punishing at the fortieth entry.
 
-Accessibility: `Slider` is the weakest numeric control for motor and VoiceOver users. It needs `.accessibilityValue()` and a sensible `step` so the VoiceOver adjustable action increments usefully — see `team/ui-ux/skills/generic/accessibility.md`.
+Accessibility: `Slider` is the weakest numeric control for motor and VoiceOver users. It needs `.accessibilityValue()` and a sensible `step` so the VoiceOver adjustable action increments usefully — see the `accessibility` skill.
 
 ## Sheets & Popovers
 

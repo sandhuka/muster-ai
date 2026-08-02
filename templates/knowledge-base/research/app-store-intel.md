@@ -1,6 +1,6 @@
 # App Store Intelligence — [Product Name]
 <!-- App Store / Play Store keyword and category analysis. -->
-<!-- Skill reference: muster/team/research/skills/generic/app-store-intel.md -->
+<!-- Skill reference: the `app-store-intel` skill -->
 <!-- Only applicable for mobile apps. Delete this file if not a mobile product. -->
 
 ## Current State

@@ -6,7 +6,7 @@ This guide walks you through setup to your first sprint. If you haven't read the
 
 Total founder-attended time: about **1-2 hours** spread across ~3 Claude sessions over a day or two. The script runs in a couple of minutes; the rest is a brief orientation, sharing your product idea, market research (Research agent does the work), an evaluation step, draft review, and Sprint 1 planning.
 
-**One-time cost** — future Muster updates pull in via `git submodule update` without repeating Discovery.
+**One-time cost** — a new project is born converged: the setup script stamps it at the current framework version, so there is never migration debt on day one. Future Muster updates pull in via `git submodule update` (plus `bash muster/scripts/muster-update.sh` to converge the few platform-level files) without repeating Discovery.
 
 ---
 
@@ -95,7 +95,7 @@ From here, you follow the orchestration queue. For each step:
 
 Warm multi-tab — one tab per role you're actively working with — is the **Manual** way to run a sprint, and a good default: PM tab for planning and review, specialist tabs for execution. The status line `[muster: <role>]` keeps each tab clearly identified. You can also have PM spawn each step as a subagent (**Assisted**), or let a script walk the queue unattended in a worktree (**Autonomous**). See [operating-modes.md](operating-modes.md) for when to pick each.
 
-Power-user shortcut: `MUSTER_ROLE=<role> claude` skips the picker. `MUSTER_ROLE=auto claude --dangerously-skip-permissions "execute next step"` runs the queue's next step autonomously — the primitive behind Autonomous mode. Autonomous sprint execution is **Muster v4**; existing projects adopt it via `muster/scripts/migrate-v3-to-v4.sh` (see [MIGRATING-V3-TO-V4.md](MIGRATING-V3-TO-V4.md)).
+Power-user shortcut: `MUSTER_ROLE=<role> claude` skips the picker. `MUSTER_ROLE=auto claude --dangerously-skip-permissions "execute next step"` runs the queue's next step autonomously — the primitive behind Autonomous mode.
 
 ---
 
@@ -110,7 +110,7 @@ Think of yourself as the "runner" — PM is the brain, you're the hands.
 **Where everything lives:**
 - `muster/` — The framework (agent brains, skills, methodology). You don't edit this.
 - `knowledge-base/` — Your project's source of truth (product spec, decisions, sprint tasks, research). PM manages this.
-- `.claude/agents/` — Bootloaders for all 8 roles (loaded by the picker on bind, or by `Agent({subagent_type: "<role>"})` for one-shot subagent calls).
+- `.claude/agents/` — Framework-owned stubs for all 8 roles; each hops to `muster/team/<role>/bootloader.md` (picker binds read the bootloader directly; `Agent({subagent_type: "<role>"})` enters via the stub).
 - `.claude/skills/rebind/` — `/rebind` slash command for swapping roles mid-session.
 - `.claude/skills/muster/` — `/muster` slash command for framework help (the Guide).
 - `.claude/statusline.sh` — Status-line script showing which role this session is bound to.

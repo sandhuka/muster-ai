@@ -1,7 +1,7 @@
 # Web Screen Specification
 
 ## Purpose
-Define the complete screen-spec template used to hand off web designs to the Developer agent. A screen spec is the single source of truth for implementing one route or modal: it wraps the wireframe, annotation table, route context, data sources, states, interactions, accessibility, responsive behavior, and component inventory into one in-repo markdown file. The spec is what the Developer reads to build the screen — it must leave zero ambiguity. See `team/ui-ux/skills/web-wireframe-methodology.md` for the wireframe format that lives inside this spec. See `team/ui-ux/skills/web-content-hierarchy.md` for the hierarchy exercise that precedes layout. See `team/ui-ux/skills/web-design-system.md` for the tokens and components the spec references. See `team/ui-ux/skills/web-responsive-patterns.md` for the responsive primitives the layout assumes. See `team/ui-ux/skills/web-interaction-patterns.md` for shared interaction patterns referenced by the spec. See `team/ui-ux/skills/web-accessibility.md` for design-side a11y requirements the spec encodes. See `team/developer/skills/web-architecture.md` for how the spec maps onto the Developer's layered architecture (Server Components, Server Actions, layered folders). See `team/developer/skills/web-nextjs-app-router.md` for the App Router primitives (`page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, route groups, parallel/intercepting routes) that the Route Context section refers to. Target: **Next.js 15+ App Router, React 19+, TypeScript 5.5+, design specs committed to `knowledge-base/design-specs/`**.
+Define the complete screen-spec template used to hand off web designs to the Developer agent. A screen spec is the single source of truth for implementing one route or modal: it wraps the wireframe, annotation table, route context, data sources, states, interactions, accessibility, responsive behavior, and component inventory into one in-repo markdown file. The spec is what the Developer reads to build the screen — it must leave zero ambiguity. See the `web-wireframe-methodology` skill for the wireframe format that lives inside this spec. See the `web-content-hierarchy` skill for the hierarchy exercise that precedes layout. See the `web-design-system` skill for the tokens and components the spec references. See the `web-responsive-patterns` skill for the responsive primitives the layout assumes. See the `web-interaction-patterns` skill for shared interaction patterns referenced by the spec. See UI/UX's `web-accessibility` skill for design-side a11y requirements the spec encodes. See the `web-architecture` skill for how the spec maps onto the Developer's layered architecture (Server Components, Server Actions, layered folders). See the `web-nextjs-app-router` skill for the App Router primitives (`page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, route groups, parallel/intercepting routes) that the Route Context section refers to. Target: **Next.js 15+ App Router, React 19+, TypeScript 5.5+, design specs committed to `knowledge-base/design-specs/`**.
 
 ## Apple's Detail Standard (Web Edition)
 
@@ -138,7 +138,7 @@ Every screen ships at least four states. Use "same as content" if accurate, but 
 The primary wireframe above. Conditions: data loaded, user has at least one generated routine.
 
 ### Empty State Coverage (per origin)
-Per `team/ui-ux/skills/web-empty-error-and-edge-states.md`, every screen with a list/table/feed must address all applicable empty origins explicitly. List which apply and what each does:
+Per the `web-empty-error-and-edge-states` skill, every screen with a list/table/feed must address all applicable empty origins explicitly. List which apply and what each does:
 
 - **Never-had-content**: "No routine yet — generate today's to get started." → CTA: "Generate routine" (triggers `generateRoutine` action).
 - **You-emptied-it**: N/A (routines aren't user-deletable from this screen; archived past routines live on `/history`).
@@ -150,7 +150,7 @@ Per `team/ui-ux/skills/web-empty-error-and-edge-states.md`, every screen with a 
 For screens that *do* support search/filters/multi-user permissions, address each origin or mark explicitly N/A with a one-line reason. Silent omission is incomplete.
 
 ### Error State Coverage (per category)
-Per `team/ui-ux/skills/web-empty-error-and-edge-states.md`, identify which error categories apply and how each is handled:
+Per the `web-empty-error-and-edge-states` skill, identify which error categories apply and how each is handled:
 
 - **Validation** (form-level): N/A (no forms on this screen).
 - **Recoverable transient** (network blip, timeout): inline error within the routine card; `text-danger`; retry button reuses `getRoutineForToday()`.
@@ -200,9 +200,9 @@ Per `team/ui-ux/skills/web-empty-error-and-edge-states.md`, identify which error
 ### Animations
 - Card mount: fade in over `--duration-short` (200ms), `--ease-standard`.
 - Skeleton-to-content: crossfade `--duration-short`.
-- Modal / sheet open (when applicable): `--spring-snappy` from `team/ui-ux/skills/web-design-system.md` motion tokens — physical-feeling slide, not a cubic-bezier slide.
-- Reduced motion (`prefers-reduced-motion: reduce`): no shimmer, instant crossfade, springs replaced with instant appearance. See `team/ui-ux/skills/web-accessibility.md` → Motion and Animation for the canonical alternatives table.
-- See `team/ui-ux/skills/web-design-system.md` for the full motion-token reference (durations, easings, springs).
+- Modal / sheet open (when applicable): `--spring-snappy` from the `web-design-system` skill motion tokens — physical-feeling slide, not a cubic-bezier slide.
+- Reduced motion (`prefers-reduced-motion: reduce`): no shimmer, instant crossfade, springs replaced with instant appearance. See UI/UX's `web-accessibility` skill → Motion and Animation for the canonical alternatives table.
+- See the `web-design-system` skill for the full motion-token reference (durations, easings, springs).
 
 ### Optimistic Updates
 - "Mark complete" toggles on a session (different screen) use `useOptimistic`; this screen does not need any.
@@ -240,7 +240,7 @@ Per `team/ui-ux/skills/web-empty-error-and-edge-states.md`, identify which error
 - No `aria-live="assertive"` on this screen.
 
 ### Color Contrast
-All text/background pairs verified against semantic tokens; spec defers to `team/ui-ux/skills/web-accessibility.md` for the contrast targets and audit process. Any unique pair not covered by tokens is called out here.
+All text/background pairs verified against semantic tokens; spec defers to UI/UX's `web-accessibility` skill for the contrast targets and audit process. Any unique pair not covered by tokens is called out here.
 
 ### Reduced Motion
 - Skeleton shimmer: disabled.
@@ -372,7 +372,7 @@ If any box is unchecked, the spec is not ready for handoff.
 | **Final copy in the spec without Content agent involvement.** UI/UX writes the empty-state body copy. | Copy ownership is fragmented; brand voice drifts; revisions go to the wrong agent. | Mark copy cells as "[Content agent to provide]" with character limits. Final copy lands in revisions. |
 | **Hex colors and pixel values in the spec.** `background: #F5F5F7`, `padding: 24px`. | Bypasses the token system; the spec becomes a second source of truth that drifts from `tokens.css`. | Reference semantic tokens by name. If no token fits, it's the signal to add one — not to inline a value. |
 | **States as an afterthought.** Only the content state is wireframed; loading is "use a spinner," empty is "we'll figure it out." | Empty and error are the screens users hit when things go wrong; designing them late guarantees a poor experience. | All four states wireframed (or noted as "same as content"). Skeleton matches content layout. |
-| **No accessibility section.** "The Developer will handle a11y." | A11y is a design decision before it's an implementation decision. Tab order, focus on modal open, live regions, semantic structure — these are spec-level calls. | Fill the Accessibility section. Defer implementation details to `team/developer/skills/web-accessibility.md`, but make the design intent explicit. |
+| **No accessibility section.** "The Developer will handle a11y." | A11y is a design decision before it's an implementation decision. Tab order, focus on modal open, live regions, semantic structure — these are spec-level calls. | Fill the Accessibility section. Defer implementation details to Developer's `web-accessibility` skill, but make the design intent explicit. |
 | **Responsive behavior described in pixels.** "At 768px, the sidebar appears. At 1024px, the grid becomes 3 columns. At 1280px, padding increases by 8px." | Over-specifies what responsive primitives handle automatically; under-specifies the page-chrome decisions that actually matter. | Name the page-chrome breakpoints (when sidebar appears, when nav collapses) and mark which components are container-queried. Defer the rest to `web-responsive-patterns.md`. |
 | **Component inventory missing requests.** A new component is named in the layout but has no entry in `ui-component-requests.md`. | The Developer can't build the screen; the request isn't visible to the Founder. Sprint stalls. | Every `needs-component` row must have a request open before the spec is filed. |
 | **Reusing one spec for two screens.** "Today and Plan are similar — one spec covers both." | They diverge as soon as someone edits one of them; the spec stops describing either accurately. | One spec per logical screen. Shared concerns (layout, components) live in their own specs and are referenced. |
@@ -394,11 +394,11 @@ A completed screen spec is committed to `knowledge-base/design-specs/<screen-nam
 
 5. **Tokens, never values.** Every color, every spacing, every type size, every radius — referenced by token name. Raw values in a spec are defects, regardless of how convenient they feel in the moment.
 
-6. **Two viewports are wireframed; landscape and tablet are verified, not redrawn.** Wireframes ship at 375 portrait and 1280 desktop only — that's the contract with `web-wireframe-methodology.md`. Mobile landscape (667×375), iPad portrait (768×1024), and iPad landscape (1024×768) are *verified* in the Responsive Behavior section against the responsive primitives — not given their own ASCII wireframes. Adding a wireframe per viewport produces drift; verifying-against-primitives produces accuracy. The container-queried primitives in `team/ui-ux/skills/web-responsive-patterns.md` handle the in-betweens by construction.
+6. **Two viewports are wireframed; landscape and tablet are verified, not redrawn.** Wireframes ship at 375 portrait and 1280 desktop only — that's the contract with `web-wireframe-methodology.md`. Mobile landscape (667×375), iPad portrait (768×1024), and iPad landscape (1024×768) are *verified* in the Responsive Behavior section against the responsive primitives — not given their own ASCII wireframes. Adding a wireframe per viewport produces drift; verifying-against-primitives produces accuracy. The container-queried primitives in the `web-responsive-patterns` skill handle the in-betweens by construction.
 
-7. **Accessibility is a design decision, not an implementation chore.** Reading order, landmark roles, focus management, live region behavior, reduced-motion alternatives, forced-colors handling — these are spec-level calls that the Developer implements. The split between this skill and `team/developer/skills/web-accessibility.md` is intent (here) vs. mechanism (there).
+7. **Accessibility is a design decision, not an implementation chore.** Reading order, landmark roles, focus management, live region behavior, reduced-motion alternatives, forced-colors handling — these are spec-level calls that the Developer implements. The split between this skill and Developer's `web-accessibility` skill is intent (here) vs. mechanism (there).
 
-8. **States are part of the design.** Loading, empty, error, tier and permission variants — each is wireframed or explicitly marked as identical. Empty has at least five distinct origins (see `team/ui-ux/skills/web-empty-error-and-edge-states.md`); a single empty-state component for all of them is a defect. A spec that only addresses the happy path is half a deliverable.
+8. **States are part of the design.** Loading, empty, error, tier and permission variants — each is wireframed or explicitly marked as identical. Empty has at least five distinct origins (see the `web-empty-error-and-edge-states` skill); a single empty-state component for all of them is a defect. A spec that only addresses the happy path is half a deliverable.
 
 9. **Owner per cell — push it everywhere.** Copy belongs to Content. Components belong to UI/UX (with Founder approval for new requests). Data shapes and route mechanics belong to Developer. The spec assigns ownership per row in *every* applicable table — copy table, data sources table, component inventory, interactions table. There is no "we'll figure it out." When responsibility is unassigned, work falls between agents and the gap shows up in the shipped product.
 

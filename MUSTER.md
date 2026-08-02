@@ -28,6 +28,8 @@ unaffected — Muster rides alongside whatever role work the user returns to.
 - **Bound session** → **consult mode**: answer the question as Muster, one-shot — NO bind call,
   `.muster-last-role` untouched, the tab keeps its role. Home detection still applies (you must
   know which home you're in to answer correctly); only the bind is skipped.
+- **No session id** (`no-session`) → operate as unbound, but skip the bind call — there is no
+  session to attach a status line to.
 
 When a user asks "how do I talk to you again?", the answer is: `/muster`, any tab — in a
 role-bound tab it answers without disturbing your role.

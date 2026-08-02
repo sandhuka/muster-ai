@@ -1,7 +1,7 @@
 # Web Information Architecture
 
 ## Purpose
-Define the design of the product's navigation system as a *coordinated whole* — site map, URL structure, the relationship between top nav, sidebar, breadcrumbs, tabs, and the **command palette (cmd-K)** that has become the modern primary navigation surface for productivity-class web. The site map is a UX artifact, not just an engineering one. URLs are a UX surface (shareability, back-button, route-as-state), and routes that don't think about this fail in ways that compound. See `team/ui-ux/skills/web-design-system.md` for the tokens nav components consume. See `team/ui-ux/skills/web-content-hierarchy.md` for per-screen hierarchy (what's primary on a screen) — this skill is the *cross-screen* counterpart (how screens compose). See `team/ui-ux/skills/web-interaction-patterns.md` for the individual nav-component patterns (top nav, sidebar, bottom nav, breadcrumbs, tabs as widgets); IA is how those widgets compose into a system. See `team/ui-ux/skills/web-screen-specification.md` for how route context is documented per screen. See `team/developer/skills/web-nextjs-app-router.md` for the routing primitives (App Router, route groups, parallel/intercepting routes) IA decisions are implemented through. Target: **product UI on web — multi-screen products with > ~5 destinations, where IA decisions accumulate into a real system**.
+Define the design of the product's navigation system as a *coordinated whole* — site map, URL structure, the relationship between top nav, sidebar, breadcrumbs, tabs, and the **command palette (cmd-K)** that has become the modern primary navigation surface for productivity-class web. The site map is a UX artifact, not just an engineering one. URLs are a UX surface (shareability, back-button, route-as-state), and routes that don't think about this fail in ways that compound. See the `web-design-system` skill for the tokens nav components consume. See the `web-content-hierarchy` skill for per-screen hierarchy (what's primary on a screen) — this skill is the *cross-screen* counterpart (how screens compose). See the `web-interaction-patterns` skill for the individual nav-component patterns (top nav, sidebar, bottom nav, breadcrumbs, tabs as widgets); IA is how those widgets compose into a system. See the `web-screen-specification` skill for how route context is documented per screen. See the `web-nextjs-app-router` skill for the routing primitives (App Router, route groups, parallel/intercepting routes) IA decisions are implemented through. Target: **product UI on web — multi-screen products with > ~5 destinations, where IA decisions accumulate into a real system**.
 
 ## The Anchor: IA Is a System, Not a Component Decision
 
@@ -40,7 +40,7 @@ Concretely: filters, sort order, search query, selected tab, opened modal — al
                                               not how App Router intercepting routes work
 ```
 
-App Router's intercepting + parallel routes (`team/developer/skills/web-nextjs-app-router.md`) implement this via folder convention: a `(.)mark-paid` segment in `/invoices` intercepts navigation while a sibling `mark-paid/page.tsx` exists at `/invoices/[id]/mark-paid` as the full-page fallback. **Design implication: every modal route's content must work both as a modal and as a full page**, because direct navigation lands on the fallback. Spec the modal layout *and* the full-page layout (often the same component, occasionally with chrome differences). The *design* decision that "modals get URLs" is what enables this; the platform handles the rest.
+App Router's intercepting + parallel routes (the `web-nextjs-app-router` skill) implement this via folder convention: a `(.)mark-paid` segment in `/invoices` intercepts navigation while a sibling `mark-paid/page.tsx` exists at `/invoices/[id]/mark-paid` as the full-page fallback. **Design implication: every modal route's content must work both as a modal and as a full page**, because direct navigation lands on the fallback. Spec the modal layout *and* the full-page layout (often the same component, occasionally with chrome differences). The *design* decision that "modals get URLs" is what enables this; the platform handles the rest.
 
 ### Route-Naming Discipline
 
@@ -95,7 +95,7 @@ When they're wrong: breadcrumbs on a flat app, breadcrumbs on a single-level sec
 
 ## Tabs: Within-Screen View Switching
 
-Tabs switch views of the *same* content (Overview / Activity / Settings within a record detail). Not for navigating to different things. See `team/ui-ux/skills/web-interaction-patterns.md` for the tab component pattern; IA-side rules:
+Tabs switch views of the *same* content (Overview / Activity / Settings within a record detail). Not for navigating to different things. See the `web-interaction-patterns` skill for the tab component pattern; IA-side rules:
 
 - **2–5 tabs.** Beyond 5 the layout breaks; consider drill-in or separate routes.
 - **Tabs that map to URL state** (`?tab=activity`) get linkability and back-button support. Reach for this whenever tabs represent meaningful destinations.
@@ -150,7 +150,7 @@ Most products combine all three. Apple's products use Spotlight-style search hea
 
 - Empty query state: show recent searches, suggestions, or the last few visited.
 - Loading: skeleton results, not a spinner.
-- No results: see `team/ui-ux/skills/web-empty-error-and-edge-states.md` → No-search-results.
+- No results: see the `web-empty-error-and-edge-states` skill → No-search-results.
 - Result shape mirrors source: a record result looks like a row from the source table; a content result shows a snippet with the matched term highlighted.
 
 ## Modal State and Intercepting Routes
@@ -239,7 +239,7 @@ What's consistent across all of them: small primary nav, search prominent, no ca
 | **Cmd-K shortcut that's discoverable only by power users.** | The fast path is hidden from the people who need it most (returning users not yet expert). | Show "⌘K" hint in search affordances; prompt with the shortcut once after 2nd visit. |
 | **Routes that don't match the IA.** Sidebar shows "Settings → Billing → History" but URL is `/account-settings/billing-history?view=transactions`. | URL doesn't reflect the navigation; deep links don't make sense. | URL structure mirrors the IA tree. `/settings/billing/history`. |
 | **Page titles that don't match nav labels.** Sidebar says "Inbox," page title is "All Messages — Personal Account." | Inconsistency; user can't verify they're where they thought they were. | Same word in nav, in page title, in URL segment. |
-| **No "What's here?" empty state for an empty section.** Sidebar lists "Projects" → user clicks → blank table. | The empty section is its own state; needs a CTA toward populating it. | See `team/ui-ux/skills/web-empty-error-and-edge-states.md` → never-had-content. |
+| **No "What's here?" empty state for an empty section.** Sidebar lists "Projects" → user clicks → blank table. | The empty section is its own state; needs a CTA toward populating it. | See the `web-empty-error-and-edge-states` skill → never-had-content. |
 
 ## Output
 
@@ -249,7 +249,7 @@ An IA design produces:
 2. **Navigation system spec** in `knowledge-base/design-specs/navigation.md` — top nav contents, sidebar contents (per section), bottom nav contents (mobile), command-palette contents, breadcrumb scope, search scope. Updated when IA changes.
 3. **URL convention reference** appended to `knowledge-base/design-specs/site-map.md` — the URL-naming rules above as applied to this product, plus the list of which modals are URL-stateful.
 
-These are the inputs to per-screen specs (`team/ui-ux/skills/web-screen-specification.md`); each screen spec's Route Context section pulls from them.
+These are the inputs to per-screen specs (the `web-screen-specification` skill); each screen spec's Route Context section pulls from them.
 
 ## Principles
 

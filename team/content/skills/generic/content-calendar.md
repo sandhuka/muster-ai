@@ -1,7 +1,7 @@
 # Content Calendar Framework
 
 ## Purpose
-Define content types, publishing cadence, content pillars, and the per-piece workflow for all brand content. See `team/content/skills/brand-voice.md` for voice application on each surface and `team/content/skills/seo-guidelines.md` for keyword-driven content strategy.
+Define content types, publishing cadence, content pillars, and the per-piece workflow for all brand content. See the `brand-voice` skill for voice application on each surface and the `seo-guidelines` skill for keyword-driven content strategy.
 
 ## Content Types & Frequency
 - Blog posts: 1-2 per week (SEO-driven)

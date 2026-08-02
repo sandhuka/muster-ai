@@ -1,6 +1,6 @@
 # Privacy Policy Draft — [Product Name]
 <!-- Legal agent produces; PM reviews. Developer references for implementation. -->
-<!-- Skill reference: muster/team/legal/skills/generic/terms-privacy.md -->
+<!-- Skill reference: the `terms-privacy` skill -->
 
 ## 1. Introduction
 <!-- Product name, what it does, effective date, last updated -->

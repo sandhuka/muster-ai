@@ -15,17 +15,74 @@ jobs:
       - name: Driver fixture (autonomous loop end-to-end)
         run: bash scripts/test-sprint-driver.sh
 
+      - name: Formatter fixture (telemetry + window-table contract)
+        run: bash scripts/test-sprint-format.sh
+
+      - name: Agent-CLI adapter (argv shape + exit-code transparency)
+        run: bash scripts/test-agent-cli.sh
+
+      - name: Meter pricing (--prices loads any vendor)
+        run: bash scripts/test-meter-prices.sh
+
+      - name: Script naming + header + mode floor (fleet convention)
+        run: bash scripts/test-script-naming.sh
+
+      - name: Housekeeping (bind-file prune + log rotation)
+        run: bash scripts/test-housekeeping.sh
+
+      - name: Step-body lint (cold-agent executability)
+        run: bash scripts/test-lint-step.sh
+
+      - name: Board lint (entries + queue coherence)
+        run: bash scripts/test-lint-sprint.sh
+
+      - name: Setup smoke (pristine seed passes the shipped gates)
+        run: bash scripts/test-setup-project.sh
+
+      - name: Updater (stale -> converged -> idempotent; user content preserved)
+        run: bash scripts/test-muster-update.sh
+
+      - name: Session boot (routing + bind contract)
+        run: bash scripts/test-boot.sh
+
+      - name: Role floor (startup gate, comms check, queue advance)
+        run: bash scripts/test-role-scripts.sh
+
+      - name: Parse contracts (script anchors exist in templates)
+        run: bash scripts/test-parse-contracts.sh
+
+      - name: Context gate (Next Step role has real inlined tasks)
+        run: bash scripts/test-lint-context.sh
+
+      - name: Durability lint (Rule 15 — current truth only)
+        run: bash scripts/test-lint-durability.sh
+
+      - name: Decision reconciliation (Rule 11 — Impact vs Touched)
+        run: bash scripts/test-lint-decisions.sh
+
+      - name: KB budgets (Rule 14 runtime — live bootstrap surface)
+        run: bash scripts/test-lint-kb-budgets.sh
+
+      - name: Entry bodies (fields + Deliverable exists on disk)
+        run: bash scripts/test-lint-entry.sh
+
+      - name: Gate packet (founder notices folded, never luck)
+        run: bash scripts/test-lint-gate-packet.sh
+
+      - name: State-file doctor (.populated + boot-telemetry patterns)
+        run: bash scripts/test-doctor-populated.sh
+
+      - name: Gate wrappers (plan + closeout, refuse-green-on-red)
+        run: bash scripts/test-gate-wrappers.sh
+
       - name: Pillar budgets (always-read token surface)
         run: bash scripts/test-pillar-budgets.sh
 
       - name: Queue lint (planning-correctness contract)
-        run: bash scripts/test-queue-lint.sh
+        run: bash scripts/test-lint-queue.sh
 
       - name: Requests lint (handoff-closure contract)
-        run: bash scripts/test-requests-lint.sh
-
-      - name: Migration gate (v3→v4 upgrade path)
-        run: bash scripts/test-migrate.sh
+        run: bash scripts/test-lint-requests.sh
 
       - name: Muster-agent contract (Guide/XO wiring)
         run: bash scripts/test-muster-agent.sh
@@ -36,4 +93,19 @@ jobs:
       - name: Clean-tree guard (dirty-worktree footgun)
         run: bash scripts/test-sprint-new.sh
       - name: Commit-subject convention (Rule 16)
-        run: bash scripts/test-commit-lint.sh
+        run: bash scripts/test-lint-commit.sh
+
+      - name: Skill resolver (name→path contract)
+        run: bash scripts/test-find-skill.sh
+
+      - name: Skill citations + index parity (fixtures)
+        run: bash scripts/test-lint-refs.sh
+
+      - name: Skill citations + index parity (live corpus)
+        run: bash scripts/muster-lint-refs.sh
+
+      - name: Dependency mirroring (fixtures)
+        run: bash scripts/test-lint-deps.sh
+
+      - name: Dependency mirroring (live brain files)
+        run: bash scripts/muster-lint-deps.sh

@@ -1,7 +1,7 @@
 # Seasonal & Cultural Marketing
 
 ## Purpose
-Calendar-driven campaigns aligned with natural demand cycles in your category. Every app category has seasonal patterns — aligning campaigns with demand surges 3-5x the impact of the same spend off-peak. See `team/marketing/skills/campaign-playbook.md` for campaign templates, `team/marketing/skills/paid-acquisition.md` for seasonal bid adjustments.
+Calendar-driven campaigns aligned with natural demand cycles in your category. Every app category has seasonal patterns — aligning campaigns with demand surges 3-5x the impact of the same spend off-peak. See the `campaign-playbook` skill for campaign templates, the `paid-acquisition` skill for seasonal bid adjustments.
 
 ## Identifying Your Category's Demand Cycle
 

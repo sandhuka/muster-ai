@@ -1,6 +1,6 @@
 # Brand Guidelines — [Product Name]
 <!-- Brand identity and visual direction. PM owns this file. -->
-<!-- Structure follows PM's brand-guidelines skill (muster/team/pm/skills/generic/brand-guidelines.md) -->
+<!-- Structure follows PM's `brand-guidelines` skill -->
 
 ## 1. Brand Identity
 <!-- Mission, vision, brand promise -->

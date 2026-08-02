@@ -13,6 +13,10 @@
 - [ ] [check 2]
 - [ ] [check 3]
 
+### Notices since last gate
+<!-- PM folds every live founder-notices.md entry here VERBATIM (or writes "none"). Checked by muster-lint-gate-packet.sh — a notice with no place to land depends on luck to surface. -->
+none
+
 ## Verdict
 
 <!-- Founder writes the verdict here, then runs muster/scripts/muster-sprint-resume.sh. Two forms: -->
