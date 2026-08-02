@@ -2,7 +2,8 @@
 # muster-lint-commit.sh — lint: commit-subject convention, CLAUDE.md Rule 16 (family: lint — reports OK/FAIL, never mutates).
 #
 # Convention: subject = '<role>: <outcome>' — the committing role, lowercase, then an
-# outcome-first line (what the repo can now do, not the mechanics). ≤72 chars total.
+# outcome-first line (what the repo can now do, not the mechanics). ≤100 chars total —
+# long enough to inform (never truncate meaning to fit), short enough to stay one line.
 # HO-/DEC- references belong in the body, never the subject.
 #
 # Usage:  muster-lint-commit.sh [<commit>|<range>]     default: HEAD (last commit only)
@@ -27,8 +28,8 @@ while IFS= read -r s; do
   if ! printf '%s' "$s" | grep -qE "^($ROLES): \S"; then
     echo "✗ no role prefix: $s"; bad=1; continue
   fi
-  if [ "${#s}" -gt 72 ]; then
-    echo "✗ subject ${#s} chars (max 72): $s"; bad=1
+  if [ "${#s}" -gt 100 ]; then
+    echo "✗ subject ${#s} chars (max 100): $s"; bad=1
   fi
 done <<< "$subjects"
 

@@ -22,7 +22,8 @@ c "Fix stuff";                                                check "missing rol
 c "qa: rotation verified across 3 timezones — 11/11 pass";    check "role with unicode dash ok"   0
 c "designer: not a muster role";                              check "unknown role rejected"       1
 c "ui-ux: hyphenated role accepted";                          check "hyphenated role"             0
-c "pm: $(printf 'x%.0s' {1..80})";                            check "over-72-char subject"        1
+c "pm: $(printf 'x%.0s' {1..80})";                            check "informative 84-char subject ok" 0
+c "pm: $(printf 'x%.0s' {1..110})";                           check "over-100-char subject"       1
 first="$(git rev-list --max-parents=0 HEAD)"
 check "range with violations" 1 "$first..HEAD"
 c "xo: framework roles lint too";                             check "xo role accepted"            0
