@@ -12,6 +12,83 @@ submodule) are seeded copy-if-absent by re-running the live upgrade script. No b
 
 ---
 
+## 5.0 — 2026-08-01
+
+The determinism sweep: every mechanical rule the framework used to state in prose is now a thin
+bash gate — **prose for judgment, scripts for mechanics**. Ten waves, 48 commits, 254 files
+(+6105/−2984), every pushed SHA Linux-CI-green. ~25 new `muster-*` scripts, each shipped with a
+`test-*.sh` fixture proving it can both FAIL and PASS (31 fixture suites in CI). Net tier-1
+bind-path: **302 → 280 lines** — the entire gate fleet added while the always-read surface
+*shrank*. Major because the upgrade model changed: the pre-5.0 migration chain is removed;
+upgrades now converge via one idempotent script. Rationale for the sweep: determinism IS
+portability — bash survives any model and any vendor; prose degrades on weak models.
+
+- **Determinism doctrine (do not revisit).** Script naming grammar, enforced by
+  `test-script-naming.sh`: `muster-lint-*` checks and reports, never mutates; `muster-guard-*`
+  blocks, fail-closed; `muster-<verb>-*` acts. Exit-code contract: 0 = clean · 1 = real defect
+  (the only code that stops a run or refuses a gate) · 3 = usage/wiring error (callers warn,
+  never stop). Mutating scripts self-check (write to tmp, lint the result, refuse the real file
+  on red). New lints against a possibly-red corpus land **warn-only** and promote to fail-stop
+  in a separate commit once corpus-green, with a fixture proving the stop fires (ramp rule).
+- **Anchor-contract registry** (`scripts/test-parse-contracts.sh`, ~113 asserts): every section
+  heading / JSON key / marker any script greps is registered with its consumer named in the
+  failure message — renaming an anchor without its consumers is now a red gate, not a silent
+  parse miss. Self-policing rule: new scripts register their anchors in the same commit.
+- **Bootstrap is a script.** `muster-boot.sh` is the single routing authority: housekeeping,
+  `.populated`, `$MUSTER_ROLE`, the JIT gate, the bind — one `ROUTE=` directive the session
+  obeys literally. With `muster-check-context.sh`, `muster-advance-queue.sh`,
+  `muster-closeout.sh`, `muster-read-queue.sh`/`muster-read-populated.sh` (shared parsers) and
+  `muster-find-skill.sh`, the whole session lifecycle is deterministic.
+- **Content lints** — each closes a previously *silent* failure class: `muster-lint-context.sh`
+  (Next-Step gate), `muster-lint-durability.sh` (Rule 15), `muster-lint-decisions.sh` (Rule 11
+  cascade reconciliation), `muster-lint-kb-budgets.sh` (runtime Rule 14),
+  `muster-lint-entry.sh` (handoff/request required fields), `muster-lint-deps.sh` (dependency
+  mirroring), `muster-lint-gate-packet.sh` (notices fold-in), `muster-doctor-populated.sh`
+  (validates the state file that routes everything), `muster-lint-refs.sh`,
+  `muster-lint-requests.sh`. Note: the stricter requests-lint reds legacy `Status:` spellings in
+  older projects — expected, documented in `guide/skills/operating-help.md` → "Reds That Are
+  Expected".
+- **Planning floors** (planning is the fundamental step): `muster-lint-step.sh` (queue-step
+  schema), `muster-lint-sprint.sh` (wave-table board format), `muster-plan-gate.sh` (5-check
+  plan gate PM runs before a sprint launches). Gate wrappers replace the honor system —
+  evidence, not assertions.
+- **Model portability, Stage 1.** `muster-agent-cli.sh` — the adapter seam between the driver
+  and the agent CLI; `.muster/config` provider knobs (`MUSTER_PROVIDER_KEY_ENV` names the env
+  var carrying the key — the config never holds a key); model routing via `ANTHROPIC_MODEL`
+  default + per-step `Model:` lines. The driver no longer assumes one vendor.
+- **Seamless migration (the 5.0 upgrade model).** The 8 agent bootloaders, the statusline, and
+  the `/muster`+`/rebind` skills now ride the submodule (`muster/team/<role>/bootloader.md`
+  etc.) and update on pointer bump; the platform paths (`.claude/agents/`, `.claude/skills/`,
+  `.claude/statusline.sh`) hold ~10-line framework-owned stubs that only hop. Project-level
+  convergence is `scripts/muster-update.sh`: template-derived permissions allowlist (no
+  hardcoded counts), marker-bounded CLAUDE.md bootstrap block, creates missing stubs, refuses a
+  dirty tree (exempting the `muster/` pointer so bump→converge→commit works), writes the
+  `.muster/seeded-version` stamp LAST and only on a fully-green run, and **never touches**
+  knowledge-base data, `.muster/config` values, or founder content. Drift is never silent: boot
+  prints a NOTICE and the sprint driver warns when the stamp trails `muster/VERSION`; fresh
+  seeds are born converged. Upgrade = bump the pointer + `bash muster/scripts/muster-update.sh`
+  — most bumps need the pointer alone. `add-bootstrap-permissions.sh` remains as a 4-line
+  deprecated shim (remove at next major). Pre-5.0 `MIGRATING-*` guides and `migrate-v*` scripts
+  live on the 4.x tags; a pre-v2 project upgrades through those tags first.
+- **Rule 16 subject cap 72 → 100** (founder-ruled): subjects exist to inform — the model must
+  never conceal information to fit; small, but not at the cost of the story. Lint + driver
+  updated; hard-block still rejected (style never stops a run).
+- **Field-paid planning rules** — from the first two production projects' retros: PM reads the
+  planning skill IN FULL at every planning start (never plans from the prompt alone); "cite
+  nothing you have not opened"; "price the audit against the rework"; the new-sprint reset
+  checklist (5 steps, incl. keep-doctrine sweep-task pruning); tooling/framework findings route
+  upstream first (`skill-gap-classification.md`); gate verdicts route interactively by default.
+  The code-sized retro findings are captured with receipts for 5.1 — deliberately not rushed
+  into this release.
+- **Validated before merge**: docs truth sweep; the full develop→main diff reconciled both
+  directions against the sweep's build records; a real 4.5→5.0 migration rehearsal on the first
+  production project (branch verified then retired — the project migrates on its own schedule);
+  a live driver step end-to-end on 5.0 ($0.32, stub→bootloader hop field-verified). Parked with
+  intent: symlinking `.claude/agents` to the submodule (verified working on the platform — a
+  6.0 candidate, stubs stay for now).
+
+---
+
 ## 4.6 — 2026-07-24
 
 Fixed-cost audit pass on the always-read surface, a planning-quality addition, and three

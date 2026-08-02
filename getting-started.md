@@ -6,7 +6,7 @@ This guide walks you through setup to your first sprint. If you haven't read the
 
 Total founder-attended time: about **1-2 hours** spread across ~3 Claude sessions over a day or two. The script runs in a couple of minutes; the rest is a brief orientation, sharing your product idea, market research (Research agent does the work), an evaluation step, draft review, and Sprint 1 planning.
 
-**One-time cost** — future Muster updates pull in via `git submodule update` (plus `bash muster/scripts/muster-update.sh` to converge the few platform-level files) without repeating Discovery.
+**One-time cost** — a new project is born converged: the setup script stamps it at the current framework version, so there is never migration debt on day one. Future Muster updates pull in via `git submodule update` (plus `bash muster/scripts/muster-update.sh` to converge the few platform-level files) without repeating Discovery.
 
 ---
 

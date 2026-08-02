@@ -27,7 +27,7 @@ You (Founder)
 
 The PM coordinates: plans sprints, makes decisions, cascades context to specialists. Specialists do the domain work in their own session and file handoffs. Status line shows `[muster: <role>]` so you always know which tab is which.
 
-Built and validated on a real iOS app, mid-construction. Not framework theory.
+Built and validated on real production projects — an iOS app mid-construction and a shipped marketing site. Not framework theory.
 
 Just open Claude Code. Pick a role. Ship.
 
@@ -52,6 +52,10 @@ Agent brains, orchestration queues, handoff logs, and decision records persist a
 ### Self-improving skills
 
 During sprint planning, the PM scans for methodology gaps. New skills are classified as generic or product-specific. Generic skills are contributed back to the framework, so every project makes Muster sharper for the next one.
+
+### Deterministic guardrails
+
+Prose is reserved for judgment; mechanics are bash. Session routing, queue advancement, plan gates, and every content-quality rule that *can* be checked mechanically *is* — by small scripts, each proven by a CI fixture that can both fail and pass. Agents can't drift from the protocol, because the protocol isn't a suggestion they read — it's a gate they pass.
 
 ## Quick start
 
