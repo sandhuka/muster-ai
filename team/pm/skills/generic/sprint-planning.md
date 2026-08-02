@@ -7,8 +7,23 @@
 - Sprint end: Review completed work, carry over incomplete tasks, retrospective notes
 
 ## Planning Process
+**Read this skill in full before planning — every time.** A content-complete planning prompt is
+not a substitute: the field failure is PM planning from the prompt alone and missing the
+mandatory boundary gates until the founder intervened. When closeout writes the next sprint's
+planning step, its prompt's first instruction is "Read the `sprint-planning` skill in full
+before planning."
+
 0. **Run QA consistency audit** — invoke QA with `consistency-audit.md` skill before planning. Fix all findings before proceeding. This is mandatory at every sprint boundary.
 1. **Catch anything an interrupted closeout left behind**: run `bash muster/scripts/muster-list-open-items.sh` and reconcile any lingering items per Sprint Closeout step 5 (close-if-validated / carry-forward / defer) before building the new queue — covers the case where the prior sprint's closeout session ended before the board was reconciled. Then review knowledge-base/current-sprint.md for carry-over items
+1.5 **New-sprint reset (mandatory at every boundary; each item is a field failure)**:
+   (a) step numbering restarts at 1 — never continue the prior sprint's numbers; (b)
+   `wave-review.md` carries ONLY the live gate — prior-sprint gate history moves to the archive
+   with references repointed; (c) every `agent-context/*.md` Current Tasks section is REPLACED,
+   not appended — including roles with NO step this sprint (write "no active step; standing
+   disciplines carry"); (d) stale blocks are DELETED, never commented out (HTML comments still
+   cost every reader tokens; git is the archive); (e) before deleting a task block, extract any
+   STANDING doctrine embedded in it into the surviving standing section — sweep tasks, keep
+   doctrine (compression once cost a load-bearing blind-authoring rule its teeth).
 2. Review knowledge-base/decision-log.md for new decisions needing implementation, and scan `knowledge-base/triage-log.md` **DEFER** entries — deferred observations that were parked for "later" are candidates to pull into this sprint (see `observation-triage.md`)
 3. Break down work into agent-specific tasks with clear deliverables
 4. Identify cross-agent dependencies and sequence work (upstream first)
@@ -170,6 +185,11 @@ When adding a bug-fix wave to a sprint, structure it based on which bug types ar
 
 When a sprint runs unattended (`muster/scripts/muster-sprint-run.sh`), the autonomous unit is a **wave, not the whole sprint**: the loop runs a wave, the founder reviews at the wave boundary, then the loop resumes into the next wave. Worst-case unwind is one wave, never a sprint. Two containment layers — mechanical gates inside a wave, human gates between waves — and **both ride on the existing `Role: halt` signal**; planning conventions are all that's new (no driver changes, no new queue primitive).
 
+**Gate verdicts route interactively by default.** Process the founder's gate verdict in the
+open gate conversation (fix steps authored there, queue updated there); the resume wrapper is
+the fallback for when nobody is at the keyboard — each resume round costs a full headless PM
+session, and interactive routing has produced better fix steps every time it was used.
+
 ### Wave sizing
 Size a wave as the largest run of steps whose output can be verified in one review pass. Keep waves small enough that one bad wave is cheap to discard. A natural wave boundary is where the surface being built changes (logic → UI) or where a deliverable needs human eyes before later steps build on it.
 
@@ -205,5 +225,15 @@ A step's prompt is fixed at planning time, but its real scope or inputs may be p
 - **Specificity prevents blockers.** Vague task definitions ("work on the design") generate mid-sprint questions. Specific deliverables ("deliver annotated wireframes for onboarding screens 1-4 in Figma-ready format") don't.
 - **The Cold-Start Sufficiency Test — every queue step is read by a stranger with no memory.** A queue step (plus the agent-context Current Tasks it pairs with) is executed by a cold agent — in autonomous mode, a fresh headless session with zero memory of this planning. The anchor rules in step 8 make each *reference* resolvable; this test asks whether the *set* is complete (a perfectly-formatted prompt can still be missing an input entirely). Run it whenever you author OR edit a step — not only at sprint planning, but at every wave-gate fix, blocker re-sequence, and bug-routing insertion: list the decisions the agent must make to satisfy the Deliverable and Acceptance criteria — for each, is it specified or cited? Any decision you hold an opinion on but left unstated is one the agent fills by guessing, and in autonomous mode nothing catches the guess before it ships. Close gaps by **citing the source, not inlining it** (the agent reads cited files on demand — completeness and token-thrift are the same move here). Keep it proportional: heaviest where a step's scope depends on a design call or an earlier step, near-instant for self-contained work. `muster-lint-queue.sh` proves structure, never sufficiency — this pass is yours.
 - **Size steps by cohesion, not by turn count.** A step is one cohesive unit of work — group changes that share context, separate changes that don't. Three bugs on the same screen (same files, same mental model) are one step; splitting them just forces re-reading the same files and re-deriving the same context. Three bugs on unrelated screens are three steps. A single feature is one step — unless it's large enough to strain the per-step turn budget or carry too much context, in which case decompose it along its most natural internal seam (data model → UI → wiring), which are themselves cohesive sub-units. The test is *what belongs together*, never an arbitrary turn count. Don't bundle unrelated changes into one step: it's harder to review and recover, and in an autonomous run a grab-bag step exhausts `MAX_TURNS` and stalls. When a step is large but genuinely cohesive, raise `MAX_TURNS` rather than fragment shared context — but split a *too-large* cohesive task along a real internal seam, not by leaning on an ever-higher cap.
+- **Cite nothing you have not opened.** Every file path, line number, selector, or
+  test-harness claim written into a queue step is verified against the artifact at authoring
+  time — a citation from recall is a defect waiting to be paid for at audit time or, worse,
+  silently at run time (field data: most of a ~300k-token plan audit's findings were citations
+  the author could have checked while writing). This is the resolvability rule's authoring-side
+  twin: step 8 makes references resolvable; this makes them true.
+- **Price the audit against the rework.** Before commissioning a plan stress-test, state its
+  budget and the cost of one fix round (the driver logs $/step) — audit depth becomes a
+  decision, not an instinct. Prefer one well-briefed cold reviewer plus the plan gate over
+  parallel audit agents: redundancy re-finds, it does not cover.
 - **Sprint velocity is one agent at a time.** Don't plan sprints as if all agents are running simultaneously. The effective sprint is the sum of sequential agent sessions, not a parallel workstream.
 - **Leave the buffer.** The 20% buffer isn't optional. Solo founders working with AI agents encounter unexpected output quality issues, scope clarifications, and decision points that weren't anticipated. Plan for them.

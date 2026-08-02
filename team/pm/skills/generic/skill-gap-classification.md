@@ -39,6 +39,18 @@ This runs during the dedicated "PM: Create missing skills" orchestration queue s
 4. If hybrid, create the generic version first, then a product skill that references it
 5. **Follow existing skill protocols.** Use the skill file template, quality checklist, and registration steps from `system-guide.md` → "Adding a New Skill." For platform-specific skills, use the established prefix convention (`ios-`, `backend-`, `web-`) and place in the matching subdirectory (`skills/ios/`, `skills/backend/`, `skills/web/`). If the target platform subdirectory doesn't exist, create it before writing the skill file. In the skill's body, cite other skills **by name, never by path** (``the `<name>` skill``, or ``<Role>'s `<name>` skill`` when the name exists under multiple roles) — `muster-lint-refs.sh` enforces this at registration.
 
+## Tooling and Framework Findings Route Upstream First
+
+This skill's five criteria apply to TOOLING the same as to skills: a script, lint, or protocol
+change that would help any project belongs to the framework, not to `tools/` in one repo. The
+routing rule (field failure: a working plan-lint built locally, stranding the value in one
+project): a framework-shaped finding goes to the project's retrospective/friction report FIRST,
+so the core team can land it in muster and every project inherits it on update. Building a
+local workaround is permitted when the project cannot wait — but the retrospective entry must
+then describe the workaround in enough detail (checks, exemptions, placement constraints) for
+the core team to adopt or reject it rather than rediscover it. A local tool that never gets
+routed upstream is a finding lost.
+
 ## Anti-Patterns (Do NOT add to Muster)
 
 - Checklists for a specific product's launch

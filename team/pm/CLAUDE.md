@@ -42,7 +42,7 @@ Skills are in `team/pm/skills/generic/`. Read the relevant one(s) for your curre
 - **agent-management.md** — Protocol for updating agents' context files, dependency mirroring, batch updates
 - **context-cascading.md** — What each specialist agent needs to know, key references per agent, cascading principles
 - **decision-making.md** — Decision categorization (strategic/feature/tactical/operational), ICE prioritization, risk flags
-- **sprint-planning.md** — Sprint cycle, sequential agent batching, capacity guidelines, task definition standards
+- **sprint-planning.md** — Sprint cycle, sequential agent batching, capacity guidelines, task definition standards. READ IN FULL at every planning start — never plan from the prompt alone
 - **product-spec-writing.md** — Product spec document template (overview, users, MVP features, tech constraints, monetization, metrics)
 - **brand-guidelines.md** — Brand guidelines document structure (identity, personality, messaging, visual direction, naming)
 - **roadmapping.md** — Roadmap structure from MVP through future versions, sequencing principles, milestone definitions

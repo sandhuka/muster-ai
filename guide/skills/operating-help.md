@@ -69,6 +69,16 @@ Sprint Execution — read the section, don't recite this list from memory):
 - **run cap (`MAX_STEPS`)** — budget, not failure. Re-run for a fresh budget, or raise the knob
   (`config-knobs.md`).
 
+## Reds That Are Expected (do not diagnose these)
+
+- **Batched-gate sprints run the requests lint red until the review sweep.** A sprint designed
+  around one batched review gate holds every handoff of the wave open at once by construction —
+  the Active-budget red is the sprint shape, not a filing defect, and it clears when the review
+  step sweeps. Explain it once and move on (a lint red that needs a prose apology every session
+  is telling you the shape, not finding a bug).
+- **A fresh submodule bump shows the drift NOTICE until `muster-update.sh` runs.** That is the
+  NOTICE working.
+
 ## Manual Recovery Moves
 
 - **Re-run is free** — file state makes the driver continue from where it stopped; no resume
